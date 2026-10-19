@@ -7,11 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -32,11 +33,15 @@ class MainActivity : ComponentActivity() {
                 val state by mainViewModel.uiState.collectAsStateWithLifecycle()
                 val navController = rememberNavController()
 
+                // safeDrawingPadding : évite status bar / gesture bar (S25 Ultra).
+                val rootModifier = Modifier
+                    .fillMaxSize()
+                    .background(A11yTokens.PaperCream)
+                    .safeDrawingPadding()
+
                 if (state.loading) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(A11yTokens.PaperCream),
+                        modifier = rootModifier,
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
@@ -45,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     AppNavHost(
                         navController = navController,
                         startDestination = state.startDestination,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = rootModifier
                     )
                 }
             }

@@ -10,6 +10,7 @@ class MoneyFormatTest {
         assertThat(MoneyFormat.parseToCents("470")).isEqualTo(47_000L)
         assertThat(MoneyFormat.parseToCents("470,50")).isEqualTo(47_050L)
         assertThat(MoneyFormat.parseToCents("470.5")).isEqualTo(47_050L)
+        assertThat(MoneyFormat.parseToCents("1.999")).isEqualTo(199L) // tronque à 2 décimales
     }
 
     @Test
@@ -17,6 +18,7 @@ class MoneyFormatTest {
         assertThat(MoneyFormat.parseToCents("")).isNull()
         assertThat(MoneyFormat.parseToCents("-10")).isNull()
         assertThat(MoneyFormat.parseToCents("abc")).isNull()
+        assertThat(MoneyFormat.parseToCents("12.34.56")).isNull()
     }
 
     @Test

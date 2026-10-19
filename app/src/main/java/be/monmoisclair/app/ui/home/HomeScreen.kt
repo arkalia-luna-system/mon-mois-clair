@@ -147,10 +147,15 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
         color = A11yTokens.PaperWarm,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
             .padding(vertical = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = A11yTokens.minTouchHeight)
+                .clickable(onClick = onClick)
+                .padding(14.dp)
+        ) {
             Text(text = item.dayLabel, style = MaterialTheme.typography.bodyMedium)
             Text(text = item.label, style = MaterialTheme.typography.titleLarge)
             Text(
@@ -171,31 +176,39 @@ private fun ExpenseRow(
     val bg = if (item.isDone) A11yTokens.AccentOk.copy(alpha = 0.18f) else A11yTokens.PaperWarm
     Surface(
         color = bg,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            // Zone « modifier » séparée du bouton FAIT (évite double action).
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onClick)
             ) {
-                Text(text = item.dayLabel, style = MaterialTheme.typography.bodyMedium)
-                if (item.isDone) {
-                    Text(
-                        text = "FAIT ✓",
-                        color = A11yTokens.AccentOk,
-                        style = MaterialTheme.typography.labelLarge
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = item.dayLabel, style = MaterialTheme.typography.bodyMedium)
+                    if (item.isDone) {
+                        Text(
+                            text = "FAIT ✓",
+                            color = A11yTokens.AccentOk,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
                 }
+                Text(text = item.label, style = MaterialTheme.typography.titleLarge)
+                Text(
+                    text = item.amountLabel,
+                    color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
-            Text(text = item.label, style = MaterialTheme.typography.titleLarge)
-            Text(text = item.amountLabel, style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(8.dp))
             PrimaryA11yButton(
                 text = if (item.isDone) "Marquer à payer" else "Marquer FAIT ✓",
-                onClick = onToggle,
-                modifier = Modifier.heightIn(min = A11yTokens.minTouchHeight)
+                onClick = onToggle
             )
         }
     }

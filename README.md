@@ -8,7 +8,7 @@
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Tests](https://img.shields.io/badge/tests-69%2F69-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Statut](https://img.shields.io/badge/statut-bêta%20device-blue)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--3.2.1-informational)](#statut)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
 Saisie manuelle · backup JSON local · rappels exacts · distribution familiale par APK.
@@ -19,8 +19,8 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-3.2` |
-| Dernière étape | **3.2** Home liste + **2.4** ajout/édition/suppression |
+| Version | `0.1.0-3.2.1` |
+| Dernière étape | **3.2** Home + **2.4** édition + polish UX device |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`, Android 16) — voir [checklist](dist/CHECKLIST_S25.md) |
 | Distribution | Sideload familial (hors Play Store) |
 | Tests unitaires | **69/69** OK |

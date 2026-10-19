@@ -2,6 +2,7 @@ package be.monmoisclair.app.ui.entry
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -16,7 +17,7 @@ import javax.inject.Inject
 data class EntryFormState(
     val label: String = "",
     val amountText: String = "",
-    val dayText: String = "1",
+    val dayText: String = AppClock.today().dayOfMonth.toString(),
     val isExpense: Boolean = true,
     val recurring: Boolean = false,
     val error: String? = null,

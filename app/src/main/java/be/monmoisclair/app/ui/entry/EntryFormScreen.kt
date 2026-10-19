@@ -10,25 +10,34 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -55,6 +64,7 @@ fun AddEntryScreen(
         hasTemplate = false,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
+        primaryEnabled = !state.saving,
         onLabel = viewModel::setLabel,
         onAmount = viewModel::setAmount,
         onDay = viewModel::setDay,
@@ -74,6 +84,7 @@ fun EditEntryScreen(
     viewModel: EditEntryViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var confirmDelete by remember { mutableStateOf(false) }
     LaunchedEffect(state.done) { if (state.done) onDone() }
 
     if (state.loading) {
@@ -86,6 +97,38 @@ fun EditEntryScreen(
             Text("Chargement…", style = MaterialTheme.typography.bodyLarge)
         }
         return
+    }
+
+    if (confirmDelete) {
+        AlertDialog(
+            onDismissRequest = { confirmDelete = false },
+            title = { Text("Supprimer cette entrée ?") },
+            text = {
+                Text(
+                    if (state.applyToFollowing && state.hasTemplate) {
+                        "La ligne sera effacée, le modèle désactivé, et les mois suivants encore « à payer » seront aussi supprimés."
+                    } else {
+                        "Cette action retire la ligne du mois. Vous pourrez en recréer une ensuite."
+                    },
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        confirmDelete = false
+                        viewModel.delete()
+                    }
+                ) {
+                    Text("Supprimer", color = A11yTokens.AccentDanger)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDelete = false }) {
+                    Text("Annuler")
+                }
+            }
+        )
     }
 
     EntryFormScaffold(
@@ -101,6 +144,7 @@ fun EditEntryScreen(
         hasTemplate = state.hasTemplate,
         error = state.error,
         primaryLabel = "Enregistrer",
+        primaryEnabled = true,
         onLabel = viewModel::setLabel,
         onAmount = viewModel::setAmount,
         onDay = viewModel::setDay,
@@ -109,7 +153,7 @@ fun EditEntryScreen(
         onApplyFollowing = viewModel::setApplyToFollowing,
         onPrimary = viewModel::save,
         onCancel = onCancel,
-        onDelete = viewModel::delete
+        onDelete = { confirmDelete = true }
     )
 }
 
@@ -127,6 +171,7 @@ private fun EntryFormScaffold(
     hasTemplate: Boolean,
     error: String?,
     primaryLabel: String,
+    primaryEnabled: Boolean,
     onLabel: (String) -> Unit,
     onAmount: (String) -> Unit,
     onDay: (String) -> Unit,
@@ -141,6 +186,7 @@ private fun EntryFormScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
+            .imePadding()
             .verticalScroll(rememberScrollState())
             .padding(A11yTokens.screenPadding),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -192,7 +238,7 @@ private fun EntryFormScaffold(
         if (showApplyFollowing && hasTemplate) {
             CheckRow(
                 checked = applyFollowing,
-                label = "Appliquer aussi aux mois suivants",
+                label = "Appliquer aussi aux mois suivants (encore à payer)",
                 onChecked = onApplyFollowing
             )
         }
@@ -202,11 +248,11 @@ private fun EntryFormScaffold(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        PrimaryA11yButton(text = primaryLabel, onClick = onPrimary)
+        PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
         SecondaryA11yButton(text = "Annuler", onClick = onCancel)
         if (onDelete != null) {
             Spacer(modifier = Modifier.height(8.dp))
-            SecondaryA11yButton(text = "Supprimer", onClick = onDelete)
+            DangerA11yButton(text = "Supprimer", onClick = onDelete)
         }
     }
 }
@@ -220,8 +266,9 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
         color = fg,
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
             .background(bg)
-            .clickable(onClick = onClick)
+            .clickable(role = Role.RadioButton, onClick = onClick)
             .heightIn(min = A11yTokens.minTouchHeight)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     )

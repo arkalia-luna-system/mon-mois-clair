@@ -86,13 +86,18 @@ class HomeViewModel @Inject constructor(
                 val current = AppClock.currentYearMonth()
                 val prev = ym.minusMonths(1)
                 val next = ym.plusMonths(1)
+                val canGoNext = when {
+                    next > current -> false
+                    next == current -> true
+                    else -> ledgerIds.contains(AppClock.ledgerId(next))
+                }
                 HomeUiState(
                     loading = false,
                     ledgerId = ledgerId,
                     monthLabel = DayLabelFormat.monthTitle(ym),
                     // Mois passés : navigation seulement s'ils existent déjà en base.
                     canGoPrev = ledgerIds.contains(AppClock.ledgerId(prev)),
-                    canGoNext = next <= current,
+                    canGoNext = canGoNext,
                     summary = summary,
                     timeline = timeline
                 )
@@ -114,9 +119,11 @@ class HomeViewModel @Inject constructor(
     fun prevMonth() {
         viewModelScope.launch {
             val target = selectedMonth.value.minusMonths(1)
-            // Ne crée pas automatiquement un mois passé absent (conforme charte),
-            // sauf s'il existe déjà en base.
-            selectedMonth.value = target
+            val exists = monthLedgerDao.getById(AppClock.ledgerId(target)) != null
+            // Ne crée pas un mois passé fantôme (charte) — navigation UI déjà gated.
+            if (exists) {
+                selectedMonth.value = target
+            }
         }
     }
 
@@ -124,12 +131,17 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val target = selectedMonth.value.plusMonths(1)
             val current = AppClock.currentYearMonth()
-            if (target == current) {
-                monthCycleEngine.ensureCurrentMonthExists()
-            } else if (target > current) {
-                return@launch
+            when {
+                target > current -> return@launch
+                target == current -> {
+                    monthCycleEngine.ensureCurrentMonthExists()
+                    selectedMonth.value = target
+                }
+                else -> {
+                    val exists = monthLedgerDao.getById(AppClock.ledgerId(target)) != null
+                    if (exists) selectedMonth.value = target
+                }
             }
-            selectedMonth.value = target
         }
     }
 

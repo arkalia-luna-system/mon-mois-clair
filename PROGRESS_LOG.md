@@ -9,13 +9,26 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **3.2 + 2.4** |
+| Dernière étape terminée | **3.2.1** (polish UX + audit device) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Polish UX / restore UI / Device Care manuel une fois sur chaque Samsung familial |
+| Prochaine sous-étape | Restore UI / Device Care manuel familial / biométrie optionnelle |
 
 ---
 
 ## Journal
+
+### 2026-10-19 — Polish 3.2.1 (audit détail)
+
+**Corrigé :**
+- `safeDrawingPadding` (plus de contenu sous status/gesture bar Ultra).
+- Montants : `parseToCents` **sans Double** (charte).
+- FAIT : zone ligne / bouton séparées (plus de double action).
+- Suppression : confirmation AlertDialog + bouton danger.
+- SAF depuis Home : retour sans rejouer permissions (déjà) ; jour défaut = aujourd’hui.
+- Nav mois : pas de mois fantôme (prev/next gated + check DAO).
+- Clavier : `imePadding` sur formulaires.
+
+**Tests :** 69/69 OK · re-install device OK (toggle FAIT, édition, formulaire jour=19).
 
 ### 2026-10-19 — Validation device (SM-S938B / S25 Ultra)
 

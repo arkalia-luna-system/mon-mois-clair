@@ -179,7 +179,8 @@ Use cases associés : `UpdateInstanceUseCase`, `DeleteInstanceUseCase` (option �
 | **2.4** | Édition / suppression instances (+ option mois suivants) ✅ |
 | **3.1** | Onboarding SAF + permissions + écran Santé ✅ |
 | **3.2** | UI Home liste chronologique + reste-à-vivre ✅ |
-| **3.x** | Settings biométrie optionnelle / polish |
+| **3.2.1** | Polish UX device (insets, confirm delete, parse centimes) ✅ |
+| **3.x** | Restore UI / biométrie optionnelle |
 
 Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à jour.
 

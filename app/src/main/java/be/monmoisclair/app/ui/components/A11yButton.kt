@@ -56,3 +56,25 @@ fun SecondaryA11yButton(
         Text(text = text, style = MaterialTheme.typography.labelLarge)
     }
 }
+
+@Composable
+fun DangerA11yButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    OutlinedButton(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = A11yTokens.minTouchHeight),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = A11yTokens.AccentDanger
+        )
+    ) {
+        Text(text = text, style = MaterialTheme.typography.labelLarge)
+    }
+}
