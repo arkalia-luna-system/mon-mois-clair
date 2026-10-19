@@ -10,7 +10,7 @@ APK : `dist/MonMoisClair-debug.apk`
 | Serial | `R3CY60BJ3ZM` |
 | Android | 16 (API 36) |
 | Compte | user 0 (pas Secure Folder) |
-| Version app | `0.1.0-3.2` |
+| Version app | `0.1.0-3.3` |
 
 ### Résultats automatisés / observés
 
@@ -20,15 +20,20 @@ APK : `dist/MonMoisClair-debug.apk`
 | Lancement `MainActivity` | Resumed, pas de crash |
 | SAF → dossier (ex. `Teste/`) | OK |
 | Fichiers `mon-mois-clair-backup-1..3.json` | Présents + rotation |
-| `BackupWorker` | `Worker result SUCCESS` |
-| Home reste-à-vivre + liste | OK (ex. 800 € / encore 500 €) |
-| Notifications | OK |
-| Alarmes exactes | OK |
+| Home reste-à-vivre + liste | OK |
+| Toggle FAIT | OK (encore à payer mis à jour) |
+| Édition (tap ligne) | OK |
+| Ajout entrée | OK (persistée + backup) |
+| Écran Santé | 4× OK + hint Device Care |
+| Écran Restore + confirm | OK |
+| Notifications | granted |
+| Alarmes exactes | granted (`USE_EXACT_ALARM`) |
 | Exemption batterie | OK (whitelist idle) |
-| Écran Santé | « Tout est prêt pour les rappels » |
-| Hint Device Care Samsung | Affiché (à confirmer manuellement une fois) |
+| FATAL logcat | aucun |
 
-> Note : le téléphone branché est un **S25 Ultra** (`SM-S938B`), pas un S26. La charte « cible S25 » reste valide ; One UI Ultra se comporte de la même famille.
+> Note : le téléphone branché est un **S25 Ultra** (`SM-S938B`). La charte « cible S25 » reste valide.
+
+Screenshots : `dist/verify/` (`v_sante_ok.png`, `home.png`, `restore_screen.png`, …).
 
 ---
 

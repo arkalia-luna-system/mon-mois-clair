@@ -54,11 +54,12 @@ private val AppTypography = Typography(
         color = A11yTokens.InkMuted,
         lineHeight = 24.sp
     ),
+    // Pas de couleur figée : les boutons Primary doivent hériter de
+    // LocalContentColor (crème sur vert), pas d’Ink sombre illisible.
     labelLarge = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
-        fontSize = A11yTokens.minBodySp,
-        color = A11yTokens.Ink
+        fontSize = A11yTokens.minBodySp
     )
 )
 

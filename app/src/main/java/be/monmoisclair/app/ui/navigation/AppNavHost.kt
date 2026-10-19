@@ -14,6 +14,7 @@ import be.monmoisclair.app.ui.health.ReminderHealthScreen
 import be.monmoisclair.app.ui.home.HomeScreen
 import be.monmoisclair.app.ui.onboarding.PermissionsSetupScreen
 import be.monmoisclair.app.ui.onboarding.SafSetupScreen
+import be.monmoisclair.app.ui.restore.RestoreBackupScreen
 
 @Composable
 fun AppNavHost(
@@ -68,11 +69,21 @@ fun AppNavHost(
                     navController.navigate(AppRoute.editEntry(id, isExpense))
                 },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
-                onOpenSettingsSaf = { navController.navigate(AppRoute.SafSetup) }
+                onOpenSettingsSaf = { navController.navigate(AppRoute.SafSetup) },
+                onOpenRestore = { navController.navigate(AppRoute.RestoreBackup) }
             )
         }
         composable(AppRoute.ReminderHealth) {
             ReminderHealthScreen(onBack = { navController.popBackStack() })
+        }
+        composable(AppRoute.RestoreBackup) {
+            RestoreBackupScreen(
+                onBack = { navController.popBackStack() },
+                onRestored = {
+                    // Home reste sous la pile : pop Restore → Flows Room se mettent à jour.
+                    navController.popBackStack(AppRoute.Home, inclusive = false)
+                }
+            )
         }
         composable(AppRoute.AddEntry) {
             AddEntryScreen(

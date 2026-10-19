@@ -13,5 +13,7 @@
 *.ap_
 *.aab
 /dist/*.apk
+# Captures device (lourdes) — garder les .md / .xml de rapport
+/dist/verify/*.png
 # AppleDouble (volume T7 / macOS)
 **/._*

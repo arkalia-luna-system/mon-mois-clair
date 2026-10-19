@@ -35,6 +35,7 @@ fun HomeScreen(
     onEdit: (id: String, isExpense: Boolean) -> Unit,
     onOpenHealth: () -> Unit,
     onOpenSettingsSaf: () -> Unit,
+    onOpenRestore: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -136,6 +137,8 @@ fun HomeScreen(
                 SecondaryA11yButton(text = "Santé des rappels", onClick = onOpenHealth)
                 Spacer(modifier = Modifier.height(8.dp))
                 SecondaryA11yButton(text = "Dossier de sauvegarde", onClick = onOpenSettingsSaf)
+                Spacer(modifier = Modifier.height(8.dp))
+                SecondaryA11yButton(text = "Restaurer une sauvegarde", onClick = onOpenRestore)
             }
         }
     }
