@@ -21,6 +21,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Fait :** workflow `.github/workflows/ci.yml` (assembleDebug + testDebugUnitTest) · Dependabot Actions · `docs/CI.md` (feuille de route phases 2–4) · badge CI README.  
 **Vérifié local :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **107/107** (WIP scan/receipt volontairement hors de ce commit).  
+**Fix CI :** `android-actions/setup-android` sans package obsolète `tools` (échec sdkmanager).  
 **Pas encore :** lint bloquant, detekt, scan CVE (volontairement pour éviter un mur de corrections).
 
 ### 2026-10-19 — Polish familial « parfait maman » (sur 5.4.1)
