@@ -63,7 +63,9 @@ class BackupRestorer @Inject constructor(
      * Point d'entrée testable : document déjà décodé/vérifié.
      */
     suspend fun restoreFromDocument(document: BackupDocument): RestoreResult {
-        if (document.schemaVersion != AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt()) {
+        val current = AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt()
+        // Accepte les sauvegardes anciennes (1..current) : le codec remplit les champs manquants.
+        if (document.schemaVersion !in 1..current) {
             return RestoreResult.UnsupportedSchema(document.schemaVersion)
         }
         // Re-vérifie l'intégrité même si l'appelant affirme que c'est valide.

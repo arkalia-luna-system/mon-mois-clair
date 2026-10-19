@@ -46,8 +46,9 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | **6.1** | Scanner EPC | ✅ |
 | **6.2** | Photo + note + Copier | ✅ |
 | **6.3** | Bandeau mois prochain | ✅ |
+| **6.3.1** | Fiabilité (restore 1..3, Copier à l’ajout, aide) | ✅ |
 
-Journal : `PROGRESS_LOG.md`. Smoke device lot 6 : à valider sur S25 avant push familial.
+Journal : `PROGRESS_LOG.md`. Smoke device lot 6 : à valider sur S25.
 
 ## 5. Branches Git (verrouillé)
 

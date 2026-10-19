@@ -38,6 +38,12 @@ object HowItWorksCopy {
                 "Vérifiez « Santé des rappels » et Samsung Device Care si rien ne sonne."
         ),
         Section(
+            title = "Facture papier",
+            body = "À l’ajout : « Scanner une facture » lit le QR belge (EPC) et préremplit nom, montant " +
+                "et communication. Touchez « Copier la communication » puis collez dans votre app bancaire. " +
+                "Vous pouvez aussi prendre une photo de la facture (stockée à côté de la sauvegarde)."
+        ),
+        Section(
             title = "Sauvegarde",
             body = "À chaque changement, une copie JSON est écrite dans Documents. " +
                 "En cas de nouveau téléphone : Réglages → Restaurer. " +

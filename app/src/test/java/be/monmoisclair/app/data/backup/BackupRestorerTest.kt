@@ -189,6 +189,43 @@ class BackupRestorerTest {
     }
 
     @Test
+    fun restore_acceptsLegacySchema2_andBumpsMetaToCurrent() = runBlocking {
+        seedCurrentPhoneState(ledgerId = "2026-07", expenseId = "old-schema2", safUri = null)
+
+        val payload = BackupPayload(
+            ledgers = listOf(MonthLedgerEntity("2026-12", "2026-12", createdAtEpochMs = 3L)),
+            incomeTemplates = emptyList(),
+            expenseTemplates = emptyList(),
+            incomeInstances = emptyList(),
+            expenseInstances = listOf(
+                ExpenseInstanceEntity(
+                    id = "legacy-exp",
+                    ledgerId = "2026-12",
+                    templateId = null,
+                    label = "Eau",
+                    amountCents = 7_450L,
+                    dayOfMonth = 10,
+                    status = ExpenseStatus.TODO,
+                    doneAtEpochMs = null,
+                    remindJ3 = true,
+                    remindJd = true,
+                    alarmJ3RequestCode = null,
+                    alarmJdRequestCode = null,
+                    createdAtEpochMs = 3L
+                )
+            ),
+            appMeta = listOf(AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, "2"))
+        )
+        val document = codec.buildDocument(2, 3L, "Europe/Brussels", payload)
+
+        val result = restorer.restoreFromDocument(document)
+        assertThat(result).isInstanceOf(RestoreResult.Success::class.java)
+        assertThat(db.instanceDao().getExpenseById("legacy-exp")?.paymentNote).isEqualTo("")
+        assertThat(db.appMetaDao().get(AppMetaKeys.SCHEMA_VERSION)?.value)
+            .isEqualTo(AppMetaKeys.CURRENT_SCHEMA_VERSION)
+    }
+
+    @Test
     fun restoreFromUri_validFile_appliesPayload() = runBlocking {
         seedCurrentPhoneState("2026-01", "old", safUri = "content://tree/keep")
 

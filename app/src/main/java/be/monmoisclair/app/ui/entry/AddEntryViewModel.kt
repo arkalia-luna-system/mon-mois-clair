@@ -1,5 +1,8 @@
 package be.monmoisclair.app.ui.entry
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +17,7 @@ import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +37,7 @@ data class EntryFormState(
     val isAutoDebit: Boolean = false,
     val paymentNote: String = "",
     val hasPendingPhoto: Boolean = false,
+    val copyMessage: String? = null,
     val error: String? = null,
     val saved: Boolean = false,
     val saving: Boolean = false
@@ -43,6 +48,7 @@ data class EntryFormState(
 
 @HiltViewModel
 class AddEntryViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val addEntry: AddEntryUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
     private val instanceDao: InstanceDao,
@@ -61,8 +67,21 @@ class AddEntryViewModel @Inject constructor(
     fun setRecurrence(v: RecurrenceChoice) = _state.update { it.copy(recurrence = v) }
     fun setNextDueMonth(m: Int) = _state.update { it.copy(nextDueMonth = m.coerceIn(1, 12)) }
     fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v) }
-    fun setPaymentNote(v: String) = _state.update { it.copy(paymentNote = v, error = null) }
+    fun setPaymentNote(v: String) = _state.update {
+        it.copy(paymentNote = v, error = null, copyMessage = null)
+    }
     fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
+
+    fun copyPaymentNote() {
+        val note = _state.value.paymentNote.trim()
+        if (note.isEmpty()) {
+            _state.update { it.copy(copyMessage = "Aucune communication à copier.") }
+            return
+        }
+        (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+            .setPrimaryClip(ClipData.newPlainText("communication", note))
+        _state.update { it.copy(copyMessage = "Copié — collez dans votre application bancaire.") }
+    }
 
     fun applyEpcRaw(raw: String) {
         val p = EpcQrParser.parse(raw)

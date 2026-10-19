@@ -193,9 +193,10 @@ fun HomeScreen(
                     Text(
                         text = warning,
                         style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.AccentWarn,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(A11yTokens.PaperCream, RoundedCornerShape(10.dp))
+                            .background(A11yTokens.PaperWarm, RoundedCornerShape(10.dp))
                             .padding(12.dp)
                     )
                 }

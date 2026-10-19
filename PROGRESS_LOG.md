@@ -9,13 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.3** (bandeau mois prochain + J/K) |
+| Dernière étape terminée | **6.3.1** (durcissement fiabilité lot 6) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke S25 lot 6 (scan QR + photo + bandeau) · install release `0.1.0-6.3` |
+| Prochaine sous-étape | Travail quotidien sur `develop` · smoke S25 (scan/photo/bandeau) |
 
 ---
 
 ## Journal
+
+### 2026-10-19 — 6.3.1 fiabilité (avant gel `main`)
+
+**Corrigé / complété :**
+- Restore : accepte sauvegardes schema **1..3** (plus seulement 3) → meta remontée à 3
+- Ajout : bouton **Copier la communication** (manquait, présent seulement en édition)
+- Aide « Comment ça marche » : section **Facture papier**
+- Bandeau mois prochain : contraste PaperWarm + AccentWarn
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **116/116 OK**  
+**Version :** `0.1.0-6.3.1` · `versionCode` 7  
+**Branches :** snapshot fiable → `main` ; suite du travail sur `develop`.
 
 ### 2026-10-19 — Lot 6.0–6.3 (assistant papiers BE)
 
