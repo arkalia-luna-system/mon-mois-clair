@@ -40,11 +40,24 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 
 ## 4. Plan
 
-| Étape | Contenu |
-|-------|---------|
+| Étape | Contenu | État |
+|-------|---------|------|
 | **6.0** | Charte J–L + persona | ✅ |
-| **6.1** | Scanner EPC | |
-| **6.2** | Photo + note + Copier | |
-| **6.3** | Bandeau mois prochain | |
+| **6.1** | Scanner EPC | ✅ |
+| **6.2** | Photo + note + Copier | ✅ |
+| **6.3** | Bandeau mois prochain | ✅ |
 
-Journal : `PROGRESS_LOG.md`.
+Journal : `PROGRESS_LOG.md`. Smoke device lot 6 : à valider sur S25 avant push familial.
+
+## 5. Branches Git (verrouillé)
+
+| Branche | Rôle |
+|---------|------|
+| **`develop`** | Travail quotidien (features, correctifs, docs). C’est **la** branche active. |
+| **`main`** | Dépôt « bon » / stable. **Ne pas y pousser au fil de l’eau.** |
+
+**Règles :**
+1. Tout nouveau travail part de **`develop`** (jamais de branche `wip/…` longue durée sauf exception courte).
+2. **`main` n’est mise à jour que** quand : (a) tests Gradle OK + claims README/PROGRESS alignés, **et** (b) l’utilisatrice le **formule explicitement** (« mets main à jour » / merge develop → main).
+3. Après un merge vers `main`, supprimer les branches jetables (`wip/…`, etc.) locales **et** distantes.
+4. Interdit : force-push sur `main` ; amend de commits déjà poussés sur `main`.

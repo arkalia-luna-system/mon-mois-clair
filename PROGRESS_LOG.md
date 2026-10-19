@@ -9,13 +9,34 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **5.4.1** (aide + polish familial) |
+| Dernière étape terminée | **6.3** (bandeau mois prochain + J/K) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Install release familial (`adb uninstall` si debug déjà installé) · partage WhatsApp |
+| Prochaine sous-étape | Smoke S25 lot 6 (scan QR + photo + bandeau) · install release `0.1.0-6.3` |
 
 ---
 
 ## Journal
+
+### 2026-10-19 — Lot 6.0–6.3 (assistant papiers BE)
+
+**Persona :** factures papier + paiement via app bancaire sur le même S25.
+
+**Codé (sans casser 5.4.1) :**
+- **J / T10** : `EpcQrParser` + écran `ScanEpc` (CameraX + ML Kit offline) → préremplit Ajout
+- **K / T9** : `paymentNote` + Copier ; photo WebP ≤800px via `ReceiptPhotoStore` sous SAF `receipts/` (chemin relatif seul dans JSON)
+- **L** : bandeau Home « À prévoir le mois prochain » (`ListNextMonthPeriodicsUseCase`, intervalle > 1)
+- Schema Room / backup **3** (`MIGRATION_2_3`)
+
+**Fix prudence :** typo `EditEntryViewModel` (`when (val result = …)`).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **115/115 OK**  
+**Version :** `0.1.0-6.3` · `versionCode` 6  
+**Pas encore :** smoke device lot 6 (caméra / photo / bandeau réel).
+
+### 2026-10-19 — Branches : `develop` actif, `main` gelée
+
+**Règle charte §5 :** travail quotidien sur **`develop`** ; **`main`** seulement sur demande explicite après vérif.  
+Branche jetable `wip/6.x-assistant-papiers` remplacée par `develop` (lot 6.3 + 115 tests).
 
 ### 2026-10-19 — CI GitHub Actions (phase 1, léger)
 

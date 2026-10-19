@@ -67,6 +67,8 @@ class BackupJsonCodecTest {
         assertThat(json).contains("\"status\"")
         assertThat(json).contains("\"dayOfMonth\"")
         assertThat(json).contains("\"diversSpentCents\"")
+        assertThat(json).contains("\"paymentNote\"")
+        assertThat(json).contains("\"receiptRelativePath\"")
         assertThat(json).contains("\"schemaVersion\"")
         assertThat(json).doesNotContain("\"a\":")
     }

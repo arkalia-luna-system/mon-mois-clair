@@ -127,7 +127,7 @@ class EditEntryViewModel @Inject constructor(
             var path = s.receiptRelativePath
             pendingBitmap?.let { path = receiptPhotos.saveBitmap(s.id, it); pendingBitmap = null }
             when (
-                updateInstance(
+                val result = updateInstance(
                     s.id, s.isExpense, s.label, cents, day, s.applyToFollowing,
                     s.isExpense && s.isAutoDebit, s.paymentNote, path
                 )
