@@ -6,7 +6,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Tests](https://img.shields.io/badge/tests-29%2F29-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-34%2F34-success)](#statut)
 [![Statut](https://img.shields.io/badge/statut-en%20construction-orange)](#statut)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -18,12 +18,12 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-1.2` |
-| Dernière étape terminée | **1.2** — auto-backup SAF (rotation 3, SHA-256, WorkManager) |
-| Prochaine étape | **1.3** — restore depuis backup |
+| Version | `0.1.0-1.3` |
+| Dernière étape terminée | **1.3** — restore backup (checksum + import Room atomique) |
+| Prochaine étape | **2.1** — `MonthCycleEngine` (templates → instances) |
 | UI Compose | Pas encore (prévue étape 3) |
 | Distribution | Sideload familial (hors Play Store) |
-| Tests unitaires | **29/29** OK |
+| Tests unitaires | **34/34** OK |
 
 Journal détaillé : [`PROGRESS_LOG.md`](PROGRESS_LOG.md)  
 Charte technique : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
@@ -79,11 +79,12 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 ## Avancement technique
 
 ```text
-[████████░░░░░░░░░░░░]  ~20 %  (fondations data + backup)
+[██████████░░░░░░░░░░]  ~25 %  (data + backup + restore)
 
 1.1  Scaffold Room / Hilt / MutatingRepository     ✅
 1.2  SAF auto-backup + rotation + checksum           ✅
-1.3  Restore depuis backup                          ⏳
+1.3  Restore depuis backup                          ✅
+2.1  MonthCycleEngine (templates → instances)       ⏳
 2.x  Rappels AlarmManager                           ·
 3.x  UI Compose                                     ·
 ```
