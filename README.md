@@ -6,7 +6,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Tests](https://img.shields.io/badge/tests-59%2F59-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-63%2F63-success)](#statut)
 [![Statut](https://img.shields.io/badge/statut-en%20construction-orange)](#statut)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -18,12 +18,12 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-2.3` |
-| Dernière étape terminée | **2.3** — AlarmManager exact + BootReceiver + santé rappels (API) |
-| Prochaine étape | **3.1** — UI Compose (Home / Month) |
-| UI Compose | Pas encore |
+| Version | `0.1.0-3.1` |
+| Dernière étape terminée | **3.1** — onboarding SAF + permissions + écran Santé |
+| Prochaine étape | **3.2** — Home liste + reste-à-vivre (ou **2.4** édition) |
+| UI | Onboarding + Santé + Home placeholder (liste = 3.2) |
 | Distribution | Sideload familial (hors Play Store) |
-| Tests unitaires | **59/59** OK (Gradle `--rerun-tasks` avant push) |
+| Tests unitaires | **63/63** OK (Gradle `--rerun-tasks` avant push) |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -79,22 +79,18 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 ## Avancement technique
 
 ```text
-[██████████████░░░░░░]  ~40 %  (data + backup + cycle + toggle + rappels)
+[████████████████░░░░]  ~50 %  (moteur + onboarding UI)
 
-1.1  Scaffold Room / Hilt / MutatingRepository     ✅
-1.2  SAF auto-backup + rotation + checksum           ✅
-1.3  Restore depuis backup                          ✅
-2.1  MonthCycleEngine (templates → instances)       ✅
-2.2  Toggle FAIT (courant + précédent)              ✅
-2.3  AlarmManager + Boot + ReminderHealth           ✅
-3.1  UI Compose Home / Month                         ⏳
+1.1–1.3  Room / backup / restore                       ✅
+2.1–2.3  Cycle / toggle / AlarmManager                 ✅
+3.1      Onboarding SAF + permissions + Santé          ✅
+3.2      Home liste + reste-à-vivre                    ⏳
+2.4      Édition / suppression                         ·
 ```
 
 ---
 
 ## Build local
-
-Prérequis : Android Studio / SDK 35, JDK 17.
 
 ```bash
 export COPYFILE_DISABLE=1

@@ -1,22 +1,54 @@
 package be.monmoisclair.app
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
+import be.monmoisclair.app.ui.MainViewModel
+import be.monmoisclair.app.ui.navigation.AppNavHost
+import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.MonMoisClairTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * Stub d'activité — UI métier Compose réservée à l'étape 3.x.
- */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val label = TextView(this).apply {
-            text = "Mon Mois Clair — étape 1.1 (données)"
-            textSize = 18f
-            setPadding(48, 48, 48, 48)
+        enableEdgeToEdge()
+        setContent {
+            MonMoisClairTheme {
+                val mainViewModel: MainViewModel = hiltViewModel()
+                val state by mainViewModel.uiState.collectAsStateWithLifecycle()
+                val navController = rememberNavController()
+
+                if (state.loading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(A11yTokens.PaperCream),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
+                } else {
+                    AppNavHost(
+                        navController = navController,
+                        startDestination = state.startDestination,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
         }
-        setContentView(label)
     }
 }

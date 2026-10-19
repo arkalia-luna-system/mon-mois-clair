@@ -12,5 +12,6 @@
 *.apk
 *.ap_
 *.aab
+/dist/*.apk
 # AppleDouble (volume T7 / macOS)
 **/._*

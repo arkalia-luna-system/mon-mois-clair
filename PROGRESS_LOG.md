@@ -1,7 +1,6 @@
 # Journal de bord — Mon Mois Clair
 
-Règle : aucune étape n’est considérée comme terminée tant que ce fichier n’est pas mis à jour.  
-Règle push : README / `versionName` / badges = **ce journal** + **tests Gradle `--rerun-tasks`** (pas d’anticipation).
+Règle : aucune étape n’est considérée comme terminée tant que ce fichier n’est pas mis à jour.
 
 ---
 
@@ -9,64 +8,59 @@ Règle push : README / `versionName` / badges = **ce journal** + **tests Gradle 
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **2.3** |
-| Étape en cours | *(aucune)* |
-| Prochaine sous-étape | **3.1** — UI Compose (Home / Month / Reste-à-vivre) |
+| Dernière étape terminée | **3.1** |
+| Étape en cours | **2.4** (use cases Add/Update/Delete — **pas** clôturée : tests + UI manquants) |
+| Prochaine sous-étape | Valider 3.1 sur S25, puis **3.2** liste **ou** finir **2.4** (tests) |
 
 ---
 
 ## Journal
 
-### 2026-10-19 — Étapes 1.1 → 1.3
+### 2026-10-19 — Choix de direction
 
-Room + SAF backup + restore atomique.
+Priorité **3.1** (plutôt que 2.4) : sans onboarding SAF + permissions, backup et rappels restent **invérifiables** sur Galaxy S25 / One UI. Le droit à l’erreur (2.4) suit juste après.
 
-### 2026-10-19 — Étape 2.1 terminée
-
-`MonthCycleEngine`, `InstanceIds`, `MonthSummaryCalculator` ; idempotence ; `sideEffectsWhen = Created`.
-
-### 2026-10-19 — Étape 2.2 terminée
-
-`ToggleExpenseDoneUseCase` (mois courant + précédent) ; `sideEffectsWhen = Toggled`.
-
-### 2026-10-19 — Étape 2.3 terminée
+### 2026-10-19 — Étape 3.1 terminée
 
 **Codé :**
-- `ReminderTiming` (J−3 10:00 / Jour J 09:00, `Europe/Brussels`, skip passé).
-- `ReminderRequestCodes` déterministes ; `ReminderPayload` ; `ReminderKind`.
-- `ExactAlarmGateway` / `ExactAlarmGatewayImpl` (`setExactAndAllowWhileIdle`).
-- `ReminderSchedulerImpl` (schedule TODO, cancel DONE / flags off / passé).
-- `ReminderReceiver` (`goAsync` + notification) ; `BootReceiver` (reconcile au boot).
-- `PaymentNotificationHelper` (canal notifications).
-- `ReminderHealthChecker` (notifs, exact alarm, batterie, SAF, hint Samsung Device Care).
-- Manifest : permissions + receivers ; Hilt bind `ReminderSchedulerImpl`.
+- Thème accessibilité (crème papier, texte ≥ 18 sp, boutons ≥ 48 dp, serif marque)
+- Navigation : SafSetup → Permissions → Home placeholder → Santé
+- `PersistSafFolderUseCase` (URI persistée + 1er backup)
+- `CompleteOnboardingUseCase` / `ObserveOnboardingStateUseCase`
+- Écrans : choix dossier Documents, notif / alarmes exactes / batterie, hint Samsung Device Care
+- `ReminderHealthScreen` consultable depuis Home
+- Home placeholder (liste mensuelle = prochaine UI)
+
+**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **63/63 OK**
+- `OnboardingUseCasesTest` (4) + régression
 
 **Corrections audit pré-push :**
-- `MutatingRepository.sideEffectsWhen` (pas de faux backup sur no-op).
-- `PendingIntent` non-null à la planification.
-- Tests `ReminderSchedulerImpl` : `runBlocking<Unit>` (JUnit void).
-- Receiver Boot enregistré.
+- `PersistSafFolderUseCase` : ne plus traiter `SkippedNotConfigured` comme succès après persist.
+- Permissions / Santé : refresh `ON_RESUME` après retour des réglages système.
+- Bouton Continuer désactivé tant que le rapport santé n’est pas chargé.
 
-**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **59/59 OK**
-- `ReminderTimingTest` (5)
-- `ReminderSchedulerImplTest` (6)
-- + régression 1.x / 2.1 / 2.2 / MutatingRepository sideEffects (48)
+**Vigilance sécurité / fiabilité :**
+- Impossible d’atteindre Home sans dossier SAF réel (`hasPersistedTree`).
+- Continuer avec permissions incomplètes possible mais avec avertissement explicite.
+- À valider **sur le S25** : sideload APK → choisir Documents → exemption batterie → Device Care.
 
-**Vigilance :**
-- Écran UI « Santé des rappels » = étape 3 (API `ReminderHealthChecker` prête).
-- Device Care Samsung ≠ exemption batterie → hint permanent prévu en UI.
-
-**Prochaine sous-étape :** 3.1 — UI Compose Home / Month.
+**Prochaine sous-étape :** installer l’APK sur le S25 pour valider 1.2+2.3 en conditions réelles, puis **3.2** (liste mensuelle) + **2.4** (édition/suppression).
 
 ---
 
-## Modèle d’entrée
+## Modèle d’entrée (à dupliquer à chaque fin d’étape)
 
 ```markdown
 ### YYYY-MM-DD — Étape X.Y terminée
 
-**Codé :** …
-**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → N/N OK
-**Vigilance :** …
+**Codé :**
+- …
+
+**Tests validés :**
+- …
+
+**Vigilance sécurité / fiabilité :**
+- …
+
 **Prochaine sous-étape :** …
 ```

@@ -176,8 +176,10 @@ Use cases associés : `UpdateInstanceUseCase`, `DeleteInstanceUseCase` (option �
 | **2.1** | Cycle mensuel (`MonthCycleEngine`) ✅ |
 | **2.2** | Toggle FAIT (mois courant + précédent) ✅ |
 | **2.3** | AlarmManager + BootReceiver + Santé rappels (API) ✅ |
-| **3.1** | UI Compose Home / Month / Reste-à-vivre |
-| **3.x** | UI suite (+ Santé, EditEntry / update / delete) |
+| **2.4** | Édition / suppression instances (+ option mois suivants) |
+| **3.1** | Onboarding SAF + permissions + écran Santé ✅ |
+| **3.2** | UI Home liste chronologique + reste-à-vivre |
+| **3.x** | EditEntry / AddEntry / Settings |
 
 Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à jour.
 

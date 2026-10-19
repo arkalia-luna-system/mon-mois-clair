@@ -1,0 +1,25 @@
+package be.monmoisclair.app.ui.home
+
+sealed interface TimelineItem {
+    val sortDay: Int
+    val sortLabel: String
+
+    data class Income(
+        val id: String,
+        val dayLabel: String,
+        val label: String,
+        val amountLabel: String,
+        override val sortDay: Int,
+        override val sortLabel: String
+    ) : TimelineItem
+
+    data class Expense(
+        val id: String,
+        val dayLabel: String,
+        val label: String,
+        val amountLabel: String,
+        val isDone: Boolean,
+        override val sortDay: Int,
+        override val sortLabel: String
+    ) : TimelineItem
+}
