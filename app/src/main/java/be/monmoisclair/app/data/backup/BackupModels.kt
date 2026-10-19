@@ -40,5 +40,13 @@ sealed class BackupFailure(
     class NotConfigured : BackupFailure("Dossier SAF non configuré")
     class Io(message: String, cause: Throwable? = null) : BackupFailure(message, cause)
     class Integrity(message: String) : BackupFailure(message)
-    class UnsupportedSchema(version: Int) : BackupFailure("schemaVersion non supporté: $version")
+    class UnsupportedSchema(val version: Int) : BackupFailure("schemaVersion non supporté: $version")
+}
+
+sealed class RestoreResult {
+    data class Success(val checksumSha256: String) : RestoreResult()
+    data class InvalidChecksum(val expected: String, val actual: String) : RestoreResult()
+    data class UnsupportedSchema(val version: Int) : RestoreResult()
+    data class IoError(val message: String) : RestoreResult()
+    data object NotConfigured : RestoreResult()
 }

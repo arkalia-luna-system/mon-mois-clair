@@ -21,4 +21,10 @@ interface MonthLedgerDao {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(ledger: MonthLedgerEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertAll(ledgers: List<MonthLedgerEntity>)
+
+    @Query("DELETE FROM month_ledgers")
+    suspend fun clearAll()
 }

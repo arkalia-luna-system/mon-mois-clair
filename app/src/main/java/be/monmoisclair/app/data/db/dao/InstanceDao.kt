@@ -89,4 +89,10 @@ interface InstanceDao {
 
     @Delete
     suspend fun deleteIncome(item: IncomeInstanceEntity)
+
+    @Query("DELETE FROM expense_instances")
+    suspend fun clearAllExpenses()
+
+    @Query("DELETE FROM income_instances")
+    suspend fun clearAllIncomes()
 }

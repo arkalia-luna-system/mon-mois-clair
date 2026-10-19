@@ -15,7 +15,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 1
-        versionName = "0.1.0-1.2"
+        versionName = "0.1.0-1.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -106,4 +106,5 @@ dependencies {
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("androidx.work:work-testing:2.9.1")
     testImplementation("com.google.truth:truth:1.4.4")
+    testImplementation("org.json:json:20240303")
 }

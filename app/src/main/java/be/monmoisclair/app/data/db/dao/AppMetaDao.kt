@@ -17,4 +17,10 @@ interface AppMetaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(meta: AppMetaEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(items: List<AppMetaEntity>)
+
+    @Query("DELETE FROM app_meta")
+    suspend fun clearAll()
 }

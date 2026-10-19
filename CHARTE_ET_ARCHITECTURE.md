@@ -171,9 +171,10 @@ Use cases associés : `UpdateInstanceUseCase`, `DeleteInstanceUseCase` (option �
 | Étape | Contenu |
 |-------|---------|
 | **1.1** | Room + TypeConverters + DAOs + DB + `MonthDayClamp` + `MutatingRepository` + tests ✅ |
-| **1.2** | SAF persist + rotation 3 + checksum + sync disque |
-| **1.3** | Restore depuis backup |
-| **2.x** | Cycle mensuel + AlarmManager + BootReceiver + Santé |
+| **1.2** | SAF persist + rotation 3 + checksum + sync disque ✅ |
+| **1.3** | Restore depuis backup ✅ |
+| **2.1** | Cycle mensuel (`MonthCycleEngine`) |
+| **2.x** | AlarmManager + BootReceiver + Santé |
 | **3.x** | UI Compose accessible (+ `EditEntry` / update / delete) |
 
 Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à jour.

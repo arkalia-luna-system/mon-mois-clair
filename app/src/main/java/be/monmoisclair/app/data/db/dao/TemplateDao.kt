@@ -34,9 +34,21 @@ interface TemplateDao {
     @Insert
     suspend fun insertExpense(t: ExpenseTemplateEntity)
 
+    @Insert
+    suspend fun insertIncomes(items: List<IncomeTemplateEntity>)
+
+    @Insert
+    suspend fun insertExpenses(items: List<ExpenseTemplateEntity>)
+
     @Update
     suspend fun updateIncome(t: IncomeTemplateEntity)
 
     @Update
     suspend fun updateExpense(t: ExpenseTemplateEntity)
+
+    @Query("DELETE FROM income_templates")
+    suspend fun clearAllIncomes()
+
+    @Query("DELETE FROM expense_templates")
+    suspend fun clearAllExpenses()
 }

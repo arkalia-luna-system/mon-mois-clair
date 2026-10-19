@@ -8,9 +8,9 @@ Règle : aucune étape n’est considérée comme terminée tant que ce fichier 
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **1.1** |
+| Dernière étape terminée | **1.3** |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | **1.2** — SAF Auto-Backup (`SafBackupStore`, rotation 3, `flush`/`fd.sync()`, checksum SHA-256, `backupHealth`) |
+| Prochaine sous-étape | **2.1** — `MonthCycleEngine.ensureCurrentMonthExists` + clamp + pas de doublon |
 
 ---
 
@@ -18,39 +18,42 @@ Règle : aucune étape n’est considérée comme terminée tant que ce fichier 
 
 ### 2026-10-19 — Initialisation projet
 
-- Création de `CHARTE_ET_ARCHITECTURE.md` (vision, A–E, schéma, règles métier, SAF, rappels, qualité).
-- Création de ce journal.
-- Rectifications intégrées dans la charte :
-  - Édition / suppression (`EditEntry`, `UpdateInstanceUseCase`, `DeleteInstanceUseCase`).
-  - SAF : `delete()` explicite avant rename + `flush`/`fd.sync()`.
-  - Receivers : `goAsync()` + `finally { finish() }`.
+- Charte + journal ; rectifications EditEntry / SAF / `goAsync`.
 
 ### 2026-10-19 — Étape 1.1 terminée
 
-**Codé :**
-- Scaffold Android (Kotlin, Room, Hilt, Robolectric) — package `be.monmoisclair.app`.
-- Enums stricts : `ExpenseStatus`, `BackupHealth` + `Converters` Room.
-- Entités : `MonthLedger`, `Income/ExpenseTemplate`, `Income/ExpenseInstance`, `AppMeta`.
-- DAOs : `MonthLedgerDao`, `TemplateDao`, `InstanceDao` (dont requêtes template → mois suivants pour édition/suppression), `AppMetaDao`.
-- `AppDatabase` v1 + schéma exporté `app/schemas/.../1.json`.
-- `MonthDayClamp` (borne `dayOfMonth` au dernier jour réel du mois).
-- `MutatingRepository` (ordre : transaction → backup enqueue → reconcile).
-- Interfaces placeholder : `BackupScheduler` / `ReminderScheduler` (+ NoOp Hilt jusqu’aux étapes 1.2 / 2.x).
-- Stub `MainActivity` sans Compose (UI à l’étape 3).
-- Build : artefacts Gradle redirigés hors T7 (`~/.cache/mon-mois-clair/`) + tâche `purgeAppleDouble` (fichiers `._*` qui cassaient la compilation).
+Room + enums + DAOs + `MonthDayClamp` + `MutatingRepository`. Tests 14/14.
 
-**Tests validés :** `./gradlew :app:testDebugUnitTest` → **14/14 OK**
-- `MonthDayClampTest` (7) — fév. 28/29, avril 30, janvier 31, rejet hors plage.
-- `ConvertersTest` (3) — round-trip enums + rejet string inconnue.
-- `MutatingRepositoryTest` (4) — persistance + clamp 31→28, rollback sans backup/reconcile, skip reconcile, `ExpenseStatus` via Room.
+### 2026-10-19 — Étape 1.2 terminée
+
+SAF auto-backup, rotation 3, SHA-256, WorkManager, `backupHealth`. Tests 29/29.
+
+### 2026-10-19 — Étape 1.3 terminée
+
+**Codé :**
+- `BackupRestorer` : `restoreFromLatest()`, `restoreFromUri()`, `restoreFromDocument()`.
+- Validation **avant** mutation : `schemaVersion` + SHA-256 (rejet → DB inchangée).
+- Remplacement atomique Room (`withTransaction` : clear enfants→parents→meta, puis insert).
+- **Préservation de l’URI SAF locale** du téléphone (ignore `safTreeUri` du fichier backup).
+- Succès → `backupHealth=OK`, meta checksum/date, `reminderScheduler.reconcileAll()`, `backupScheduler.enqueueImmediate()`.
+- `RestoreResult` scellé : Success / InvalidChecksum / UnsupportedSchema / IoError / NotConfigured.
+- DAOs : `clearAll*` + `insertAll` / `upsertAll` pour le restore.
+
+**Tests validés :** `./gradlew :app:testDebugUnitTest` → **34/34 OK**
+- `BackupRestorerTest` (5) :
+  - replace data + conserve SAF local + reconcile/backup
+  - checksum invalide → DB intacte
+  - schema 99 → DB intacte
+  - restoreFromUri fichier local
+  - restoreFromLatest sans SAF → NotConfigured
+- + régression 1.1 / 1.2 (29)
 
 **Vigilance sécurité / fiabilité :**
-- Aucun chiffrement Keystore sur l’export (conforme B).
-- `backupHealth` initialisable (`NOT_CONFIGURED`) via callback Room `onCreate`.
-- Mutations uniquement via `MutatingRepository` (pas d’écriture DAO « sauvage » dans les use cases futurs).
-- Volume T7 : toujours `COPYFILE_DISABLE=1` ; ne pas committer de `._*`.
+- Jamais d’import « best-effort » partiel (une transaction ou rien).
+- URI SAF d’un autre appareil **non réappliquée** (évite backupHealth cassé après changement de téléphone).
+- Échec transaction → `BROKEN` + message I/O explicite.
 
-**Prochaine sous-étape :** 1.2 — `SafBackupStore.writeRotatedBackup` (delete cible avant rename, sync disque), `BackupDocument` + SHA-256, `BackupWorker`, remontée `BackupHealth.BROKEN`/`OK`.
+**Prochaine sous-étape :** 2.1 — moteur de cycle mensuel (`MonthCycleEngine`) : génération lazy Template→Instance, clamp fin de mois, idempotence.
 
 ---
 

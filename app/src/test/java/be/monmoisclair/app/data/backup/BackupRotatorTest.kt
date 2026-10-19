@@ -30,6 +30,9 @@ class BackupRotatorTest {
         return codec.encodeDocument(doc)
     }
 
+    private fun markerOf(json: String): String =
+        codec.decodeAndVerify(json).payload.appMeta.single { it.key == "marker" }.value
+
     @Test
     fun firstWrite_createsOnlyV1() {
         val tree = tree()
@@ -38,7 +41,7 @@ class BackupRotatorTest {
         assertThat(tree.exists(BackupFileNames.V2)).isFalse()
         assertThat(tree.exists(BackupFileNames.V3)).isFalse()
         assertThat(tree.exists(BackupFileNames.TMP)).isFalse()
-        assertThat(tree.readUtf8(BackupFileNames.V1)).contains("\"marker\":\"A\"")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V1))).isEqualTo("A")
     }
 
     @Test
@@ -48,9 +51,9 @@ class BackupRotatorTest {
         rotator.writeRotated(tree, content("B"))
         rotator.writeRotated(tree, content("C"))
 
-        assertThat(tree.readUtf8(BackupFileNames.V1)).contains("\"marker\":\"C\"")
-        assertThat(tree.readUtf8(BackupFileNames.V2)).contains("\"marker\":\"B\"")
-        assertThat(tree.readUtf8(BackupFileNames.V3)).contains("\"marker\":\"A\"")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V1))).isEqualTo("C")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V2))).isEqualTo("B")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V3))).isEqualTo("A")
     }
 
     @Test
@@ -61,13 +64,12 @@ class BackupRotatorTest {
         rotator.writeRotated(tree, content("C"))
         rotator.writeRotated(tree, content("D"))
 
-        assertThat(tree.readUtf8(BackupFileNames.V1)).contains("\"marker\":\"D\"")
-        assertThat(tree.readUtf8(BackupFileNames.V2)).contains("\"marker\":\"C\"")
-        assertThat(tree.readUtf8(BackupFileNames.V3)).contains("\"marker\":\"B\"")
-        // A a disparu
-        val all = listOf(BackupFileNames.V1, BackupFileNames.V2, BackupFileNames.V3)
-            .joinToString { tree.readUtf8(it) }
-        assertThat(all).doesNotContain("\"marker\":\"A\"")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V1))).isEqualTo("D")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V2))).isEqualTo("C")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V3))).isEqualTo("B")
+        val markers = listOf(BackupFileNames.V1, BackupFileNames.V2, BackupFileNames.V3)
+            .map { markerOf(tree.readUtf8(it)) }
+        assertThat(markers).doesNotContain("A")
     }
 
     @Test
@@ -85,7 +87,7 @@ class BackupRotatorTest {
             BackupFileNames.V2,
             BackupFileNames.V3
         )
-        assertThat(tree.readUtf8(BackupFileNames.V1)).contains("\"marker\":\"C\"")
+        assertThat(markerOf(tree.readUtf8(BackupFileNames.V1))).isEqualTo("C")
     }
 
     @Test
