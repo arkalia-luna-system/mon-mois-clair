@@ -1,6 +1,7 @@
 # Journal de bord — Mon Mois Clair
 
-Règle : aucune étape n’est considérée comme terminée tant que ce fichier n’est pas mis à jour.
+Règle : aucune étape n’est considérée comme terminée tant que ce fichier n’est pas mis à jour.  
+Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-tasks`.
 
 ---
 
@@ -8,59 +9,45 @@ Règle : aucune étape n’est considérée comme terminée tant que ce fichier 
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **3.1** |
-| Étape en cours | **2.4** (use cases Add/Update/Delete — **pas** clôturée : tests + UI manquants) |
-| Prochaine sous-étape | Valider 3.1 sur S25, puis **3.2** liste **ou** finir **2.4** (tests) |
+| Dernière étape terminée | **3.2 + 2.4** |
+| Étape en cours | *(aucune)* |
+| Prochaine sous-étape | Polish UX / restore UI / Device Care manuel une fois sur chaque Samsung familial |
 
 ---
 
 ## Journal
 
-### 2026-10-19 — Choix de direction
+### 2026-10-19 — Validation device (SM-S938B / S25 Ultra)
 
-Priorité **3.1** (plutôt que 2.4) : sans onboarding SAF + permissions, backup et rappels restent **invérifiables** sur Galaxy S25 / One UI. Le droit à l’erreur (2.4) suit juste après.
+- Install adb Success · Android 16 · user 0.
+- SAF OK · backups 1–3 sur disque · `BackupWorker` SUCCESS.
+- Home : reste-à-vivre + liste + FAIT.
+- Santé : notifications / alarmes / batterie / SAF tous **OK** ; hint Device Care affiché.
+- Détail : `dist/CHECKLIST_S25.md`.
 
-### 2026-10-19 — Étape 3.1 terminée
+### 2026-10-19 — Étapes 2.4 + 3.2 terminées
 
-**Codé :**
-- Thème accessibilité (crème papier, texte ≥ 18 sp, boutons ≥ 48 dp, serif marque)
-- Navigation : SafSetup → Permissions → Home placeholder → Santé
-- `PersistSafFolderUseCase` (URI persistée + 1er backup)
-- `CompleteOnboardingUseCase` / `ObserveOnboardingStateUseCase`
-- Écrans : choix dossier Documents, notif / alarmes exactes / batterie, hint Samsung Device Care
-- `ReminderHealthScreen` consultable depuis Home
-- Home placeholder (liste mensuelle = prochaine UI)
+**Codé (2.4) :**
+- `AddEntryUseCase` / `UpdateInstanceUseCase` / `DeleteInstanceUseCase` (+ option mois suivants).
+- UI `AddEntryScreen` / `EditEntryScreen`.
 
-**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **63/63 OK**
-- `OnboardingUseCasesTest` (4) + régression
+**Codé (3.2) :**
+- `HomeScreen` : sticky reste-à-vivre, encore à payer, nav mois, liste chrono, badge FAIT ✓.
 
-**Corrections audit pré-push :**
-- `PersistSafFolderUseCase` : ne plus traiter `SkippedNotConfigured` comme succès après persist.
-- Permissions / Santé : refresh `ON_RESUME` après retour des réglages système.
-- Bouton Continuer désactivé tant que le rapport santé n’est pas chargé.
+**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **69/69 OK**.
 
-**Vigilance sécurité / fiabilité :**
-- Impossible d’atteindre Home sans dossier SAF réel (`hasPersistedTree`).
-- Continuer avec permissions incomplètes possible mais avec avertissement explicite.
-- À valider **sur le S25** : sideload APK → choisir Documents → exemption batterie → Device Care.
-
-**Prochaine sous-étape :** installer l’APK sur le S25 pour valider 1.2+2.3 en conditions réelles, puis **3.2** (liste mensuelle) + **2.4** (édition/suppression).
+**Vigilance :**
+- Ne pas choisir le dossier **Download** pour SAF (souvent refusé par Android).
+- Device Care Samsung ≠ exemption batterie standard.
 
 ---
 
-## Modèle d’entrée (à dupliquer à chaque fin d’étape)
+## Modèle d’entrée
 
 ```markdown
 ### YYYY-MM-DD — Étape X.Y terminée
-
-**Codé :**
-- …
-
-**Tests validés :**
-- …
-
-**Vigilance sécurité / fiabilité :**
-- …
-
+**Codé :** …
+**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → N/N OK
+**Vigilance :** …
 **Prochaine sous-étape :** …
 ```

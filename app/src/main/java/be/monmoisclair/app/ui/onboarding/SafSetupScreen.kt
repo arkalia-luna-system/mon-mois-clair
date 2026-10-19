@@ -19,11 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
+import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 
 @Composable
 fun SafSetupScreen(
     onSafReady: () -> Unit,
+    onCancel: (() -> Unit)? = null,
     viewModel: SafSetupViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,5 +69,12 @@ fun SafSetupScreen(
             enabled = !state.saving,
             onClick = { launcher.launch(viewModel.openDocumentTreeIntent()) }
         )
+        if (onCancel != null) {
+            SecondaryA11yButton(
+                text = "Retour",
+                enabled = !state.saving,
+                onClick = onCancel
+            )
+        }
     }
 }

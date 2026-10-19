@@ -6,8 +6,9 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Tests](https://img.shields.io/badge/tests-63%2F63-success)](#statut)
-[![Statut](https://img.shields.io/badge/statut-en%20construction-orange)](#statut)
+[![Tests](https://img.shields.io/badge/tests-69%2F69-success)](#statut)
+[![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
+[![Statut](https://img.shields.io/badge/statut-bêta%20device-blue)](#statut)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
 Saisie manuelle · backup JSON local · rappels exacts · distribution familiale par APK.
@@ -18,12 +19,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-3.1` |
-| Dernière étape terminée | **3.1** — onboarding SAF + permissions + écran Santé |
-| Prochaine étape | **3.2** — Home liste + reste-à-vivre (ou **2.4** édition) |
-| UI | Onboarding + Santé + Home placeholder (liste = 3.2) |
+| Version | `0.1.0-3.2` |
+| Dernière étape | **3.2** Home liste + **2.4** ajout/édition/suppression |
+| Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`, Android 16) — voir [checklist](dist/CHECKLIST_S25.md) |
 | Distribution | Sideload familial (hors Play Store) |
-| Tests unitaires | **63/63** OK (Gradle `--rerun-tasks` avant push) |
+| Tests unitaires | **69/69** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -36,16 +36,17 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 
 ---
 
-## Fonctionnalités (cible)
+## Fonctionnalités
 
-| Fonction | Description |
-|----------|-------------|
-| **Reste-à-vivre** | Revenus − sorties prévues + montant encore à payer |
-| **Liste chronologique** | Une seule timeline du 1 au dernier jour du mois |
-| **FAIT ✓** | La ligne reste en place (vert doux), pas de disparition |
-| **Double rappel** | J−3 à 10:00 et jour J à 09:00 (`Europe/Brussels`) |
-| **Backup SAF** | JSON clair, 3 versions rotatives, checksum SHA-256 |
-| **Droit à l’erreur** | Modifier / supprimer ; option « mois suivants » si template |
+| Fonction | État |
+|----------|------|
+| **Reste-à-vivre** sticky | ✅ |
+| **Liste chronologique** du mois | ✅ |
+| **FAIT ✓** (ligne reste en place) | ✅ |
+| **Ajout / édition / suppression** | ✅ |
+| **Backup SAF** (3 versions, SHA-256) | ✅ (validé device) |
+| **Double rappel** J−3 / jour J | ✅ moteur (Device Care à confirmer par usage) |
+| **Onboarding** SAF + permissions + Santé | ✅ |
 
 ---
 
@@ -64,58 +65,42 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 
 ---
 
-## Décisions verrouillées
-
-| ID | Décision |
-|----|----------|
-| **A** | Kotlin natif + Room + Compose — aucune surcouche hybride |
-| **B** | SQLite = source de vérité + auto-backup JSON clair (pas Keystore) |
-| **C** | `AlarmManager` exact + boot + écran « Santé des rappels » (Samsung) |
-| **D** | Sideload APK familial |
-| **E** | Ouverture directe ; biométrie optionnelle dans les réglages |
-
----
-
-## Avancement technique
+## Avancement
 
 ```text
-[████████████████░░░░]  ~50 %  (moteur + onboarding UI)
+[██████████████████░░]  ~70 %
 
-1.1–1.3  Room / backup / restore                       ✅
-2.1–2.3  Cycle / toggle / AlarmManager                 ✅
-3.1      Onboarding SAF + permissions + Santé          ✅
-3.2      Home liste + reste-à-vivre                    ⏳
-2.4      Édition / suppression                         ·
+1.x  Room / backup / restore                         ✅
+2.1–2.3  Cycle / toggle / AlarmManager               ✅
+2.4  Ajout / édition / suppression                   ✅
+3.1  Onboarding SAF + permissions + Santé            ✅
+3.2  Home liste + reste-à-vivre                      ✅
+     Validation S25 Ultra (SM-S938B)                 ✅
 ```
 
 ---
 
-## Build local
+## Build / install
 
 ```bash
 export COPYFILE_DISABLE=1
 ./gradlew :app:testDebugUnitTest --rerun-tasks
 ./gradlew :app:assembleDebug
+adb install -r dist/MonMoisClair-debug.apk   # après copie depuis outputs/
 ```
 
-> `local.properties` (chemin SDK) reste local — jamais versionné.
+> `local.properties` jamais versionné. APK dans `dist/` ignoré par git (trop lourd) — rebuild local.
 
 ---
 
 ## Confidentialité
 
-- Données **uniquement** sur l’appareil + dossier Documents choisi (SAF)
-- Export JSON **non chiffré** (volontaire : récupérable si le téléphone casse)
-- Pas de analytics, pas de serveur, pas d’API bancaire
-
----
-
-## Licence
-
-Usage personnel / familial pour l’instant. Licence ouverte à définir si le dépôt passe en public.
+- Données sur l’appareil + dossier Documents (SAF)
+- JSON non chiffré (volontaire)
+- Pas d’analytics / serveur / banque
 
 ---
 
 <p align="center">
-  <sub>Belgique · privacy-first · sideload familial</sub>
+  <sub>Belgique · privacy-first · sideload familial · validé S25 Ultra</sub>
 </p>
