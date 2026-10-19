@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -276,18 +275,16 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
 
 @Composable
 private fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Unit) {
+    // Checkbox avec onCheckedChange réel : le pattern toggleable+null
+    // n’enregistre pas les taps sur One UI / uiautomator (case « Revient… » morte).
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .toggleable(
-                value = checked,
-                role = Role.Checkbox,
-                onValueChange = onChecked
-            ),
+            .clickable(role = Role.Checkbox) { onChecked(!checked) },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(checked = checked, onCheckedChange = null)
+        Checkbox(checked = checked, onCheckedChange = onChecked)
         Text(text = label, style = MaterialTheme.typography.bodyLarge)
     }
 }

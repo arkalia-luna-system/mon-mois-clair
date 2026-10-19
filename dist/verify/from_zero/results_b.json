@@ -1,0 +1,8 @@
+{
+  "add_income": true,
+  "add_amount_comma": true,
+  "add_recurring_expense": true,
+  "fait": true,
+  "undo_fait": true,
+  "suiv_disabled": true
+}

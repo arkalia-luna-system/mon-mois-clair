@@ -6,8 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.tappableElement
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
@@ -33,11 +39,17 @@ class MainActivity : ComponentActivity() {
                 val state by mainViewModel.uiState.collectAsStateWithLifecycle()
                 val navController = rememberNavController()
 
-                // safeDrawingPadding : évite status bar / gesture bar (S25 Ultra).
+                // One UI : navigationBars souvent visible=false (geste / translucide)
+                // → safeDrawing seul laisse 0 en bas. tappableElement = zone des 3 boutons.
+                // + bottomSystemClearance = bande vide pour ne pas confondre app / système.
                 val rootModifier = Modifier
                     .fillMaxSize()
                     .background(A11yTokens.PaperCream)
                     .safeDrawingPadding()
+                    .windowInsetsPadding(
+                        WindowInsets.tappableElement.only(WindowInsetsSides.Bottom)
+                    )
+                    .padding(bottom = A11yTokens.bottomSystemClearance)
 
                 if (state.loading) {
                     Box(

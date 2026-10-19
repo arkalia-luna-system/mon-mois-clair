@@ -19,7 +19,7 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-3.3` |
+| Version | `0.1.0-3.3.1` |
 | Dernière étape | **3.3** Restore UI + **3.2** Home + **2.4** édition |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`, Android 16) — voir [checklist](dist/CHECKLIST_S25.md) |
 | Distribution | Sideload familial (hors Play Store) |

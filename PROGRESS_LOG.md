@@ -9,13 +9,37 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **3.3 Restore UI** |
+| Dernière étape terminée | **3.3.1** (CheckRow + marge basse système) |
 | Étape en cours | *(aucune)* |
 | Prochaine sous-étape | Biométrie optionnelle (réglages) · Device Care manuel une fois sur chaque Samsung familial |
 
 ---
 
 ## Journal
+
+### 2026-10-19 — Validation expert 3.3.1 (FROM_ZERO + marge basse)
+
+**Confirmé (rapport testeur) :** campagne from zero A→E OK ; bug CheckRow « Revient… » mort One UI → fix `clickable` + `Checkbox(onCheckedChange)` re-testé ; **74/74**.
+
+**Corrigé en plus (retour utilisateur / maman) :**
+- Marge basse One UI : `safeDrawingPadding` + `WindowInsets.tappableElement` (zone 3 boutons souvent `navigationBars visible=false`) + `bottomSystemClearance` 28 dp — vérifié device : contenu Home/Restore au-dessus de y=2928.
+- Prompt testeur : stratégie anti-rond (diversifier, pm clear seulement si besoin, checklist ciblée diff).
+
+**Tests :** **74/74** `--rerun-tasks` · device SM-S938B install `0.1.0-3.3.1`.  
+**Preuves :** `dist/verify/from_zero/` + `RAPPORT_TEST_2026-10-19_FROM_ZERO.md`.
+
+### 2026-10-19 — Testeur-correcteur FROM ZERO (post `9e73b34`)
+
+**Méthode :** `pm clear --user 0` + `RESET_TESTS_FROM_ZERO.md` · preuves `dist/verify/from_zero/`.
+
+**Persona A :** SAF `Teste/` → permissions OK ×4 + Device Care hint → Home vide 0 €.  
+**B–E :** add (virgule 470,50), FAIT/undo, edit/delete confirm, Santé, SAF Retour, Restore E2E, BackupWorker SUCCESS.
+
+**Corrigé :**
+- `CheckRow` (case « Revient tous les mois ») : taps ignorés sur One UI → `clickable` + `Checkbox(onCheckedChange)`.
+
+**Tests :** 74/74 OK · re-test récurrente `eau` + template + option mois suivants OK.  
+**Rapport :** `dist/verify/RAPPORT_TEST_2026-10-19_FROM_ZERO.md`
 
 ### 2026-10-19 — Validation expert (post rapport testeur)
 

@@ -101,7 +101,13 @@ fun HomeScreen(
 
         LazyColumn(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            contentPadding = PaddingValues(A11yTokens.screenPadding),
+            contentPadding = PaddingValues(
+                start = A11yTokens.screenPadding,
+                end = A11yTokens.screenPadding,
+                top = A11yTokens.screenPadding,
+                // Marge basse liste : derniers boutons pas collés à la zone système.
+                bottom = A11yTokens.screenPadding + A11yTokens.bottomSystemClearance
+            ),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             if (state.timeline.isEmpty() && !state.loading) {

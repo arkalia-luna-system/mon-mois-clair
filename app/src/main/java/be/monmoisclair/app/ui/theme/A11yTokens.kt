@@ -9,6 +9,11 @@ object A11yTokens {
     val minTitleSp = 22.sp
     val minTouchHeight = 48.dp
     val screenPadding = 24.dp
+    /**
+     * Bande vide *en plus* de la zone tappable système (3 boutons / geste).
+     * Évite que maman appuie à la fois sur un bouton de l’app et un bouton Android.
+     */
+    val bottomSystemClearance = 28.dp
 
     val PaperCream = Color(0xFFF5F0E6)
     val PaperWarm = Color(0xFFEDE6D9)
