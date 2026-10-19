@@ -57,6 +57,20 @@ class BackupJsonCodecTest {
         assertThat(decoded.zoneId).isEqualTo("Europe/Brussels")
     }
 
+    /** T5 : clés littérales (R8 ne doit pas les obfusquer — codec manuel). */
+    @Test
+    fun encode_uses_human_readable_field_names() {
+        val doc = codec.buildDocument(2, 1L, "Europe/Brussels", samplePayload())
+        val json = codec.encodeDocument(doc)
+        assertThat(json).contains("\"label\"")
+        assertThat(json).contains("\"amountCents\"")
+        assertThat(json).contains("\"status\"")
+        assertThat(json).contains("\"dayOfMonth\"")
+        assertThat(json).contains("\"diversSpentCents\"")
+        assertThat(json).contains("\"schemaVersion\"")
+        assertThat(json).doesNotContain("\"a\":")
+    }
+
     @Test
     fun decode_rejectsTamperedPayload() {
         val doc = codec.buildDocument(1, 1L, "Europe/Brussels", samplePayload())

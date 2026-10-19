@@ -2,6 +2,7 @@ package be.monmoisclair.app.data.reminder
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
+import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.model.ReminderKind
 import javax.inject.Inject
@@ -26,6 +27,7 @@ class ReminderSchedulerImpl @Inject constructor(
     override suspend fun cancelFor(expenseId: String) {
         alarmGateway.cancel(ReminderRequestCodes.of(expenseId, ReminderKind.J3))
         alarmGateway.cancel(ReminderRequestCodes.of(expenseId, ReminderKind.JD))
+        alarmGateway.cancel(ReminderRequestCodes.of(expenseId, ReminderKind.OVERDUE))
     }
 
     private fun scheduleForTodo(expense: ExpenseInstanceEntity) {
@@ -37,13 +39,29 @@ class ReminderSchedulerImpl @Inject constructor(
             expense = expense,
             kind = ReminderKind.J3,
             enabled = expense.remindJ3,
-            trigger = ReminderTiming.j3Instant(yearMonth, expense.dayOfMonth)
+            triggerEpochMs = ReminderTiming.j3Instant(yearMonth, expense.dayOfMonth)?.toEpochMilli()
         )
         reconcileKind(
             expense = expense,
             kind = ReminderKind.JD,
             enabled = expense.remindJd,
-            trigger = ReminderTiming.jdInstant(yearMonth, expense.dayOfMonth)
+            triggerEpochMs = ReminderTiming.jdInstant(yearMonth, expense.dayOfMonth)?.toEpochMilli()
+        )
+
+        val overdue = ExpenseOverdue.isOverdue(
+            ledgerId = expense.ledgerId,
+            dayOfMonth = expense.dayOfMonth,
+            status = expense.status
+        )
+        reconcileKind(
+            expense = expense,
+            kind = ReminderKind.OVERDUE,
+            enabled = overdue,
+            triggerEpochMs = if (overdue) {
+                ReminderTiming.nextOverdueInstant().toEpochMilli()
+            } else {
+                null
+            }
         )
     }
 
@@ -51,35 +69,51 @@ class ReminderSchedulerImpl @Inject constructor(
         expense: ExpenseInstanceEntity,
         kind: ReminderKind,
         enabled: Boolean,
-        trigger: java.time.Instant?
+        triggerEpochMs: Long?
     ) {
         val code = ReminderRequestCodes.of(expense.id, kind)
-        if (!enabled || trigger == null) {
+        if (!enabled || triggerEpochMs == null) {
             alarmGateway.cancel(code)
             return
         }
         val payload = ReminderPayload(
             expenseInstanceId = expense.id,
             kind = kind,
-            title = titleFor(kind),
+            title = titleFor(kind, expense.isAutoDebit),
             body = bodyFor(expense, kind)
         )
-        alarmGateway.schedule(code, trigger.toEpochMilli(), payload)
+        alarmGateway.schedule(code, triggerEpochMs, payload)
     }
 
-    private fun titleFor(kind: ReminderKind): String = when (kind) {
-        ReminderKind.J3 -> "Rappel paiement (J−3)"
-        ReminderKind.JD -> "Paiement aujourd'hui"
+    private fun titleFor(kind: ReminderKind, autoDebit: Boolean): String = when (kind) {
+        ReminderKind.J3 -> if (autoDebit) "Rappel prélèvement (J−3)" else "Rappel paiement (J−3)"
+        ReminderKind.JD -> if (autoDebit) "Prélèvement aujourd'hui" else "Paiement aujourd'hui"
+        ReminderKind.OVERDUE -> if (autoDebit) "Prélèvement en retard" else "Paiement en retard"
     }
 
     private fun bodyFor(expense: ExpenseInstanceEntity, kind: ReminderKind): String {
         val amount = formatEuro(expense.amountCents)
         val day = expense.dayOfMonth
+        val auto = expense.isAutoDebit
         return when (kind) {
             ReminderKind.J3 ->
-                "${expense.label} — $amount — échéance le $day. Pensez à payer."
+                if (auto) {
+                    "${expense.label} — $amount — échéance le $day. Vérifiez le prélèvement."
+                } else {
+                    "${expense.label} — $amount — échéance le $day. Pensez à payer."
+                }
             ReminderKind.JD ->
-                "${expense.label} — $amount — à payer aujourd'hui (le $day)."
+                if (auto) {
+                    "${expense.label} — $amount — vérifiez le prélèvement aujourd'hui (le $day)."
+                } else {
+                    "${expense.label} — $amount — à payer aujourd'hui (le $day)."
+                }
+            ReminderKind.OVERDUE ->
+                if (auto) {
+                    "${expense.label} — $amount — prélèvement prévu le $day non confirmé. Vérifiez votre compte."
+                } else {
+                    "${expense.label} — $amount — échéance le $day dépassée. À régler."
+                }
         }
     }
 

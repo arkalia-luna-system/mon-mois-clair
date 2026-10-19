@@ -8,9 +8,9 @@ class DayLabelFormatTest {
 
     @Test
     fun monthTitle_frenchCapitalized() {
-        assertThat(DayLabelFormat.monthTitle(YearMonth.of(2026, 10))).isEqualTo("Octobre 2026")
-        assertThat(DayLabelFormat.monthTitle(YearMonth.of(2026, 2))).isEqualTo("Février 2026")
-        assertThat(DayLabelFormat.monthTitle(YearMonth.of(2025, 12))).isEqualTo("Décembre 2025")
+        assertThat(DayLabelFormat.monthTitle(YearMonth.of(2026, 10))).isEqualTo("Oct. 2026")
+        assertThat(DayLabelFormat.monthTitle(YearMonth.of(2026, 2))).isEqualTo("Févr. 2026")
+        assertThat(DayLabelFormat.monthTitle(YearMonth.of(2025, 12))).isEqualTo("Déc. 2025")
     }
 
     @Test

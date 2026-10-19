@@ -6,9 +6,9 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Tests](https://img.shields.io/badge/tests-88%2F88-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-104%2F104-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--3.5.1-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--5.4-informational)](#statut)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
 Saisie manuelle · backup JSON local · rappels exacts · distribution familiale par APK.
@@ -19,11 +19,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-3.5.1` |
-| Dernière étape | **3.5.1** Hub + bio + nav mois (Préc. lazy) |
+| Version | `0.1.0-5.4` |
+| Dernière étape | **5.4** Freeze Home + T5–T8 (R8 JSON, ancre mois, OVERDUE chain, partage) |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`, Android 16) — voir [checklist](dist/CHECKLIST_S25.md) |
-| Distribution | Sideload familial (hors Play Store) |
-| Tests unitaires | **88/88** OK |
+| Distribution | Sideload familial **release signé** (hors Play Store) |
+| Tests unitaires | **104/104** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -40,16 +40,23 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 
 | Fonction | État |
 |----------|------|
-| **Reste-à-vivre** sticky | ✅ |
+| **Reste après factures** sticky | ✅ |
+| **Courses / divers** (+/−) | ✅ |
+| **EN RETARD** + relance overdue | ✅ |
+| **Prélèvement auto** (icône + notif) | ✅ |
+| **Récurrence** une fois / mois / N mois / an | ✅ |
 | **Liste chronologique** du mois | ✅ |
-| **FAIT ✓** (ligne reste en place) | ✅ |
+| **FAIT ✓** (confirm sur mois passé) | ✅ |
 | **Ajout / édition / suppression** | ✅ |
 | **Backup SAF** (3 versions, SHA-256) | ✅ (validé device) |
 | **Restaurer** (dernière sauvegarde / fichier JSON) | ✅ |
-| **Biométrie optionnelle** (réglages) | ✅ |
+| **Biométrie** + `FLAG_SECURE` multitâche | ✅ |
 | **Hub Réglages** (bio · Device Care · sauvegarde) | ✅ |
-| **Double rappel** J−3 / jour J | ✅ moteur (Device Care à confirmer par usage) |
+| **Rappels** J−3 / Jour J / overdue + reconcile update/heure/feu | ✅ |
+| **Prochaine échéance (mois)** trimestriel / annuel | ✅ |
+| **Partage copie de sécurité** (WhatsApp / Mail) | ✅ |
 | **Onboarding** SAF + permissions + Santé | ✅ |
+| **Home freeze** (pas de nouvelles options quotidiennes) | ✅ |
 
 ---
 
@@ -71,17 +78,12 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 ## Avancement
 
 ```text
-[█████████████████████]  ~80 %
+[█████████████████████████]  ~95 %
 
-1.x  Room / backup / restore                         ✅
-2.1–2.3  Cycle / toggle / AlarmManager               ✅
-2.4  Ajout / édition / suppression                   ✅
-3.1  Onboarding SAF + permissions + Santé            ✅
-3.2  Home liste + reste-à-vivre                      ✅
-3.3  Restore UI (SAF + fichier JSON)                 ✅
-3.4  Biométrie optionnelle (réglages)                ✅
-3.5  Hub Réglages + Home allégé                      ✅
-3.5.1 Nav mois Préc. lazy + titres FR + bio overlay  ✅
+1.x–3.5.1  socle + hub + bio + nav mois              ✅
+4.0–4.6  EN RETARD · divers · auto · récurrence      ✅
+5.0–5.4  freeze Home · T5 JSON R8 · ancre mois ·     ✅
+         OVERDUE chain · partage WhatsApp/Mail       ✅
      Validation S25 Ultra (SM-S938B)                 ✅
 ```
 
@@ -92,12 +94,14 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 
 ```bash
 export COPYFILE_DISABLE=1
+# Signature release (une fois) : copier keystore.properties.example → keystore.properties
+# et générer release/monmoisclair-release.jks (jamais committer le .jks)
 ./gradlew :app:testDebugUnitTest --rerun-tasks
-./gradlew :app:assembleDebug
-adb install -r dist/MonMoisClair-debug.apk   # après copie depuis outputs/
+./gradlew :app:assembleRelease
+adb install -r dist/MonMoisClair-release.apk
 ```
 
-> `local.properties` jamais versionné. APK dans `dist/` ignoré par git (trop lourd) — rebuild local.
+> `local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK dans `dist/` ignoré par git.
 
 ---
 

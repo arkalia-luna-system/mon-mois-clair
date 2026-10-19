@@ -18,6 +18,12 @@ private val ColorScheme = lightColorScheme(
     onBackground = A11yTokens.Ink,
     surface = A11yTokens.PaperWarm,
     onSurface = A11yTokens.Ink,
+    // AlertDialog / sheets Material3 (évite le lavande par défaut)
+    surfaceContainerHigh = A11yTokens.PaperWarm,
+    surfaceContainerHighest = A11yTokens.PaperWarm,
+    surfaceContainer = A11yTokens.PaperCream,
+    surfaceContainerLow = A11yTokens.PaperCream,
+    surfaceContainerLowest = A11yTokens.PaperCream,
     error = A11yTokens.AccentDanger,
     onError = A11yTokens.ButtonText
 )

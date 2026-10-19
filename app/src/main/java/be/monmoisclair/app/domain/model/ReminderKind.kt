@@ -2,5 +2,7 @@ package be.monmoisclair.app.domain.model
 
 enum class ReminderKind {
     J3,
-    JD
+    JD,
+    /** Relance quotidienne 10h tant que TODO et échéance dépassée. */
+    OVERDUE
 }

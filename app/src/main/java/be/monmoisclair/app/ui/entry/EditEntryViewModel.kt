@@ -23,6 +23,7 @@ data class EditEntryState(
     val label: String = "",
     val amountText: String = "",
     val dayText: String = "1",
+    val isAutoDebit: Boolean = false,
     val hasTemplate: Boolean = false,
     val applyToFollowing: Boolean = false,
     val error: String? = null,
@@ -64,6 +65,7 @@ class EditEntryViewModel @Inject constructor(
                     label = e.label,
                     amountText = amountText,
                     dayText = e.dayOfMonth.toString(),
+                    isAutoDebit = e.isAutoDebit,
                     hasTemplate = e.templateId != null
                 )
             }
@@ -91,6 +93,7 @@ class EditEntryViewModel @Inject constructor(
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
     fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null) }
+    fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v, error = null) }
     fun setApplyToFollowing(v: Boolean) = _state.update { it.copy(applyToFollowing = v) }
 
     fun save() {
@@ -109,7 +112,8 @@ class EditEntryViewModel @Inject constructor(
                     label = s.label,
                     amountCents = cents,
                     dayOfMonth = day,
-                    applyToFollowingMonths = s.applyToFollowing
+                    applyToFollowingMonths = s.applyToFollowing,
+                    isAutoDebit = s.isExpense && s.isAutoDebit
                 )
             ) {
                 UpdateInstanceResult.Success -> _state.update { it.copy(done = true) }

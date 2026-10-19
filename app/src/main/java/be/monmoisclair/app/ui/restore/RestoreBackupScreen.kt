@@ -58,6 +58,7 @@ fun RestoreBackupScreen(
     if (showSuccessDialog) {
         AlertDialog(
             onDismissRequest = { /* forcer un OK explicite */ },
+            containerColor = A11yTokens.PaperWarm,
             title = { Text("Restauration réussie") },
             text = {
                 Text(
@@ -81,6 +82,7 @@ fun RestoreBackupScreen(
     if (pending != null) {
         AlertDialog(
             onDismissRequest = { if (!state.busy) pending = null },
+            containerColor = A11yTokens.PaperWarm,
             title = { Text("Remplacer toutes les données ?") },
             text = {
                 Text(
@@ -134,6 +136,12 @@ fun RestoreBackupScreen(
                 "(dossier Documents) pour récupérer vos données après " +
                 "réinstallation ou changement de téléphone.",
             style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = "Attention : restaurer remplace tout ce qui est dans l’app. " +
+                "Un écran de confirmation vous demandera d’abord d’accepter.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.AccentDanger
         )
 
         state.message?.let { msg ->

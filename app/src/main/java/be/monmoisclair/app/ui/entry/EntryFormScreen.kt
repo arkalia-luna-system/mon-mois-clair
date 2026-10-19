@@ -56,8 +56,16 @@ fun AddEntryScreen(
         amountText = state.amountText,
         dayText = state.dayText,
         isExpense = state.isExpense,
-        recurring = state.recurring,
+        recurring = state.recurrence != RecurrenceChoice.Once,
         showRecurring = true,
+        recurrence = state.recurrence,
+        onRecurrence = viewModel::setRecurrence,
+        nextDueMonth = state.nextDueMonth,
+        onNextDueMonth = viewModel::setNextDueMonth,
+        showNextDueMonth = state.needsNextDueMonth,
+        isAutoDebit = state.isAutoDebit,
+        onAutoDebit = viewModel::setAutoDebit,
+        showAutoDebit = state.isExpense,
         showApplyFollowing = false,
         applyFollowing = false,
         hasTemplate = false,
@@ -68,7 +76,11 @@ fun AddEntryScreen(
         onAmount = viewModel::setAmount,
         onDay = viewModel::setDay,
         onExpense = viewModel::setExpense,
-        onRecurring = viewModel::setRecurring,
+        onRecurring = { on ->
+            viewModel.setRecurrence(
+                if (on) RecurrenceChoice.Monthly else RecurrenceChoice.Once
+            )
+        },
         onApplyFollowing = {},
         onPrimary = viewModel::save,
         onCancel = onCancel,
@@ -101,6 +113,7 @@ fun EditEntryScreen(
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
+            containerColor = A11yTokens.PaperWarm,
             title = { Text("Supprimer cette entrée ?") },
             text = {
                 Text(
@@ -138,6 +151,9 @@ fun EditEntryScreen(
         isExpense = state.isExpense,
         recurring = false,
         showRecurring = false,
+        isAutoDebit = state.isAutoDebit,
+        onAutoDebit = viewModel::setAutoDebit,
+        showAutoDebit = state.isExpense,
         showApplyFollowing = state.hasTemplate,
         applyFollowing = state.applyToFollowing,
         hasTemplate = state.hasTemplate,
@@ -165,6 +181,14 @@ private fun EntryFormScaffold(
     isExpense: Boolean,
     recurring: Boolean,
     showRecurring: Boolean,
+    recurrence: RecurrenceChoice = RecurrenceChoice.Once,
+    onRecurrence: ((RecurrenceChoice) -> Unit)? = null,
+    nextDueMonth: Int = 1,
+    onNextDueMonth: (Int) -> Unit = {},
+    showNextDueMonth: Boolean = false,
+    isAutoDebit: Boolean = false,
+    onAutoDebit: (Boolean) -> Unit = {},
+    showAutoDebit: Boolean = false,
     showApplyFollowing: Boolean,
     applyFollowing: Boolean,
     hasTemplate: Boolean,
@@ -181,73 +205,123 @@ private fun EntryFormScaffold(
     onCancel: () -> Unit,
     onDelete: (() -> Unit)?
 ) {
+    // Champs scrollables + actions épinglées au-dessus du clavier (imePadding).
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
             .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(A11yTokens.screenPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(A11yTokens.screenPadding)
     ) {
-        Text(text = title, style = MaterialTheme.typography.headlineMedium)
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(text = title, style = MaterialTheme.typography.headlineMedium)
 
-        if (showRecurring) {
-            Text("Type", style = MaterialTheme.typography.titleLarge)
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                TypeChip("Dépense (−)", selected = isExpense) { onExpense(true) }
-                TypeChip("Revenu (+)", selected = !isExpense) { onExpense(false) }
+            if (showRecurring) {
+                Text("Type", style = MaterialTheme.typography.titleLarge)
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    TypeChip("Dépense (−)", selected = isExpense) { onExpense(true) }
+                    TypeChip("Revenu (+)", selected = !isExpense) { onExpense(false) }
+                }
             }
-        }
 
-        OutlinedTextField(
-            value = label,
-            onValueChange = onLabel,
-            label = { Text("Nom (ex. Loyer)") },
-            modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
-            textStyle = MaterialTheme.typography.bodyLarge,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = amountText,
-            onValueChange = onAmount,
-            label = { Text("Montant (€)") },
-            modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
-            textStyle = MaterialTheme.typography.bodyLarge,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = dayText,
-            onValueChange = onDay,
-            label = { Text("Jour du mois (1–31)") },
-            modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
-            textStyle = MaterialTheme.typography.bodyLarge,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true
-        )
-
-        if (showRecurring) {
-            CheckRow(
-                checked = recurring,
-                label = "Revient tous les mois",
-                onChecked = onRecurring
+            OutlinedTextField(
+                value = label,
+                onValueChange = onLabel,
+                label = { Text("Nom (ex. Loyer)") },
+                modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                singleLine = true
             )
-        }
-        if (showApplyFollowing && hasTemplate) {
-            CheckRow(
-                checked = applyFollowing,
-                label = "Appliquer aussi aux mois suivants (encore à payer)",
-                onChecked = onApplyFollowing
+            OutlinedTextField(
+                value = amountText,
+                onValueChange = onAmount,
+                label = { Text("Montant (€)") },
+                modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                singleLine = true
             )
+            OutlinedTextField(
+                value = dayText,
+                onValueChange = onDay,
+                label = { Text("Jour du mois (1–31)") },
+                modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true
+            )
+
+            if (showRecurring && onRecurrence != null) {
+                Text("Fréquence", style = MaterialTheme.typography.titleLarge)
+                TypeChip("Une seule fois", selected = recurrence == RecurrenceChoice.Once) {
+                    onRecurrence(RecurrenceChoice.Once)
+                }
+                TypeChip("Tous les mois", selected = recurrence == RecurrenceChoice.Monthly) {
+                    onRecurrence(RecurrenceChoice.Monthly)
+                }
+                TypeChip("Tous les 3 mois", selected = recurrence == RecurrenceChoice.Every3Months) {
+                    onRecurrence(RecurrenceChoice.Every3Months)
+                }
+                TypeChip("1× par an", selected = recurrence == RecurrenceChoice.Yearly) {
+                    onRecurrence(RecurrenceChoice.Yearly)
+                }
+                if (showNextDueMonth) {
+                    Text("Prochaine échéance", style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        text = "Choisissez le mois où elle tombe (ex. taxe en mars).",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                    for (m in 1..12) {
+                        TypeChip(
+                            text = be.monmoisclair.app.domain.RecurrenceAnchor.frenchMonthLabel(m),
+                            selected = nextDueMonth == m
+                        ) {
+                            onNextDueMonth(m)
+                        }
+                    }
+                }
+            } else if (showRecurring) {
+                CheckRow(
+                    checked = recurring,
+                    label = "Revient tous les mois",
+                    onChecked = onRecurring
+                )
+            }
+            if (showAutoDebit) {
+                CheckRow(
+                    checked = isAutoDebit,
+                    label = "Prélèvement automatique",
+                    onChecked = onAutoDebit
+                )
+                Text(
+                    text = "Les rappels diront de vérifier le prélèvement (la ligne reste à cocher FAIT).",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+            }
+            if (showApplyFollowing && hasTemplate) {
+                CheckRow(
+                    checked = applyFollowing,
+                    label = "Appliquer aussi aux mois suivants (encore à payer)",
+                    onChecked = onApplyFollowing
+                )
+            }
+
+            error?.let {
+                Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
-        error?.let {
-            Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
         PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
+        Spacer(modifier = Modifier.height(8.dp))
         SecondaryA11yButton(text = "Annuler", onClick = onCancel)
         if (onDelete != null) {
             Spacer(modifier = Modifier.height(8.dp))

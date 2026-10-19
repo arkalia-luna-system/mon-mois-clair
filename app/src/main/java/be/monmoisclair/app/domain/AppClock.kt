@@ -22,4 +22,6 @@ object AppClock {
     fun currentYearMonth(): YearMonth = YearMonth.from(today())
 
     fun ledgerId(ym: YearMonth = currentYearMonth()): String = ym.toString()
+
+    fun ledgerIdToYearMonth(ledgerId: String): YearMonth = YearMonth.parse(ledgerId)
 }

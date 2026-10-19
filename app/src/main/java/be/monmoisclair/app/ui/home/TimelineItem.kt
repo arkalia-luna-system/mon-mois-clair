@@ -19,6 +19,8 @@ sealed interface TimelineItem {
         val label: String,
         val amountLabel: String,
         val isDone: Boolean,
+        val isOverdue: Boolean,
+        val isAutoDebit: Boolean,
         override val sortDay: Int,
         override val sortLabel: String
     ) : TimelineItem

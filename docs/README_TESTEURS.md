@@ -22,11 +22,13 @@ Feature codée
 
 ## Rapports attendus
 
-| Prompt | Rapport |
-|--------|---------|
-| Correcteur | `dist/verify/RAPPORT_TEST_YYYY-MM-DD.md` |
-| Visuel | `dist/verify/RAPPORT_VISUEL_YYYY-MM-DD.md` |
-| Produit | `dist/verify/RAPPORT_PRODUIT_YYYY-MM-DD.md` |
-| Senior | `dist/verify/RAPPORT_SENIOR_YYYY-MM-DD.md` |
+Écrits sous `dist/verify/` le temps de la campagne, puis **supprimables** une fois les fixes intégrés + tests verts (ne pas les versionner durablement).
+
+| Prompt | Rapport temporaire |
+|--------|-------------------|
+| Correcteur | `RAPPORT_TEST_YYYY-MM-DD.md` |
+| Visuel | `RAPPORT_VISUEL_YYYY-MM-DD.md` |
+| Produit | `RAPPORT_PRODUIT_YYYY-MM-DD.md` |
+| Senior | `RAPPORT_SENIOR_YYYY-MM-DD.md` |
 
 Reset from zero (persona A) : `dist/verify/RESET_TESTS_FROM_ZERO.md` — surtout pour le correcteur.

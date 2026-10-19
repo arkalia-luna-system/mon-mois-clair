@@ -12,6 +12,12 @@ data class ExpenseTemplateEntity(
     val active: Boolean,
     val remindJ3: Boolean = true,
     val remindJd: Boolean = true,
+    /** Prélèvement automatique (notif « vérifier »). */
+    val isAutoDebit: Boolean = false,
+    /** 1 = mensuel, 3 = trimestriel, 12 = annuel, etc. */
+    val intervalMonths: Int = 1,
+    /** Premier mois d’application (`yyyy-MM`). Vide = traité comme mois de création à la volée. */
+    val anchorYearMonth: String = "",
     val createdAtEpochMs: Long,
     val archivedAtEpochMs: Long?
 )

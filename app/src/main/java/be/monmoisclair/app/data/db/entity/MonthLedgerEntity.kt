@@ -7,5 +7,7 @@ import androidx.room.PrimaryKey
 data class MonthLedgerEntity(
     @PrimaryKey val id: String,
     val yearMonth: String,
+    /** Somme « courses / divers » saisie rapidement (centimes). */
+    val diversSpentCents: Long = 0L,
     val createdAtEpochMs: Long
 )

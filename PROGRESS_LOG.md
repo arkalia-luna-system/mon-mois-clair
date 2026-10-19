@@ -9,13 +9,80 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **3.5.1** (hub + bio + nav mois) |
+| Dernière étape terminée | **5.4** (freeze Home + T5–T8) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Device Care manuel familial · polish |
+| Prochaine sous-étape | Smoke device release (JSON lisible + restore + partage + overdue) |
 
 ---
 
 ## Journal
+
+### 2026-10-19 — Audit propreté + hygiene git
+
+**OK :** claims **5.4** alignés ; Gradle **104/104** ; secrets hors git ; Long cents ; pas de catch vides.
+
+**Nettoyé :**
+- AppleDouble `._*` (T7) purgés.
+- `FileSystemBackupTree` → `src/test` (runtime = SAF seulement).
+- ~215 dumps `dist/verify` **retirés du suivi git** (xml/json/txt/rapports) ; seul `RESET_TESTS_FROM_ZERO.md` versionné.
+- CHARTE T1 : libellé Manifest `TIME_SET` clarifié.
+
+### 2026-10-19 — Audit post-5.4 (corrections mineures)
+
+**Trouvé / corrigé :**
+- Édition : case **Prélèvement automatique** manquante → sync instance (+ template si « mois suivants »)
+- Partage T8 : `ClipData` + grant URI (WhatsApp/Mail)
+- Hint Home raccourci (freeze sticky)
+- Checklist S25 pointée release `0.1.0-5.4`
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **104/104 OK**
+
+### 2026-10-19 — Étapes 5.0–5.4 terminées (failles 4.x + survie données)
+
+**Freeze produit :** plus aucune nouvelle option sur l’écran d’accueil.
+
+**Codé :**
+- **T5** codec JSON manuel + `-keep` backup + test noms de champs (`label`, `amountCents`, …)
+- **T6** sélecteur « Prochaine échéance » (mois) si 3 mois / annuel ; instance seulement si matérialisable ; liste Réglages « Échéances hors ce mois »
+- **T7** `ReminderReceiver` → notif puis `reconcileAll()` (chaîne OVERDUE one-shot)
+- **T8** Réglages : « Envoyer une copie de sécurité (WhatsApp / Mail) » (`ACTION_SEND` + FileProvider)
+
+**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **104/104 OK**
+
+**Release :** `dist/MonMoisClair-release.apk` · `versionName` `0.1.0-5.4` · `versionCode` 3
+
+**Vigilance device :** ouvrir le JSON backup depuis l’APK **release** (clés lisibles) + restore + partage WhatsApp/Mail.
+
+### 2026-10-19 — Polish Visuel + Produit + Senior (post-audits)
+
+**Aligné avec les 3 rapports testeurs (sans bump version) :**
+- Visuel : sticky allégé, IME form, dialogs crème (`surfaceContainer*` + `containerColor`)
+- Produit : statut `BackupHealth` live dans Réglages ; légende « Mois en cours » ; hints reste/backup/rappels/SAF/prélèvement
+- Senior : Device Care 1-2-3 ; « Vérifier les alertes » ; « Remettre à payer » ; warning Restore ; tip FAIT
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **104/104 OK**  
+**Rapports campagne :** supprimés après intégration (prompts `docs/PROMPT_TESTEUR_*` conservés).
+
+### 2026-10-19 — Étapes 4.0–4.6 terminées (essentiels + failles Android)
+
+**Codé :**
+- **F** EN RETARD (badge) + alarme `OVERDUE` quotidienne 10h + deep link notif → ligne mise en évidence
+- **G** libellé « Reste après factures » + Courses / divers (+/−) sur le ledger
+- **H** case « Prélèvement automatique » + textes notif adaptés + pastille Auto
+- **I** fréquence Une fois / Mensuel / 3 mois / 1× an (`intervalMonths` + `anchorYearMonth`)
+- **T1** `MY_PACKAGE_REPLACED` + `TIME_SET` + `TIMEZONE_CHANGED` → `reconcileAll()`
+- **T2** keystore local (`keystore.properties` + `.jks` gitignorés) + `assembleRelease` R8
+- **T3** `FLAG_SECURE` si biométrie ON
+- **T4** confirmation FAIT sur mois passé uniquement
+- Migration Room **v2** + backup schema 1|2
+
+**Tests validés (à la clôture 4.6) :** **95/95** · suite courante : voir entrée polish ci-dessus (**104/104**)
+
+**Release :** `dist/MonMoisClair-release.apk` (signé, minify) · `versionName` `0.1.0-4.6` · `versionCode` 2
+
+**Vigilance :** sauvegarder le `.jks` hors git ; ne plus installer un debug.apk sur le téléphone famille (signature incompatible).
+
+**Prochaine sous-étape :** smoke device (retard / divers / prélèvement / update APK sans reboot).
 
 ### 2026-10-19 — Validation expert (push 3.4–3.5.1)
 

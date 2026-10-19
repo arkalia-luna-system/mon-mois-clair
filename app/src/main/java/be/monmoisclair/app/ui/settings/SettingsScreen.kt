@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,7 @@ import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SettingsScreen(
@@ -55,6 +57,16 @@ fun SettingsScreen(
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.shareIntents.collectLatest { intent ->
+            try {
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                viewModel.reportExternalIntentFailed()
+            }
+        }
     }
 
     fun requestEnable() {
@@ -154,6 +166,11 @@ fun SettingsScreen(
 
         HorizontalDivider(color = A11yTokens.PaperWarm)
         Text(text = "Rappels", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Pour vérifier que les alertes (notifications, batterie) sont bien autorisées.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
         SecondaryA11yButton(
             text = "Santé des rappels",
             onClick = onOpenHealth,
@@ -186,11 +203,47 @@ fun SettingsScreen(
             )
         }
 
+        if (state.offMonthPeriodics.isNotEmpty()) {
+            HorizontalDivider(color = A11yTokens.PaperWarm)
+            Text(text = "Échéances hors ce mois", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = "Factures trimestrielles ou annuelles qui ne tombent pas ce mois-ci.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+            state.offMonthPeriodics.forEach { item ->
+                Text(
+                    text = viewModel.formatPeriodicLine(item),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+
         HorizontalDivider(color = A11yTokens.PaperWarm)
         Text(text = "Sauvegarde", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "À chaque modification, une copie JSON est écrite dans votre dossier " +
+                "Documents (3 versions). En cas de réinstall : Restaurer une sauvegarde. " +
+                "Pour un téléphone cassé ou volé : envoyez une copie (WhatsApp / Mail).",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = BackupHealthCopy.statusLine(state.backupHealth),
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (BackupHealthCopy.isOk(state.backupHealth)) {
+                A11yTokens.AccentOk
+            } else {
+                A11yTokens.AccentDanger
+            }
+        )
         SecondaryA11yButton(
             text = "Dossier de sauvegarde",
             onClick = onOpenSaf,
+            enabled = !state.busy
+        )
+        SecondaryA11yButton(
+            text = "Envoyer une copie de sécurité (WhatsApp / Mail)",
+            onClick = viewModel::shareSecurityCopy,
             enabled = !state.busy
         )
         SecondaryA11yButton(

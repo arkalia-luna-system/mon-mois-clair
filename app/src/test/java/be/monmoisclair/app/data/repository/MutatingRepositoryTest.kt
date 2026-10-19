@@ -155,7 +155,7 @@ class MutatingRepositoryTest {
     fun expenseStatus_roundTripsThroughRoomAsEnum() = runBlocking {
         repo.mutate(rescheduleReminders = false) {
             monthLedgerDao.insert(
-                MonthLedgerEntity("2026-03", "2026-03", 1L)
+                MonthLedgerEntity("2026-03", "2026-03", createdAtEpochMs = 1L)
             )
             instanceDao.insertExpense(
                 ExpenseInstanceEntity(

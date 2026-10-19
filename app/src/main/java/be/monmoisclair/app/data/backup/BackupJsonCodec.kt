@@ -53,7 +53,8 @@ class BackupJsonCodec {
     fun decodeAndVerify(json: String): BackupDocument {
         val root = JSONObject(json)
         val schemaVersion = root.getInt("schemaVersion")
-        if (schemaVersion != 1) {
+        // v1 = historique ; v2 = diversSpent + isAutoDebit (CURRENT).
+        if (schemaVersion != 1 && schemaVersion != 2) {
             throw BackupFailure.UnsupportedSchema(schemaVersion)
         }
         val payload = jsonToPayload(root.getJSONObject("payload"))
@@ -112,6 +113,7 @@ class BackupJsonCodec {
     private fun ledgerToJson(e: MonthLedgerEntity): JSONObject =
         sortedJson(
             "createdAtEpochMs" to e.createdAtEpochMs,
+            "diversSpentCents" to e.diversSpentCents,
             "id" to e.id,
             "yearMonth" to e.yearMonth
         )
@@ -119,6 +121,7 @@ class BackupJsonCodec {
     private fun ledgerFromJson(o: JSONObject) = MonthLedgerEntity(
         id = o.getString("id"),
         yearMonth = o.getString("yearMonth"),
+        diversSpentCents = o.optLong("diversSpentCents", 0L),
         createdAtEpochMs = o.getLong("createdAtEpochMs")
     )
 
@@ -147,10 +150,13 @@ class BackupJsonCodec {
         sortedJson(
             "active" to e.active,
             "amountCents" to e.amountCents,
+            "anchorYearMonth" to e.anchorYearMonth,
             "archivedAtEpochMs" to e.archivedAtEpochMs,
             "createdAtEpochMs" to e.createdAtEpochMs,
             "dayOfMonth" to e.dayOfMonth,
             "id" to e.id,
+            "intervalMonths" to e.intervalMonths,
+            "isAutoDebit" to e.isAutoDebit,
             "label" to e.label,
             "remindJ3" to e.remindJ3,
             "remindJd" to e.remindJd
@@ -164,6 +170,9 @@ class BackupJsonCodec {
         active = o.getBoolean("active"),
         remindJ3 = o.getBoolean("remindJ3"),
         remindJd = o.getBoolean("remindJd"),
+        isAutoDebit = o.optBoolean("isAutoDebit", false),
+        intervalMonths = o.optInt("intervalMonths", 1).coerceAtLeast(1),
+        anchorYearMonth = o.optString("anchorYearMonth", ""),
         createdAtEpochMs = o.getLong("createdAtEpochMs"),
         archivedAtEpochMs = o.nullableLong("archivedAtEpochMs")
     )
@@ -198,6 +207,7 @@ class BackupJsonCodec {
             "dayOfMonth" to e.dayOfMonth,
             "doneAtEpochMs" to e.doneAtEpochMs,
             "id" to e.id,
+            "isAutoDebit" to e.isAutoDebit,
             "label" to e.label,
             "ledgerId" to e.ledgerId,
             "remindJ3" to e.remindJ3,
@@ -217,6 +227,7 @@ class BackupJsonCodec {
         doneAtEpochMs = o.nullableLong("doneAtEpochMs"),
         remindJ3 = o.getBoolean("remindJ3"),
         remindJd = o.getBoolean("remindJd"),
+        isAutoDebit = o.optBoolean("isAutoDebit", false),
         alarmJ3RequestCode = o.nullableInt("alarmJ3RequestCode"),
         alarmJdRequestCode = o.nullableInt("alarmJdRequestCode"),
         createdAtEpochMs = o.getLong("createdAtEpochMs")

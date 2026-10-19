@@ -12,8 +12,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Au démarrage du téléphone : reprogramme toutes les alarmes depuis Room.
- * [goAsync] + finally { finish() } obligatoires (lecture SQLite async).
+ * Reprogramme les alarmes après :
+ * - boot téléphone
+ * - **mise à jour APK** (`MY_PACKAGE_REPLACED`) — T1
+ * - changement d’heure / fuseau (été-hiver) — T1
  */
 @AndroidEntryPoint
 class BootReceiver : BroadcastReceiver() {
@@ -23,19 +25,14 @@ class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return
-        if (action != Intent.ACTION_BOOT_COMPLETED &&
-            action != Intent.ACTION_LOCKED_BOOT_COMPLETED &&
-            action != "android.intent.action.QUICKBOOT_POWERON"
-        ) {
-            return
-        }
+        if (action !in RELEVANT_ACTIONS) return
 
         val pendingResult = goAsync()
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             try {
                 reminderScheduler.reconcileAll()
             } catch (e: Exception) {
-                Log.e(TAG, "BootReceiver reconcileAll échoué", e)
+                Log.e(TAG, "reconcileAll échoué (action=$action)", e)
             } finally {
                 pendingResult.finish()
             }
@@ -44,5 +41,13 @@ class BootReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "BootReceiver"
+        private val RELEVANT_ACTIONS = setOf(
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_LOCKED_BOOT_COMPLETED,
+            "android.intent.action.QUICKBOOT_POWERON",
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+            Intent.ACTION_TIME_CHANGED,
+            Intent.ACTION_TIMEZONE_CHANGED
+        )
     }
 }

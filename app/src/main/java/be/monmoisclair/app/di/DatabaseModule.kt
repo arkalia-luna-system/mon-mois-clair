@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import be.monmoisclair.app.data.db.AppDatabase
+import be.monmoisclair.app.data.db.Migrations
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
@@ -30,6 +31,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             "mon_mois_clair.db"
         )
+            .addMigrations(Migrations.MIGRATION_1_2)
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)

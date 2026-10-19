@@ -18,3 +18,16 @@
 /dist/verify/*.png
 # AppleDouble (volume T7 / macOS)
 **/._*
+
+# Signature release (ne jamais committer secrets / .jks)
+keystore.properties
+*.jks
+*.keystore
+/release/*.jks
+
+# Dumps device temporaires (rapports de campagne) — garder seulement RESET
+/dist/verify/**/*.xml
+/dist/verify/**/*.json
+/dist/verify/**/*.txt
+/dist/verify/RAPPORT_*.md
+/dist/verify/**/RAPPORT_*.md

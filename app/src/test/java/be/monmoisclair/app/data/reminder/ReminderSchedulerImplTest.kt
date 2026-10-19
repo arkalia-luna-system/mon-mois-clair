@@ -76,18 +76,20 @@ class ReminderSchedulerImplTest {
         scheduler.reconcileAll()
 
         assertThat(gateway.scheduled).isEmpty()
-        assertThat(gateway.cancelled).containsExactly(
+        assertThat(gateway.cancelled).containsAtLeast(
             ReminderRequestCodes.of("exp-b", ReminderKind.J3),
-            ReminderRequestCodes.of("exp-b", ReminderKind.JD)
+            ReminderRequestCodes.of("exp-b", ReminderKind.JD),
+            ReminderRequestCodes.of("exp-b", ReminderKind.OVERDUE)
         )
     }
 
     @Test
-    fun cancelFor_cancelsBothKinds() = runBlocking<Unit> {
+    fun cancelFor_cancelsAllKinds() = runBlocking<Unit> {
         scheduler.cancelFor("exp-x")
         assertThat(gateway.cancelled).containsExactly(
             ReminderRequestCodes.of("exp-x", ReminderKind.J3),
-            ReminderRequestCodes.of("exp-x", ReminderKind.JD)
+            ReminderRequestCodes.of("exp-x", ReminderKind.JD),
+            ReminderRequestCodes.of("exp-x", ReminderKind.OVERDUE)
         )
     }
 
@@ -105,6 +107,19 @@ class ReminderSchedulerImplTest {
         assertThat(gateway.cancelled).contains(
             ReminderRequestCodes.of("exp-c", ReminderKind.J3)
         )
+    }
+
+    @Test
+    fun reconcileAll_schedulesOverdue_whenPastDueDay() = runBlocking<Unit> {
+        // Le 16 octobre : échéance le 15 dépassée → OVERDUE quotidien
+        val instant = java.time.OffsetDateTime.parse("2026-10-16T12:00:00+02:00").toInstant()
+        AppClock.clock = Clock.fixed(instant, brussels)
+        seedExpense("exp-over", "2026-10", 15, ExpenseStatus.TODO)
+
+        scheduler.reconcileAll()
+
+        assertThat(gateway.scheduled.map { it.payload.kind }).contains(ReminderKind.OVERDUE)
+        assertThat(gateway.scheduled.any { it.payload.title.contains("retard") }).isTrue()
     }
 
     @Test
@@ -141,7 +156,7 @@ class ReminderSchedulerImplTest {
         remindJd: Boolean = true
     ) {
         if (db.monthLedgerDao().getById(ledgerId) == null) {
-            db.monthLedgerDao().insert(MonthLedgerEntity(ledgerId, ledgerId, 1L))
+            db.monthLedgerDao().insert(MonthLedgerEntity(ledgerId, ledgerId, createdAtEpochMs = 1L))
         }
         db.instanceDao().insertExpense(
             ExpenseInstanceEntity(

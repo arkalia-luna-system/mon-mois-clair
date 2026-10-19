@@ -29,6 +29,7 @@ data class ExpenseInstanceEntity(
     val doneAtEpochMs: Long?,
     val remindJ3: Boolean,
     val remindJd: Boolean,
+    val isAutoDebit: Boolean = false,
     val alarmJ3RequestCode: Int?,
     val alarmJdRequestCode: Int?,
     val createdAtEpochMs: Long

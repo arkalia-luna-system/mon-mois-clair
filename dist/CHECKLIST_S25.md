@@ -1,6 +1,6 @@
 # Checklist validation Samsung (One UI)
 
-APK : `dist/MonMoisClair-debug.apk`
+APK familial : `dist/MonMoisClair-release.apk` (éviter le debug au quotidien)
 
 ## Appareil validé (2026-10-19)
 
@@ -10,7 +10,7 @@ APK : `dist/MonMoisClair-debug.apk`
 | Serial | `R3CY60BJ3ZM` |
 | Android | 16 (API 36) |
 | Compte | user 0 (pas Secure Folder) |
-| Version app | `0.1.0-3.5.1` |
+| Version app | `0.1.0-5.4` (historique checklist : aussi 3.5.1 / 4.6) |
 
 ### Résultats automatisés / observés
 

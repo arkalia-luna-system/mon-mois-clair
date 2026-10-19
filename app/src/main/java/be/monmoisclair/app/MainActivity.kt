@@ -1,6 +1,8 @@
 package be.monmoisclair.app
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -39,8 +41,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private var pendingHighlightExpenseId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        pendingHighlightExpenseId = intent?.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
         enableEdgeToEdge()
         setContent {
             MonMoisClairTheme {
@@ -49,11 +55,21 @@ class MainActivity : AppCompatActivity() {
                 val navController = rememberNavController()
                 val lifecycleOwner = LocalLifecycleOwner.current
 
-                // Après le 1er déverrouillage de la session : garder NavHost vivant sous le
-                // verrou (sinon ouvrir Batterie / SAF depuis Réglages perdait la pile).
                 var sessionEntered by rememberSaveable { mutableStateOf(false) }
                 LaunchedEffect(state.unlocked) {
                     if (state.unlocked) sessionEntered = true
+                }
+
+                // T3 : aperçu multitâche flouté / noir si biométrie activée.
+                LaunchedEffect(state.biometricEnabled) {
+                    if (state.biometricEnabled) {
+                        window.setFlags(
+                            WindowManager.LayoutParams.FLAG_SECURE,
+                            WindowManager.LayoutParams.FLAG_SECURE
+                        )
+                    } else {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    }
                 }
 
                 DisposableEffect(lifecycleOwner) {
@@ -73,9 +89,6 @@ class MainActivity : AppCompatActivity() {
                     onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
                 }
 
-                // One UI : navigationBars souvent visible=false (geste / translucide)
-                // → safeDrawing seul laisse 0 en bas. tappableElement = zone des 3 boutons.
-                // + bottomSystemClearance = bande vide pour ne pas confondre app / système.
                 val rootModifier = Modifier
                     .fillMaxSize()
                     .background(A11yTokens.PaperCream)
@@ -94,7 +107,6 @@ class MainActivity : AppCompatActivity() {
                             CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     }
-                    // Cold start verrouillé : pas de Home sous le lock (évite fuite visuelle).
                     state.needsUnlock && !sessionEntered -> {
                         BiometricLockScreen(
                             gateway = mainViewModel.biometricAuth,
@@ -125,5 +137,25 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pendingHighlightExpenseId = intent.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
+    }
+
+    /** Home consomme l’id une seule fois (deep link notif). */
+    fun consumeHighlightExpenseId(): String? {
+        val id = pendingHighlightExpenseId
+        pendingHighlightExpenseId = null
+        if (id != null) {
+            intent?.removeExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
+        }
+        return id
+    }
+
+    companion object {
+        const val EXTRA_HIGHLIGHT_EXPENSE_ID = "highlight_expense_id"
     }
 }

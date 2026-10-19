@@ -26,7 +26,8 @@ class UpdateInstanceUseCase @Inject constructor(
         label: String,
         amountCents: Long,
         dayOfMonth: Int,
-        applyToFollowingMonths: Boolean
+        applyToFollowingMonths: Boolean,
+        isAutoDebit: Boolean = false
     ): UpdateInstanceResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -54,11 +55,13 @@ class UpdateInstanceUseCase @Inject constructor(
                     ?: return@mutate UpdateInstanceResult.NotFound
                 val ym = YearMonth.parse(current.ledgerId)
                 val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
+                val auto = isAutoDebit
                 instanceDao.updateExpense(
                     current.copy(
                         label = trimmed,
                         amountCents = amountCents,
-                        dayOfMonth = clamped
+                        dayOfMonth = clamped,
+                        isAutoDebit = auto
                     )
                 )
                 if (applyToFollowingMonths && current.templateId != null) {
@@ -68,7 +71,8 @@ class UpdateInstanceUseCase @Inject constructor(
                             tpl.copy(
                                 label = trimmed,
                                 amountCents = amountCents,
-                                dayOfMonth = dayOfMonth
+                                dayOfMonth = dayOfMonth,
+                                isAutoDebit = auto
                             )
                         )
                     }
@@ -82,7 +86,8 @@ class UpdateInstanceUseCase @Inject constructor(
                             item.copy(
                                 label = trimmed,
                                 amountCents = amountCents,
-                                dayOfMonth = MonthDayClamp.clamp(dayOfMonth, itemYm)
+                                dayOfMonth = MonthDayClamp.clamp(dayOfMonth, itemYm),
+                                isAutoDebit = auto
                             )
                         )
                     }

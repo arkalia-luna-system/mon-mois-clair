@@ -1,6 +1,0 @@
-{
-  "sante": true,
-  "add_form": true,
-  "add_saved": false,
-  "no_fatal": true
-}

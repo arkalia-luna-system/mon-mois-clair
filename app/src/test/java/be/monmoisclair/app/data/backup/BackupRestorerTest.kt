@@ -80,7 +80,7 @@ class BackupRestorerTest {
         )
 
         val backupPayload = BackupPayload(
-            ledgers = listOf(MonthLedgerEntity("2026-10", "2026-10", 99L)),
+            ledgers = listOf(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 99L)),
             incomeTemplates = emptyList(),
             expenseTemplates = emptyList(),
             incomeInstances = emptyList(),
@@ -102,12 +102,17 @@ class BackupRestorerTest {
                 )
             ),
             appMeta = listOf(
-                AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, "1"),
+                AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, AppMetaKeys.CURRENT_SCHEMA_VERSION),
                 AppMetaEntity(AppMetaKeys.SAF_TREE_URI, "content://old-phone/tree/other"),
                 AppMetaEntity(AppMetaKeys.BACKUP_HEALTH, BackupHealth.BROKEN.name)
             )
         )
-        val document = codec.buildDocument(1, 1_234L, "Europe/Brussels", backupPayload)
+        val document = codec.buildDocument(
+            AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt(),
+            1_234L,
+            "Europe/Brussels",
+            backupPayload
+        )
 
         val result = restorer.restoreFromDocument(document)
         assertThat(result).isInstanceOf(RestoreResult.Success::class.java)
@@ -133,11 +138,11 @@ class BackupRestorerTest {
         seedCurrentPhoneState(ledgerId = "2026-08", expenseId = "keep-me", safUri = null)
 
         val document = codec.buildDocument(
-            1,
+            AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt(),
             1L,
             "Europe/Brussels",
             BackupPayload(
-                ledgers = listOf(MonthLedgerEntity("2099-01", "2099-01", 1L)),
+                ledgers = listOf(MonthLedgerEntity("2099-01", "2099-01", createdAtEpochMs = 1L)),
                 incomeTemplates = emptyList(),
                 expenseTemplates = emptyList(),
                 incomeInstances = emptyList(),
@@ -188,14 +193,21 @@ class BackupRestorerTest {
         seedCurrentPhoneState("2026-01", "old", safUri = "content://tree/keep")
 
         val payload = BackupPayload(
-            ledgers = listOf(MonthLedgerEntity("2026-11", "2026-11", 2L)),
+            ledgers = listOf(MonthLedgerEntity("2026-11", "2026-11", createdAtEpochMs = 2L)),
             incomeTemplates = emptyList(),
             expenseTemplates = emptyList(),
             incomeInstances = emptyList(),
             expenseInstances = emptyList(),
-            appMeta = listOf(AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, "1"))
+            appMeta = listOf(
+                AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, AppMetaKeys.CURRENT_SCHEMA_VERSION)
+            )
         )
-        val document = codec.buildDocument(1, 50L, "Europe/Brussels", payload)
+        val document = codec.buildDocument(
+            AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt(),
+            50L,
+            "Europe/Brussels",
+            payload
+        )
         val json = codec.encodeDocument(document)
 
         val context: Context = ApplicationProvider.getApplicationContext()
@@ -222,7 +234,7 @@ class BackupRestorerTest {
         expenseId: String,
         safUri: String?
     ) {
-        db.monthLedgerDao().insert(MonthLedgerEntity(ledgerId, ledgerId, 1L))
+        db.monthLedgerDao().insert(MonthLedgerEntity(ledgerId, ledgerId, createdAtEpochMs = 1L))
         db.instanceDao().insertExpense(
             ExpenseInstanceEntity(
                 id = expenseId,

@@ -57,6 +57,12 @@ fun ReminderHealthScreen(
             text = "Vérifiez que Mon Mois Clair peut vraiment vous alerter sur ce Samsung.",
             style = MaterialTheme.typography.bodyLarge
         )
+        Text(
+            text = "Rappels : 3 jours avant (10 h), le jour J (9 h), puis chaque jour à 10 h " +
+                "si une dépense reste « à payer » après l’échéance.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
 
         report?.let { r ->
             HealthStatusRow("Notifications", r.notificationsGranted)

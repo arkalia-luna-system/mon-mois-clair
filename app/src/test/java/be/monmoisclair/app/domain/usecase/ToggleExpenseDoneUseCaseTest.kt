@@ -154,7 +154,7 @@ class ToggleExpenseDoneUseCaseTest {
     ) {
         if (db.monthLedgerDao().getById(ledgerId) == null) {
             db.monthLedgerDao().insert(
-                MonthLedgerEntity(ledgerId, ledgerId, 1L)
+                MonthLedgerEntity(ledgerId, ledgerId, createdAtEpochMs = 1L)
             )
         }
         db.instanceDao().insertExpense(

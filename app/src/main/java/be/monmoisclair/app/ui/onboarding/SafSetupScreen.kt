@@ -51,7 +51,7 @@ fun SafSetupScreen(
         Text(text = "Mon Mois Clair", style = MaterialTheme.typography.displayLarge)
         Text(text = "Dossier de sauvegarde", style = MaterialTheme.typography.headlineMedium)
         Text(
-            text = "Choisissez un dossier dans Documents. " +
+            text = "Choisissez un dossier dans Documents (pas Téléchargements / Download). " +
                 "À chaque modification, une copie de sécurité y sera écrite automatiquement " +
                 "(3 versions). Sans ce dossier, vos données peuvent être perdues.",
             style = MaterialTheme.typography.bodyLarge

@@ -3,14 +3,24 @@ package be.monmoisclair.app.ui.settings
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.monmoisclair.app.data.backup.BackupHealthStore
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
+import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
+import be.monmoisclair.app.domain.usecase.ListOffMonthPeriodicsUseCase
+import be.monmoisclair.app.domain.usecase.OffMonthPeriodic
+import be.monmoisclair.app.domain.usecase.ShareBackupResult
+import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
+import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,6 +31,8 @@ data class SettingsUiState(
     val biometricEnabled: Boolean = false,
     val availability: BiometricAvailability = BiometricAvailability.Unsupported,
     val showDeviceCareSection: Boolean = false,
+    val backupHealth: BackupHealth = BackupHealth.NOT_CONFIGURED,
+    val offMonthPeriodics: List<OffMonthPeriodic> = emptyList(),
     val message: String? = null,
     val isError: Boolean = false,
     val busy: Boolean = false
@@ -30,11 +42,17 @@ data class SettingsUiState(
 class SettingsViewModel @Inject constructor(
     private val preference: BiometricPreferenceUseCase,
     val biometricAuth: BiometricAuthGateway,
-    private val healthChecker: ReminderHealthChecker
+    private val healthChecker: ReminderHealthChecker,
+    private val healthStore: BackupHealthStore,
+    private val listOffMonth: ListOffMonthPeriodicsUseCase,
+    private val shareBackup: ShareBackupUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+
+    private val _shareIntents = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
+    val shareIntents: SharedFlow<Intent> = _shareIntents.asSharedFlow()
 
     init {
         refresh()
@@ -48,6 +66,8 @@ class SettingsViewModel @Inject constructor(
                     biometricEnabled = preference.isEnabled(),
                     availability = biometricAuth.availability(),
                     showDeviceCareSection = healthChecker.isSamsungDevice(),
+                    backupHealth = healthStore.read(),
+                    offMonthPeriodics = listOffMonth(),
                     message = null,
                     isError = false
                 )
@@ -58,6 +78,39 @@ class SettingsViewModel @Inject constructor(
     fun intentBatteryList(): Intent = healthChecker.intentBatteryOptimizationList()
 
     fun intentAppDetails(): Intent = healthChecker.intentApplicationDetails()
+
+    fun shareSecurityCopy() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(busy = true, message = null, isError = false) }
+            when (val result = shareBackup()) {
+                is ShareBackupResult.Ready -> {
+                    _shareIntents.emit(result.intent)
+                    _uiState.update {
+                        it.copy(
+                            busy = false,
+                            message = "Choisissez WhatsApp, Mail ou une autre app.",
+                            isError = false
+                        )
+                    }
+                }
+                is ShareBackupResult.Failed -> {
+                    _uiState.update {
+                        it.copy(busy = false, message = result.message, isError = true)
+                    }
+                }
+            }
+        }
+    }
+
+    fun formatPeriodicLine(item: OffMonthPeriodic): String {
+        val every = when (item.intervalMonths) {
+            3 -> "tous les 3 mois"
+            12 -> "1× par an"
+            else -> "tous les ${item.intervalMonths} mois"
+        }
+        return "${item.label} — ${MoneyFormat.formatCents(item.amountCents)} — " +
+            "le ${item.dayOfMonth} ($every) · prochaine : ${item.nextDueLabel}"
+    }
 
     fun onEnableAuthResult(result: BiometricAuthResult) {
         viewModelScope.launch {

@@ -36,7 +36,8 @@ class PaymentNotificationHelper @Inject constructor(
     fun showPaymentReminder(
         notificationId: Int,
         title: String,
-        body: String
+        body: String,
+        expenseInstanceId: String
     ) {
         ensureChannel()
         val openApp = PendingIntent.getActivity(
@@ -44,6 +45,7 @@ class PaymentNotificationHelper @Inject constructor(
             notificationId,
             Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra(MainActivity.EXTRA_HIGHLIGHT_EXPENSE_ID, expenseInstanceId)
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

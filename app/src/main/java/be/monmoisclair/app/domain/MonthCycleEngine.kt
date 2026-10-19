@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import java.time.Instant
 import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,12 +21,6 @@ sealed class EnsureMonthResult {
     data class AlreadyExists(val ledgerId: String) : EnsureMonthResult()
 }
 
-/**
- * Cycle mensuel lazy : crée le ledger du mois demandé s'il n'existe pas,
- * en matérialisant une Instance (copie figée) pour chaque Template actif.
- *
- * Ne régénère JAMAIS un mois déjà créé (même si des templates ont changé depuis).
- */
 @Singleton
 class MonthCycleEngine @Inject constructor(
     private val monthLedgerDao: MonthLedgerDao,
@@ -35,11 +30,6 @@ class MonthCycleEngine @Inject constructor(
     suspend fun ensureCurrentMonthExists(): EnsureMonthResult =
         ensureMonthExists(AppClock.currentYearMonth())
 
-    /**
-     * @param yearMonth mois cible (cold start = courant ; Home Préc./Suiv. = navigation).
-     * Cold start : seul le mois courant. Navigation utilisateur : crée le mois tapé
-     * (lazy) sans rattraper tout l’historique d’un coup.
-     */
     suspend fun ensureMonthExists(yearMonth: YearMonth): EnsureMonthResult {
         val ledgerId = AppClock.ledgerId(yearMonth)
         if (monthLedgerDao.getById(ledgerId) != null) {
@@ -49,8 +39,6 @@ class MonthCycleEngine @Inject constructor(
         return mutatingRepository.mutate(
             sideEffectsWhen = { it is EnsureMonthResult.Created }
         ) {
-            // Double-check dans la transaction (course entre deux cold starts).
-            // AlreadyExists ici ne doit PAS déclencher backup/reconcile.
             if (monthLedgerDao.getById(ledgerId) != null) {
                 return@mutate EnsureMonthResult.AlreadyExists(ledgerId)
             }
@@ -60,6 +48,7 @@ class MonthCycleEngine @Inject constructor(
                 MonthLedgerEntity(
                     id = ledgerId,
                     yearMonth = yearMonth.toString(),
+                    diversSpentCents = 0L,
                     createdAtEpochMs = now
                 )
             )
@@ -78,7 +67,16 @@ class MonthCycleEngine @Inject constructor(
                     createdAtEpochMs = now
                 )
             }
-            val expenses = expenseTemplates.map { template ->
+            val expenses = expenseTemplates.mapNotNull { template ->
+                val anchor = RecurrenceRules.parseAnchorOrNull(template.anchorYearMonth)
+                    ?: YearMonth.from(
+                        Instant.ofEpochMilli(template.createdAtEpochMs)
+                            .atZone(AppClock.zone)
+                            .toLocalDate()
+                    )
+                if (!RecurrenceRules.shouldMaterialize(anchor, template.intervalMonths, yearMonth)) {
+                    return@mapNotNull null
+                }
                 ExpenseInstanceEntity(
                     id = InstanceIds.expenseFromTemplate(ledgerId, template.id),
                     ledgerId = ledgerId,
@@ -90,6 +88,7 @@ class MonthCycleEngine @Inject constructor(
                     doneAtEpochMs = null,
                     remindJ3 = template.remindJ3,
                     remindJd = template.remindJd,
+                    isAutoDebit = template.isAutoDebit,
                     alarmJ3RequestCode = null,
                     alarmJdRequestCode = null,
                     createdAtEpochMs = now

@@ -3,12 +3,16 @@ package be.monmoisclair.app.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.MonthSummary
 import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import be.monmoisclair.app.domain.usecase.AdjustDiversResult
+import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -28,30 +32,44 @@ data class HomeUiState(
     val loading: Boolean = true,
     val ledgerId: String = "",
     val monthLabel: String = "",
+    val isPastMonth: Boolean = false,
     val canGoPrev: Boolean = false,
     val canGoNext: Boolean = false,
     val summary: MonthSummary = MonthSummary(0, 0, 0, 0),
-    val timeline: List<TimelineItem> = emptyList()
+    val diversSpentCents: Long = 0L,
+    val afterDiversCents: Long = 0L,
+    val timeline: List<TimelineItem> = emptyList(),
+    val highlightExpenseId: String? = null,
+    /** Demande confirm FAIT sur mois passé (T4). */
+    val pendingPastToggleId: String? = null
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val monthCycleEngine: MonthCycleEngine,
+    private val monthLedgerDao: MonthLedgerDao,
     private val instanceDao: InstanceDao,
-    private val toggleDone: ToggleExpenseDoneUseCase
+    private val toggleDone: ToggleExpenseDoneUseCase,
+    private val adjustDivers: AdjustDiversUseCase
 ) : ViewModel() {
 
     private val selectedMonth = MutableStateFlow(AppClock.currentYearMonth())
+    private val highlightExpenseId = MutableStateFlow<String?>(null)
+    private val pendingPastToggleId = MutableStateFlow<String?>(null)
 
     val uiState: StateFlow<HomeUiState> = selectedMonth
         .flatMapLatest { ym ->
             val ledgerId = AppClock.ledgerId(ym)
             combine(
                 instanceDao.observeIncomes(ledgerId),
-                instanceDao.observeExpenses(ledgerId)
-            ) { incomes, expenses ->
+                instanceDao.observeExpenses(ledgerId),
+                monthLedgerDao.observeAll(),
+                highlightExpenseId,
+                pendingPastToggleId
+            ) { incomes, expenses, ledgers, highlight, pendingToggle ->
                 val summary = MonthSummaryCalculator.compute(incomes, expenses)
+                val divers = ledgers.firstOrNull { it.id == ledgerId }?.diversSpentCents ?: 0L
                 val timeline = buildList {
                     incomes.forEach { inc ->
                         add(
@@ -73,6 +91,12 @@ class HomeViewModel @Inject constructor(
                                 label = exp.label,
                                 amountLabel = MoneyFormat.formatSignedCents(exp.amountCents, isExpense = true),
                                 isDone = exp.status == ExpenseStatus.DONE,
+                                isOverdue = ExpenseOverdue.isOverdue(
+                                    ledgerId = exp.ledgerId,
+                                    dayOfMonth = exp.dayOfMonth,
+                                    status = exp.status
+                                ),
+                                isAutoDebit = exp.isAutoDebit,
                                 sortDay = exp.dayOfMonth,
                                 sortLabel = exp.label
                             )
@@ -85,11 +109,15 @@ class HomeViewModel @Inject constructor(
                     loading = false,
                     ledgerId = ledgerId,
                     monthLabel = DayLabelFormat.monthTitle(ym),
-                    // Passé toujours OK (création lazy au tap). Futur jamais.
+                    isPastMonth = ym.isBefore(current),
                     canGoPrev = MonthNavigation.canGoPrev(),
                     canGoNext = MonthNavigation.canGoNext(ym, current),
                     summary = summary,
-                    timeline = timeline
+                    diversSpentCents = divers,
+                    afterDiversCents = summary.remainingCents - divers,
+                    timeline = timeline,
+                    highlightExpenseId = highlight,
+                    pendingPastToggleId = pendingToggle
                 )
             }
         }
@@ -109,7 +137,6 @@ class HomeViewModel @Inject constructor(
     fun prevMonth() {
         viewModelScope.launch {
             val target = selectedMonth.value.minusMonths(1)
-            // Lazy au tap utilisateur (≠ cold start qui ne rattrape pas tout l’historique).
             monthCycleEngine.ensureMonthExists(target)
             selectedMonth.value = target
         }
@@ -125,9 +152,63 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun toggleDone(expenseId: String) {
+    fun requestToggleDone(expenseId: String) {
+        val ym = selectedMonth.value
+        if (ym.isBefore(AppClock.currentYearMonth())) {
+            pendingPastToggleId.value = expenseId
+        } else {
+            performToggle(expenseId)
+        }
+    }
+
+    fun confirmPastToggle() {
+        val id = pendingPastToggleId.value ?: return
+        pendingPastToggleId.value = null
+        performToggle(id)
+    }
+
+    fun dismissPastToggle() {
+        pendingPastToggleId.value = null
+    }
+
+    private fun performToggle(expenseId: String) {
         viewModelScope.launch {
             toggleDone.invoke(expenseId)
+        }
+    }
+
+    fun setHighlightExpenseId(id: String?) {
+        highlightExpenseId.value = id
+        if (id != null) {
+            viewModelScope.launch {
+                val exp = instanceDao.getExpenseById(id) ?: return@launch
+                val ym = runCatching {
+                    java.time.YearMonth.parse(exp.ledgerId)
+                }.getOrNull() ?: return@launch
+                monthCycleEngine.ensureMonthExists(ym)
+                selectedMonth.value = ym
+            }
+        }
+    }
+
+    fun clearHighlight() {
+        highlightExpenseId.value = null
+    }
+
+    fun addDivers(eurosText: String) {
+        adjustDiversBy(eurosText, add = true)
+    }
+
+    fun removeDivers(eurosText: String) {
+        adjustDiversBy(eurosText, add = false)
+    }
+
+    private fun adjustDiversBy(eurosText: String, add: Boolean) {
+        viewModelScope.launch {
+            val cents = MoneyFormat.parseToCents(eurosText) ?: return@launch
+            val delta = if (add) cents else -cents
+            val ledgerId = AppClock.ledgerId(selectedMonth.value)
+            adjustDivers(ledgerId, delta)
         }
     }
 

@@ -9,7 +9,9 @@ import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.InstanceIds
 import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.MonthDayClamp
+import be.monmoisclair.app.domain.RecurrenceRules
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import java.time.YearMonth
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,12 +27,20 @@ class AddEntryUseCase @Inject constructor(
     private val mutatingRepository: MutatingRepository
 ) {
 
+    /**
+     * @param intervalMonths 1 = mensuel ; >1 = tous les N mois (uniquement si recurring).
+     * @param anchorYearMonth ancre T6 (`yyyy-MM`) ; si null → mois courant.
+     * @param isAutoDebit prélèvement automatique (dépenses).
+     */
     suspend operator fun invoke(
         label: String,
         amountCents: Long,
         dayOfMonth: Int,
         isExpense: Boolean,
-        recurring: Boolean
+        recurring: Boolean,
+        intervalMonths: Int = 1,
+        anchorYearMonth: YearMonth? = null,
+        isAutoDebit: Boolean = false
     ): AddEntryResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -42,14 +52,17 @@ class AddEntryUseCase @Inject constructor(
         if (dayOfMonth !in 1..31) {
             return AddEntryResult.InvalidInput("Le jour doit être entre 1 et 31.")
         }
+        val interval = if (recurring) intervalMonths.coerceIn(1, 24) else 1
 
         monthCycleEngine.ensureCurrentMonthExists()
         val ym = AppClock.currentYearMonth()
         val ledgerId = AppClock.ledgerId(ym)
-        val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
         val now = AppClock.nowEpochMs()
+        val anchorYm = anchorYearMonth ?: ym
+        val anchor = anchorYm.toString()
+        val materializeNow = !recurring ||
+            RecurrenceRules.shouldMaterialize(anchorYm, interval, ym)
 
-        // InvalidInput est déjà filtré avant mutate → toujours Success ici.
         return mutatingRepository.mutate {
             if (isExpense) {
                 val templateId = if (recurring) {
@@ -63,6 +76,9 @@ class AddEntryUseCase @Inject constructor(
                             active = true,
                             remindJ3 = true,
                             remindJd = true,
+                            isAutoDebit = isAutoDebit,
+                            intervalMonths = interval,
+                            anchorYearMonth = anchor,
                             createdAtEpochMs = now,
                             archivedAtEpochMs = null
                         )
@@ -71,6 +87,11 @@ class AddEntryUseCase @Inject constructor(
                 } else {
                     null
                 }
+                if (!materializeNow) {
+                    // Template seul : échéance hors mois courant (T6).
+                    return@mutate AddEntryResult.Success(templateId!!)
+                }
+                val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
                 val id = if (templateId != null) {
                     InstanceIds.expenseFromTemplate(ledgerId, templateId)
                 } else {
@@ -88,6 +109,7 @@ class AddEntryUseCase @Inject constructor(
                         doneAtEpochMs = null,
                         remindJ3 = true,
                         remindJd = true,
+                        isAutoDebit = isAutoDebit,
                         alarmJ3RequestCode = null,
                         alarmJdRequestCode = null,
                         createdAtEpochMs = now
@@ -112,6 +134,7 @@ class AddEntryUseCase @Inject constructor(
                 } else {
                     null
                 }
+                val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
                 val id = if (templateId != null) {
                     InstanceIds.incomeFromTemplate(ledgerId, templateId)
                 } else {

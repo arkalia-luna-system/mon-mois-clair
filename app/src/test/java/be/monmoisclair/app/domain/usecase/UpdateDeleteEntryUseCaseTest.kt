@@ -140,6 +140,38 @@ class UpdateDeleteEntryUseCaseTest {
         assertThat(db.templateDao().getExpenseById("tpl2")!!.active).isFalse()
     }
 
+    @Test
+    fun update_expense_togglesAutoDebit_andPropagatesToTemplate() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-auto",
+                label = "Loyer",
+                amountCents = 50_000L,
+                dayOfMonth = 1,
+                active = true,
+                isAutoDebit = false,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-10", "exp:2026-10:tpl-auto", "tpl-auto", 50_000L)
+        seedLinkedExpense("2026-11", "exp:2026-11:tpl-auto", "tpl-auto", 50_000L)
+
+        val result = update(
+            id = "exp:2026-10:tpl-auto",
+            isExpense = true,
+            label = "Loyer",
+            amountCents = 50_000L,
+            dayOfMonth = 1,
+            applyToFollowingMonths = true,
+            isAutoDebit = true
+        )
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-10:tpl-auto")!!.isAutoDebit).isTrue()
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-auto")!!.isAutoDebit).isTrue()
+        assertThat(db.templateDao().getExpenseById("tpl-auto")!!.isAutoDebit).isTrue()
+    }
+
     private suspend fun seedLinkedExpense(
         ledger: String,
         id: String,
@@ -147,7 +179,7 @@ class UpdateDeleteEntryUseCaseTest {
         amount: Long
     ) {
         if (db.monthLedgerDao().getById(ledger) == null) {
-            db.monthLedgerDao().insert(MonthLedgerEntity(ledger, ledger, 1L))
+            db.monthLedgerDao().insert(MonthLedgerEntity(ledger, ledger, createdAtEpochMs = 1L))
         }
         db.instanceDao().insertExpense(
             ExpenseInstanceEntity(

@@ -76,7 +76,7 @@ class BackupCoordinatorTest {
     @Test
     fun fileTreeRotation_withSnapshot_roundTripsChecksumIntoHealth() = runBlocking {
         db.monthLedgerDao().insert(
-            MonthLedgerEntity("2026-10", "2026-10", 1L)
+            MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L)
         )
         db.appMetaDao().upsert(AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, "1"))
 

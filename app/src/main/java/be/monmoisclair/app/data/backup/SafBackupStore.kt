@@ -91,6 +91,26 @@ class SafBackupStore @Inject constructor(
         )
     }
 
+    /** Contenu brut du dernier backup valide (pour partage T8). */
+    suspend fun readLatestValidBackupUtf8(): String {
+        val tree = openTreeOrThrow()
+        var lastError: Exception? = null
+        for (name in BackupFileNames.rotatedNewestFirst) {
+            if (!tree.exists(name)) continue
+            try {
+                val raw = tree.readUtf8(name)
+                codec.decodeAndVerify(raw)
+                return raw
+            } catch (e: Exception) {
+                lastError = e
+            }
+        }
+        healthStore.markBroken()
+        throw BackupFailure.Integrity(
+            "Aucun backup valide à partager. Dernière erreur: ${lastError?.message}"
+        )
+    }
+
     private suspend fun readTreeUri(): Uri? {
         val raw = appMetaDao.get(AppMetaKeys.SAF_TREE_URI)?.value?.trim().orEmpty()
         if (raw.isEmpty()) return null

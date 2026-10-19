@@ -1,7 +1,7 @@
 # Charte & Architecture — Mon Mois Clair
 
 Document de référence. Toute évolution technique doit rester conforme à ce fichier.  
-Mise à jour : 2026-10-19.
+Mise à jour : 2026-10-19 (lot **5.x** — freeze Home, durcissement 4.x, partage sauvegarde).
 
 ---
 
@@ -11,8 +11,14 @@ Application **locale, privée, hors-ligne** pour gérer les paiements mensuels d
 
 - Zéro connexion bancaire, zéro serveur tiers.
 - Saisie manuelle uniquement.
-- Distribution : **APK sideload familial** (hors Play Store).
+- Distribution : **APK sideload familial** (hors Play Store) — **APK release signé** (pas le debug au quotidien familial).
 - iPad / PWA / frameworks hybrides : **abandonnés définitivement**.
+
+### Freeze produit (verrouillé)
+
+L’app couvre déjà : entrées/sorties, dates, rappels, FAIT, reste après factures, divers, retard, prélèvement, récurrence.  
+**Interdit** d’ajouter de nouvelles options / boutons / compteurs sur l’**écran d’accueil**.  
+Toute nouveauté indispensable → formulaire d’ajout **ou** hub **Réglages** uniquement.
 
 ### Stack figée
 
@@ -27,163 +33,154 @@ Application **locale, privée, hors-ligne** pour gérer les paiements mensuels d
 
 ---
 
-## 2. Décisions verrouillées (A–E)
+## 2. Décisions verrouillées (A–E + F–I + T1–T8)
 
 | ID | Décision |
 |----|----------|
 | **A** | Kotlin natif + Room + Jetpack Compose. Aucune surcouche hybride. |
 | **B** | SQLite source de vérité + auto-backup JSON clair vers dossier Documents (SAF) à chaque mutation. |
-| **C** | Rappels via `AlarmManager` exact (`USE_EXACT_ALARM`) + `BootReceiver` + exemption batterie + écran Santé. Fuseau `Europe/Brussels`. |
-| **D** | Sideload APK familial. |
-| **E** | Ouverture directe sans code ; biométrie **optionnelle** dans les réglages. |
+| **C** | Rappels via `AlarmManager` exact (`USE_EXACT_ALARM`) + receivers boot / update / heure + exemption batterie + écran Santé. Fuseau `Europe/Brussels`. |
+| **D** | Sideload APK **release** familial (keystore stable). |
+| **E** | Ouverture directe sans code ; biométrie **optionnelle** ; si activée → `FLAG_SECURE` (aperçu multitâche masqué). |
+| **F** | Facture **EN RETARD** automatique (visuel) + relance overdue quotidienne 10h jusqu’à FAIT + notif → deep link ligne. |
+| **G** | Libellé **« Reste après factures »** (≠ solde banque) + ligne **Courses / divers** (+/−) sur le mois. |
+| **H** | Case **Prélèvement automatique** → pastille Auto + texte notif « Vérifier le prélèvement… ». |
+| **I** | Récurrence : **Une fois** / **Mensuel** / **Tous les 3 mois** / **1× par an** + sélecteur **Prochaine échéance (mois)** si intervalle > 1. |
+
+### Correctifs Android (T1–T8)
+
+| ID | Failles | Correctif figé |
+|----|---------|----------------|
+| **T1** | Sideload update annule les `AlarmManager` | Receiver : `MY_PACKAGE_REPLACED` + `TIME_SET` (`ACTION_TIME_CHANGED`) + `TIMEZONE_CHANGED` → `reconcileAll()` |
+| **T2** | Debug APK = certificat jetable + perf | Keystore release `.jks` (hors git) + `assembleRelease` (minify R8) |
+| **T3** | Multitâche montre le solde | `FLAG_SECURE` si biométrie ON |
+| **T4** | FAIT sur mois passé sans frein | Confirm dialogue si `yearMonth < current` |
+| **T5** | R8 pourrait casser les clés JSON backup | Codec **manuel** (`JSONObject` + littéraux) ; règles `-keep` backup ; test assert noms de champs ; vérif release device |
+| **T6** | `anchorYearMonth` = mois courant sans choix | Sélecteur « Prochaine échéance : [Mois] » si 3 mois / annuel ; instance créée **seulement** si le mois courant matérialise ; liste en Réglages des périodiques hors mois |
+| **T7** | `OVERDUE` one-shot sans replanif | `ReminderReceiver` après affichage notif → `reconcileAll()` (reprogramme J+1 à 10h) |
+| **T8** | Documents seul = perte si casse/vol téléphone | Réglages : **Envoyer une copie de sécurité** (`ACTION_SEND` JSON → WhatsApp / Mail) |
 
 ---
 
 ## 3. Spécifications fonctionnelles & ergonomie
 
-- **Reste-à-vivre** (header sticky) : `total revenus − total sorties prévues` + montant encore à payer (`status = TODO`).
-- **Liste chronologique unique** (1 → dernier jour du mois) : revenus (+) et dépenses (−).
-- **FAIT** : la ligne reste en place, passe en vert doux, badge « FAIT ✓ ». Pas de disparition / réordonnancement.
-- **Double rappel** (dépenses non FAIT) : J−3 à 10:00 et Jour J à 09:00 (`Europe/Brussels`).
-- **Accessibilité** : thème clair fort contraste (fond crème papier), texte ≥ 18 sp, zones tactiles ≥ 48 dp.
-- **Droit à l’erreur** : toucher une ligne → **modifier** ou **supprimer**. Si l’instance a un `templateId`, proposer « Appliquer aussi aux mois suivants ? ».
+- **Home freeze** : pas de nouvelle option quotidienne sur l’accueil.
+- **Reste après factures** (header sticky) : `sum(revenus) − sum(dépenses du mois)`.
+- **Courses / divers** (même mois) : déjà livré (G) — pas d’extension Home.
+- **Liste chronologique** : revenus (+) et dépenses (−).
+- **FAIT** / **EN RETARD** / rappels J−3 / Jour J / **OVERDUE** : inchangés dans l’esprit (F).
+- **OVERDUE chain (T7)** : chaque `setExactAndAllowWhileIdle` est one-shot ; après feu, `ReminderReceiver` **doit** appeler `reconcileAll()` pour reprogrammer le lendemain 10h tant que TODO+retard.
+- **Récurrence (I + T6)** : si « Tous les 3 mois » ou « 1× par an », afficher **Prochaine échéance** (mois 1–12). `anchorYearMonth` = prochain `yyyy-MM` ≥ mois courant pour ce mois-calendaire. Pas d’instance dans le mois affiché si `!shouldMaterialize`.
+- **Réglages — échéances hors mois** : liste courte des templates actifs (intervalle > 1) non dus ce mois (libellé + prochaine échéance).
+- **Réglages — partage (T8)** : bouton partage du dernier `mon-mois-clair-backup-1.json` via `Intent.ACTION_SEND` (FileProvider cache).
+- **Accessibilité** : thème clair, texte ≥ 18 sp, zones ≥ 48 dp.
 
 ---
 
-## 4. Persistance & sauvegarde (B)
+## 4. Persistance & sauvegarde (B + T5 + T8)
 
-### Source de vérité
-- Room / SQLite, écriture dans une **transaction** à chaque mutation via `MutatingRepository`.
+JSON clair, rotation 3, SHA-256, sync, delete-before-rename.  
+`schemaVersion` backup / Room : **2**.
 
-### Export JSON (clair)
-- **Pas** de chiffrement Keystore (clé perdue si téléphone cassé).
-- **Pas** de mot de passe (oubli + données non bancaires).
-- Fichier JSON avec `schemaVersion` + hash **SHA-256** du payload (intégrité à l’import).
+**T5 — R8 / release :**  
+`BackupJsonCodec` sérialise via **clés littérales** (`"label"`, `"amountCents"`, …), **pas** de réflexion Gson/Jackson.  
+ProGuard : `-keep` sur `be.monmoisclair.app.data.backup.**` et entités Room.  
+Test unitaire : le JSON encodé **contient** les noms de champs attendus.  
+Vérif device release : ouvrir le fichier backup → noms lisibles + restore OK.
 
-### Auto-backup SAF
-1. Au premier lancement (configuration) : `ACTION_OPEN_DOCUMENT_TREE` + `takePersistableUriPermission()`.
-2. Après **chaque** transaction Room réussie : mise à jour du backup dans ce dossier (WorkManager / IO).
-3. Rotation de **3 versions** : `mon-mois-clair-backup-1.json` (récent) … `-3.json`.
-4. Écriture **atomique** :
-   - Écrire `mon-mois-clair-backup.tmp`
-   - `flush()` + `fd.sync()` avant fermeture du flux
-   - Rotation : pour chaque étape (`2→3`, `1→2`, `tmp→1`) : **`findFile(target)?.delete()`** puis rename/copy (SAF : `DocumentFile.renameTo()` ne remplace pas proprement un fichier existant).
-5. Échec I/O → remonter dans `AppMeta.backupHealth` (jamais de `catch` silencieux). Le dossier app-private seul est **insuffisant**.
+**T8 — coffre externe humain :** partage Intent du JSON (pas de cloud).
 
 ---
 
-## 5. Rappels (C)
+## 5. Rappels (C) — receivers
 
-- Manifest : `USE_EXACT_ALARM`, `POST_NOTIFICATIONS`, `RECEIVE_BOOT_COMPLETED`, `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`.
-- Moteur : `AlarmManager.setExactAndAllowWhileIdle` + reprogrammation au boot.
-- `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` **ne remplace pas** Device Care Samsung → écran « Santé des rappels » obligatoire.
-- **BroadcastReceiver** (`BootReceiver`, `ReminderReceiver`) :
-  ```kotlin
-  val pendingResult = goAsync()
-  CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
-      try { /* Room / reconcile */ }
-      finally { pendingResult.finish() }
-  }
-  ```
+Manifest (actions) :
+- `BOOT_COMPLETED` / `LOCKED_BOOT_COMPLETED` / `QUICKBOOT_POWERON`
+- **`MY_PACKAGE_REPLACED`**
+- **`TIME_SET`** (`ACTION_TIME_CHANGED`) / **`TIMEZONE_CHANGED`**
+
+Boot/update/heure → `goAsync` + `reconcileAll()`.
+
+**ReminderReceiver (T7)** : affiche la notif **puis** `reconcileAll()` (goAsync) — obligatoire pour la chaîne OVERDUE.
 
 ---
 
 ## 6. Modèle de données
 
-### Principe
-**Templates** (modèles récurrents) ≠ **Instances** (occurrences mensuelles).  
-Modifier un template ne réécrit **jamais** l’historique des mois déjà générés.
-
-### Enums stricts (pas de String libres)
+### Enums
 
 ```text
 ExpenseStatus : TODO | DONE
 BackupHealth  : OK | BROKEN | NOT_CONFIGURED
-ReminderKind  : J3 | JD
+ReminderKind  : J3 | JD | OVERDUE
 ```
 
-Stockés en Room via `TypeConverter`.
+### Champs (v2)
 
-### Tables
+- `expense_templates` : `isAutoDebit`, `intervalMonths`, `anchorYearMonth`
+- `expense_instances` : `isAutoDebit`
+- `month_ledgers` : `diversSpentCents`
 
-- `month_ledgers` — id = `"yyyy-MM"`
-- `income_templates` / `expense_templates`
-- `income_instances` / `expense_instances` (copie figée label/montant/jour à la génération)
-- `app_meta` — `schemaVersion`, `safTreeUri`, `onboardingDone`, `biometricEnabled`, `lastBackupAtEpochMs`, `lastBackupChecksumSha256`, `backupHealth`
+### Récurrence (I + T6)
 
-### Règles métier
-
-1. **Génération de mois** (lazy) : cold start → mois **courant** seulement ; navigation Home « ‹ Préc. » / « Suiv. › » → crée le mois tapé s’il manque (templates actifs matérialisés). **Ne jamais régénérer** un mois déjà créé. Pas de mois **futur** (après le mois calendaire courant).
-2. **Mois passés** : pas de lecture seule stricte — toggle `TODO` ↔ `DONE` autorisé (oubli de cocher le 28).
-3. **Clamp fin de mois** : `dayOfMonth` instance = `min(template.dayOfMonth, lengthOfMonth)` (ex. 31 → 28 en février non bissextile).
-4. **Montants** : centimes entiers (`Long`), jamais de `Float`/`Double`.
-5. **Ponctuel** : `templateId = null`, non reconduit.
-6. **Édition / suppression** :
-   - Instance seule, ou
-   - Instance + template + (option) instances des mois suivants encore `TODO` / non encore générés selon le dialogue.
+`RecurrenceRules.shouldMaterialize(anchor, interval, target)`.  
+`RecurrenceAnchor.nextYearMonth(monthOfYear, from)` pour le sélecteur UI.
 
 ### Calculs
 
-- `remainingCents = sum(incomes) − sum(expenses)`
-- `stillToPayCents = sum(expenses where status == TODO)`
+- `remainingAfterBillsCents = sum(incomes) − sum(expenses)`
+- `stillToPayCents = sum(expenses where TODO)`
+- `afterDiversCents = remainingAfterBillsCents − diversSpentCents`
 
 ---
 
-## 7. Navigation UI (contrats)
+## 7. Navigation UI
 
 ```text
-OnboardingSaf
-OnboardingPermissions
-Home
-Month(ledgerId)
-ReminderHealth
-Settings
-AddEntry
-EditEntry(id, isExpense)    ← droit à l’erreur
-RestoreBackup
+Home (freeze) · Ajout (récurrence + mois ancre) · Réglages (périodiques hors mois + partage) · …
++ deep link highlightExpenseId
 ```
 
-Use cases associés : `UpdateInstanceUseCase`, `DeleteInstanceUseCase` (option « Appliquer aussi aux mois suivants ? » si `templateId != null`).
+---
+
+## 8. Qualité & sécurité
+
+- Typage fort, pas de catch silencieux, MutatingRepository unique.
+- Biométrie ON ⇒ `FLAG_SECURE`.
+- Release : `keystore.properties` + `.jks` **gitignorés**.
+- Tests unitaires **debug** + asserts T5 ; smoke release device pour backup/restore.
 
 ---
 
-## 8. Qualité & sécurité du code
+## 9. Pre-Mortem
 
-- Typage fort (`enum` + `TypeConverter`), pas de status en String libre.
-- Aucun `catch (e: Exception) {}` silencieux.
-- Erreurs SAF → `backupHealth` + UI.
-- Chaque brique logique livrée avec **tests JUnit**.
-- Point d’entrée unique des mutations : `MutatingRepository.mutate`  
-  Ordre : **transaction Room → backup enqueue → reconcile rappels**.
+1. URI SAF révoqué → Santé + re-choix dossier.  
+2. Device Care Samsung → hint permanent.  
+3. Backup non atomique → delete + sync + rotation 3.  
+4. Update APK sans MY_PACKAGE_REPLACED → silence (T1).  
+5. Debug familial → update impossible (T2).  
+6. Multitâche sans FLAG_SECURE → fuite (T3).  
+7. Mois passé sans confirm → historique faussé (T4).  
+8. Confusion « reste » vs banque → libellé + divers (G).  
+9. Jour J passé sans overdue → oubli (F).  
+10. **R8 renomme champs JSON → backup illisible / restore cassé** (T5).  
+11. **Ancre = mois courant → taxe de mars impossible** (T6).  
+12. **OVERDUE one-shot sans reconcile → une seule relance** (T7).  
+13. **Documents seuls → perte totale si téléphone cassé/volé** (T8).
 
 ---
 
-## 9. Pre-Mortem (risques retenus)
+## 10. Plan d’implémentation
 
-1. URI SAF révoqué → banner Santé + re-sélection dossier.
-2. Device Care Samsung malgré exemption batterie → hint permanent.
-3. Écriture backup non atomique / `renameTo` SAF → delete explicite + `sync()` + rotation 3.
-
----
-
-## 10. Plan d’implémentation (rappel)
-
-| Étape | Contenu |
-|-------|---------|
-| **1.1** | Room + TypeConverters + DAOs + DB + `MonthDayClamp` + `MutatingRepository` + tests ✅ |
-| **1.2** | SAF persist + rotation 3 + checksum + sync disque ✅ |
-| **1.3** | Restore depuis backup ✅ |
-| **2.1** | Cycle mensuel (`MonthCycleEngine`) ✅ |
-| **2.2** | Toggle FAIT (mois courant + précédent) ✅ |
-| **2.3** | AlarmManager + BootReceiver + Santé rappels (API) ✅ |
-| **2.4** | Édition / suppression instances (+ option mois suivants) ✅ |
-| **3.1** | Onboarding SAF + permissions + écran Santé ✅ |
-| **3.2** | UI Home liste chronologique + reste-à-vivre ✅ |
-| **3.2.1** | Polish UX device (insets, confirm delete, parse centimes) ✅ |
-| **3.3** | Restore UI (dernière sauvegarde + fichier JSON) ✅ |
-| **3.4** | Biométrie optionnelle (réglages) ✅ |
-| **3.5** | Hub Réglages + Home allégé (Device Care copy) ✅ |
-| **3.5.1** | Overlay bio + nav mois Préc. lazy (pas de futur) ✅ |
+| Étape | Contenu | État |
+|-------|---------|------|
+| **1.1–3.5.1** | Socle + hub + bio | ✅ |
+| **4.0–4.6** | F–I + T1–T4 | ✅ |
+| **5.0** | Charte freeze Home + T5–T8 (ce document) | ✅ |
+| **5.1** | T5 R8 keep + test clés JSON | ✅ |
+| **5.2** | T6 sélecteur mois ancre + liste Réglages | ✅ |
+| **5.3** | T7 ReminderReceiver → reconcileAll | ✅ |
+| **5.4** | T8 partage ACTION_SEND | ✅ |
 
 Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à jour.
 
@@ -191,5 +188,5 @@ Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à 
 
 ## 11. Build sur volume T7
 
-Le disque externe peut générer des fichiers AppleDouble `._*` qui font échouer AGP/Kotlin.  
-Règles opératoires : variable d’environnement `COPYFILE_DISABLE=1`, `buildDir` local (`~/.cache/mon-mois-clair/`), tâche Gradle `purgeAppleDouble` avant compile/ksp.
+`COPYFILE_DISABLE=1`, `buildDir` `~/.cache/mon-mois-clair/`, `purgeAppleDouble`.  
+Release : `./gradlew :app:assembleRelease` avec `keystore.properties` local.
