@@ -1,0 +1,10 @@
+{
+  "locked_on_launch": false,
+  "home_3_buttons": true,
+  "home_bottom_clearance_px": 512,
+  "settings_privacy": true,
+  "settings_hub_sections": true,
+  "settings_retour_clearance": 456,
+  "fait_regression": "already_done",
+  "fatal": []
+}

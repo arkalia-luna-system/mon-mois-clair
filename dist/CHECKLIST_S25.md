@@ -10,7 +10,7 @@ APK : `dist/MonMoisClair-debug.apk`
 | Serial | `R3CY60BJ3ZM` |
 | Android | 16 (API 36) |
 | Compte | user 0 (pas Secure Folder) |
-| Version app | `0.1.0-3.3` |
+| Version app | `0.1.0-3.5.1` |
 
 ### Résultats automatisés / observés
 
@@ -26,6 +26,8 @@ APK : `dist/MonMoisClair-debug.apk`
 | Ajout entrée | OK (persistée + backup) |
 | Écran Santé | 4× OK + hint Device Care |
 | Écran Restore + confirm | OK |
+| Réglages biométrie (dispo hardware) | OK (écran + libellé « Disponible ») |
+| Hub Réglages (SAF / Restore / Device Care) | OK (Home allégé : Ajouter · Santé · Réglages) |
 | Notifications | granted |
 | Alarmes exactes | granted (`USE_EXACT_ALARM`) |
 | Exemption batterie | OK (whitelist idle) |

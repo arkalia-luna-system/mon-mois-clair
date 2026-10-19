@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,8 +36,7 @@ fun HomeScreen(
     onAdd: () -> Unit,
     onEdit: (id: String, isExpense: Boolean) -> Unit,
     onOpenHealth: () -> Unit,
-    onOpenSettingsSaf: () -> Unit,
-    onOpenRestore: () -> Unit,
+    onOpenSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -69,13 +70,13 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "‹ Préc.",
                         style = MaterialTheme.typography.titleLarge,
                         color = if (state.canGoPrev) A11yTokens.Ink else A11yTokens.InkMuted,
+                        softWrap = false,
                         modifier = Modifier
                             .heightIn(min = A11yTokens.minTouchHeight)
                             .clickable(enabled = state.canGoPrev) { viewModel.prevMonth() }
@@ -84,12 +85,18 @@ fun HomeScreen(
                     Text(
                         text = state.monthLabel,
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp)
                     )
                     Text(
                         text = "Suiv. ›",
                         style = MaterialTheme.typography.titleLarge,
                         color = if (state.canGoNext) A11yTokens.Ink else A11yTokens.InkMuted,
+                        softWrap = false,
                         modifier = Modifier
                             .heightIn(min = A11yTokens.minTouchHeight)
                             .clickable(enabled = state.canGoNext) { viewModel.nextMonth() }
@@ -142,9 +149,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 SecondaryA11yButton(text = "Santé des rappels", onClick = onOpenHealth)
                 Spacer(modifier = Modifier.height(8.dp))
-                SecondaryA11yButton(text = "Dossier de sauvegarde", onClick = onOpenSettingsSaf)
-                Spacer(modifier = Modifier.height(8.dp))
-                SecondaryA11yButton(text = "Restaurer une sauvegarde", onClick = onOpenRestore)
+                SecondaryA11yButton(text = "Réglages", onClick = onOpenSettings)
             }
         }
     }

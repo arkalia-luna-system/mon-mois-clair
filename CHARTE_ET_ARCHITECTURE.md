@@ -113,7 +113,7 @@ Stockés en Room via `TypeConverter`.
 
 ### Règles métier
 
-1. **Génération de mois** (lazy à l’ouverture) : créer le ledger courant s’il manque ; pour chaque template `active`, créer des instances ; **ne jamais régénérer** un mois déjà créé.
+1. **Génération de mois** (lazy) : cold start → mois **courant** seulement ; navigation Home « ‹ Préc. » / « Suiv. › » → crée le mois tapé s’il manque (templates actifs matérialisés). **Ne jamais régénérer** un mois déjà créé. Pas de mois **futur** (après le mois calendaire courant).
 2. **Mois passés** : pas de lecture seule stricte — toggle `TODO` ↔ `DONE` autorisé (oubli de cocher le 28).
 3. **Clamp fin de mois** : `dayOfMonth` instance = `min(template.dayOfMonth, lengthOfMonth)` (ex. 31 → 28 en février non bissextile).
 4. **Montants** : centimes entiers (`Long`), jamais de `Float`/`Double`.
@@ -181,7 +181,9 @@ Use cases associés : `UpdateInstanceUseCase`, `DeleteInstanceUseCase` (option �
 | **3.2** | UI Home liste chronologique + reste-à-vivre ✅ |
 | **3.2.1** | Polish UX device (insets, confirm delete, parse centimes) ✅ |
 | **3.3** | Restore UI (dernière sauvegarde + fichier JSON) ✅ |
-| **3.4** | Biométrie optionnelle (réglages) |
+| **3.4** | Biométrie optionnelle (réglages) ✅ |
+| **3.5** | Hub Réglages + Home allégé (Device Care copy) ✅ |
+| **3.5.1** | Overlay bio + nav mois Préc. lazy (pas de futur) ✅ |
 
 Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à jour.
 

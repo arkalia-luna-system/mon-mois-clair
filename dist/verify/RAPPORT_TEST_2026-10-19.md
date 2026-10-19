@@ -1,67 +1,62 @@
 # Rapport test — 2026-10-19
 
 ## Contexte
-- Device / émulateur : Galaxy S25 Ultra (`SM-S938B`, serial `R3CY60BJ3ZM`), Android 16, user 0
-- Version app (versionName) : `0.1.0-3.3`
-- Étape PROGRESS concernée : **3.3 Restore UI** (+ régression 3.2 / 2.4 / Santé)
-- Build / install : `./gradlew :app:assembleDebug` + `adb install -r dist/MonMoisClair-debug.apk`  
-  Tests : `./gradlew :app:testDebugUnitTest --rerun-tasks` → **74/74** (17 fichiers `TEST-*.xml`)
+- Device / émulateur : Galaxy S25 Ultra (`SM-S938B` / `R3CY60BJ3ZM`), Android 16, user 0
+- Version app (versionName) : `0.1.0-3.5`
+- Étape PROGRESS concernée : **3.4 biométrie** + **3.5 hub Réglages** (données conservées, pas de `pm clear`)
+- Build / install : `assembleDebug` + `adb install -r` · preuves `dist/verify/p35/`
+- Tests Gradle : **84/84** (`--rerun-tasks`, 21 × `TEST-*.xml`, 0 fail)
 
 ## Synthèse
 - Verdict : **OK avec réserves**
-- Nb problèmes bloquants / majeurs / mineurs : **0 / 1 / 2** (tous corrigés dans ce tour sauf réserves listées)
+- Nb problèmes bloquants / majeurs / mineurs : **0 / 0 / 1** (wrap « Suiv. › » corrigé)
+- Audit code : **fait** (gateway, preference/MutatingRepository, MainUiState décision E, Settings hub, overlay lock)
+- Audit visuel : **fait** (Home, Réglages, prompt bio système, Restore depuis hub)
 
 ## Parcours testés
-| Persona | Scénario | Résultat | Preuve (UI / log / fichier) |
-|---------|----------|----------|-----------------------------|
-| A Première install | Non rejoué (clear data) — déjà validé checklist | OK (historique) | `dist/CHECKLIST_S25.md` |
-| B Usage mensuel | Reste-à-vivre 517 € / encore 533 € ; liste chrono gaz/loyer/pension/course | OK | `r2_home0.png`, `r5_scroll.xml` |
-| B FAIT ✓ | Toggle gaz → encore à payer 500 € ; ligne reste ; badge FAIT | OK | `r5_after_fait.png` + `BackupWorker` SUCCESS |
-| B Nav mois | Suiv. désactivé sur mois courant | OK | `r2_home0.xml` (`Suiv.` enabled=false) |
-| C Droit à l’erreur | Annuler dialogue restore ; Retour | OK | `r2_confirm.xml` → `r2_restore_cancel.xml` |
-| D Samsung / Santé | Notif / alarmes / batterie / SAF tous OK + hint Device Care | OK | `r2_sante.png` |
-| D Backup 1–3 | Présents sous `/storage/emulated/0/Teste/` ; rotation après mutation | OK | `ls Teste/` + logcat BackupWorker |
-| D Restore E2E | Dernière sauvegarde → confirm → succès → Home cohérent | OK | `r2_success.png`, `r2_home_after.png` |
-| E Cas limites | Montants virgule / jour 31 : non rejoués ce tour (tests unitaires existants) | Doute léger | `MoneyFormatTest` / `MonthDayClampTest` |
-| E Clavier / double tap | Non rejoués ce tour (validés 3.2.1) | OK (historique) | entrée PROGRESS 3.2.1 |
+| Persona | Scénario | Code OK ? | Visuel OK ? | Preuve |
+|---------|----------|-----------|-------------|--------|
+| F Feature | Hub Réglages : Confidentialité / Rappels / Device Care / Sauvegarde | Oui | Oui | `p35/03_settings_top.png`, `04_settings_foot.xml` |
+| F Feature | Home allégé : Ajouter · Santé · Réglages (plus SAF/Restore) | Oui | Oui | `p35/02_home_foot.png` |
+| F Feature | Toggle bio → prompt Samsung titre/sous-titre FR | Oui | Oui | `p35/12_bio_prompt.xml` (pkg `biometrics.app.setting`) |
+| F Feature | Annuler prompt → reste désactivé (cancel) | Oui | Oui | `12` → retour app sans enable forcé |
+| F Feature | Lock screen copy (titre / Déverrouiller) — vu quand flag ON | Oui | Oui | dumps prompt + lock overlay |
+| F Feature | Décision E : `needsUnlock` seulement si Ready | Oui | N/A | `MainUiStateTest` |
+| F Feature | Restore depuis Réglages → Retour hub | Oui | Oui | `p35/05_restore.png` |
+| G Régression | Marges bas Home/Réglages vs barre système | Oui | Oui | clearance Home 512 px / Retour 456 px |
+| G Régression | Contraste Primary (crème sur vert) | Oui | Oui | `02_home_foot.png` |
+| B Léger | Liste + montants home (données existantes) | Oui | Oui | 755 € / 45 € |
+| — | Claims README 3.4/82 vs code 3.5/84 | Corrigé doc | N/A | README badges 3.5 / 84 |
 
 ## Problèmes trouvés
 | ID | Sévérité | Zone | Description | Attendu (charte) | Observé |
 |----|----------|------|-------------|------------------|---------|
-| P1 | Majeur | Thème / a11y | `labelLarge` forçait `Ink` → texte quasi illisible sur boutons Primary (vert foncé) | Contraste fort, texte ≥ 18 sp lisible | Texte sombre sur `ButtonFill` |
-| P2 | Mineur | Restore UI | Succès → navigation immédiate sans feedback | Utilisateur comprend le résultat | Message jamais vu |
-| P3 | Mineur | Restore UI | Dialogue disait « mois en cours » alors que `clearAllTables` efface tout | Droit à l’erreur / vérité | Sous-évaluation du risque |
-| P4 | Mineur (doc) | README | Claims `69/69` et `0.1.0-3.2.1` alors que code/journal en 3.3 / 74 | Pas de fausse promesse | README en retard |
+| H1 | Mineur | Home nav mois | « Suiv. › » wrap sur 2 lignes (colonne trop étroite) | Lisibilité seniors | `Suiv.` h≈394 px avant fix |
+| H2 | Doc | README | Badges encore 82/3.4 alors que `versionName` 3.5 + 84 tests | Claims = réalité | Décalage (corrigé) |
 
 ## Corrections faites
-| ID | Fichiers | Résumé du fix | Re-test OK ? |
-|----|----------|---------------|--------------|
-| P1 | `MonMoisClairTheme.kt` | Retirer couleur figée de `labelLarge` (héritage `LocalContentColor`) | Oui — `r2_restore.png` texte clair sur vert |
-| P2 | `RestoreBackupScreen.kt` | Dialogue « Restauration réussie » + OK avant retour Home | Oui — `r2_success.png` |
-| P3 | `RestoreBackupScreen.kt` | Texte confirm : toutes les données / tous les mois ; SAF local conservé | Oui — `r2_confirm.xml` |
-| P2+ | `RestoreBackupViewModel.kt` | Après succès : `ensureCurrentMonthExists()` | Oui (mois courant présent post-restore) |
-| P2+ | `RestoreBackupScreen.kt` | « Choisir un fichier JSON » en Secondary (pas Danger) | Oui |
-| P4 | `README.md` | Alignement version `0.1.0-3.3`, badges **74/74**, feature Restore | N/A (doc) |
+| ID | Fichiers | Résumé du fix | Re-test code | Re-test UI |
+|----|----------|---------------|--------------|------------|
+| H1 | `HomeScreen.kt` | `weight(1f)` sur mois + `softWrap=false` Préc/Suiv | 84/84 | Oui — Suiv. h=192 / w=351 (`18_home`) |
+| H2 | `README.md` | Badges **84/84** · `0.1.0-3.5` · hub | N/A | N/A |
 
-## Non traité (hors scope / à laisser à l’expert validation)
-- Biométrie optionnelle (étape 3.4)
-- Device Care Samsung : confirmation **manuelle** une fois (hint affiché, pas vérifié dans Paramètres système)
-- Parcours « Choisir un fichier JSON… » (picker SAF) non automatisé ce tour — seule la restauration « dernière sauvegarde » est prouvée E2E
-- Clear-data / première installation non rejoués aujourd’hui
-- Commit / push (réservé à l’expert validation)
+## Non traité (hors scope / expert validation)
+- Déverrouillage empreinte **bout-en-bout** (succès doigt) : prompt OK ; succès complet à confirmer humain une fois
+- Device Care « Mise en veille » : copy + intents OK, geste manuel One UI non ouvert
+- Picker Restore fichier JSON unitaire
+- Commit / push
 
-## Checklist device (cocher)
-- [x] SAF Documents
-- [x] Backups 1–3
-- [x] FAIT ✓
-- [x] Add / Edit / Delete + confirm *(Add/Edit/Delete : historique 3.2.1 + preuves `dist/verify/` ; non rejoués exhaustivement ce tour)*
-- [x] Santé rappels
-- [x] Insets / lisibilité *(contraste Primary corrigé)*
+## Checklist (seulement ce que TU as fait ce tour)
+- [x] Lecture diff / charte
+- [x] Tests unitaires **84/84**
+- [x] Scénarios feature du diff (bio + hub)
+- [x] Checklist visuelle (marges, contraste, dialogs/prompt)
+- [x] Biométrie / lock (prompt + copy ; unlock doigt = réserve humain)
 - [x] Pas de crash
-- [x] Restore UI E2E (dernière sauvegarde)
 
 ## Message pour l’expert validation
-Restore UI 3.3 est **fonctionnelle sur device** : confirm destructive correct, succès explicite, Home à 517/533 après restore, FAIT + `BackupWorker` SUCCESS, Santé OK ×4.  
-Correctifs a11y (contraste boutons) et doc README alignés sur **74/74** / `0.1.0-3.3`.  
-À re-vérifier avant push : (1) claims README ↔ `versionName` ↔ PROGRESS ↔ score Gradle `--rerun-tasks` ; (2) parcours picker fichier JSON manuel ; (3) fichiers non commités (`ui/restore/`, theme, README, ce rapport) ; (4) ne pas annoncer biométrie / Device Care manuel comme terminés.  
-Pas de FATAL observé. Prêt pour audit validation — **ne pas merger sur ma seule parole**.
+3.4+3.5 prêts côté code + device hub : Home 3 boutons, Réglages complet, Device Care section, Restore depuis hub, prompt bio Samsung correct.  
+Décision E respectée (`needsUnlock` seulement si Ready). Overlay session NavHost présent (évite perte pile Réglages).  
+Corrigé : wrap « Suiv. › » + claims README **84/84** / `0.1.0-3.5`.  
+À re-vérifier avant push : score Gradle `--rerun-tasks` = 84 ; unlock empreinte manuel une fois ; working tree (`HomeScreen`, README, PROGRESS, rapport).  
+Pas de push de mon côté.

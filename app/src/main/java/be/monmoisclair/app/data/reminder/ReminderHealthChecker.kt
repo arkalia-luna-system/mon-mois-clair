@@ -95,4 +95,13 @@ class ReminderHealthChecker @Inject constructor(
             putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
         }
     }
+
+    /** Liste système des apps exemptées / à optimiser (proche Device Care). */
+    fun intentBatteryOptimizationList(): Intent =
+        Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+
+    fun intentApplicationDetails(): Intent =
+        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.parse("package:${context.packageName}")
+        }
 }

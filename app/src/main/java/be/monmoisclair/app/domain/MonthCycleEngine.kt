@@ -36,9 +36,9 @@ class MonthCycleEngine @Inject constructor(
         ensureMonthExists(AppClock.currentYearMonth())
 
     /**
-     * @param yearMonth mois cible (tests / navigation future).
-     * Seul le mois courant est créé au cold start ; les mois passés absents
-     * ne sont pas rattrapés automatiquement (conforme charte).
+     * @param yearMonth mois cible (cold start = courant ; Home Préc./Suiv. = navigation).
+     * Cold start : seul le mois courant. Navigation utilisateur : crée le mois tapé
+     * (lazy) sans rattraper tout l’historique d’un coup.
      */
     suspend fun ensureMonthExists(yearMonth: YearMonth): EnsureMonthResult {
         val ledgerId = AppClock.ledgerId(yearMonth)

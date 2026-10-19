@@ -6,9 +6,9 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Tests](https://img.shields.io/badge/tests-74%2F74-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-88%2F88-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--3.3-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--3.5.1-informational)](#statut)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
 Saisie manuelle · backup JSON local · rappels exacts · distribution familiale par APK.
@@ -19,11 +19,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-3.3.1` |
-| Dernière étape | **3.3** Restore UI + **3.2** Home + **2.4** édition |
+| Version | `0.1.0-3.5.1` |
+| Dernière étape | **3.5.1** Hub + bio + nav mois (Préc. lazy) |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`, Android 16) — voir [checklist](dist/CHECKLIST_S25.md) |
 | Distribution | Sideload familial (hors Play Store) |
-| Tests unitaires | **74/74** OK |
+| Tests unitaires | **88/88** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -46,6 +46,8 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 | **Ajout / édition / suppression** | ✅ |
 | **Backup SAF** (3 versions, SHA-256) | ✅ (validé device) |
 | **Restaurer** (dernière sauvegarde / fichier JSON) | ✅ |
+| **Biométrie optionnelle** (réglages) | ✅ |
+| **Hub Réglages** (bio · Device Care · sauvegarde) | ✅ |
 | **Double rappel** J−3 / jour J | ✅ moteur (Device Care à confirmer par usage) |
 | **Onboarding** SAF + permissions + Santé | ✅ |
 
@@ -69,7 +71,7 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 ## Avancement
 
 ```text
-[██████████████████░░]  ~70 %
+[█████████████████████]  ~80 %
 
 1.x  Room / backup / restore                         ✅
 2.1–2.3  Cycle / toggle / AlarmManager               ✅
@@ -77,8 +79,12 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 3.1  Onboarding SAF + permissions + Santé            ✅
 3.2  Home liste + reste-à-vivre                      ✅
 3.3  Restore UI (SAF + fichier JSON)                 ✅
+3.4  Biométrie optionnelle (réglages)                ✅
+3.5  Hub Réglages + Home allégé                      ✅
+3.5.1 Nav mois Préc. lazy + titres FR + bio overlay  ✅
      Validation S25 Ultra (SM-S938B)                 ✅
 ```
+
 
 ---
 

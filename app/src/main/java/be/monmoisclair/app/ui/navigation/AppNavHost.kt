@@ -15,6 +15,7 @@ import be.monmoisclair.app.ui.home.HomeScreen
 import be.monmoisclair.app.ui.onboarding.PermissionsSetupScreen
 import be.monmoisclair.app.ui.onboarding.SafSetupScreen
 import be.monmoisclair.app.ui.restore.RestoreBackupScreen
+import be.monmoisclair.app.ui.settings.SettingsScreen
 
 @Composable
 fun AppNavHost(
@@ -69,7 +70,14 @@ fun AppNavHost(
                     navController.navigate(AppRoute.editEntry(id, isExpense))
                 },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
-                onOpenSettingsSaf = { navController.navigate(AppRoute.SafSetup) },
+                onOpenSettings = { navController.navigate(AppRoute.Settings) }
+            )
+        }
+        composable(AppRoute.Settings) {
+            SettingsScreen(
+                onBack = { navController.popBackStack() },
+                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
+                onOpenSaf = { navController.navigate(AppRoute.SafSetup) },
                 onOpenRestore = { navController.navigate(AppRoute.RestoreBackup) }
             )
         }

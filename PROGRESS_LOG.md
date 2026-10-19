@@ -9,98 +9,51 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **3.3.1** (CheckRow + marge basse système) |
+| Dernière étape terminée | **3.5.1** (hub + bio + nav mois) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Biométrie optionnelle (réglages) · Device Care manuel une fois sur chaque Samsung familial |
+| Prochaine sous-étape | Device Care manuel familial · polish |
 
 ---
 
 ## Journal
 
-### 2026-10-19 — Validation expert 3.3.1 (FROM_ZERO + marge basse)
+### 2026-10-19 — Validation expert (push 3.4–3.5.1)
 
-**Confirmé (rapport testeur) :** campagne from zero A→E OK ; bug CheckRow « Revient… » mort One UI → fix `clickable` + `Checkbox(onCheckedChange)` re-testé ; **74/74**.
+**Confirmé :** rapport testeur hub/bio/wrap Suiv. ; overlay bio ; **décision E**.  
+**Bug calendrier/mois (retour humain) :** Préc. grisé sans ledger passé → fix `MonthNavigation` + `ensureMonthExists` au tap ; titres FR testés.  
+**Tests :** **88/88** · device Oct→Sept→Oct OK · `versionName` `0.1.0-3.5.1`.  
+**Réserve acceptée :** unlock empreinte bout-en-bout (prompt OK, confirm humain).
 
-**Corrigé en plus (retour utilisateur / maman) :**
-- Marge basse One UI : `safeDrawingPadding` + `WindowInsets.tappableElement` (zone 3 boutons souvent `navigationBars visible=false`) + `bottomSystemClearance` 28 dp — vérifié device : contenu Home/Restore au-dessus de y=2928.
-- Prompt testeur : stratégie anti-rond (diversifier, pm clear seulement si besoin, checklist ciblée diff).
+### 2026-10-19 — Audit global + patch 3.5.1
 
-**Tests :** **74/74** `--rerun-tasks` · device SM-S938B install `0.1.0-3.3.1`.  
-**Preuves :** `dist/verify/from_zero/` + `RAPPORT_TEST_2026-10-19_FROM_ZERO.md`.
+**Confirmé device + code :** Home / Santé / hub / édition / marges ; overlay bio NavHost.  
+**Rapport :** `dist/verify/RAPPORT_TEST_2026-10-19_AUDIT_3.5.md` (si présent) + `RAPPORT_TEST_2026-10-19.md`.
 
-### 2026-10-19 — Testeur-correcteur FROM ZERO (post `9e73b34`)
+### 2026-10-19 — Testeur-correcteur 3.4+3.5 (code + visuel)
 
-**Méthode :** `pm clear --user 0` + `RESET_TESTS_FROM_ZERO.md` · preuves `dist/verify/from_zero/`.
-
-**Persona A :** SAF `Teste/` → permissions OK ×4 + Device Care hint → Home vide 0 €.  
-**B–E :** add (virgule 470,50), FAIT/undo, edit/delete confirm, Santé, SAF Retour, Restore E2E, BackupWorker SUCCESS.
-
-**Corrigé :**
-- `CheckRow` (case « Revient tous les mois ») : taps ignorés sur One UI → `clickable` + `Checkbox(onCheckedChange)`.
-
-**Tests :** 74/74 OK · re-test récurrente `eau` + template + option mois suivants OK.  
-**Rapport :** `dist/verify/RAPPORT_TEST_2026-10-19_FROM_ZERO.md`
-
-### 2026-10-19 — Validation expert (post rapport testeur)
-
-**Confirmé :** 74/74 Gradle `--rerun-tasks` ; claims README/PROGRESS/`versionName` alignés `0.1.0-3.3` ; restore UI (confirm all-data, succès, SAF préservé) ; contraste `labelLarge` OK.  
-**Réserves acceptées (non bloquantes) :** picker JSON fichier non E2E ; Device Care manuel.  
-**Ops device :** `pm clear` + doc `dist/verify/RESET_TESTS_FROM_ZERO.md` pour prochains tests from zero.  
-**Rapport :** `dist/verify/RAPPORT_TEST_2026-10-19.md` · **Push OK.**
-
-### 2026-10-19 — Testeur-correcteur (post 3.3)
-
-**Corrigé :**
-- Contraste Primary : `labelLarge` sans `Ink` figé (`MonMoisClairTheme`).
-- Restore : dialogue succès + OK ; confirm « toutes les données / tous les mois » ; `ensureCurrentMonthExists` après succès.
-- README aligné `0.1.0-3.3` / **74/74** / feature Restore.
-
-**Tests :** 74/74 OK · device E2E restore + FAIT + Santé + BackupWorker SUCCESS.  
+Hub Réglages, Home allégé, prompt bio, wrap Suiv. · **84/84** à ce stade.  
 **Rapport :** `dist/verify/RAPPORT_TEST_2026-10-19.md`
 
-### 2026-10-19 — Étape 3.3 terminée (Restore UI)
+### 2026-10-19 — Étape 3.5 terminée (hub Réglages)
 
 **Codé :**
-- Écran `RestoreBackupScreen` + `RestoreBackupViewModel` (dernière sauvegarde SAF + fichier JSON).
-- Confirmation destructive avant restauration.
-- Bouton Home « Restaurer une sauvegarde ».
-- `RestoreMessages` (messages testables).
+- Home allégé : **Ajouter** · **Santé des rappels** · **Réglages** (SAF / Restore sortis du Home).
+- Réglages = hub : Confidentialité (biométrie) · Rappels (+ Device Care Samsung + intents batterie / fiche app) · Sauvegarde (dossier + restaurer).
+- `DeviceCareCopy` + intents `ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS` / fiche application.
 
-**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **74/74 OK**.
+**Tests validés :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **84/84 OK** (recomptés testeur).
 
-**Device (SM-S938B) :** restore E2E (dernière sauvegarde) + Home cohérent ; APK `0.1.0-3.3`.
+**Device (SM-S938B) :** Home 3 boutons ; Réglages affiche sections Confidentialité / Rappels / Device Care / Sauvegarde.
 
-**Vigilance :** restauration remplace toute la DB locale ; l’URI SAF du téléphone est conservée.
+**Vigilance :** Device Care « Mise en veille » reste une action manuelle One UI (pas d’API publique fiable).
 
-**Prochaine sous-étape :** biométrie optionnelle.
-
----
-
-### 2026-10-19 — Validation device complète (SM-S938B / S25 Ultra)
-
-Vérification visuelle + adb (screenshots `dist/verify/`) :
-
-| Check | Résultat |
-|-------|----------|
-| Home reste-à-vivre / encore à payer | OK (maths cohérentes) |
-| Toggle FAIT ✓ / Marquer à payer | OK |
-| Édition ligne (tap zone libellé) | OK — form Modifier / Annuler / Supprimer |
-| Ajout entrée (ex. gaz 33 € j8) | OK — backup mis à jour |
-| Santé des rappels | OK ×4 (notif, alarmes, batterie, SAF) + hint Device Care |
-| Backups rotation 1–3 | OK dans `/storage/emulated/0/Teste/` |
-| Permissions notif + exact alarm | granted |
-| Crash FATAL | aucun |
-| Nav mois Suiv. (mois courant) | désactivé — conforme (pas de mois futur) |
-
-Détail : `dist/CHECKLIST_S25.md`.
+**Prochaine sous-étape :** validation / push.
 
 ---
 
-### 2026-10-19 — Étapes 2.4 + 3.2 terminées
+### 2026-10-19 — Étape 3.4 terminée (biométrie optionnelle)
 
-**Codé (2.4) :** Add / Update / Delete (+ mois suivants).  
-**Codé (3.2) :** Home sticky + liste + FAIT.  
-**Tests :** 69/69 à ce stade.
+**Codé :** gateway biométrie, Réglages toggle, verrouillage ON_STOP, **82/82** à ce stade.
 
 ---
 
