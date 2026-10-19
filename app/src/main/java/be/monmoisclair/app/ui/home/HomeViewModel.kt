@@ -18,9 +18,13 @@ import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -57,6 +61,10 @@ class HomeViewModel @Inject constructor(
     private val selectedMonth = MutableStateFlow(AppClock.currentYearMonth())
     private val highlightExpenseId = MutableStateFlow<String?>(null)
     private val pendingPastToggleId = MutableStateFlow<String?>(null)
+    private val _diversError = MutableStateFlow<String?>(null)
+    val diversError: StateFlow<String?> = _diversError.asStateFlow()
+    private val _diversFieldCleared = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val diversFieldCleared: SharedFlow<Unit> = _diversFieldCleared.asSharedFlow()
 
     val uiState: StateFlow<HomeUiState> = selectedMonth
         .flatMapLatest { ym ->
@@ -205,11 +213,25 @@ class HomeViewModel @Inject constructor(
 
     private fun adjustDiversBy(eurosText: String, add: Boolean) {
         viewModelScope.launch {
-            val cents = MoneyFormat.parseToCents(eurosText) ?: return@launch
+            val cents = MoneyFormat.parseToCents(eurosText)
+            if (cents == null || cents <= 0L) {
+                _diversError.value = "Indiquez un montant valide (ex. 12,50)."
+                return@launch
+            }
             val delta = if (add) cents else -cents
             val ledgerId = AppClock.ledgerId(selectedMonth.value)
-            adjustDivers(ledgerId, delta)
+            when (val result = adjustDivers(ledgerId, delta)) {
+                is AdjustDiversResult.Success -> {
+                    _diversError.value = null
+                    _diversFieldCleared.tryEmit(Unit)
+                }
+                is AdjustDiversResult.Failed -> _diversError.value = result.message
+            }
         }
+    }
+
+    fun clearDiversError() {
+        _diversError.value = null
     }
 
     fun refreshCurrentMonth() {

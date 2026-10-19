@@ -54,6 +54,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val diversError by viewModel.diversError.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val context = LocalContext.current
     var diversInput by remember { mutableStateOf("") }
@@ -61,6 +62,10 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         val id = (context as? MainActivity)?.consumeHighlightExpenseId()
         if (id != null) viewModel.setHighlightExpenseId(id)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.diversFieldCleared.collect { diversInput = "" }
     }
 
     LaunchedEffect(state.highlightExpenseId, state.timeline) {
@@ -207,7 +212,10 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = diversInput,
-                    onValueChange = { diversInput = it },
+                    onValueChange = {
+                        diversInput = it
+                        viewModel.clearDiversError()
+                    },
                     label = { Text("Montant divers (€)") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
@@ -221,26 +229,32 @@ fun HomeScreen(
                 ) {
                     SecondaryA11yButton(
                         text = "− Divers",
-                        onClick = {
-                            viewModel.removeDivers(diversInput)
-                            diversInput = ""
-                        },
+                        onClick = { viewModel.removeDivers(diversInput) },
                         modifier = Modifier.weight(1f)
                     )
                     SecondaryA11yButton(
                         text = "+ Divers",
-                        onClick = {
-                            viewModel.addDivers(diversInput)
-                            diversInput = ""
-                        },
+                        onClick = { viewModel.addDivers(diversInput) },
                         modifier = Modifier.weight(1f)
+                    )
+                }
+                diversError?.let { err ->
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = err,
+                        color = A11yTokens.AccentDanger,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
             }
             if (state.timeline.isEmpty() && !state.loading) {
                 item {
                     Text(
-                        text = "Aucune entrée ce mois-ci. Ajoutez un revenu ou une dépense.",
+                        text = "Aucune entrée ce mois-ci.",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    Text(
+                        text = "Touchez « Ajouter une entrée » plus bas pour un salaire, un loyer, etc.",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }

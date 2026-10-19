@@ -20,7 +20,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 ### 2026-10-19 — Validation expert 5.4.1 + push
 
 **Confirmé 5.4 :** F–I + T1–T8 présents ; **104** puis **107** tests après aide.  
-**Ajouté :** Réglages → « Comment ça marche » (`HowItWorksScreen`, Home freeze respecté) ; `RecurrenceLabel` branché formulaire.  
+**Ajouté :** Réglages → « Comment ça marche » ; `RecurrenceLabel` ; erreurs divers visibles ; info récurrence en édition ; copy lock biométrie plus claire.  
 **Claims :** `0.1.0-5.4.1` / `versionCode` 4 / **107/107**.
 
 ### 2026-10-19 — Audit propreté + hygiene git

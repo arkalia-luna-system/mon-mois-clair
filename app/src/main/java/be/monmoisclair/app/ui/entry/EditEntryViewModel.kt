@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.domain.usecase.DeleteInstanceResult
 import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
 import be.monmoisclair.app.domain.usecase.UpdateInstanceResult
@@ -24,6 +25,7 @@ data class EditEntryState(
     val amountText: String = "",
     val dayText: String = "1",
     val isAutoDebit: Boolean = false,
+    val recurrenceInfo: String? = null,
     val hasTemplate: Boolean = false,
     val applyToFollowing: Boolean = false,
     val error: String? = null,
@@ -35,6 +37,7 @@ data class EditEntryState(
 class EditEntryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val instanceDao: InstanceDao,
+    private val templateDao: TemplateDao,
     private val updateInstance: UpdateInstanceUseCase,
     private val deleteInstance: DeleteInstanceUseCase
 ) : ViewModel() {
@@ -59,6 +62,11 @@ class EditEntryViewModel @Inject constructor(
             val euros = e.amountCents / 100
             val rem = (e.amountCents % 100).toInt()
             val amountText = if (rem == 0) euros.toString() else "%d,%02d".format(euros, rem)
+            val recurrenceInfo = e.templateId?.let { tid ->
+                templateDao.getExpenseById(tid)?.let { tpl ->
+                    RecurrenceLabel.forIntervalMonths(tpl.intervalMonths)
+                }
+            } ?: RecurrenceLabel.oneOff()
             _state.update {
                 it.copy(
                     loading = false,
@@ -66,6 +74,7 @@ class EditEntryViewModel @Inject constructor(
                     amountText = amountText,
                     dayText = e.dayOfMonth.toString(),
                     isAutoDebit = e.isAutoDebit,
+                    recurrenceInfo = recurrenceInfo,
                     hasTemplate = e.templateId != null
                 )
             }
@@ -78,12 +87,18 @@ class EditEntryViewModel @Inject constructor(
             val euros = e.amountCents / 100
             val rem = (e.amountCents % 100).toInt()
             val amountText = if (rem == 0) euros.toString() else "%d,%02d".format(euros, rem)
+            val recurrenceInfo = if (e.templateId != null) {
+                RecurrenceLabel.forIntervalMonths(1)
+            } else {
+                RecurrenceLabel.oneOff()
+            }
             _state.update {
                 it.copy(
                     loading = false,
                     label = e.label,
                     amountText = amountText,
                     dayText = e.dayOfMonth.toString(),
+                    recurrenceInfo = recurrenceInfo,
                     hasTemplate = e.templateId != null
                 )
             }

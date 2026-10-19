@@ -70,8 +70,14 @@ fun BiometricLockScreen(
             style = MaterialTheme.typography.headlineMedium
         )
         Text(
-            text = "Confirmez votre identité pour voir le mois en cours.",
+            text = "Posez votre doigt sur le lecteur d’empreinte, " +
+                "ou utilisez le code / visage du téléphone.",
             style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = "Si rien ne s’ouvre : touchez le gros bouton vert ci-dessous.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
         )
         message?.let {
             Text(
@@ -81,6 +87,6 @@ fun BiometricLockScreen(
             )
         }
         Spacer(modifier = Modifier.weight(1f))
-        PrimaryA11yButton(text = "Déverrouiller", onClick = { prompt() })
+        PrimaryA11yButton(text = "Déverrouiller maintenant", onClick = { prompt() })
     }
 }
