@@ -7,11 +7,12 @@ Principe : **une garde à la fois**. On active un contrôle seulement quand le c
 
 Workflow : [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 
-À chaque push / PR sur `main` :
+À chaque push / PR sur **`develop`** (et `main` si merge explicite) :
 
 - compile `assembleDebug`
 - exécute `:app:testDebugUnitTest`
 
+Travail quotidien = **`develop`** uniquement (voir charte §5).
 Échec = le push casse le build ou les tests → à corriger avant de considérer la branche OK.
 
 ## Phase 2 — qualité (quand tu es prête)

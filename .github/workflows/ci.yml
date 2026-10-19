@@ -6,9 +6,10 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # develop = travail quotidien ; main = stable (merge explicite seulement).
+    branches: [develop, main]
   pull_request:
-    branches: [main]
+    branches: [develop, main]
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}

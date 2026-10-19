@@ -36,7 +36,8 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 ### 2026-10-19 — Branches : `develop` actif, `main` gelée
 
 **Règle charte §5 :** travail quotidien sur **`develop`** ; **`main`** seulement sur demande explicite après vérif.  
-Branche jetable `wip/6.x-assistant-papiers` remplacée par `develop` (lot 6.3 + 115 tests).
+Branche jetable `wip/6.x-assistant-papiers` remplacée par `develop` (lot 6.3 + 115 tests).  
+**CI :** triggers sur `develop` + `main` ; plus de push quotidien sur `main`.
 
 ### 2026-10-19 — CI GitHub Actions (phase 1, léger)
 

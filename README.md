@@ -113,8 +113,8 @@ adb install -r dist/MonMoisClair-release.apk
 
 > `local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK dans `dist/` ignoré par git.
 
-**CI (phase 1, léger) :** à chaque push sur `main`, GitHub Actions compile le debug et lance les tests unitaires.  
-Feuille de route (lint / sécu plus tard) : [`docs/CI.md`](docs/CI.md).
+**CI (phase 1, léger) :** à chaque push sur **`develop`** (et `main` si merge explicite), GitHub Actions compile le debug et lance les tests unitaires.  
+Feuille de route (lint / sécu plus tard) : [`docs/CI.md`](docs/CI.md). Travail quotidien = branche **`develop`** (charte §5).
 
 ---
 
