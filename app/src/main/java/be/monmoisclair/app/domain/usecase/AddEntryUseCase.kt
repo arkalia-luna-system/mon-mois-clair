@@ -40,7 +40,9 @@ class AddEntryUseCase @Inject constructor(
         recurring: Boolean,
         intervalMonths: Int = 1,
         anchorYearMonth: YearMonth? = null,
-        isAutoDebit: Boolean = false
+        isAutoDebit: Boolean = false,
+        paymentNote: String = "",
+        receiptRelativePath: String = ""
     ): AddEntryResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -110,6 +112,8 @@ class AddEntryUseCase @Inject constructor(
                         remindJ3 = true,
                         remindJd = true,
                         isAutoDebit = isAutoDebit,
+                        paymentNote = paymentNote.trim(),
+                        receiptRelativePath = receiptRelativePath.trim(),
                         alarmJ3RequestCode = null,
                         alarmJdRequestCode = null,
                         createdAtEpochMs = now

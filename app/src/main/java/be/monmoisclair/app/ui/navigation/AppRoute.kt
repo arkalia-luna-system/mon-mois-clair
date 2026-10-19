@@ -9,6 +9,7 @@ object AppRoute {
     const val Settings = "settings"
     const val HowItWorks = "how_it_works"
     const val AddEntry = "entry/add"
+    const val ScanEpc = "entry/scan_epc"
     const val EditEntry = "entry/edit/{id}/{isExpense}"
 
     fun editEntry(id: String, isExpense: Boolean): String =

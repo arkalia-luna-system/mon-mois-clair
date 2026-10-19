@@ -80,6 +80,45 @@ class SafDocumentBackupTree(
         }
     }
 
+    fun writeBinaryRelative(relativePath: String, bytes: ByteArray) {
+        val parts = relativePath.trim('/').split('/').filter { it.isNotEmpty() }
+        if (parts.isEmpty()) throw BackupFailure.Io("Chemin photo vide")
+        var dir = root
+        for (i in 0 until parts.lastIndex) {
+            val name = parts[i]
+            val existing = dir.findFile(name)
+            dir = when {
+                existing != null && existing.isDirectory -> existing
+                existing != null -> throw BackupFailure.Io("Conflit dossier photo: $name")
+                else -> dir.createDirectory(name)
+                    ?: throw BackupFailure.Io("createDirectory échoué: $name")
+            }
+        }
+        val fileName = parts.last()
+        dir.findFile(fileName)?.delete()
+        val created = dir.createFile("image/webp", fileName)
+            ?: throw BackupFailure.Io("createFile photo échoué: $relativePath")
+        val pfd = context.contentResolver.openFileDescriptor(created.uri, "w")
+            ?: throw BackupFailure.Io("openFileDescriptor photo null")
+        pfd.use { descriptor ->
+            FileOutputStream(descriptor.fileDescriptor).use { fos ->
+                fos.write(bytes)
+                fos.flush()
+                fos.fd.sync()
+            }
+        }
+    }
+
+    fun uriForRelative(relativePath: String): Uri? {
+        val parts = relativePath.trim('/').split('/').filter { it.isNotEmpty() }
+        if (parts.isEmpty()) return null
+        var current: DocumentFile = root
+        for (part in parts) {
+            current = current.findFile(part) ?: return null
+        }
+        return current.uri
+    }
+
     private fun copyThenDelete(from: DocumentFile, toName: String) {
         val bytes = context.contentResolver.openInputStream(from.uri)?.use { it.readBytes() }
             ?: throw BackupFailure.Io("Fallback copy: lecture source impossible")

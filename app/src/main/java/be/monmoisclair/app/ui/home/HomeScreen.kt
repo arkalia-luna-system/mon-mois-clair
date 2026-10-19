@@ -188,6 +188,17 @@ fun HomeScreen(
                         color = A11yTokens.InkMuted
                     )
                 }
+                state.nextMonthWarning?.let { warning ->
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = warning,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(A11yTokens.PaperCream, RoundedCornerShape(10.dp))
+                            .padding(12.dp)
+                    )
+                }
             }
         }
 

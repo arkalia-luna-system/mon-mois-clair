@@ -9,5 +9,5 @@ object AppMetaKeys {
     const val LAST_BACKUP_CHECKSUM_SHA256 = "lastBackupChecksumSha256"
     const val BACKUP_HEALTH = "backupHealth"
 
-    const val CURRENT_SCHEMA_VERSION = "2"
+    const val CURRENT_SCHEMA_VERSION = "3"
 }

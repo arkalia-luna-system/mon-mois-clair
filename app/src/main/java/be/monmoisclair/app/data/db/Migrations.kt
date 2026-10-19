@@ -23,4 +23,15 @@ object Migrations {
             )
         }
     }
+
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE expense_instances ADD COLUMN paymentNote TEXT NOT NULL DEFAULT ''"
+            )
+            db.execSQL(
+                "ALTER TABLE expense_instances ADD COLUMN receiptRelativePath TEXT NOT NULL DEFAULT ''"
+            )
+        }
+    }
 }

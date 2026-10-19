@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.1.0-5.4.1"
+        versionCode = 6
+        versionName = "0.1.0-6.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -127,6 +127,12 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.1")
     implementation("androidx.hilt:hilt-work:1.2.0")
     ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
+    val cameraVersion = "1.4.1"
+    implementation("androidx.camera:camera-camera2:$cameraVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraVersion")
+    implementation("androidx.camera:camera-view:$cameraVersion")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")

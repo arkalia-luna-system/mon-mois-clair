@@ -1,7 +1,9 @@
 package be.monmoisclair.app.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,6 +17,7 @@ import be.monmoisclair.app.ui.home.HomeScreen
 import be.monmoisclair.app.ui.onboarding.PermissionsSetupScreen
 import be.monmoisclair.app.ui.onboarding.SafSetupScreen
 import be.monmoisclair.app.ui.restore.RestoreBackupScreen
+import be.monmoisclair.app.ui.scan.ScanEpcScreen
 import be.monmoisclair.app.ui.settings.HowItWorksScreen
 import be.monmoisclair.app.ui.settings.SettingsScreen
 
@@ -39,20 +42,12 @@ fun AppNavHost(
             val fromHome = navController.previousBackStackEntry != null
             SafSetupScreen(
                 onSafReady = {
-                    if (fromHome) {
-                        // Re-choix dossier depuis Home : ne pas rejouer l’onboarding permissions.
-                        navController.popBackStack()
-                    } else {
-                        navController.navigate(AppRoute.PermissionsSetup) {
-                            popUpTo(AppRoute.SafSetup) { inclusive = true }
-                        }
+                    if (fromHome) navController.popBackStack()
+                    else navController.navigate(AppRoute.PermissionsSetup) {
+                        popUpTo(AppRoute.SafSetup) { inclusive = true }
                     }
                 },
-                onCancel = if (fromHome) {
-                    { navController.popBackStack() }
-                } else {
-                    null
-                }
+                onCancel = if (fromHome) ({ navController.popBackStack() }) else null
             )
         }
         composable(AppRoute.PermissionsSetup) {
@@ -92,15 +87,27 @@ fun AppNavHost(
         composable(AppRoute.RestoreBackup) {
             RestoreBackupScreen(
                 onBack = { navController.popBackStack() },
-                onRestored = {
-                    // Home reste sous la pile : pop Restore → Flows Room se mettent à jour.
-                    navController.popBackStack(AppRoute.Home, inclusive = false)
-                }
+                onRestored = { navController.popBackStack(AppRoute.Home, inclusive = false) }
             )
         }
-        composable(AppRoute.AddEntry) {
+        composable(AppRoute.AddEntry) { entry ->
+            val epcRaw by entry.savedStateHandle
+                .getStateFlow<String?>("epc_raw", null)
+                .collectAsStateWithLifecycle()
             AddEntryScreen(
                 onDone = { navController.popBackStack() },
+                onCancel = { navController.popBackStack() },
+                onScanEpc = { navController.navigate(AppRoute.ScanEpc) },
+                epcRawResult = epcRaw,
+                onEpcRawConsumed = { entry.savedStateHandle.remove<String>("epc_raw") }
+            )
+        }
+        composable(AppRoute.ScanEpc) {
+            ScanEpcScreen(
+                onResult = { raw ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set("epc_raw", raw)
+                    navController.popBackStack()
+                },
                 onCancel = { navController.popBackStack() }
             )
         }

@@ -45,10 +45,22 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 fun AddEntryScreen(
     onDone: () -> Unit,
     onCancel: () -> Unit,
+    onScanEpc: () -> Unit = {},
+    epcRawResult: String? = null,
+    onEpcRawConsumed: () -> Unit = {},
     viewModel: AddEntryViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val photoPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.TakePicturePreview()
+    ) { bmp -> if (bmp != null) viewModel.attachPreviewBitmap(bmp) }
+
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
+    LaunchedEffect(epcRawResult) {
+        val raw = epcRawResult ?: return@LaunchedEffect
+        viewModel.applyEpcRaw(raw)
+        onEpcRawConsumed()
+    }
 
     EntryFormScaffold(
         title = "Nouvelle entrée",
@@ -66,6 +78,12 @@ fun AddEntryScreen(
         isAutoDebit = state.isAutoDebit,
         onAutoDebit = viewModel::setAutoDebit,
         showAutoDebit = state.isExpense,
+        paymentNote = state.paymentNote,
+        onPaymentNote = viewModel::setPaymentNote,
+        showPaymentAssist = state.isExpense,
+        hasPendingPhoto = state.hasPendingPhoto,
+        onScanEpc = onScanEpc,
+        onTakePhoto = { photoPicker.launch(null) },
         showApplyFollowing = false,
         applyFollowing = false,
         hasTemplate = false,
@@ -143,6 +161,10 @@ fun EditEntryScreen(
         )
     }
 
+    val photoPicker = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.TakePicturePreview()
+    ) { bmp -> if (bmp != null) viewModel.attachPreviewBitmap(bmp) }
+
     EntryFormScaffold(
         title = "Modifier l’entrée",
         label = state.label,
@@ -155,10 +177,17 @@ fun EditEntryScreen(
         isAutoDebit = state.isAutoDebit,
         onAutoDebit = viewModel::setAutoDebit,
         showAutoDebit = state.isExpense,
+        paymentNote = state.paymentNote,
+        onPaymentNote = viewModel::setPaymentNote,
+        showPaymentAssist = state.isExpense,
+        hasPendingPhoto = state.hasPendingPhoto,
+        hasReceiptPhoto = state.receiptRelativePath.isNotBlank(),
+        onTakePhoto = { photoPicker.launch(null) },
+        onCopyPaymentNote = viewModel::copyPaymentNote,
         showApplyFollowing = state.hasTemplate,
         applyFollowing = state.applyToFollowing,
         hasTemplate = state.hasTemplate,
-        error = state.error,
+        error = state.copyMessage ?: state.error,
         primaryLabel = "Enregistrer",
         primaryEnabled = true,
         onLabel = viewModel::setLabel,
@@ -191,6 +220,14 @@ private fun EntryFormScaffold(
     isAutoDebit: Boolean = false,
     onAutoDebit: (Boolean) -> Unit = {},
     showAutoDebit: Boolean = false,
+    paymentNote: String = "",
+    onPaymentNote: (String) -> Unit = {},
+    showPaymentAssist: Boolean = false,
+    hasPendingPhoto: Boolean = false,
+    hasReceiptPhoto: Boolean = false,
+    onScanEpc: (() -> Unit)? = null,
+    onTakePhoto: (() -> Unit)? = null,
+    onCopyPaymentNote: (() -> Unit)? = null,
     showApplyFollowing: Boolean,
     applyFollowing: Boolean,
     hasTemplate: Boolean,
@@ -223,6 +260,15 @@ private fun EntryFormScaffold(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(text = title, style = MaterialTheme.typography.headlineMedium)
+
+            if (showPaymentAssist && onScanEpc != null) {
+                PrimaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
+                Text(
+                    text = "Visez le QR Code de la facture papier (Belgique).",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+            }
 
             if (showRecurring) {
                 Text("Type", style = MaterialTheme.typography.titleLarge)
@@ -318,6 +364,37 @@ private fun EntryFormScaffold(
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted
                 )
+            }
+            if (showPaymentAssist) {
+                Text("Paiement (banque)", style = MaterialTheme.typography.titleLarge)
+                OutlinedTextField(
+                    value = paymentNote,
+                    onValueChange = onPaymentNote,
+                    label = { Text("Communication / note") },
+                    placeholder = { Text("+++090/9337/55493+++") },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
+                    textStyle = MaterialTheme.typography.bodyLarge
+                )
+                if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
+                    SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
+                }
+                if (onTakePhoto != null) {
+                    SecondaryA11yButton(
+                        text = if (hasPendingPhoto || hasReceiptPhoto) {
+                            "Reprendre la photo de la facture"
+                        } else {
+                            "Photo de la facture papier"
+                        },
+                        onClick = onTakePhoto
+                    )
+                    if (hasPendingPhoto) {
+                        Text(
+                            text = "Photo prête — enregistrée avec la facture.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.AccentOk
+                        )
+                    }
+                }
             }
             if (showApplyFollowing && hasTemplate) {
                 CheckRow(

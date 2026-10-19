@@ -27,7 +27,9 @@ class UpdateInstanceUseCase @Inject constructor(
         amountCents: Long,
         dayOfMonth: Int,
         applyToFollowingMonths: Boolean,
-        isAutoDebit: Boolean = false
+        isAutoDebit: Boolean = false,
+        paymentNote: String = "",
+        receiptRelativePath: String = ""
     ): UpdateInstanceResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -61,7 +63,10 @@ class UpdateInstanceUseCase @Inject constructor(
                         label = trimmed,
                         amountCents = amountCents,
                         dayOfMonth = clamped,
-                        isAutoDebit = auto
+                        isAutoDebit = auto,
+                        paymentNote = paymentNote.trim(),
+                        receiptRelativePath = receiptRelativePath.trim()
+                            .ifEmpty { current.receiptRelativePath }
                     )
                 )
                 if (applyToFollowingMonths && current.templateId != null) {

@@ -91,6 +91,19 @@ class SafBackupStore @Inject constructor(
         )
     }
 
+    suspend fun writeBinaryRelative(relativePath: String, bytes: ByteArray) {
+        val tree = openTreeOrThrow() as? SafDocumentBackupTree
+            ?: throw BackupFailure.Io("Arbre SAF requis pour les photos")
+        tree.writeBinaryRelative(relativePath, bytes)
+    }
+
+    suspend fun uriForRelative(relativePath: String): Uri? {
+        if (!hasPersistedTree()) return null
+        return runCatching {
+            (openTreeOrThrow() as SafDocumentBackupTree).uriForRelative(relativePath)
+        }.getOrNull()
+    }
+
     /** Contenu brut du dernier backup valide (pour partage T8). */
     suspend fun readLatestValidBackupUtf8(): String {
         val tree = openTreeOrThrow()

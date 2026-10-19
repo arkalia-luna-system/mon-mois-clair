@@ -1,8 +1,14 @@
 package be.monmoisclair.app.ui.entry
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
+import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.EpcPayment
+import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
@@ -15,12 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class RecurrenceChoice {
-    Once,
-    Monthly,
-    Every3Months,
-    Yearly
-}
+enum class RecurrenceChoice { Once, Monthly, Every3Months, Yearly }
 
 data class EntryFormState(
     val label: String = "",
@@ -28,25 +29,28 @@ data class EntryFormState(
     val dayText: String = AppClock.today().dayOfMonth.toString(),
     val isExpense: Boolean = true,
     val recurrence: RecurrenceChoice = RecurrenceChoice.Once,
-    /** Mois-calendaire 1–12 pour la prochaine échéance (T6). */
     val nextDueMonth: Int = AppClock.currentYearMonth().monthValue,
     val isAutoDebit: Boolean = false,
+    val paymentNote: String = "",
+    val hasPendingPhoto: Boolean = false,
     val error: String? = null,
     val saved: Boolean = false,
     val saving: Boolean = false
 ) {
     val needsNextDueMonth: Boolean
-        get() = recurrence == RecurrenceChoice.Every3Months ||
-            recurrence == RecurrenceChoice.Yearly
+        get() = recurrence == RecurrenceChoice.Every3Months || recurrence == RecurrenceChoice.Yearly
 }
 
 @HiltViewModel
 class AddEntryViewModel @Inject constructor(
-    private val addEntry: AddEntryUseCase
+    private val addEntry: AddEntryUseCase,
+    private val receiptPhotos: ReceiptPhotoStore,
+    private val instanceDao: InstanceDao,
+    private val mutatingRepository: MutatingRepository
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(EntryFormState())
     val state: StateFlow<EntryFormState> = _state.asStateFlow()
+    @Volatile private var pendingBitmap: Bitmap? = null
 
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
@@ -55,10 +59,35 @@ class AddEntryViewModel @Inject constructor(
         it.copy(isExpense = v, isAutoDebit = if (v) it.isAutoDebit else false)
     }
     fun setRecurrence(v: RecurrenceChoice) = _state.update { it.copy(recurrence = v) }
-    fun setNextDueMonth(month: Int) = _state.update {
-        it.copy(nextDueMonth = month.coerceIn(1, 12))
-    }
+    fun setNextDueMonth(m: Int) = _state.update { it.copy(nextDueMonth = m.coerceIn(1, 12)) }
     fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v) }
+    fun setPaymentNote(v: String) = _state.update { it.copy(paymentNote = v, error = null) }
+    fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
+
+    fun applyEpcRaw(raw: String) {
+        val p = EpcQrParser.parse(raw)
+        if (p == null) {
+            _state.update { it.copy(error = "QR Code non reconnu (facture belge EPC attendue).") }
+            return
+        }
+        applyEpc(p)
+    }
+
+    fun applyEpc(payment: EpcPayment) {
+        val amountText = payment.amountCents?.let { c ->
+            val rem = (c % 100).toInt()
+            if (rem == 0) (c / 100).toString() else "%d,%02d".format(c / 100, rem)
+        } ?: _state.value.amountText
+        _state.update {
+            it.copy(
+                isExpense = true,
+                label = payment.beneficiaryName.ifBlank { it.label },
+                amountText = amountText,
+                paymentNote = payment.remittance.ifBlank { it.paymentNote },
+                error = null
+            )
+        }
+    }
 
     fun save() {
         viewModelScope.launch {
@@ -77,25 +106,32 @@ class AddEntryViewModel @Inject constructor(
             }
             val anchor = when {
                 !recurring -> null
-                s.needsNextDueMonth ->
-                    RecurrenceAnchor.nextYearMonth(s.nextDueMonth)
+                s.needsNextDueMonth -> RecurrenceAnchor.nextYearMonth(s.nextDueMonth)
                 else -> AppClock.currentYearMonth()
             }
             _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = addEntry(
-                    label = s.label,
-                    amountCents = cents,
-                    dayOfMonth = day,
-                    isExpense = s.isExpense,
-                    recurring = recurring,
-                    intervalMonths = interval,
-                    anchorYearMonth = anchor,
-                    isAutoDebit = s.isExpense && s.isAutoDebit
+                    label = s.label, amountCents = cents, dayOfMonth = day,
+                    isExpense = s.isExpense, recurring = recurring,
+                    intervalMonths = interval, anchorYearMonth = anchor,
+                    isAutoDebit = s.isExpense && s.isAutoDebit, paymentNote = s.paymentNote
                 )
             ) {
-                is AddEntryResult.Success ->
+                is AddEntryResult.Success -> {
+                    pendingBitmap?.let { bmp ->
+                        runCatching {
+                            val path = receiptPhotos.saveBitmap(result.instanceId, bmp)
+                            mutatingRepository.mutate {
+                                instanceDao.getExpenseById(result.instanceId)?.let {
+                                    instanceDao.updateExpense(it.copy(receiptRelativePath = path))
+                                }
+                            }
+                        }
+                    }
+                    pendingBitmap = null
                     _state.update { it.copy(saving = false, saved = true) }
+                }
                 is AddEntryResult.InvalidInput ->
                     _state.update { it.copy(saving = false, error = result.message) }
             }

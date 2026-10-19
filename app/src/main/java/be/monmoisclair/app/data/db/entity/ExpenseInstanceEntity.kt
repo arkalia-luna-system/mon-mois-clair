@@ -30,6 +30,8 @@ data class ExpenseInstanceEntity(
     val remindJ3: Boolean,
     val remindJd: Boolean,
     val isAutoDebit: Boolean = false,
+    val paymentNote: String = "",
+    val receiptRelativePath: String = "",
     val alarmJ3RequestCode: Int?,
     val alarmJdRequestCode: Int?,
     val createdAtEpochMs: Long

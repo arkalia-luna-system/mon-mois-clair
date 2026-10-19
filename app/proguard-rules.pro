@@ -22,3 +22,7 @@
 -keepclassmembers class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+
+-keep class com.google.mlkit.** { *; }
+-dontwarn com.google.mlkit.**
+-keep class androidx.camera.** { *; }

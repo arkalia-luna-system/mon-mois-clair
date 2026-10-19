@@ -13,6 +13,7 @@ import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.AdjustDiversResult
 import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
+import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -45,7 +46,8 @@ data class HomeUiState(
     val timeline: List<TimelineItem> = emptyList(),
     val highlightExpenseId: String? = null,
     /** Demande confirm FAIT sur mois passé (T4). */
-    val pendingPastToggleId: String? = null
+    val pendingPastToggleId: String? = null,
+    val nextMonthWarning: String? = null
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -55,19 +57,21 @@ class HomeViewModel @Inject constructor(
     private val monthLedgerDao: MonthLedgerDao,
     private val instanceDao: InstanceDao,
     private val toggleDone: ToggleExpenseDoneUseCase,
-    private val adjustDivers: AdjustDiversUseCase
+    private val adjustDivers: AdjustDiversUseCase,
+    private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase
 ) : ViewModel() {
 
     private val selectedMonth = MutableStateFlow(AppClock.currentYearMonth())
     private val highlightExpenseId = MutableStateFlow<String?>(null)
     private val pendingPastToggleId = MutableStateFlow<String?>(null)
+    private val nextMonthWarning = MutableStateFlow<String?>(null)
     private val _diversError = MutableStateFlow<String?>(null)
     val diversError: StateFlow<String?> = _diversError.asStateFlow()
     private val _diversFieldCleared = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val diversFieldCleared: SharedFlow<Unit> = _diversFieldCleared.asSharedFlow()
 
-    val uiState: StateFlow<HomeUiState> = selectedMonth
-        .flatMapLatest { ym ->
+    val uiState: StateFlow<HomeUiState> = combine(
+        selectedMonth.flatMapLatest { ym ->
             val ledgerId = AppClock.ledgerId(ym)
             combine(
                 instanceDao.observeIncomes(ledgerId),
@@ -128,7 +132,9 @@ class HomeViewModel @Inject constructor(
                     pendingPastToggleId = pendingToggle
                 )
             }
-        }
+        },
+        nextMonthWarning
+    ) { base, warning -> base.copy(nextMonthWarning = warning) }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
@@ -139,6 +145,33 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             monthCycleEngine.ensureCurrentMonthExists()
             selectedMonth.value = AppClock.currentYearMonth()
+        }
+        viewModelScope.launch {
+            selectedMonth.collect { refreshNextMonthWarning(it) }
+        }
+    }
+
+    fun refreshNextMonthWarning(ym: java.time.YearMonth = selectedMonth.value) {
+        viewModelScope.launch {
+            if (ym != AppClock.currentYearMonth()) {
+                nextMonthWarning.value = null
+                return@launch
+            }
+            val items = listNextMonthPeriodics(ym)
+            nextMonthWarning.value = when {
+                items.isEmpty() -> null
+                items.size == 1 -> {
+                    val f = items.first()
+                    "À prévoir le mois prochain : ${f.label} (" +
+                        "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth})"
+                }
+                else -> {
+                    val f = items.first()
+                    "À prévoir le mois prochain : ${f.label} (" +
+                        "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth}) " +
+                        "et ${items.size - 1} autre(s)"
+                }
+            }
         }
     }
 
