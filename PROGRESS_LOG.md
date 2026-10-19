@@ -9,13 +9,31 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **5.4.1** (aide + libellés récurrence) |
+| Dernière étape terminée | **5.4.1** (aide + polish familial) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke device release (JSON lisible + restore + partage + overdue) |
+| Prochaine sous-étape | Install release familial (`adb uninstall` si debug déjà installé) · partage WhatsApp |
 
 ---
 
 ## Journal
+
+### 2026-10-19 — CI GitHub Actions (phase 1, léger)
+
+**Fait :** workflow `.github/workflows/ci.yml` (assembleDebug + testDebugUnitTest) · Dependabot Actions · `docs/CI.md` (feuille de route phases 2–4) · badge CI README.  
+**Vérifié local :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **107/107** (WIP scan/receipt volontairement hors de ce commit).  
+**Pas encore :** lint bloquant, detekt, scan CVE (volontairement pour éviter un mur de corrections).
+
+### 2026-10-19 — Polish familial « parfait maman » (sur 5.4.1)
+
+**UI / confiance :**
+- Divers : message d’erreur si montant vide ; champ vidé seulement si OK
+- Édition : fréquence affichée + conseil pour la changer
+- Lock bio : consignes doigt/code + « Déverrouiller maintenant »
+- État vide Home plus guidé
+- Aide « Comment ça marche » (déjà 5.4.1)
+
+**Build :** `ksp.incremental=false` (T7) ; WIP receipt/scan incomplets retirés du tree.  
+**Tests :** **107/107** · APK release : `dist/MonMoisClair-release.apk`
 
 ### 2026-10-19 — Vitrine GitHub + hygiene (privé → public-ready)
 

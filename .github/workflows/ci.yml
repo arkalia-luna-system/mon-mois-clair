@@ -1,0 +1,64 @@
+# CI — phase 1 (léger)
+# Objectif : vérifier à chaque push que le projet compile et que les tests unitaires passent.
+# Pas encore : lint strict, detekt, scan CVE bloquant (voir docs/CI.md pour la feuille de route).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Assemble debug + tests unitaires
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    permissions:
+      contents: read
+
+    env:
+      # Pas de daemon en CI (runner éphémère).
+      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dkotlin.compiler.execution.strategy=in-process
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android licenses
+        run: yes | sdkmanager --licenses >/dev/null || true
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Assemble debug + unit tests
+        # Même commande locale que la charte / PROGRESS_LOG (sans --rerun-tasks en CI :
+        # le runner est propre à chaque job).
+        run: ./gradlew :app:assembleDebug :app:testDebugUnitTest --stacktrace --no-daemon
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          # settings.gradle.kts redirige build/ vers ~/.cache/mon-mois-clair/gradle-build/
+          path: |
+            /home/runner/.cache/mon-mois-clair/gradle-build/app/reports/tests/
+            /home/runner/.cache/mon-mois-clair/gradle-build/app/test-results/
+          if-no-files-found: ignore
+          retention-days: 7

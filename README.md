@@ -6,6 +6,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
+[![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-107%2F107-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
 [![Version](https://img.shields.io/badge/version-0.1.0--5.4.1-informational)](#statut)
@@ -107,6 +108,9 @@ adb install -r dist/MonMoisClair-release.apk
 ```
 
 > `local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK dans `dist/` ignoré par git.
+
+**CI (phase 1, léger) :** à chaque push sur `main`, GitHub Actions compile le debug et lance les tests unitaires.  
+Feuille de route (lint / sécu plus tard) : [`docs/CI.md`](docs/CI.md).
 
 ---
 

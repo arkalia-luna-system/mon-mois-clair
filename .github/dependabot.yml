@@ -1,0 +1,12 @@
+# Mises à jour automatiques (PRs) — ne bloque pas le push.
+# Phase sécu légère : actions GitHub + dépendances Gradle quand le manifeste est supporté.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci
