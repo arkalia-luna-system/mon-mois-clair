@@ -16,10 +16,12 @@ import javax.inject.Singleton
  *
  * Ordre strict :
  * 1. Transaction Room
- * 2. Enqueue backup SAF (si succès)
- * 3. Reconcile rappels (si demandé et succès)
+ * 2. Enqueue backup SAF (si succès **et** side-effect autorisé)
+ * 3. Reconcile rappels (si demandé et side-effect autorisé)
  *
  * En cas d'échec de transaction : aucun backup, aucune alarme.
+ * [sideEffectsWhen] évite backup/reconcile pour un no-op (ex. AlreadyExists / NotFound
+ * découvert dans la transaction après une course).
  */
 @Singleton
 class MutatingRepository @Inject constructor(
@@ -30,6 +32,7 @@ class MutatingRepository @Inject constructor(
 
     suspend fun <T> mutate(
         rescheduleReminders: Boolean = true,
+        sideEffectsWhen: (T) -> Boolean = { true },
         block: suspend MutationContext.() -> T
     ): T {
         val result = db.withTransaction {
@@ -41,9 +44,11 @@ class MutatingRepository @Inject constructor(
             )
             context.block()
         }
-        backupScheduler.enqueueImmediate()
-        if (rescheduleReminders) {
-            reminderScheduler.reconcileAll()
+        if (sideEffectsWhen(result)) {
+            backupScheduler.enqueueImmediate()
+            if (rescheduleReminders) {
+                reminderScheduler.reconcileAll()
+            }
         }
         return result
     }

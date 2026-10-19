@@ -1,0 +1,18 @@
+---
+description: Avant chaque push — vérifier que claims = code = tests (pas de fausse avance)
+alwaysApply: true
+---
+
+# Vérification pré-push (Mon Mois Clair)
+
+Avant **tout** commit/push demandé par l’utilisatrice :
+
+1. **Lire** `PROGRESS_LOG.md` (état global + dernière étape) et `README.md` (version, badges, avancement).
+2. **Croiser** chaque claim « ✅ / terminé / N/N tests / versionName » avec :
+   - fichiers sources réellement présents ;
+   - behaviour attendu par `CHARTE_ET_ARCHITECTURE.md` ;
+   - résultats Gradle **réexécutés** (`./gradlew :app:testDebugUnitTest --rerun-tasks`, puis compter les `TEST-*.xml`).
+3. **Interdit** : anticiper une étape dans `versionName`, README ou badges si le journal ne l’a pas clôturée **et** si les tests de cette étape ne passent pas.
+4. **Si écart** : corriger le code **ou** rétrograder la doc (jamais laisser une promesse fausse).
+5. **Si bug** trouvé pendant l’audit : corriger + ajouter/ajuster un test avant push.
+6. Dans le message de commit / résumé : indiquer le **nombre de tests réellement obtenus**.

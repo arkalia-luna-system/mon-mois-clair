@@ -173,9 +173,11 @@ Use cases associés : `UpdateInstanceUseCase`, `DeleteInstanceUseCase` (option �
 | **1.1** | Room + TypeConverters + DAOs + DB + `MonthDayClamp` + `MutatingRepository` + tests ✅ |
 | **1.2** | SAF persist + rotation 3 + checksum + sync disque ✅ |
 | **1.3** | Restore depuis backup ✅ |
-| **2.1** | Cycle mensuel (`MonthCycleEngine`) |
-| **2.x** | AlarmManager + BootReceiver + Santé |
-| **3.x** | UI Compose accessible (+ `EditEntry` / update / delete) |
+| **2.1** | Cycle mensuel (`MonthCycleEngine`) ✅ |
+| **2.2** | Toggle FAIT (mois courant + précédent) ✅ |
+| **2.3** | AlarmManager + BootReceiver + Santé rappels (API) ✅ |
+| **3.1** | UI Compose Home / Month / Reste-à-vivre |
+| **3.x** | UI suite (+ Santé, EditEntry / update / delete) |
 
 Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à jour.
 

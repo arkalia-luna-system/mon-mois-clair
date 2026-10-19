@@ -137,6 +137,21 @@ class MutatingRepositoryTest {
     }
 
     @Test
+    fun mutate_sideEffectsWhenFalse_skipsBackupAndReconcile() = runBlocking {
+        val result = repo.mutate(sideEffectsWhen = { false }) {
+            appMetaDao.upsert(
+                AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, AppMetaKeys.CURRENT_SCHEMA_VERSION)
+            )
+            "noop"
+        }
+        assertThat(result).isEqualTo("noop")
+        assertThat(db.appMetaDao().get(AppMetaKeys.SCHEMA_VERSION)?.value)
+            .isEqualTo(AppMetaKeys.CURRENT_SCHEMA_VERSION)
+        assertThat(backupCalls.get()).isEqualTo(0)
+        assertThat(reconcileCalls.get()).isEqualTo(0)
+    }
+
+    @Test
     fun expenseStatus_roundTripsThroughRoomAsEnum() = runBlocking {
         repo.mutate(rescheduleReminders = false) {
             monthLedgerDao.insert(

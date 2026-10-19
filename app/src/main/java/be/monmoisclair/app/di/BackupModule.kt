@@ -4,8 +4,10 @@ import be.monmoisclair.app.data.backup.BackupJsonCodec
 import be.monmoisclair.app.data.backup.BackupRotator
 import be.monmoisclair.app.data.backup.BackupScheduler
 import be.monmoisclair.app.data.backup.WorkManagerBackupScheduler
-import be.monmoisclair.app.data.reminder.NoOpReminderScheduler
+import be.monmoisclair.app.data.reminder.ExactAlarmGateway
+import be.monmoisclair.app.data.reminder.ExactAlarmGatewayImpl
 import be.monmoisclair.app.data.reminder.ReminderScheduler
+import be.monmoisclair.app.data.reminder.ReminderSchedulerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -23,7 +25,11 @@ abstract class BackupBindingsModule {
 
     @Binds
     @Singleton
-    abstract fun bindReminderScheduler(impl: NoOpReminderScheduler): ReminderScheduler
+    abstract fun bindReminderScheduler(impl: ReminderSchedulerImpl): ReminderScheduler
+
+    @Binds
+    @Singleton
+    abstract fun bindExactAlarmGateway(impl: ExactAlarmGatewayImpl): ExactAlarmGateway
 }
 
 @Module
