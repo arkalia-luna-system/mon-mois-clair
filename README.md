@@ -9,9 +9,12 @@
 [![Tests](https://img.shields.io/badge/tests-107%2F107-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
 [![Version](https://img.shields.io/badge/version-0.1.0--5.4.1-informational)](#statut)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
 Saisie manuelle · backup JSON local · rappels exacts · distribution familiale par APK.
+
+> **Statut dépôt :** privé (usage familial). README / charte / tests tenus à jour comme pour un dépôt public.
 
 ---
 
@@ -112,6 +115,14 @@ adb install -r dist/MonMoisClair-release.apk
 - Données sur l’appareil + dossier Documents (SAF)
 - JSON non chiffré (volontaire)
 - Pas d’analytics / serveur / banque
+
+Voir aussi [`SECURITY.md`](SECURITY.md).
+
+---
+
+## Licence
+
+[MIT](LICENSE) — © 2026 Athalia / arkalia-luna-system.
 
 ---
 

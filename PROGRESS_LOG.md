@@ -17,6 +17,11 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-19 — Vitrine GitHub + hygiene (privé → public-ready)
+
+**Fait :** licence MIT · `SECURITY.md` · description/topics GitHub · WIP scan QR exclu du tree (cassait le build).  
+**Vérifié :** `0.1.0-5.4.1` · **107/107** (HEAD `c11e7a1` + polish docs).
+
 ### 2026-10-19 — Validation expert 5.4.1 + push
 
 **Confirmé 5.4 :** F–I + T1–T8 présents ; **104** puis **107** tests après aide.  
