@@ -44,6 +44,7 @@ fun SettingsScreen(
     onOpenHealth: () -> Unit,
     onOpenSaf: () -> Unit,
     onOpenRestore: () -> Unit,
+    onOpenHowItWorks: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -107,6 +108,19 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(12.dp))
         Text(text = "Réglages", style = MaterialTheme.typography.headlineMedium)
 
+        Text(text = "Aide", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Explications simples : reste, FAIT, rappels, sauvegarde.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
+        SecondaryA11yButton(
+            text = "Comment ça marche",
+            onClick = onOpenHowItWorks,
+            enabled = !state.busy
+        )
+
+        HorizontalDivider(color = A11yTokens.PaperWarm)
         Text(text = "Confidentialité", style = MaterialTheme.typography.titleLarge)
         Text(
             text = "Par défaut l’app s’ouvre sans code.",

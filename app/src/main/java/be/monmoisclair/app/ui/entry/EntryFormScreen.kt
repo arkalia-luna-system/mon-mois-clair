@@ -151,6 +151,7 @@ fun EditEntryScreen(
         isExpense = state.isExpense,
         recurring = false,
         showRecurring = false,
+        recurrenceInfo = state.recurrenceInfo,
         isAutoDebit = state.isAutoDebit,
         onAutoDebit = viewModel::setAutoDebit,
         showAutoDebit = state.isExpense,
@@ -183,6 +184,7 @@ private fun EntryFormScaffold(
     showRecurring: Boolean,
     recurrence: RecurrenceChoice = RecurrenceChoice.Once,
     onRecurrence: ((RecurrenceChoice) -> Unit)? = null,
+    recurrenceInfo: String? = null,
     nextDueMonth: Int = 1,
     onNextDueMonth: (Int) -> Unit = {},
     showNextDueMonth: Boolean = false,
@@ -257,18 +259,29 @@ private fun EntryFormScaffold(
                 singleLine = true
             )
 
+            recurrenceInfo?.let { info ->
+                Text(text = "Fréquence", style = MaterialTheme.typography.titleLarge)
+                Text(text = info, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = "Pour changer la fréquence, supprimez cette entrée et recréez-la " +
+                        "(avec « Appliquer aussi aux mois suivants » si besoin).",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+            }
+
             if (showRecurring && onRecurrence != null) {
                 Text("Fréquence", style = MaterialTheme.typography.titleLarge)
-                TypeChip("Une seule fois", selected = recurrence == RecurrenceChoice.Once) {
+                TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
                     onRecurrence(RecurrenceChoice.Once)
                 }
-                TypeChip("Tous les mois", selected = recurrence == RecurrenceChoice.Monthly) {
+                TypeChip(RecurrenceLabel.chipMonthly(), selected = recurrence == RecurrenceChoice.Monthly) {
                     onRecurrence(RecurrenceChoice.Monthly)
                 }
-                TypeChip("Tous les 3 mois", selected = recurrence == RecurrenceChoice.Every3Months) {
+                TypeChip(RecurrenceLabel.chipEvery3Months(), selected = recurrence == RecurrenceChoice.Every3Months) {
                     onRecurrence(RecurrenceChoice.Every3Months)
                 }
-                TypeChip("1× par an", selected = recurrence == RecurrenceChoice.Yearly) {
+                TypeChip(RecurrenceLabel.chipYearly(), selected = recurrence == RecurrenceChoice.Yearly) {
                     onRecurrence(RecurrenceChoice.Yearly)
                 }
                 if (showNextDueMonth) {
@@ -290,7 +303,7 @@ private fun EntryFormScaffold(
             } else if (showRecurring) {
                 CheckRow(
                     checked = recurring,
-                    label = "Revient tous les mois",
+                    label = RecurrenceLabel.forIntervalMonths(1),
                     onChecked = onRecurring
                 )
             }

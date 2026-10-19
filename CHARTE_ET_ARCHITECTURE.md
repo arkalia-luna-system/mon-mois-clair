@@ -181,6 +181,7 @@ Home (freeze) · Ajout (récurrence + mois ancre) · Réglages (périodiques hor
 | **5.2** | T6 sélecteur mois ancre + liste Réglages | ✅ |
 | **5.3** | T7 ReminderReceiver → reconcileAll | ✅ |
 | **5.4** | T8 partage ACTION_SEND | ✅ |
+| **5.4.1** | Aide « Comment ça marche » (Réglages) | ✅ |
 
 Aucune étape n’est « terminée » tant que `PROGRESS_LOG.md` n’est pas à jour.
 

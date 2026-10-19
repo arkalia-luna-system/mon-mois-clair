@@ -9,13 +9,19 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **5.4** (freeze Home + T5–T8) |
+| Dernière étape terminée | **5.4.1** (aide + libellés récurrence) |
 | Étape en cours | *(aucune)* |
 | Prochaine sous-étape | Smoke device release (JSON lisible + restore + partage + overdue) |
 
 ---
 
 ## Journal
+
+### 2026-10-19 — Validation expert 5.4.1 + push
+
+**Confirmé 5.4 :** F–I + T1–T8 présents ; **104** puis **107** tests après aide.  
+**Ajouté :** Réglages → « Comment ça marche » (`HowItWorksScreen`, Home freeze respecté) ; `RecurrenceLabel` branché formulaire.  
+**Claims :** `0.1.0-5.4.1` / `versionCode` 4 / **107/107**.
 
 ### 2026-10-19 — Audit propreté + hygiene git
 

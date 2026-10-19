@@ -7,6 +7,7 @@ object AppRoute {
     const val ReminderHealth = "reminder_health"
     const val RestoreBackup = "restore_backup"
     const val Settings = "settings"
+    const val HowItWorks = "how_it_works"
     const val AddEntry = "entry/add"
     const val EditEntry = "entry/edit/{id}/{isExpense}"
 

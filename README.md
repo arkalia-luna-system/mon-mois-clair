@@ -6,9 +6,9 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Tests](https://img.shields.io/badge/tests-104%2F104-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-107%2F107-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--5.4-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--5.4.1-informational)](#statut)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
 Saisie manuelle · backup JSON local · rappels exacts · distribution familiale par APK.
@@ -19,11 +19,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-5.4` |
-| Dernière étape | **5.4** Freeze Home + T5–T8 (R8 JSON, ancre mois, OVERDUE chain, partage) |
+| Version | `0.1.0-5.4.1` |
+| Dernière étape | **5.4.1** Aide « Comment ça marche » + libellés récurrence |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`, Android 16) — voir [checklist](dist/CHECKLIST_S25.md) |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **104/104** OK |
+| Tests unitaires | **107/107** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -57,6 +57,7 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 | **Partage copie de sécurité** (WhatsApp / Mail) | ✅ |
 | **Onboarding** SAF + permissions + Santé | ✅ |
 | **Home freeze** (pas de nouvelles options quotidiennes) | ✅ |
+| **Comment ça marche** (Réglages → aide) | ✅ |
 
 ---
 
@@ -84,6 +85,7 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 4.0–4.6  EN RETARD · divers · auto · récurrence      ✅
 5.0–5.4  freeze Home · T5 JSON R8 · ancre mois ·     ✅
          OVERDUE chain · partage WhatsApp/Mail       ✅
+5.4.1  Aide « Comment ça marche » (Réglages)         ✅
      Validation S25 Ultra (SM-S938B)                 ✅
 ```
 

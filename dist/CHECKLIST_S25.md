@@ -10,7 +10,7 @@ APK familial : `dist/MonMoisClair-release.apk` (éviter le debug au quotidien)
 | Serial | `R3CY60BJ3ZM` |
 | Android | 16 (API 36) |
 | Compte | user 0 (pas Secure Folder) |
-| Version app | `0.1.0-5.4` (historique checklist : aussi 3.5.1 / 4.6) |
+| Version app | `0.1.0-5.4.1` (historique : 5.4 / 4.6 / 3.5.1) |
 
 ### Résultats automatisés / observés
 
