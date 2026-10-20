@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -33,7 +34,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -250,6 +254,7 @@ private fun EntryFormScaffold(
     onCancel: () -> Unit,
     onDelete: (() -> Unit)?
 ) {
+    val focusManager = LocalFocusManager.current
     // Champs scrollables + actions épinglées au-dessus du clavier (imePadding).
     Column(
         modifier = Modifier
@@ -278,7 +283,11 @@ private fun EntryFormScaffold(
 
             if (showRecurring) {
                 Text("Type", style = MaterialTheme.typography.titleLarge)
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                @OptIn(ExperimentalLayoutApi::class)
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     TypeChip("Dépense (−)", selected = isExpense) { onExpense(true) }
                     TypeChip("Revenu (+)", selected = !isExpense) { onExpense(false) }
                 }
@@ -290,7 +299,11 @@ private fun EntryFormScaffold(
                 label = { Text("Nom (ex. Loyer)") },
                 modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
                 textStyle = MaterialTheme.typography.bodyLarge,
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
             )
             OutlinedTextField(
                 value = amountText,
@@ -298,7 +311,13 @@ private fun EntryFormScaffold(
                 label = { Text("Montant (€)") },
                 modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
                 textStyle = MaterialTheme.typography.bodyLarge,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
                 singleLine = true
             )
             OutlinedTextField(
@@ -307,7 +326,13 @@ private fun EntryFormScaffold(
                 label = { Text("Jour du mois (1–31)") },
                 modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
                 textStyle = MaterialTheme.typography.bodyLarge,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() }
+                ),
                 singleLine = true
             )
 
@@ -324,17 +349,26 @@ private fun EntryFormScaffold(
 
             if (showRecurring && onRecurrence != null) {
                 Text("Fréquence", style = MaterialTheme.typography.titleLarge)
-                TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
-                    onRecurrence(RecurrenceChoice.Once)
-                }
-                TypeChip(RecurrenceLabel.chipMonthly(), selected = recurrence == RecurrenceChoice.Monthly) {
-                    onRecurrence(RecurrenceChoice.Monthly)
-                }
-                TypeChip(RecurrenceLabel.chipEvery3Months(), selected = recurrence == RecurrenceChoice.Every3Months) {
-                    onRecurrence(RecurrenceChoice.Every3Months)
-                }
-                TypeChip(RecurrenceLabel.chipYearly(), selected = recurrence == RecurrenceChoice.Yearly) {
-                    onRecurrence(RecurrenceChoice.Yearly)
+                @OptIn(ExperimentalLayoutApi::class)
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
+                        onRecurrence(RecurrenceChoice.Once)
+                    }
+                    TypeChip(RecurrenceLabel.chipMonthly(), selected = recurrence == RecurrenceChoice.Monthly) {
+                        onRecurrence(RecurrenceChoice.Monthly)
+                    }
+                    TypeChip(
+                        RecurrenceLabel.chipEvery3Months(),
+                        selected = recurrence == RecurrenceChoice.Every3Months
+                    ) {
+                        onRecurrence(RecurrenceChoice.Every3Months)
+                    }
+                    TypeChip(RecurrenceLabel.chipYearly(), selected = recurrence == RecurrenceChoice.Yearly) {
+                        onRecurrence(RecurrenceChoice.Yearly)
+                    }
                 }
                 if (showNextDueMonth) {
                     Text("Prochaine échéance", style = MaterialTheme.typography.titleLarge)

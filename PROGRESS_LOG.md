@@ -9,13 +9,24 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.4.1** (polish affichage / scan) |
+| Dernière étape terminée | **6.5** (UX smoke : Retour épinglé, form, Home) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke S26 maman dès dispo · continuer sur `develop` |
+| Prochaine sous-étape | Smoke S26 maman · continuer sur `develop` |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.5 UX après smoke device (hors biométrie)
+
+**Testé device :** Home FAIT/EN RETARD · Ajout · Réglages · Santé · Aide.  
+**Amélioré :**
+- `PinnedBackScaffold` — **Retour toujours visible** (Santé / Réglages / Aide / Restaurer)
+- Formulaire : clavier **Suivant/OK** entre champs · fréquences en `FlowRow`
+- Home : couleurs reste / encore à payer · astuce si pas de revenu
+
+**Tests :** **120/120 OK**  
+**Version :** `0.1.0-6.5` · `versionCode` 10
 
 ### 2026-10-20 — 6.4.1 polish (bugs mineurs)
 

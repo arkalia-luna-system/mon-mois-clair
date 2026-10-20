@@ -144,13 +144,30 @@ fun HomeScreen(
                     text = MoneyFormat.formatCents(state.summary.remainingCents),
                     style = MaterialTheme.typography.displayLarge.copy(
                         fontSize = fit.remainingAmountSp.sp
-                    )
+                    ),
+                    color = when {
+                        state.summary.remainingCents < 0L -> A11yTokens.AccentWarn
+                        else -> A11yTokens.Ink
+                    }
                 )
                 Text(
                     text = "Encore à payer : " +
                         MoneyFormat.formatCents(state.summary.stillToPayCents),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = when {
+                        state.summary.stillToPayCents == 0L -> A11yTokens.AccentOk
+                        else -> A11yTokens.Ink
+                    }
                 )
+                if (state.summary.remainingCents < 0L &&
+                    state.timeline.none { it is TimelineItem.Income }
+                ) {
+                    Text(
+                        text = "Astuce : ajoutez un revenu (salaire) pour un reste plus clair.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                }
                 Spacer(modifier = Modifier.height(fit.sectionGap))
                 Text(
                     text = "Courses / divers : " + MoneyFormat.formatCents(state.diversSpentCents),

@@ -2,15 +2,8 @@ package be.monmoisclair.app.ui.restore
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -121,15 +115,8 @@ fun RestoreBackupScreen(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(A11yTokens.PaperCream)
-            .verticalScroll(rememberScrollState())
-            .padding(A11yTokens.screenPadding),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
-    ) {
-        Spacer(modifier = Modifier.height(12.dp))
+    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
+        Spacer(modifier = Modifier.height(4.dp))
         Text(text = "Restaurer une sauvegarde", style = MaterialTheme.typography.headlineMedium)
         Text(
             text = "Utilisez une copie mon-mois-clair-backup-1.json " +
@@ -164,11 +151,6 @@ fun RestoreBackupScreen(
             text = "Choisir un fichier JSON…",
             enabled = !state.busy,
             onClick = { pending = PendingRestore.File }
-        )
-        SecondaryA11yButton(
-            text = "Retour",
-            enabled = !state.busy,
-            onClick = onBack
         )
     }
 }

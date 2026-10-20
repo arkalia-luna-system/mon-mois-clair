@@ -1,18 +1,11 @@
 package be.monmoisclair.app.ui.settings
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +27,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import kotlinx.coroutines.flow.collectLatest
@@ -97,15 +91,8 @@ fun SettingsScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(A11yTokens.PaperCream)
-            .verticalScroll(rememberScrollState())
-            .padding(A11yTokens.screenPadding),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
-    ) {
-        Spacer(modifier = Modifier.height(12.dp))
+    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
+        Spacer(modifier = Modifier.height(4.dp))
         Text(text = "Réglages", style = MaterialTheme.typography.headlineMedium)
 
         Text(text = "Aide", style = MaterialTheme.typography.titleLarge)
@@ -265,8 +252,5 @@ fun SettingsScreen(
             onClick = onOpenRestore,
             enabled = !state.busy
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-        SecondaryA11yButton(text = "Retour", onClick = onBack, enabled = !state.busy)
     }
 }
