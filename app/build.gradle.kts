@@ -74,6 +74,16 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+        // Libs natives déjà sans symboles stripables → évite
+        // « Unable to strip … packaging them as they are » dans les logs CI.
+        jniLibs {
+            keepDebugSymbols += listOf(
+                "**/libandroidx.graphics.path.so",
+                "**/libbarhopper_v3.so",
+                "**/libimage_processing_util_jni.so",
+                "**/libsurface_util_jni.so",
+            )
+        }
     }
 }
 

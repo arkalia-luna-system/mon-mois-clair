@@ -1,5 +1,3 @@
-@file:OptIn(androidx.camera.core.ExperimentalGetImage::class)
-
 package be.monmoisclair.app.ui.scan
 
 import android.Manifest

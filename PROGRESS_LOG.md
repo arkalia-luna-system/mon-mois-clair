@@ -31,12 +31,12 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Problème :** warning Node 20 sur actions CI ; lint jamais exécuté en CI ; Dependabot Gradle absent.
 
-**Codé :** `setup-android@v4` · `upload-artifact@v7` · step `:app:lintDebug` avec `continue-on-error: true` + artifact rapport · Dependabot Gradle hebdo · correction des **4 erreurs** Lint (`MissingPermission` notif, `NewApi` nav bar v27, `app/lint.xml` opt-in CameraX scan).
+**Codé :** `setup-android@v4` · `upload-artifact@v7` · step `:app:lintDebug` avec `continue-on-error: true` + artifact rapport · Dependabot Gradle hebdo · correction des **4 erreurs** Lint (`MissingPermission` notif, `NewApi` nav bar v27, `app/lint.xml` opt-in CameraX scan) · silence logs (`keepDebugSymbols` libs natives ; retrait `@file:OptIn` inutile sur scan).
 
 **Pas encore :** lint bloquant · Detekt · scan CVE.
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **159/159** (46 fichiers, 0 échec)  
-**Version :** inchangée `0.1.0-6.24`
+**Tests :** `./gradlew :app:assembleDebug :app:lintDebug :app:testDebugUnitTest --rerun-tasks` → **159/159** (46 fichiers, 0 échec) · lint **0 erreur** / 37 warnings  
+**Version :** inchangée `0.1.0-6.25`
 
 ### 2026-10-20 — 6.24 Gestes fiche / échéance / photo
 
