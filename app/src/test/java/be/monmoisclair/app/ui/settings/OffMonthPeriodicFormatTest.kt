@@ -9,6 +9,7 @@ class OffMonthPeriodicFormatTest {
     @Test
     fun amountLine_annual() {
         val item = OffMonthPeriodic(
+            templateId = "tpl-ass",
             label = "Assurance auto",
             amountCents = 45_000,
             dayOfMonth = 12,
@@ -25,6 +26,7 @@ class OffMonthPeriodicFormatTest {
     @Test
     fun amountLine_quarterly() {
         val item = OffMonthPeriodic(
+            templateId = "tpl-eau",
             label = "Eau",
             amountCents = 8_050,
             dayOfMonth = 5,

@@ -2,7 +2,9 @@ package be.monmoisclair.app.ui.settings
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,6 +44,7 @@ fun SettingsScreen(
     onOpenSaf: () -> Unit,
     onOpenRestore: () -> Unit,
     onOpenHowItWorks: () -> Unit,
+    onEditTemplate: (String) -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,7 +64,7 @@ fun SettingsScreen(
         viewModel.shareIntents.collectLatest { intent ->
             try {
                 context.startActivity(intent)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 viewModel.reportExternalIntentFailed()
             }
         }
@@ -100,169 +101,167 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = "Réglages", style = MaterialTheme.typography.headlineMedium)
 
-        Text(text = "Aide", style = MaterialTheme.typography.titleLarge)
-        Text(
-            text = "Explications simples : reste, FAIT, rappels, sauvegarde.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
-        SecondaryA11yButton(
-            text = "Comment ça marche",
-            onClick = onOpenHowItWorks,
-            enabled = !state.busy
-        )
-
-        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
-        Text(text = "Confidentialité", style = MaterialTheme.typography.titleLarge)
-        Text(
-            text = "Par défaut l’app s’ouvre sans code.",
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = A11yTokens.minTouchHeight)
-                .clickable(
-                    enabled = !state.busy && canToggle,
-                    role = Role.Checkbox
-                ) {
-                    if (state.biometricEnabled) viewModel.disableBiometric()
-                    else requestEnable()
-                },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = state.biometricEnabled,
-                onCheckedChange = { checked ->
-                    if (state.busy) return@Checkbox
-                    if (checked) requestEnable() else viewModel.disableBiometric()
-                },
-                enabled = !state.busy && canToggle
-            )
+        SettingsCard(title = "Aide") {
             Text(
-                text = "Verrouiller avec empreinte ou code",
-                style = MaterialTheme.typography.bodyLarge
+                text = "Explications simples : reste, FAIT, rappels, sauvegarde.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+            SecondaryA11yButton(
+                text = "Comment ça marche",
+                onClick = onOpenHowItWorks,
+                enabled = !state.busy
             )
         }
 
-        Text(
-            text = when (state.availability) {
-                BiometricAvailability.Ready ->
-                    "Disponible sur ce téléphone (empreinte, visage ou code)."
-                BiometricAvailability.NoneEnrolled ->
-                    "Aucune empreinte / code d’écran enregistré. Configurez-les dans Samsung."
-                BiometricAvailability.HardwareUnavailable ->
-                    "Capteur indisponible pour le moment."
-                BiometricAvailability.Unsupported ->
-                    "Non supporté sur cet appareil."
-            },
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
-
-        state.message?.let { msg ->
+        SettingsCard(title = "Confidentialité") {
             Text(
-                text = msg,
-                color = if (state.isError) A11yTokens.AccentDanger else A11yTokens.AccentOk,
+                text = "Par défaut l’app s’ouvre sans code.",
                 style = MaterialTheme.typography.bodyLarge
             )
-        }
-
-        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
-        Text(text = "Rappels", style = MaterialTheme.typography.titleLarge)
-        Text(
-            text = "Notifications, batterie et Device Care, au même endroit.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
-        SecondaryA11yButton(
-            text = "Santé des rappels",
-            onClick = onOpenHealth,
-            enabled = !state.busy
-        )
-
-        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
-        Text(text = "Échéances hors ce mois", style = MaterialTheme.typography.titleLarge)
-        Text(
-            text = "Assurances, taxes, factures 1×/an ou tous les 3 mois — " +
-                "visibles ici quand elles ne tombent pas ce mois-ci.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
-        if (state.offMonthPeriodics.isEmpty()) {
-            Text(
-                text = "Aucune pour l’instant. Quand vous créerez une facture « 1× par an » " +
-                    "ou « tous les 3 mois », elle apparaîtra ici les autres mois.",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        } else {
-            state.offMonthPeriodics.forEach { item ->
-                Surface(
-                    color = A11yTokens.PaperCard,
-                    shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(14.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
+            val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .clickable(
+                        enabled = !state.busy && canToggle,
+                        role = Role.Checkbox
                     ) {
-                        Text(text = item.label, style = MaterialTheme.typography.titleLarge)
-                        Text(
-                            text = viewModel.formatPeriodicAmountLine(item),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text(
-                            text = "Prochaine : ${item.nextDueLabel}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.AccentWarn
-                        )
+                        if (state.biometricEnabled) viewModel.disableBiometric()
+                        else requestEnable()
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = state.biometricEnabled,
+                    onCheckedChange = { checked ->
+                        if (state.busy) return@Checkbox
+                        if (checked) requestEnable() else viewModel.disableBiometric()
+                    },
+                    enabled = !state.busy && canToggle
+                )
+                Text(
+                    text = "Verrouiller avec empreinte ou code",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            Text(
+                text = when (state.availability) {
+                    BiometricAvailability.Ready ->
+                        "Disponible sur ce téléphone (empreinte, visage ou code)."
+                    BiometricAvailability.NoneEnrolled ->
+                        "Aucune empreinte / code d’écran enregistré. Configurez-les dans Samsung."
+                    BiometricAvailability.HardwareUnavailable ->
+                        "Capteur indisponible pour le moment."
+                    BiometricAvailability.Unsupported ->
+                        "Non supporté sur cet appareil."
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+            state.message?.let { msg ->
+                Text(
+                    text = msg,
+                    color = if (state.isError) A11yTokens.AccentDanger else A11yTokens.AccentOk,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+
+        SettingsCard(title = "Rappels") {
+            Text(
+                text = "Notifications, batterie et Device Care, au même endroit.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+            SecondaryA11yButton(
+                text = "Santé des rappels",
+                onClick = onOpenHealth,
+                enabled = !state.busy
+            )
+        }
+
+        SettingsCard(title = "Échéances hors ce mois") {
+            Text(
+                text = "Assurances, taxes, factures 1×/an ou tous les 3 mois — " +
+                    "visibles ici quand elles ne tombent pas ce mois-ci. " +
+                    "Touchez une carte pour corriger montant, jour ou mois d’ancre.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+            if (state.offMonthPeriodics.isEmpty()) {
+                Text(
+                    text = "Aucune pour l’instant. Quand vous créerez une facture « 1× par an » " +
+                        "ou « tous les 3 mois », elle apparaîtra ici les autres mois.",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            } else {
+                state.offMonthPeriodics.forEach { item ->
+                    Surface(
+                        color = A11yTokens.PaperCream,
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Modifier ${item.label}"
+                            ) { onEditTemplate(item.templateId) }
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(14.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            Text(text = item.label, style = MaterialTheme.typography.titleLarge)
+                            Text(
+                                text = viewModel.formatPeriodicAmountLine(item),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = "Prochaine : ${item.nextDueLabel}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.AccentWarn
+                            )
+                        }
                     }
                 }
             }
         }
 
-        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
-        Text(text = "Sauvegarde", style = MaterialTheme.typography.titleLarge)
-        Text(
-            text = "Copie automatique dans Documents (3 versions). " +
-                "Envoyez une copie si le téléphone casse ; restaurez après réinstall.",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Text(
-            text = BackupHealthCopy.statusLine(state.backupHealth),
-            style = MaterialTheme.typography.bodyLarge,
-            color = if (BackupHealthCopy.isOk(state.backupHealth)) {
-                A11yTokens.AccentOk
-            } else {
-                A11yTokens.AccentDanger
-            }
-        )
-        SecondaryA11yButton(
-            text = "Dossier de sauvegarde",
-            onClick = onOpenSaf,
-            enabled = !state.busy
-        )
-        SecondaryA11yButton(
-            text = "Envoyer une copie de sécurité",
-            onClick = viewModel::shareSecurityCopy,
-            enabled = !state.busy
-        )
-        SecondaryA11yButton(
-            text = "Restaurer une sauvegarde",
-            onClick = onOpenRestore,
-            enabled = !state.busy
-        )
+        SettingsCard(title = "Sauvegarde") {
+            Text(
+                text = "Copie automatique dans Documents (3 versions) : mois + photos de factures. " +
+                    "« Envoyer une copie » partage seulement le fichier de sauvegarde (sans les photos) ; " +
+                    "les photos restent dans le dossier Documents choisi.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = BackupHealthCopy.statusLine(state.backupHealth),
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (BackupHealthCopy.isOk(state.backupHealth)) {
+                    A11yTokens.AccentOk
+                } else {
+                    A11yTokens.AccentDanger
+                }
+            )
+            SecondaryA11yButton(
+                text = "Dossier de sauvegarde",
+                onClick = onOpenSaf,
+                enabled = !state.busy
+            )
+            SecondaryA11yButton(
+                text = "Envoyer une copie de sécurité",
+                onClick = viewModel::shareSecurityCopy,
+                enabled = !state.busy
+            )
+            SecondaryA11yButton(
+                text = "Restaurer une sauvegarde",
+                onClick = onOpenRestore,
+                enabled = !state.busy
+            )
+        }
 
-        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
-        Text(text = "À propos", style = MaterialTheme.typography.titleLarge)
-        Text(
-            text = "Mon Mois Clair — suivi local des paiements du mois.",
-            style = MaterialTheme.typography.bodyLarge
-        )
         val versionName = try {
             val p = context.packageManager.getPackageInfo(context.packageName, 0)
             p.versionName ?: "—"
@@ -270,9 +269,10 @@ fun SettingsScreen(
             "—"
         }
         Text(
-            text = "Version $versionName",
+            text = "Mon Mois Clair · $versionName",
             style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
+            color = A11yTokens.InkMuted,
+            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
         )
         Text(
             text = "Données sur cet appareil uniquement. Pas de compte, pas de cloud.",
@@ -280,4 +280,27 @@ fun SettingsScreen(
             color = A11yTokens.InkMuted
         )
     }
+}
+
+@Composable
+private fun SettingsCard(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Surface(
+        color = A11yTokens.PaperCard,
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(text = title, style = MaterialTheme.typography.titleLarge)
+            content()
+        }
+    }
+    Spacer(modifier = Modifier.height(12.dp))
 }

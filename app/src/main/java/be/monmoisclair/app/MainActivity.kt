@@ -51,16 +51,11 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         pendingHighlightExpenseId = intent?.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
-        // Statut blanc + nav crème (cohérent avec themes.xml, pas de flash lavande).
+        // Statut + nav crème (cohérent avec themes.xml, pas de bandeau blanc).
+        val paperCream = AndroidColor.parseColor("#F7F4EB")
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(
-                AndroidColor.WHITE,
-                AndroidColor.WHITE
-            ),
-            navigationBarStyle = SystemBarStyle.light(
-                AndroidColor.parseColor("#F7F4EB"),
-                AndroidColor.parseColor("#F7F4EB")
-            )
+            statusBarStyle = SystemBarStyle.light(paperCream, paperCream),
+            navigationBarStyle = SystemBarStyle.light(paperCream, paperCream)
         )
         setContent {
             MonMoisClairTheme {

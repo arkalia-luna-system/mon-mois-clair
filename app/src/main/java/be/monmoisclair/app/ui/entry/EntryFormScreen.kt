@@ -29,7 +29,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -95,7 +94,11 @@ fun AddEntryScreen(
     viewModel: AddEntryViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val takePhoto = rememberFullPhotoCapture(viewModel::attachPreviewBitmap)
+    var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
+    val takePhoto = rememberFullPhotoCapture { bmp ->
+        pendingPreview = bmp
+        viewModel.attachPreviewBitmap(bmp)
+    }
 
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
     LaunchedEffect(epcRawResult) {
@@ -105,7 +108,7 @@ fun AddEntryScreen(
     }
 
     EntryFormScaffold(
-        title = "Nouvelle entrée",
+        title = state.formTitle,
         label = state.label,
         amountText = state.amountText,
         dayText = state.dayText,
@@ -124,6 +127,7 @@ fun AddEntryScreen(
         onPaymentNote = viewModel::setPaymentNote,
         showPaymentAssist = state.isExpense,
         hasPendingPhoto = state.hasPendingPhoto,
+        receiptPreview = pendingPreview,
         onScanEpc = onScanEpc,
         onTakePhoto = takePhoto,
         onCopyPaymentNote = viewModel::copyPaymentNote,
@@ -189,29 +193,38 @@ fun EditEntryScreen(
                 )
             },
             confirmButton = {
-                TextButton(
+                DangerA11yButton(
+                    text = "Supprimer",
                     onClick = {
                         confirmDelete = false
                         viewModel.delete()
-                    }
-                ) {
-                    Text("Supprimer", color = A11yTokens.AccentDanger)
-                }
+                    },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                )
             },
             dismissButton = {
-                TextButton(onClick = { confirmDelete = false }) {
-                    Text("Annuler")
-                }
+                SecondaryA11yButton(
+                    text = "Annuler",
+                    onClick = { confirmDelete = false },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
             }
         )
     }
 
-    val takePhoto = rememberFullPhotoCapture(viewModel::attachPreviewBitmap)
+    var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
+    val takePhoto = rememberFullPhotoCapture { bmp ->
+        pendingPreview = bmp
+        viewModel.attachPreviewBitmap(bmp)
+    }
     val context = LocalContext.current
     var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
     LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto) {
-        if (state.hasPendingPhoto || state.receiptRelativePath.isBlank()) {
-            if (!state.hasPendingPhoto) receiptBitmap = null
+        if (state.hasPendingPhoto) return@LaunchedEffect
+        if (state.receiptRelativePath.isBlank()) {
+            receiptBitmap = null
             return@LaunchedEffect
         }
         val uri = viewModel.openReceiptUri() ?: return@LaunchedEffect
@@ -240,8 +253,13 @@ fun EditEntryScreen(
         showPaymentAssist = state.isExpense,
         hasPendingPhoto = state.hasPendingPhoto,
         hasReceiptPhoto = state.receiptRelativePath.isNotBlank(),
-        receiptPreview = receiptBitmap,
+        receiptPreview = pendingPreview ?: receiptBitmap,
         onTakePhoto = takePhoto,
+        onViewReceipt = if (state.receiptRelativePath.isNotBlank()) {
+            viewModel::viewReceipt
+        } else {
+            null
+        },
         onCopyPaymentNote = viewModel::copyPaymentNote,
         showApplyFollowing = state.hasTemplate,
         applyFollowing = state.applyToFollowing,
@@ -289,6 +307,7 @@ private fun EntryFormScaffold(
     hasReceiptPhoto: Boolean = false,
     onScanEpc: (() -> Unit)? = null,
     onTakePhoto: (() -> Unit)? = null,
+    onViewReceipt: (() -> Unit)? = null,
     onCopyPaymentNote: (() -> Unit)? = null,
     showApplyFollowing: Boolean,
     applyFollowing: Boolean,
@@ -503,15 +522,35 @@ private fun EntryFormScaffold(
                         )
                     }
                     receiptPreview?.let { bmp ->
+                        Text(
+                            text = "Facture enregistrée — zoomez en ouvrant l’image ci-dessous.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted
+                        )
                         Image(
                             bitmap = bmp.asImageBitmap(),
                             contentDescription = "Photo de la facture",
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(180.dp)
+                                .heightIn(min = 280.dp, max = 480.dp)
                                 .clip(MaterialTheme.shapes.medium)
+                                .background(A11yTokens.PaperWarm)
+                                .then(
+                                    if (onViewReceipt != null) {
+                                        Modifier.clickable(
+                                            role = Role.Button,
+                                            onClickLabel = "Voir la facture",
+                                            onClick = onViewReceipt
+                                        )
+                                    } else {
+                                        Modifier
+                                    }
+                                )
                         )
+                    }
+                    if (onViewReceipt != null && hasReceiptPhoto && !hasPendingPhoto) {
+                        SecondaryA11yButton(text = "Voir la facture", onClick = onViewReceipt)
                     }
                 }
             }

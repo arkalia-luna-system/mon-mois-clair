@@ -61,7 +61,13 @@ fun ReminderHealthScreen(
             HealthStatusRow("Notifications", r.notificationsGranted)
             HealthStatusRow("Alarmes exactes", r.exactAlarmGranted)
             HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
-            HealthStatusRow("Sauvegarde Documents", r.safBackupOk)
+            if (!r.safBackupOk) {
+                Text(
+                    text = "La sauvegarde se vérifie dans Réglages.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+            }
             if (r.samsungDeviceCareHintNeeded) {
                 Text(
                     text = "Samsung Device Care : retirez l’app de « Mise en veille » " +

@@ -3,6 +3,7 @@ package be.monmoisclair.app.ui.entry
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -128,6 +129,28 @@ class EditEntryViewModel @Inject constructor(
     }
     fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
     suspend fun openReceiptUri() = receiptPhotos.openUri(_state.value.receiptRelativePath)
+
+    fun viewReceipt() {
+        viewModelScope.launch {
+            val uri = receiptPhotos.openUri(_state.value.receiptRelativePath)
+            if (uri == null) {
+                _state.update {
+                    it.copy(error = "Photo de facture introuvable.", copyMessage = null)
+                }
+                return@launch
+            }
+            val view = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "image/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            runCatching { appContext.startActivity(view) }
+                .onFailure {
+                    _state.update {
+                        it.copy(error = "Impossible d’ouvrir la facture.", copyMessage = null)
+                    }
+                }
+        }
+    }
 
     fun copyPaymentNote() {
         val note = _state.value.paymentNote.trim()

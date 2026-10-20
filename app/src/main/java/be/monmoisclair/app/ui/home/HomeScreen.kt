@@ -78,11 +78,12 @@ import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
+import java.time.YearMonth
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    onAdd: () -> Unit,
+    onAdd: (YearMonth) -> Unit,
     onEdit: (id: String, isExpense: Boolean) -> Unit,
     onOpenHealth: () -> Unit,
     onOpenSettings: () -> Unit,
@@ -101,6 +102,7 @@ fun HomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var diversInput by remember { mutableStateOf("") }
+    var diversExpanded by remember { mutableStateOf(false) }
     var menuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
@@ -119,6 +121,12 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.diversFieldCleared.collect { diversInput = "" }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.userMessages.collect { msg ->
+            snackbarHostState.showSnackbar(msg)
+        }
     }
 
     LaunchedEffect(state.highlightExpenseId, state.timeline) {
@@ -259,6 +267,15 @@ fun HomeScreen(
                     )
                 }
                 Text(
+                    text = if (state.summary.remainingCents < 0L) {
+                        "Déficit après factures"
+                    } else {
+                        "Reste après factures"
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+                Text(
                     text = MoneyFormat.formatCents(state.summary.remainingCents),
                     style = MaterialTheme.typography.displayLarge.copy(
                         fontSize = fit.remainingAmountSp.sp,
@@ -270,24 +287,25 @@ fun HomeScreen(
                         else -> A11yTokens.Ink
                     }
                 )
-                val payLine = buildString {
-                    append("Reste · à payer ")
-                    append(MoneyFormat.formatCents(state.summary.stillToPayCents))
-                    if (state.diversSpentCents > 0L) {
-                        append(" · divers ")
-                        append(MoneyFormat.formatCents(state.diversSpentCents))
-                    }
-                }
                 Text(
-                    text = payLine,
+                    text = "À payer ${MoneyFormat.formatCents(state.summary.stillToPayCents)}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = when {
                         state.summary.stillToPayCents == 0L -> A11yTokens.AccentOk
                         else -> A11yTokens.InkMuted
                     },
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                if (state.diversSpentCents > 0L) {
+                    Text(
+                        text = "Après divers ${MoneyFormat.formatCents(state.afterDiversCents)}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.Ink,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 if (state.summary.remainingCents < 0L &&
                     state.timeline.none { it is TimelineItem.Income }
                 ) {
@@ -306,7 +324,15 @@ fun HomeScreen(
                         color = A11yTokens.AccentWarn,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = fit.sectionGap)
+                        modifier = Modifier
+                            .padding(top = fit.sectionGap)
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Voir les échéances hors ce mois"
+                            ) { onOpenSettings() }
+                            .padding(vertical = 8.dp)
                     )
                 }
             }
@@ -363,7 +389,10 @@ fun HomeScreen(
                                     textAlign = TextAlign.Center
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
-                                PrimaryA11yButton(text = "+ Ajouter une entrée", onClick = onAdd)
+                                PrimaryA11yButton(
+                                    text = "+ Ajouter une entrée",
+                                    onClick = { onAdd(state.selectedYearMonth) }
+                                )
                             }
                         }
                     }
@@ -401,67 +430,94 @@ fun HomeScreen(
                                     onClick = {
                                         viewModel.clearHighlight()
                                         onEdit(item.id, true)
+                                    },
+                                    onCopyNote = {
+                                        viewModel.copyPaymentNote(item.paymentNote)
+                                    },
+                                    onOpenReceipt = {
+                                        viewModel.openReceipt(item.receiptRelativePath)
                                     }
                                 )
                             }
                         }
                     }
                 }
-                // Divers seulement quand le mois a déjà des lignes (évite le formulaire orphelin).
+                // Divers : total visible fermé ; formulaire au tap.
                 val showDivers = !state.loading &&
                     (state.timeline.isNotEmpty() || state.diversSpentCents > 0L)
                 if (showDivers) {
                     item(key = "divers-controls") {
                         Text(
                             text = "Courses / divers",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                        Text(
-                            text = "Après divers (indicatif) : " +
-                                MoneyFormat.formatCents(state.afterDiversCents),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            SecondaryA11yButton(
-                                text = "− Divers",
-                                onClick = { viewModel.removeDivers(diversInput) },
-                                modifier = Modifier.weight(1f)
-                            )
-                            SecondaryA11yButton(
-                                text = "+ Divers",
-                                onClick = { viewModel.addDivers(diversInput) },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        OutlinedTextField(
-                            value = diversInput,
-                            onValueChange = {
-                                diversInput = it
-                                viewModel.clearDiversError()
-                            },
-                            label = { Text("Montant divers (€)") },
-                            singleLine = true,
-                            shape = MaterialTheme.shapes.medium,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = A11yTokens.minTouchHeight)
-                                .then(diversBring),
-                            textStyle = MaterialTheme.typography.bodyLarge
+                                .clickable(
+                                    role = Role.Button,
+                                    onClickLabel = if (diversExpanded) {
+                                        "Fermer courses et divers"
+                                    } else {
+                                        "Ouvrir courses et divers"
+                                    }
+                                ) { diversExpanded = !diversExpanded }
+                                .padding(vertical = 8.dp)
                         )
-                        diversError?.let { err ->
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                text = err,
-                                color = A11yTokens.AccentDanger,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                        Text(
+                            text = if (state.diversSpentCents > 0L) {
+                                "Après divers ${MoneyFormat.formatCents(state.afterDiversCents)}"
+                            } else {
+                                "Aucune course notée — touchez pour ajouter."
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted
+                        )
+                        AnimatedVisibility(visible = diversExpanded) {
+                            Column {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    SecondaryA11yButton(
+                                        text = "− Divers",
+                                        onClick = { viewModel.removeDivers(diversInput) },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    SecondaryA11yButton(
+                                        text = "+ Divers",
+                                        onClick = { viewModel.addDivers(diversInput) },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                OutlinedTextField(
+                                    value = diversInput,
+                                    onValueChange = {
+                                        diversInput = it
+                                        viewModel.clearDiversError()
+                                    },
+                                    label = { Text("Montant divers (€)") },
+                                    singleLine = true,
+                                    shape = MaterialTheme.shapes.medium,
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Decimal
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(min = A11yTokens.minTouchHeight)
+                                        .then(diversBring),
+                                    textStyle = MaterialTheme.typography.bodyLarge
+                                )
+                                diversError?.let { err ->
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text(
+                                        text = err,
+                                        color = A11yTokens.AccentDanger,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -493,7 +549,7 @@ fun HomeScreen(
                         Box(modifier = Modifier.weight(1.2f)) {
                             PrimaryA11yButton(
                                 text = "+ Ajouter",
-                                onClick = onAdd,
+                                onClick = { onAdd(state.selectedYearMonth) },
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -512,7 +568,7 @@ fun HomeScreen(
                 snackbarData = data,
                 containerColor = A11yTokens.Ink,
                 contentColor = A11yTokens.ButtonText,
-                actionColor = A11yTokens.AccentAuto
+                actionColor = A11yTokens.ButtonText
             )
         }
     }
@@ -553,13 +609,27 @@ private fun DayBadge(label: String) {
 }
 
 @Composable
-private fun StatusChip(text: String, container: Color, content: Color) {
+private fun StatusChip(
+    text: String,
+    container: Color,
+    content: Color,
+    onClick: (() -> Unit)? = null
+) {
     Text(
         text = text,
         color = content,
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
             .background(container, MaterialTheme.shapes.medium)
+            .then(
+                if (onClick != null) {
+                    Modifier
+                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .clickable(role = Role.Button, onClick = onClick)
+                } else {
+                    Modifier
+                }
+            )
             .padding(horizontal = 8.dp, vertical = 4.dp)
     )
 }
@@ -606,7 +676,9 @@ private fun ExpenseRow(
     item: TimelineItem.Expense,
     highlighted: Boolean,
     onToggle: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onCopyNote: () -> Unit,
+    onOpenReceipt: () -> Unit
 ) {
     val shape = MaterialTheme.shapes.medium
     val bg = when {
@@ -655,15 +727,23 @@ private fun ExpenseRow(
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
-                    Text(
-                        text = item.paymentNote,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(
+                            text = item.paymentNote,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        SecondaryA11yButton(
+                            text = "Copier",
+                            onClick = onCopyNote,
+                            fillMaxWidth = false,
+                            modifier = Modifier.widthIn(min = 96.dp)
+                        )
+                    }
                 }
-                ExpenseStatusLine(item)
+                ExpenseStatusLine(item = item, onOpenReceipt = onOpenReceipt)
             }
             SecondaryA11yButton(
                 text = if (item.isDone) "Remettre" else "FAIT ✓",
@@ -677,7 +757,10 @@ private fun ExpenseRow(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ExpenseStatusLine(item: TimelineItem.Expense) {
+private fun ExpenseStatusLine(
+    item: TimelineItem.Expense,
+    onOpenReceipt: () -> Unit
+) {
     val showAuto = item.isAutoDebit
     val showDone = item.isDone
     val showLate = item.isOverdue && !item.isDone
@@ -697,7 +780,12 @@ private fun ExpenseStatusLine(item: TimelineItem.Expense) {
             StatusChip("EN RETARD", A11yTokens.AccentDanger, A11yTokens.ButtonText)
         }
         if (showReceipt) {
-            StatusChip("Photo", A11yTokens.PaperWarm, A11yTokens.Ink)
+            StatusChip(
+                text = "Facture",
+                container = A11yTokens.PaperWarm,
+                content = A11yTokens.Ink,
+                onClick = onOpenReceipt
+            )
         }
     }
 }

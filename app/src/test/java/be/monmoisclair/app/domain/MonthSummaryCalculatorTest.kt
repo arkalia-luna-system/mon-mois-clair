@@ -34,6 +34,28 @@ class MonthSummaryCalculatorTest {
         assertThat(summary.stillToPayCents).isEqualTo(0L)
     }
 
+    @Test
+    fun compute_negativeRemaining_whenExpensesExceedIncome() {
+        val summary = MonthSummaryCalculator.compute(
+            incomes = listOf(income("i1", 100_000L)),
+            expenses = listOf(expense("e1", 150_000L, ExpenseStatus.DONE))
+        )
+        assertThat(summary.remainingCents).isEqualTo(-50_000L)
+        // FAIT ne compte plus dans « à payer »
+        assertThat(summary.stillToPayCents).isEqualTo(0L)
+    }
+
+    @Test
+    fun afterDivers_isRemainingMinusDivers() {
+        // Contrat Home : afterDiversCents = remainingCents - diversSpentCents
+        val summary = MonthSummaryCalculator.compute(
+            incomes = listOf(income("i1", 200_000L)),
+            expenses = listOf(expense("e1", 50_000L, ExpenseStatus.TODO))
+        )
+        val divers = 12_500L
+        assertThat(summary.remainingCents - divers).isEqualTo(137_500L)
+    }
+
     private fun income(id: String, cents: Long) = IncomeInstanceEntity(
         id = id,
         ledgerId = "2026-10",

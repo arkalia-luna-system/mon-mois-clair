@@ -141,6 +141,35 @@ class UpdateDeleteEntryUseCaseTest {
     }
 
     @Test
+    fun update_intervalMonths_updatesTemplateOnly() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-int",
+                label = "Assur.",
+                amountCents = 20_000L,
+                dayOfMonth = 1,
+                active = true,
+                intervalMonths = 1,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-10", "exp:2026-10:tpl-int", "tpl-int", 20_000L)
+
+        val result = update(
+            id = "exp:2026-10:tpl-int",
+            isExpense = true,
+            label = "Assur.",
+            amountCents = 20_000L,
+            dayOfMonth = 1,
+            applyToFollowingMonths = false,
+            intervalMonths = 12
+        )
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        assertThat(db.templateDao().getExpenseById("tpl-int")!!.intervalMonths).isEqualTo(12)
+    }
+
+    @Test
     fun update_expense_togglesAutoDebit_andPropagatesToTemplate() = runBlocking {
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(

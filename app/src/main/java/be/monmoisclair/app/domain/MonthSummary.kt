@@ -13,6 +13,12 @@ data class MonthSummary(
 
 object MonthSummaryCalculator {
 
+    /**
+     * `remainingCents` = revenus − **toutes** les factures (FAIT ou non).
+     * C’est le « Reste après factures » : on réserve aussi ce qui n’est pas encore payé.
+     * Les divers (courses) **ne** sont **pas** dedans — indicatif à part (`après divers`).
+     * `stillToPayCents` = somme des TODO uniquement (ligne « À payer »).
+     */
     fun compute(
         incomes: List<IncomeInstanceEntity>,
         expenses: List<ExpenseInstanceEntity>

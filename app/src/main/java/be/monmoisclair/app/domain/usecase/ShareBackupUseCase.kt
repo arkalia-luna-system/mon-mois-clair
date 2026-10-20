@@ -58,7 +58,9 @@ class ShareBackupUseCase @Inject constructor(
                 putExtra(Intent.EXTRA_SUBJECT, "Sauvegarde Mon Mois Clair")
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    "Copie de sécurité Mon Mois Clair (à garder hors du téléphone)."
+                    "Copie de sécurité Mon Mois Clair (mois et montants). " +
+                        "Les photos de factures ne sont pas dans ce fichier : " +
+                        "elles restent dans le dossier Documents de l’app."
                 )
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }

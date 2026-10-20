@@ -25,6 +25,7 @@ sealed interface TimelineItem {
         val isAutoDebit: Boolean,
         val paymentNote: String = "",
         val hasReceipt: Boolean = false,
+        val receiptRelativePath: String = "",
         override val sortDay: Int,
         override val sortLabel: String
     ) : TimelineItem

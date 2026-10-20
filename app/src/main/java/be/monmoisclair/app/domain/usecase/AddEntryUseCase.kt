@@ -29,7 +29,9 @@ class AddEntryUseCase @Inject constructor(
 
     /**
      * @param intervalMonths 1 = mensuel ; >1 = tous les N mois (uniquement si recurring).
-     * @param anchorYearMonth ancre T6 (`yyyy-MM`) ; si null → mois courant.
+     * @param targetYearMonth mois du ledger affiché (accueil) ; si null → mois calendaire courant.
+     *        Refusé s’il est dans le futur.
+     * @param anchorYearMonth ancre T6 (`yyyy-MM`) ; si null → [targetYearMonth] / mois courant.
      * @param isAutoDebit prélèvement automatique (dépenses).
      */
     suspend operator fun invoke(
@@ -39,6 +41,7 @@ class AddEntryUseCase @Inject constructor(
         isExpense: Boolean,
         recurring: Boolean,
         intervalMonths: Int = 1,
+        targetYearMonth: YearMonth? = null,
         anchorYearMonth: YearMonth? = null,
         isAutoDebit: Boolean = false,
         paymentNote: String = "",
@@ -56,8 +59,12 @@ class AddEntryUseCase @Inject constructor(
         }
         val interval = if (recurring) intervalMonths.coerceIn(1, 24) else 1
 
-        monthCycleEngine.ensureCurrentMonthExists()
-        val ym = AppClock.currentYearMonth()
+        val current = AppClock.currentYearMonth()
+        val ym = targetYearMonth ?: current
+        if (ym.isAfter(current)) {
+            return AddEntryResult.InvalidInput("On ne peut pas ajouter une entrée dans un mois futur.")
+        }
+        monthCycleEngine.ensureMonthExists(ym)
         val ledgerId = AppClock.ledgerId(ym)
         val now = AppClock.nowEpochMs()
         val anchorYm = anchorYearMonth ?: ym

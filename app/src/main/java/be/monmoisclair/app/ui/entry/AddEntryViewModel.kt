@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
@@ -15,6 +16,7 @@ import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
+import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.YearMonth
 import javax.inject.Inject
 
 enum class RecurrenceChoice { Once, Monthly, Every3Months, Yearly }
@@ -40,7 +43,9 @@ data class EntryFormState(
     val copyMessage: String? = null,
     val error: String? = null,
     val saved: Boolean = false,
-    val saving: Boolean = false
+    val saving: Boolean = false,
+    val formTitle: String = "Nouvelle entrée",
+    val targetYearMonth: YearMonth = AppClock.currentYearMonth()
 ) {
     val needsNextDueMonth: Boolean
         get() = recurrence == RecurrenceChoice.Every3Months || recurrence == RecurrenceChoice.Yearly
@@ -48,13 +53,34 @@ data class EntryFormState(
 
 @HiltViewModel
 class AddEntryViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     @ApplicationContext private val appContext: Context,
     private val addEntry: AddEntryUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
     private val instanceDao: InstanceDao,
     private val mutatingRepository: MutatingRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(EntryFormState())
+    private val targetYm: YearMonth = run {
+        val raw = savedStateHandle.get<String>("ym")
+        val parsed = runCatching { YearMonth.parse(raw) }.getOrNull()
+        val current = AppClock.currentYearMonth()
+        when {
+            parsed == null -> current
+            parsed.isAfter(current) -> current
+            else -> parsed
+        }
+    }
+    private val _state = MutableStateFlow(
+        EntryFormState(
+            targetYearMonth = targetYm,
+            formTitle = if (targetYm == AppClock.currentYearMonth()) {
+                "Nouvelle entrée"
+            } else {
+                "Nouvelle entrée · ${DayLabelFormat.monthTitle(targetYm)}"
+            },
+            nextDueMonth = targetYm.monthValue
+        )
+    )
     val state: StateFlow<EntryFormState> = _state.asStateFlow()
     @Volatile private var pendingBitmap: Bitmap? = null
 
@@ -132,15 +158,18 @@ class AddEntryViewModel @Inject constructor(
             }
             val anchor = when {
                 !recurring -> null
-                s.needsNextDueMonth -> RecurrenceAnchor.nextYearMonth(s.nextDueMonth)
-                else -> AppClock.currentYearMonth()
+                s.needsNextDueMonth ->
+                    RecurrenceAnchor.nextYearMonth(s.nextDueMonth, from = s.targetYearMonth)
+                else -> s.targetYearMonth
             }
             _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = addEntry(
                     label = s.label, amountCents = cents, dayOfMonth = day,
                     isExpense = s.isExpense, recurring = recurring,
-                    intervalMonths = interval, anchorYearMonth = anchor,
+                    intervalMonths = interval,
+                    targetYearMonth = s.targetYearMonth,
+                    anchorYearMonth = anchor,
                     isAutoDebit = s.isExpense && s.isAutoDebit, paymentNote = s.paymentNote
                 )
             ) {

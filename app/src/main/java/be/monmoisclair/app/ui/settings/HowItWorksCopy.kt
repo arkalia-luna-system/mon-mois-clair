@@ -47,7 +47,8 @@ object HowItWorksCopy {
             title = "Facture papier",
             body = "À l’ajout : « Scanner une facture » lit le QR belge (EPC) et préremplit nom, montant " +
                 "et communication. Touchez « Copier la communication » puis collez dans votre app bancaire. " +
-                "Vous pouvez aussi prendre une photo de la facture (stockée à côté de la sauvegarde)."
+                "Vous pouvez aussi prendre une photo de la facture. Elle se revoit en ouvrant la ligne. " +
+                "Elle reste dans le dossier Documents, pas dans le message envoyé."
         ),
         Section(
             title = "Sur une année",
@@ -55,15 +56,16 @@ object HowItWorksCopy {
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
                 "Elles réapparaissent le bon mois ; les autres mois, regardez Réglages → « Échéances hors ce mois ». " +
                 "Pour feuilleter l’historique : Menu (barre du bas) → calendrier des mois, " +
-                "ou les flèches ‹ › sous le reste. " +
+                "ou les flèches à côté du mois. " +
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
                 "Si Menu affiche « Alertes », les rappels ne peuvent pas sonner : ouvrez Vérifier les alertes."
         ),
         Section(
             title = "Sauvegarde",
-            body = "À chaque changement, une copie JSON est écrite dans Documents. " +
-                "En cas de nouveau téléphone : Réglages → Restaurer. " +
-                "Pour un téléphone cassé ou volé : « Envoyer une copie (WhatsApp ou Mail) » à quelqu’un de confiance."
+            body = "À chaque changement, une copie des mois est écrite dans Documents (3 versions). " +
+                "Les photos de factures sont dans ce même dossier. " +
+                "« Envoyer une copie » (WhatsApp / Mail) n’envoie que le fichier de sauvegarde, pas les photos. " +
+                "En cas de nouveau téléphone : Réglages → Restaurer ; pour les photos, copiez aussi le dossier Documents."
         ),
         Section(
             title = "Empreinte (optionnel)",

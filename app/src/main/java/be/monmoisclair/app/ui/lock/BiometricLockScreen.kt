@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.lock
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,20 +8,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import be.monmoisclair.app.R
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun BiometricLockScreen(
@@ -67,10 +70,10 @@ fun BiometricLockScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 16.dp else 32.dp))
-        Text(
-            text = "Mon Mois Clair",
-            style = MaterialTheme.typography.labelLarge,
-            color = A11yTokens.InkMuted
+        Image(
+            painter = painterResource(R.drawable.ic_brand_m),
+            contentDescription = "Mon Mois Clair",
+            modifier = Modifier.size(48.dp)
         )
         Text(
             text = "Application verrouillée",

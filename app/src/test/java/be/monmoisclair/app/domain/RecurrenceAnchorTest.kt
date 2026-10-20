@@ -27,4 +27,12 @@ class RecurrenceAnchorTest {
             RecurrenceAnchor.nextYearMonth(11, YearMonth.of(2026, 10))
         ).isEqualTo(YearMonth.of(2026, 11))
     }
+
+    @Test
+    fun fromPastLedger_keepsSameYearWhenMonthMatches() {
+        // Ajout depuis mars 2026 affiché : ancre « mars » → 2026-03 (pas 2027)
+        assertThat(
+            RecurrenceAnchor.nextYearMonth(3, YearMonth.of(2026, 3))
+        ).isEqualTo(YearMonth.of(2026, 3))
+    }
 }

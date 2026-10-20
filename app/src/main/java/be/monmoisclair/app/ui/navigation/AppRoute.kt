@@ -8,10 +8,15 @@ object AppRoute {
     const val RestoreBackup = "restore_backup"
     const val Settings = "settings"
     const val HowItWorks = "how_it_works"
-    const val AddEntry = "entry/add"
+    const val AddEntry = "entry/add/{ym}"
     const val ScanEpc = "entry/scan_epc"
     const val EditEntry = "entry/edit/{id}/{isExpense}"
+    const val EditTemplate = "template/edit/{id}"
+
+    fun addEntry(ym: java.time.YearMonth): String = "entry/add/$ym"
 
     fun editEntry(id: String, isExpense: Boolean): String =
         "entry/edit/$id/${if (isExpense) "true" else "false"}"
+
+    fun editTemplate(id: String): String = "template/edit/$id"
 }

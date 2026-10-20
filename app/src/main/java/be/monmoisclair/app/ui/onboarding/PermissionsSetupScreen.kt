@@ -146,6 +146,5 @@ private fun HealthChecklist(report: ReminderHealthReport) {
         HealthStatusRow("Notifications", report.notificationsGranted)
         HealthStatusRow("Alarmes exactes", report.exactAlarmGranted)
         HealthStatusRow("Batterie non limitée", report.batteryOptimizationIgnored)
-        HealthStatusRow("Sauvegarde Documents", report.safBackupOk)
     }
 }

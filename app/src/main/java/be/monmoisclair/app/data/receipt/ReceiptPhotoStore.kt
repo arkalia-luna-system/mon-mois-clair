@@ -37,9 +37,9 @@ class ReceiptPhotoStore @Inject constructor(
         if (relativePath.isBlank()) null else safBackupStore.uriForRelative(relativePath)
 
     companion object {
-        /** Plein cadre confortable (pas la miniature TakePicturePreview). */
-        const val MAX_SIDE_PX = 1600
-        const val WEBP_QUALITY = 88
+        /** Plein cadre lisible (IBAN / communication) — pas la miniature système. */
+        const val MAX_SIDE_PX = 2048
+        const val WEBP_QUALITY = 90
 
         fun compressWebp(source: Bitmap, maxSide: Int = MAX_SIDE_PX, quality: Int = WEBP_QUALITY): ByteArray {
             val scaled = scaleMax(source, maxSide)

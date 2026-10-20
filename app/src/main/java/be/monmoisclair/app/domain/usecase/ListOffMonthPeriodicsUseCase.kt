@@ -9,6 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 data class OffMonthPeriodic(
+    val templateId: String,
     val label: String,
     val amountCents: Long,
     val dayOfMonth: Int,
@@ -37,6 +38,7 @@ class ListOffMonthPeriodicsUseCase @Inject constructor(
                 }
                 val next = nextOccurrence(anchor, t.intervalMonths, current)
                 OffMonthPeriodic(
+                    templateId = t.id,
                     label = t.label,
                     amountCents = t.amountCents,
                     dayOfMonth = t.dayOfMonth,

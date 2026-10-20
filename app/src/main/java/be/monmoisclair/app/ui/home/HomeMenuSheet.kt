@@ -66,6 +66,11 @@ fun HomeMenuSheet(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(text = "Mois", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = current.year.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
             Spacer(modifier = Modifier.height(8.dp))
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- M teal pour le splash crème et l’écran verrouillé (l’ivoire disparaîtrait). -->
+    <path
+        android:fillColor="#1B4D4E"
+        android:pathData="M30,70 L30,32 L44,32 L54,50 L64,32 L78,32 L78,70 L66,70 L66,48 L54,66 L42,48 L42,70 Z" />
+    <path
+        android:fillColor="#D99B26"
+        android:pathData="M34,73 L74,73 L74,77 L34,77 Z" />
+</vector>

@@ -1,9 +1,14 @@
 package be.monmoisclair.app.ui.home
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
+import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.ExpenseOverdue
@@ -20,6 +25,7 @@ import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.DoneDateFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,13 +62,15 @@ data class HomeUiState(
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val monthCycleEngine: MonthCycleEngine,
     private val monthLedgerDao: MonthLedgerDao,
     private val instanceDao: InstanceDao,
     private val toggleDone: ToggleExpenseDoneUseCase,
     private val adjustDivers: AdjustDiversUseCase,
     private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase,
-    private val reminderHealth: ReminderHealthChecker
+    private val reminderHealth: ReminderHealthChecker,
+    private val receiptPhotos: ReceiptPhotoStore
 ) : ViewModel() {
 
     private val selectedMonth = MutableStateFlow(AppClock.currentYearMonth())
@@ -75,6 +83,8 @@ class HomeViewModel @Inject constructor(
     val remindersBlocked: StateFlow<Boolean> = _remindersBlocked.asStateFlow()
     private val _diversFieldCleared = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val diversFieldCleared: SharedFlow<Unit> = _diversFieldCleared.asSharedFlow()
+    private val _userMessages = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val userMessages: SharedFlow<String> = _userMessages.asSharedFlow()
 
     val uiState: StateFlow<HomeUiState> = combine(
         selectedMonth.flatMapLatest { ym ->
@@ -118,6 +128,7 @@ class HomeViewModel @Inject constructor(
                                 isAutoDebit = exp.isAutoDebit,
                                 paymentNote = exp.paymentNote,
                                 hasReceipt = exp.receiptRelativePath.isNotBlank(),
+                                receiptRelativePath = exp.receiptRelativePath,
                                 sortDay = exp.dayOfMonth,
                                 sortLabel = exp.label
                             )
@@ -185,9 +196,11 @@ class HomeViewModel @Inject constructor(
                 }
                 else -> {
                     val f = items.first()
+                    val others = items.size - 1
+                    val otherWord = if (others == 1) "autre" else "autres"
                     "À prévoir le mois prochain : ${f.label} (" +
                         "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth}) " +
-                        "et ${items.size - 1} autre(s)"
+                        "et $others $otherWord"
                 }
             }
         }
@@ -298,6 +311,33 @@ class HomeViewModel @Inject constructor(
 
     fun clearDiversError() {
         _diversError.value = null
+    }
+
+    fun copyPaymentNote(note: String) {
+        val trimmed = note.trim()
+        if (trimmed.isEmpty()) {
+            _userMessages.tryEmit("Aucune communication à copier.")
+            return
+        }
+        (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+            .setPrimaryClip(ClipData.newPlainText("communication", trimmed))
+        _userMessages.tryEmit("Copié — collez dans votre application bancaire.")
+    }
+
+    fun openReceipt(relativePath: String) {
+        viewModelScope.launch {
+            val uri = receiptPhotos.openUri(relativePath)
+            if (uri == null) {
+                _userMessages.tryEmit("Photo de facture introuvable.")
+                return@launch
+            }
+            val view = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "image/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            runCatching { appContext.startActivity(view) }
+                .onFailure { _userMessages.tryEmit("Impossible d’ouvrir la facture.") }
+        }
     }
 
     fun refreshCurrentMonth() {

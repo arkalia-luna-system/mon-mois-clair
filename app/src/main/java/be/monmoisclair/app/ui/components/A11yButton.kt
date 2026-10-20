@@ -91,13 +91,14 @@ fun DangerA11yButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    fillMaxWidth: Boolean = true
 ) {
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier
-            .fillMaxWidth()
+            .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight),
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, A11yTokens.AccentDanger),

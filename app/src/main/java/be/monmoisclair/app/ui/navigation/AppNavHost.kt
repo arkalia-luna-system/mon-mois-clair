@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import be.monmoisclair.app.domain.usecase.StartDestination
 import be.monmoisclair.app.ui.entry.AddEntryScreen
 import be.monmoisclair.app.ui.entry.EditEntryScreen
+import be.monmoisclair.app.ui.entry.EditTemplateScreen
 import be.monmoisclair.app.ui.health.ReminderHealthScreen
 import be.monmoisclair.app.ui.home.HomeScreen
 import be.monmoisclair.app.ui.onboarding.PermissionsSetupScreen
@@ -61,7 +62,7 @@ fun AppNavHost(
         }
         composable(AppRoute.Home) {
             HomeScreen(
-                onAdd = { navController.navigate(AppRoute.AddEntry) },
+                onAdd = { ym -> navController.navigate(AppRoute.addEntry(ym)) },
                 onEdit = { id, isExpense ->
                     navController.navigate(AppRoute.editEntry(id, isExpense))
                 },
@@ -75,7 +76,8 @@ fun AppNavHost(
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
                 onOpenSaf = { navController.navigate(AppRoute.SafSetup) },
                 onOpenRestore = { navController.navigate(AppRoute.RestoreBackup) },
-                onOpenHowItWorks = { navController.navigate(AppRoute.HowItWorks) }
+                onOpenHowItWorks = { navController.navigate(AppRoute.HowItWorks) },
+                onEditTemplate = { id -> navController.navigate(AppRoute.editTemplate(id)) }
             )
         }
         composable(AppRoute.HowItWorks) {
@@ -90,7 +92,10 @@ fun AppNavHost(
                 onRestored = { navController.popBackStack(AppRoute.Home, inclusive = false) }
             )
         }
-        composable(AppRoute.AddEntry) { entry ->
+        composable(
+            route = AppRoute.AddEntry,
+            arguments = listOf(navArgument("ym") { type = NavType.StringType })
+        ) { entry ->
             val epcRaw by entry.savedStateHandle
                 .getStateFlow<String?>("epc_raw", null)
                 .collectAsStateWithLifecycle()
@@ -100,6 +105,15 @@ fun AppNavHost(
                 onScanEpc = { navController.navigate(AppRoute.ScanEpc) },
                 epcRawResult = epcRaw,
                 onEpcRawConsumed = { entry.savedStateHandle.remove<String>("epc_raw") }
+            )
+        }
+        composable(
+            route = AppRoute.EditTemplate,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) {
+            EditTemplateScreen(
+                onDone = { navController.popBackStack() },
+                onCancel = { navController.popBackStack() }
             )
         }
         composable(AppRoute.ScanEpc) {

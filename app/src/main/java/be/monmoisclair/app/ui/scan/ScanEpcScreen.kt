@@ -76,6 +76,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         label = "scanFlash"
     )
     val handled = remember { AtomicBoolean(false) }
+    val nonEpcTold = remember { AtomicBoolean(false) }
     val previewView = remember { PreviewView(context) }
     var pendingRaw by remember { mutableStateOf<String?>(null) }
 
@@ -141,11 +142,15 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                             val raw = barcodes.firstOrNull {
                                 it.format == Barcode.FORMAT_QR_CODE
                             }?.rawValue
-                            if (raw != null &&
-                                EpcQrParser.parse(raw) != null &&
-                                handled.compareAndSet(false, true)
-                            ) {
-                                pendingRaw = raw
+                            if (raw == null) return@addOnSuccessListener
+                            if (EpcQrParser.parse(raw) != null) {
+                                if (handled.compareAndSet(false, true)) {
+                                    pendingRaw = raw
+                                }
+                            } else if (nonEpcTold.compareAndSet(false, true)) {
+                                mainExecutor.execute {
+                                    status = "Ce QR n’est pas une facture belge."
+                                }
                             }
                         }
                         .addOnFailureListener { e -> Log.w("ScanEpc", "fail", e) }
@@ -203,7 +208,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     val left = (size.width - frame) / 2f
                     val top = (size.height - frame) / 2f
                     drawRoundRect(
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = A11yTokens.PaperCard.copy(alpha = 0.92f),
                         topLeft = Offset(left, top),
                         size = Size(frame, frame),
                         cornerRadius = CornerRadius(24f, 24f),

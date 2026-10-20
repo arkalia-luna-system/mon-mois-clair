@@ -9,14 +9,36 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.15** (Marque — M + or, statut blanc, notif) |
+| Dernière étape terminée | **6.17** (Reste libellé, mois d’ajout, photo lisible) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Campagne profils (Chiant/Null/Perf/…) · smoke S26 maman |
-| Audit premium (pas une étape) | `docs/AUDIT_PREMIUM_2026-10-20.md` — points à corriger, rien n’est codé par cet audit |
+| Prochaine sous-étape | Campagne profils · smoke S26 · polices custom (différé) |
+| Audit premium | `docs/AUDIT_PREMIUM_2026-10-20.md` puis suite `docs/AUDIT_PREMIUM_2026-10-20-SUITE.md` |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.17 Confiance reste / mois / photo
+
+**Problème :** gros chiffre ambigu ; « Après divers » enfoui ; `+ Ajouter` ignorait le mois affiché ; photo non rouverte / trop petite.
+
+**Codé (sans écraser le lot 6.16 collaboratif) :** libellé « Reste après factures » · lignes séparées « À payer » / « Après divers » (titre) · `onAdd(YearMonth)` + `AddEntryUseCase(targetYearMonth)` · aperçu photo via `openUri` (Fit 280–480 dp) · compress 2048/q90 · Settings échéances → `EditTemplate` · tests F01.
+
+**Formule `remainingCents` :** revenus − toutes les factures (réservées) ; divers **hors** formule (indicatif) — inchangé, documenté.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **141/141** (41 fichiers, 0 échec)  
+**Version :** `0.1.0-6.17` · `versionCode` 22
+
+### 2026-10-20 — 6.16 Lacunes premium
+
+**Problème :** photos/notes invisibles ; FAIT primary partout ; Divers sur mois vide ; empty/loading pauvres ; coins 10 dp ; € incohérent ; fréquence non éditable ; scan sans cadre ; réglages sans À propos.
+
+**Codé :** FAIT **secondaire** + haptic + Annuler · notes + chip Photo · Divers masqué si mois vide · empty CTA · loading spinner · 12 dp · titre mois + chevrons icônes · € BE · négatif AccentDanger · recherche · fréquence modèle éditable · TakePicture plein cadre + aperçu · splash A12 · ripple · predictive back · Settings À propos · scan cadre+flash · menu 24 mois chips courts · barre bas 24 dp.
+
+**Différé :** polices custom (TTF), animations riches partout.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **132/132** (39 fichiers, 0 échec)  
+**Version :** `0.1.0-6.16` · `versionCode` 22 *(alignée ensuite en 6.17)*
 
 ### 2026-10-20 — 6.15 Marque (complétion)
 

@@ -2,6 +2,7 @@
 
 Date : 2026-10-20.  
 Arbre lu : étape journal **6.15** (`PROGRESS_LOG.md`).  
+**Suivi :** lot majeur **6.16–6.17** (FAIT secondaire, photos/notes, Divers, € BE, splash, scan cadre, **Reste après factures** libellé, **mois d’ajout**, aperçu photo lisible). Polices custom et animations riches restent différées.  
 But : passer d’un carnet familial correct à un produit fini, vendable, de gamme haute.  
 Ce fichier **ne code rien**. Il garde l’analyse pour ne pas la perdre.
 

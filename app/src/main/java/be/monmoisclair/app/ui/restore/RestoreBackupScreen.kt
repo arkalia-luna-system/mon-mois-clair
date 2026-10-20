@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -62,14 +63,15 @@ fun RestoreBackupScreen(
                 )
             },
             confirmButton = {
-                TextButton(
+                PrimaryA11yButton(
+                    text = "OK",
                     onClick = {
                         showSuccessDialog = false
                         onRestored()
-                    }
-                ) {
-                    Text("OK")
-                }
+                    },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                )
             }
         )
     }
@@ -89,7 +91,8 @@ fun RestoreBackupScreen(
                 )
             },
             confirmButton = {
-                TextButton(
+                DangerA11yButton(
+                    text = "Restaurer",
                     onClick = {
                         val action = pending
                         pending = null
@@ -101,18 +104,19 @@ fun RestoreBackupScreen(
                             null -> Unit
                         }
                     },
-                    enabled = !state.busy
-                ) {
-                    Text("Restaurer")
-                }
+                    enabled = !state.busy,
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                )
             },
             dismissButton = {
-                TextButton(
+                SecondaryA11yButton(
+                    text = "Annuler",
                     onClick = { pending = null },
-                    enabled = !state.busy
-                ) {
-                    Text("Annuler")
-                }
+                    enabled = !state.busy,
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
             }
         )
     }

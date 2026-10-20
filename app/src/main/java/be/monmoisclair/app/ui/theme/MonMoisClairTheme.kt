@@ -86,6 +86,26 @@ private val AppTypography = Typography(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minBodySp
+    ),
+    // Libellés flottants OutlinedTextField (≥ 18 sp, charte a11y).
+    titleSmall = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = A11yTokens.minBodySp,
+        color = A11yTokens.Ink
+    ),
+    bodySmall = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Normal,
+        fontSize = A11yTokens.minBodySp,
+        color = A11yTokens.InkMuted,
+        lineHeight = 24.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Medium,
+        fontSize = A11yTokens.minBodySp,
+        color = A11yTokens.InkMuted
     )
 )
 

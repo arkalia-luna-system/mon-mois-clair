@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +27,7 @@ fun HealthStatusRow(label: String, ok: Boolean) {
             modifier = Modifier
                 .background(
                     if (ok) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
-                    RoundedCornerShape(8.dp)
+                    MaterialTheme.shapes.medium
                 )
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         )
