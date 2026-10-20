@@ -177,45 +177,38 @@ fun SettingsScreen(
             onClick = onOpenHealth,
             enabled = !state.busy
         )
-        if (state.showDeviceCareSection) {
-            Text(text = DeviceCareCopy.TITLE, style = MaterialTheme.typography.titleLarge)
-            Text(text = DeviceCareCopy.BODY, style = MaterialTheme.typography.bodyLarge)
-            SecondaryA11yButton(
-                text = "Liste optimisation batterie",
-                enabled = !state.busy,
-                onClick = {
-                    try {
-                        context.startActivity(viewModel.intentBatteryList())
-                    } catch (e: Exception) {
-                        viewModel.reportExternalIntentFailed()
-                    }
-                }
-            )
-            SecondaryA11yButton(
-                text = "Fiche de l’application",
-                enabled = !state.busy,
-                onClick = {
-                    try {
-                        context.startActivity(viewModel.intentAppDetails())
-                    } catch (e: Exception) {
-                        viewModel.reportExternalIntentFailed()
-                    }
-                }
-            )
-        }
+        Text(
+            text = "Si rien ne sonne (Samsung) : ouvrez Santé des rappels — " +
+                "batterie, notifications et Device Care sont regroupés là.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
 
-        if (state.offMonthPeriodics.isNotEmpty()) {
-            HorizontalDivider(color = A11yTokens.PaperWarm)
-            Text(text = "Échéances hors ce mois", style = MaterialTheme.typography.titleLarge)
+        HorizontalDivider(color = A11yTokens.PaperWarm)
+        Text(text = "Échéances hors ce mois", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Assurances, taxes, factures 1×/an ou tous les 3 mois — " +
+                "visibles ici quand elles ne tombent pas ce mois-ci.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
+        if (state.offMonthPeriodics.isEmpty()) {
             Text(
-                text = "Factures trimestrielles ou annuelles qui ne tombent pas ce mois-ci.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+                text = "Aucune pour l’instant. Quand vous créerez une facture « 1× par an » " +
+                    "ou « tous les 3 mois », elle apparaîtra ici les autres mois.",
+                style = MaterialTheme.typography.bodyLarge
             )
+        } else {
             state.offMonthPeriodics.forEach { item ->
+                Text(text = item.label, style = MaterialTheme.typography.titleLarge)
                 Text(
-                    text = viewModel.formatPeriodicLine(item),
+                    text = viewModel.formatPeriodicAmountLine(item),
                     style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "Prochaine : ${item.nextDueLabel}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.AccentWarn
                 )
             }
         }
@@ -223,9 +216,8 @@ fun SettingsScreen(
         HorizontalDivider(color = A11yTokens.PaperWarm)
         Text(text = "Sauvegarde", style = MaterialTheme.typography.titleLarge)
         Text(
-            text = "À chaque modification, une copie JSON est écrite dans votre dossier " +
-                "Documents (3 versions). En cas de réinstall : Restaurer une sauvegarde. " +
-                "Pour un téléphone cassé ou volé : envoyez une copie (WhatsApp / Mail).",
+            text = "Copie automatique dans Documents (3 versions). " +
+                "Envoyez une copie si le téléphone casse ; restaurez après réinstall.",
             style = MaterialTheme.typography.bodyLarge
         )
         Text(

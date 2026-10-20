@@ -224,6 +224,13 @@ fun HomeScreen(
                         color = A11yTokens.InkMuted
                     )
                 }
+                if (state.isPastMonth) {
+                    Spacer(modifier = Modifier.height(fit.sectionGap))
+                    SecondaryA11yButton(
+                        text = "Revenir au mois en cours",
+                        onClick = viewModel::goToCurrentMonth
+                    )
+                }
                 state.nextMonthWarning?.let { warning ->
                     Spacer(modifier = Modifier.height(fit.sectionGap))
                     Text(

@@ -12,7 +12,8 @@ class HowItWorksCopyTest {
         assertThat(titles).contains("Sauvegarde")
         assertThat(titles).contains("Rappels")
         assertThat(titles).contains("Facture papier")
-        assertThat(HowItWorksCopy.sections.size).isAtLeast(6)
+        assertThat(titles).contains("Sur une année")
+        assertThat(HowItWorksCopy.sections.size).isAtLeast(7)
         HowItWorksCopy.sections.forEach { s ->
             assertThat(s.body.length).isGreaterThan(40)
         }

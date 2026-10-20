@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-20 (lot **6.x** + affichage multi-Galaxy).
+Mise à jour : 2026-10-20 (lot **6.x** + affichage multi-Galaxy + hub Réglages / usage année).
 
 ## 1. Vision
 
@@ -40,7 +40,8 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | Étape | Contenu | État |
 |-------|---------|------|
 | **6.0–6.3.1** | Assistant papiers + fiabilité | ✅ |
-| **6.4** | Affichage S26 / Ultra (charte §6) | ✅ |
+| **6.4–6.5** | Affichage S26 / Ultra + UX smoke | ✅ |
+| **6.6** | Hub Réglages utile + navigation année | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -88,3 +89,27 @@ Appliqué **une seule fois** dans `MainActivity`.
 - Bandeau L : fond contrasté (`PaperCream` sur sticky `PaperWarm`), max 3–4 lignes.
 
 Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance`.
+
+## 7. Hub Réglages & usage sur une année (verrouillé)
+
+### Inventaire (indispensable vs redondant)
+
+| Bloc | Indispensable ? | Notes |
+|------|-----------------|-------|
+| Comment ça marche | ✅ | Aide familiale ; Home freeze = pas sur l’accueil |
+| Biométrie | ✅ optionnel | Déjà validé device ; défaut OFF |
+| Santé des rappels | ✅ | Point unique notifs / batterie / Device Care |
+| Device Care **doublé** dans Réglages | ❌ retiré (6.6) | Redondant avec Santé — un renvoi suffit |
+| Échéances hors ce mois | ✅ | Assurances / taxes 1× an / trimestriel hors mois courant |
+| Sauvegarde (dossier / envoyer / restaurer) | ✅ | Pipeline SAF + partage |
+
+### Scénario « vraie année » (rentrées / sorties)
+
+| Besoin | Où | Point de friction → réponse |
+|--------|-----|-----------------------------|
+| Loyer, salaire, courses | Home mois courant | OK (liste + reste + divers) |
+| Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
+| Feuilleter 12 mois passés | ‹ › mois | **Revenir au mois en cours** (Home, si mois passé) |
+| Rappels qui ne sonnent pas | Santé (pas Device Care isolé) | Un seul hub |
+
+Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé.

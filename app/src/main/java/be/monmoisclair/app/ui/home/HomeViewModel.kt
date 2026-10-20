@@ -193,6 +193,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /** Retour rapide au mois calendaire courant (navigation année / historique). */
+    fun goToCurrentMonth() {
+        viewModelScope.launch {
+            val current = AppClock.currentYearMonth()
+            monthCycleEngine.ensureMonthExists(current)
+            selectedMonth.value = current
+        }
+    }
+
     fun requestToggleDone(expenseId: String) {
         val ym = selectedMonth.value
         if (ym.isBefore(AppClock.currentYearMonth())) {

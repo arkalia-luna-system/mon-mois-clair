@@ -9,13 +9,24 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.5** (UX smoke : Retour épinglé, form, Home) |
+| Dernière étape terminée | **6.6** (Réglages utiles + navigation année) |
 | Étape en cours | *(aucune)* |
 | Prochaine sous-étape | Smoke S26 maman · continuer sur `develop` |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.6 Réglages + usage année
+
+**Audit hub Réglages :** biométrie (déjà OK, non retestée) · Santé · échéances hors mois · sauvegarde = indispensables ; **Device Care doublé** = redondant → retiré (renvoi vers Santé).
+
+**Scénario année :** Home « Revenir au mois en cours » ; échéances toujours affichées (état vide inclus) ; lignes multi-lignes ; Aide « Sur une année ».
+
+**Charte :** §7 inventaire + frictions année.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **122/122 OK**  
+**Version :** `0.1.0-6.6` · `versionCode` 11
 
 ### 2026-10-20 — 6.5 UX après smoke device (hors biométrie)
 

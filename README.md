@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-120%2F120-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-122%2F122-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.5-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.6-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,11 +23,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.5` |
-| Dernière étape | **6.5** UX Retour épinglé + formulaire + Home |
+| Version | `0.1.0-6.6` |
+| Dernière étape | **6.6** Réglages utiles + navigation année |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **120/120** OK |
+| Tests unitaires | **122/122** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -55,7 +55,8 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 | **Backup SAF** (3 versions, SHA-256) | ✅ (validé device) |
 | **Restaurer** (dernière sauvegarde / fichier JSON) | ✅ |
 | **Biométrie** + `FLAG_SECURE` multitâche | ✅ |
-| **Hub Réglages** (bio · Device Care · sauvegarde) | ✅ |
+| **Hub Réglages** (aide · bio · Santé · échéances · sauvegarde) | ✅ |
+| **Revenir au mois en cours** (historique) | ✅ |
 | **Rappels** J−3 / Jour J / overdue + reconcile update/heure/feu | ✅ |
 | **Prochaine échéance (mois)** trimestriel / annuel | ✅ |
 | **Partage copie de sécurité** (WhatsApp / Mail) | ✅ |
