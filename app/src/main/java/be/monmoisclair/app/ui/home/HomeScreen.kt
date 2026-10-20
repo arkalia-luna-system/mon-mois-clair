@@ -170,10 +170,10 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "‹ Préc.",
+                        text = if (fit.compactHomeChrome) "‹" else "‹ Préc.",
                         style = MaterialTheme.typography.titleLarge,
                         color = if (state.canGoPrev) A11yTokens.Ink else A11yTokens.InkMuted,
-                        softWrap = false,
+                        maxLines = 1,
                         modifier = Modifier
                             .heightIn(min = A11yTokens.minTouchHeight)
                             .clickable(enabled = state.canGoPrev) { viewModel.prevMonth() }
@@ -190,10 +190,10 @@ fun HomeScreen(
                             .padding(horizontal = 4.dp)
                     )
                     Text(
-                        text = "Suiv. ›",
+                        text = if (fit.compactHomeChrome) "›" else "Suiv. ›",
                         style = MaterialTheme.typography.titleLarge,
                         color = if (state.canGoNext) A11yTokens.Ink else A11yTokens.InkMuted,
-                        softWrap = false,
+                        maxLines = 1,
                         modifier = Modifier
                             .heightIn(min = A11yTokens.minTouchHeight)
                             .clickable(enabled = state.canGoNext) { viewModel.nextMonth() }

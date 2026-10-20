@@ -33,6 +33,8 @@ import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.health.HealthStatusRow
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PermissionsSetupScreen(
@@ -43,6 +45,7 @@ fun PermissionsSetupScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val report = state.report
+    val fit = rememberDisplayFit()
 
     val notifLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -68,8 +71,11 @@ fun PermissionsSetupScreen(
             .padding(A11yTokens.screenPadding),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Mon Mois Clair", style = MaterialTheme.typography.displayLarge)
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 16.dp))
+        Text(
+            text = "Mon Mois Clair",
+            style = MaterialTheme.typography.displayLarge.copy(fontSize = fit.brandTitleSp.sp)
+        )
         Text(text = "Rappels fiables", style = MaterialTheme.typography.headlineMedium)
         Text(
             text = "Sur Samsung, il faut autoriser les notifications, les alarmes exactes " +

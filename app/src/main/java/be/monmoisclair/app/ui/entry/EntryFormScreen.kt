@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,7 +90,8 @@ fun AddEntryScreen(
         showApplyFollowing = false,
         applyFollowing = false,
         hasTemplate = false,
-        error = state.copyMessage ?: state.error,
+        infoMessage = state.copyMessage,
+        error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
         primaryEnabled = !state.saving,
         onLabel = viewModel::setLabel,
@@ -188,7 +191,8 @@ fun EditEntryScreen(
         showApplyFollowing = state.hasTemplate,
         applyFollowing = state.applyToFollowing,
         hasTemplate = state.hasTemplate,
-        error = state.copyMessage ?: state.error,
+        infoMessage = state.copyMessage,
+        error = state.error,
         primaryLabel = "Enregistrer",
         primaryEnabled = true,
         onLabel = viewModel::setLabel,
@@ -232,6 +236,7 @@ private fun EntryFormScaffold(
     showApplyFollowing: Boolean,
     applyFollowing: Boolean,
     hasTemplate: Boolean,
+    infoMessage: String? = null,
     error: String?,
     primaryLabel: String,
     primaryEnabled: Boolean,
@@ -338,12 +343,18 @@ private fun EntryFormScaffold(
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted
                     )
-                    for (m in 1..12) {
-                        TypeChip(
-                            text = be.monmoisclair.app.domain.RecurrenceAnchor.frenchMonthLabel(m),
-                            selected = nextDueMonth == m
-                        ) {
-                            onNextDueMonth(m)
+                    @OptIn(ExperimentalLayoutApi::class)
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        for (m in 1..12) {
+                            TypeChip(
+                                text = be.monmoisclair.app.domain.RecurrenceAnchor.frenchMonthLabel(m),
+                                selected = nextDueMonth == m
+                            ) {
+                                onNextDueMonth(m)
+                            }
                         }
                     }
                 }
@@ -405,6 +416,9 @@ private fun EntryFormScaffold(
                 )
             }
 
+            infoMessage?.let {
+                Text(text = it, color = A11yTokens.AccentOk, style = MaterialTheme.typography.bodyLarge)
+            }
             error?.let {
                 Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
             }

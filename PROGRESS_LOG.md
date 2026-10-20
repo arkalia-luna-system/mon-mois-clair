@@ -17,6 +17,11 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-20 — Audit affichages (post-6.4)
+
+**Corrigé :** message « Copié » en vert (plus en rouge erreur) · mois d’échéance en `FlowRow` · SAF/Permissions titres adaptés compact · nav mois ‹ › sur écran court.  
+**Vérifié :** zone boutons système toujours via MainActivity ; **120/120** tests.
+
 ### 2026-10-20 — 6.4 affichage multi-Galaxy (priorité S26 maman)
 
 **Recherche :** specs Samsung S26 6,3″ FHD+ / S25 Ultra 6,9″ QHD+ ; One UI marges ≥24 dp ; Window Compact &lt;600 dp.

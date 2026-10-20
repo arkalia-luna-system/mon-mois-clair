@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +23,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SafSetupScreen(
@@ -40,15 +44,20 @@ fun SafSetupScreen(
         if (state.completed) onSafReady()
     }
 
+    val fit = rememberDisplayFit()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
+            .verticalScroll(rememberScrollState())
             .padding(A11yTokens.screenPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(text = "Mon Mois Clair", style = MaterialTheme.typography.displayLarge)
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 12.dp else 24.dp))
+        Text(
+            text = "Mon Mois Clair",
+            style = MaterialTheme.typography.displayLarge.copy(fontSize = fit.brandTitleSp.sp)
+        )
         Text(text = "Dossier de sauvegarde", style = MaterialTheme.typography.headlineMedium)
         Text(
             text = "Choisissez un dossier dans Documents (pas Téléchargements / Download). " +
@@ -63,7 +72,7 @@ fun SafSetupScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(24.dp))
         PrimaryA11yButton(
             text = if (state.saving) "Enregistrement…" else "Choisir un dossier",
             enabled = !state.saving,
