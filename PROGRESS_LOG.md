@@ -22,7 +22,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Problème :** Retour jette la saisie (E01) ; échéance hors mois non retirable (E02) ; jpg photo laissé dans le cache (E08) ; montant à 3 décimales tronqué (E07).
 
-**Codé :** `BackHandler` + « Quitter sans enregistrer ? » · `ArchiveExpenseTemplateUseCase` + bouton « Retirer cette échéance » · effacement jpg après capture/annulation · `parseToCents` refuse >2 décimales.
+**Codé :** `BackHandler` + « Quitter sans enregistrer ? » · `ArchiveExpenseTemplateUseCase` + bouton « Retirer cette échéance » · effacement jpg après capture/annulation · `parseToCents` refuse >2 décimales · scan **Lampe** (D01) + « Ouvrir les réglages » caméra (D02).
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **159/159** (46 fichiers, 0 échec)  
 **Version :** `0.1.0-6.24` · `versionCode` 29
