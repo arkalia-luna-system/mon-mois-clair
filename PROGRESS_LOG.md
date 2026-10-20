@@ -11,8 +11,8 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 |-------|--------|
 | Dernière étape terminée | **6.24** (E01/E02/E08 + décimales) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | E03–E06 · lecture A06+ · smoke Galaxy restant |
-| Audit premium | `docs/AUDIT_PREMIUM.md` · ordre 2 (E01/E02/E08) clos |
+| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel, relecture 6.24) · campagne profils |
+| Audit premium | Code clos (`AUDIT_PREMIUM.md`) · smoke partiel (`AUDIT_STATUS.md`) |
 
 ---
 

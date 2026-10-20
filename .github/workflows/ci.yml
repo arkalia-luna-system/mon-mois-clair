@@ -1,6 +1,6 @@
-# CI — phase 1 (léger)
-# Objectif : vérifier à chaque push que le projet compile et que les tests unitaires passent.
-# Pas encore : lint strict, detekt, scan CVE bloquant (voir docs/CI.md pour la feuille de route).
+# CI — phase 1 + phase 2 soft (lint non bloquant)
+# Objectif : compile + tests unitaires (bloquant) ; lintDebug en rapport (continue-on-error).
+# Pas encore : lint bloquant, detekt, scan CVE bloquant (voir docs/CI.md).
 
 name: CI
 
@@ -53,14 +53,21 @@ jobs:
         # le runner est propre à chaque job).
         run: ./gradlew :app:assembleDebug :app:testDebugUnitTest --stacktrace --no-daemon
 
-      - name: Upload test reports
+      # Phase 2 soft : rapport Lint sans faire échouer le job (on durcit plus tard).
+      - name: Lint debug (non bloquant)
+        continue-on-error: true
+        run: ./gradlew :app:lintDebug --stacktrace --no-daemon
+
+      - name: Upload test + lint reports
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: unit-test-reports
+          name: unit-test-and-lint-reports
           # settings.gradle.kts redirige build/ vers ~/.cache/mon-mois-clair/gradle-build/
           path: |
             /home/runner/.cache/mon-mois-clair/gradle-build/app/reports/tests/
             /home/runner/.cache/mon-mois-clair/gradle-build/app/test-results/
+            /home/runner/.cache/mon-mois-clair/gradle-build/app/reports/lint-results-debug.html
+            /home/runner/.cache/mon-mois-clair/gradle-build/app/reports/lint-results-debug.xml
           if-no-files-found: ignore
           retention-days: 7

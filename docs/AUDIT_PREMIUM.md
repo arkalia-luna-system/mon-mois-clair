@@ -2,7 +2,7 @@
 
 Date : 2026-10-20.  
 Code : étape **6.24** (`0.1.0-6.24`).  
-Mesure tests : **159/159** (46 fichiers, Gradle `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
+Mesure tests : **159/159** (46 fichiers). Code audit **clos** ; reste la liste téléphone.
 
 But : ce qu’il reste à corriger pour que l’app se lise comme un objet fini, pas comme un chantier.  
 Hors sujet (charte, ne pas les ajouter) : banque, cloud, pub, graphiques, report automatique du solde, troisième bouton sur l’accueil.
