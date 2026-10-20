@@ -2,7 +2,7 @@
 
 Date : 2026-10-20.  
 Arbre lu : étape journal **6.15** (`PROGRESS_LOG.md`).  
-**Suivi :** lot majeur **6.16–6.17** (FAIT secondaire, photos/notes, Divers, € BE, splash, scan cadre, **Reste après factures** libellé, **mois d’ajout**, aperçu photo lisible). Polices custom et animations riches restent différées.  
+**Suivi :** lot **6.16–6.18**. Le détail de ce qui est tenu et de la passe suivante est dans `docs/AUDIT_PREMIUM_2026-10-20-SUITE.md`. Polices custom et animations riches restent différées.  
 But : passer d’un carnet familial correct à un produit fini, vendable, de gamme haute.  
 Ce fichier **ne code rien**. Il garde l’analyse pour ne pas la perdre.
 
@@ -283,3 +283,43 @@ Ne pas tout faire d’un coup. Chaque vague : code, test Gradle `--rerun-tasks`,
 - `app/src/main/java/be/monmoisclair/app/ui/theme/A11yTokens.kt`
 - `app/src/main/res/values/themes.xml`
 - `app/src/main/java/be/monmoisclair/app/MainActivity.kt`
+
+---
+
+## Vérification 6.18 (après correction)
+
+Mesure : `./gradlew :app:testDebugUnitTest --rerun-tasks` → **141/141** (41 fichiers).  
+Version : `0.1.0-6.18`. Smoke Galaxy toujours à faire (liste ci-dessus).
+
+| ID | État | Note |
+|----|------|------|
+| F01 | ✅ | `targetYearMonth` + titre « Nouvelle entrée · Mois » + test |
+| F02 | ✅ | Aperçu + « Voir la facture » + chip Facture accueil |
+| F03 | ✅ | TakePicture plein cadre, côté ≥ 1600 |
+| F04 | ✅ | Textes honnêtes (JSON sans photos) — pas d’archive zip |
+| F05 | ✅ | « Reste après factures » / « À payer » / « Après divers » |
+| F06 | ✅ | Bandeau → Réglages |
+| F07 | ✅ | Tap carte → `EditTemplateScreen` |
+| V01 | ✅ | FAIT secondaire |
+| V02 | ✅ | shapes.medium / 12 dp |
+| V03 | ✅ | Statut crème |
+| V04 | ✅ | bodySmall / labelSmall / titleSmall ≥ 18 sp |
+| V05 | ✅ | Dialogues Primary / Secondary / Danger |
+| V06 | ✅ | Barre bas 24 dp |
+| V07 | ✅ | Chips courts + année |
+| V08 | ✅ | Cartes ivoire + « Mon Mois Clair · version » |
+| V09 | ✅ | Empty + CTA ; chargement teal |
+| V10 | ✅ | Filet or sous y=78 |
+| V11 | ✅ | M teal + « Application verrouillée » |
+| V12 | ✅ | Cadre ivoire + message non-EPC une fois |
+| V13 | ✅ | « sauvegarde » / « et N autre(s) » corrigé |
+| V14 | ✅ | AccentDanger + mot « Déficit » |
+| V15 | ✅ | Un formateur `formatCents` |
+| V16 | ⏸ | Polices système (TTF embarquées différées) |
+| V17 | ✅ | SplashScreen API |
+| V18 | ✅ | Haptic FAIT |
+| V19 | ✅ | Snackbar Annuler |
+| V20 | ✅ | Note + Copier sur la ligne |
+| V21 | ✅ | Fréquence modèle éditable |
+| V22 | ✅ | Divers repliable |
+| V23 | ✅ | Sauvegarde hors Santé rappels |

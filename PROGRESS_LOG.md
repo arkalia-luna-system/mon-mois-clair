@@ -9,14 +9,38 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.17** (Reste libellé, mois d’ajout, photo lisible) |
+| Dernière étape terminée | **6.19** (Suite audit S01/S02/S06) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Campagne profils · smoke S26 · polices custom (différé) |
-| Audit premium | `docs/AUDIT_PREMIUM_2026-10-20.md` puis suite `docs/AUDIT_PREMIUM_2026-10-20-SUITE.md` |
+| Prochaine sous-étape | Campagne profils · smoke S26 · polices custom (V16/S03 différé) |
+| Audit premium | `docs/AUDIT_PREMIUM_2026-10-20.md` + suite — S01/S02/S06 OK ; S03/S04/S05 ouverts |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.19 Suite audit (fin → début)
+
+**Problème (suite) :** photo via app externe (S01) ; snackbar Copié chasse Annuler FAIT (S02) ; Divers sans libellé ouvert/fermé (S06).
+
+**Codé :** aperçu facture **dans** un Dialog Compose · `faitUndoActive` protège le bandeau Annuler · « Noter des courses » / « Fermer » visibles.
+
+**Différé :** S03 polices TTF · S04 archive photos · S05 smoke Galaxy.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **141/141** (41 fichiers, 0 échec)  
+**Version :** `0.1.0-6.19` · `versionCode` 24
+
+### 2026-10-20 — 6.18 Audit premium (A–D)
+
+**Problème :** points restants de `docs/AUDIT_PREMIUM_2026-10-20.md` (confiance, système, objet).
+
+**Codé :** F01 mois affiché → ajout · F05 libellés Reste/À payer/Après divers/Déficit · F02 Voir facture + chip Facture · F04 textes honnêtes (copie sans photos) · F06 alerte → Réglages · F07 `EditTemplate` · V03 statut crème · V04 typo ≥18 sp · V05 dialogues A11y · V08 cartes Réglages · V10 filet or · V11 M verrou · V12 QR non-EPC · V13 grammaire · V20 Copier · V22 Divers repliable · V23 sauvegarde hors Santé · `AddEntryUseCaseTest`.
+
+**Déjà OK (6.16–6.17) :** V01, V02 (reste), V06, V07, V09, V14, V15, V17–V19, V21, F03.
+
+**Différé :** V16 polices embarquées (TTF).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **141/141** (41 fichiers, 0 échec)  
+**Version :** `0.1.0-6.18` · `versionCode` 23
 
 ### 2026-10-20 — 6.17 Confiance reste / mois / photo
 

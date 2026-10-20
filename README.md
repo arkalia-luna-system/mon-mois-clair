@@ -9,7 +9,7 @@
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-141%2F141-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.17-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.19-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,8 +23,8 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.17` |
-| Dernière étape | **6.17** Reste libellé · mois d’ajout · photo lisible |
+| Version | `0.1.0-6.19` |
+| Dernière étape | **6.19** Suite audit (photo in-app, snackbar, Divers) |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** — smoke S26 encore ouvert |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
 | Tests unitaires | **141/141** OK |
@@ -98,8 +98,8 @@ Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, fact
 1–5    socle, ledger, rappels, sauvegarde, aide     ✅
 6.0–6.3   scan QR, photo, communication             ✅
 6.4–6.8   écrans Galaxy, menu, fidélité outil       ✅
-6.9–6.17  contraste, parcours, marque, confiance reste/mois ✅
-Smoke device du visuel 6.10–6.17                    à refaire sur téléphone
+6.9–6.19  contraste, audit premium, photo in-app          ✅
+Smoke device du visuel 6.10–6.19                    à refaire sur téléphone
 ```
 
 

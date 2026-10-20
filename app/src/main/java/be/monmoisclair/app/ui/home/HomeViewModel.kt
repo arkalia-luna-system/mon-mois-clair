@@ -3,7 +3,8 @@ package be.monmoisclair.app.ui.home
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
@@ -324,20 +325,15 @@ class HomeViewModel @Inject constructor(
         _userMessages.tryEmit("Copié — collez dans votre application bancaire.")
     }
 
-    fun openReceipt(relativePath: String) {
-        viewModelScope.launch {
-            val uri = receiptPhotos.openUri(relativePath)
-            if (uri == null) {
-                _userMessages.tryEmit("Photo de facture introuvable.")
-                return@launch
-            }
-            val view = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "image/*")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            runCatching { appContext.startActivity(view) }
-                .onFailure { _userMessages.tryEmit("Impossible d’ouvrir la facture.") }
-        }
+    /**
+     * Décode la photo **dans l’app** (S01) — pas via `ACTION_VIEW` externe
+     * (Samsung refuse souvent la lecture SAF hors process).
+     */
+    suspend fun loadReceiptBitmap(relativePath: String): Bitmap? {
+        val uri = receiptPhotos.openUri(relativePath) ?: return null
+        return runCatching {
+            appContext.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
+        }.getOrNull()
     }
 
     fun refreshCurrentMonth() {

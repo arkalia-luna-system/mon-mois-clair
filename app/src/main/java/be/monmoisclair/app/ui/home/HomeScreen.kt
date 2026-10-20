@@ -1,8 +1,10 @@
 package be.monmoisclair.app.ui.home
 
+import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,9 +51,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -64,6 +68,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -105,6 +111,11 @@ fun HomeScreen(
     var diversExpanded by remember { mutableStateOf(false) }
     var menuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    /** S02 : ne pas chasser le snackbar « Annuler » FAIT. */
+    var faitUndoActive by remember { mutableStateOf(false) }
+    var receiptPathToShow by remember { mutableStateOf<String?>(null) }
+    var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var receiptLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val id = (context as? MainActivity)?.consumeHighlightExpenseId()
@@ -125,7 +136,26 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.userMessages.collect { msg ->
+            // Pendant « Annuler » FAIT : ignorer « Copié » (sinon le bandeau disparaît).
+            if (faitUndoActive) return@collect
             snackbarHostState.showSnackbar(msg)
+        }
+    }
+
+    LaunchedEffect(receiptPathToShow) {
+        val path = receiptPathToShow
+        if (path.isNullOrBlank()) {
+            receiptBitmap = null
+            receiptLoading = false
+            return@LaunchedEffect
+        }
+        receiptLoading = true
+        val bmp = viewModel.loadReceiptBitmap(path)
+        receiptBitmap = bmp
+        receiptLoading = false
+        if (bmp == null) {
+            receiptPathToShow = null
+            snackbarHostState.showSnackbar("Photo de facture introuvable.")
         }
     }
 
@@ -162,13 +192,67 @@ fun HomeScreen(
         viewModel.requestToggleDone(expenseId)
         if (markingDone) {
             scope.launch {
-                val result = snackbarHostState.showSnackbar(
-                    message = "Marqué FAIT",
-                    actionLabel = "Annuler",
-                    duration = SnackbarDuration.Short
-                )
-                if (result == SnackbarResult.ActionPerformed) {
-                    viewModel.requestToggleDone(expenseId)
+                faitUndoActive = true
+                try {
+                    val result = snackbarHostState.showSnackbar(
+                        message = "Marqué FAIT",
+                        actionLabel = "Annuler",
+                        duration = SnackbarDuration.Short
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        viewModel.requestToggleDone(expenseId)
+                    }
+                } finally {
+                    faitUndoActive = false
+                }
+            }
+        }
+    }
+
+    if (receiptPathToShow != null) {
+        Dialog(
+            onDismissRequest = { receiptPathToShow = null },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Surface(
+                color = A11yTokens.PaperCream,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(A11yTokens.screenPadding)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text("Facture", style = MaterialTheme.typography.titleLarge)
+                    when {
+                        receiptLoading -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(color = A11yTokens.ButtonFill)
+                            }
+                        }
+                        receiptBitmap != null -> {
+                            Image(
+                                bitmap = receiptBitmap!!.asImageBitmap(),
+                                contentDescription = "Photo de la facture",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 280.dp, max = 520.dp)
+                                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                            )
+                        }
+                    }
+                    PrimaryA11yButton(
+                        text = "Fermer",
+                        onClick = { receiptPathToShow = null }
+                    )
                 }
             }
         }
@@ -435,7 +519,7 @@ fun HomeScreen(
                                         viewModel.copyPaymentNote(item.paymentNote)
                                     },
                                     onOpenReceipt = {
-                                        viewModel.openReceipt(item.receiptRelativePath)
+                                        receiptPathToShow = item.receiptRelativePath
                                     }
                                 )
                             }
@@ -447,9 +531,7 @@ fun HomeScreen(
                     (state.timeline.isNotEmpty() || state.diversSpentCents > 0L)
                 if (showDivers) {
                     item(key = "divers-controls") {
-                        Text(
-                            text = "Courses / divers",
-                            style = MaterialTheme.typography.titleLarge,
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = A11yTokens.minTouchHeight)
@@ -461,13 +543,29 @@ fun HomeScreen(
                                         "Ouvrir courses et divers"
                                     }
                                 ) { diversExpanded = !diversExpanded }
-                                .padding(vertical = 8.dp)
-                        )
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = if (diversExpanded) {
+                                    "Courses / divers"
+                                } else {
+                                    "Noter des courses"
+                                },
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text(
+                                text = if (diversExpanded) "Fermer" else "Ouvrir",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.ButtonFill
+                            )
+                        }
                         Text(
                             text = if (state.diversSpentCents > 0L) {
                                 "Après divers ${MoneyFormat.formatCents(state.afterDiversCents)}"
                             } else {
-                                "Aucune course notée — touchez pour ajouter."
+                                "Aucune course notée."
                             },
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted
