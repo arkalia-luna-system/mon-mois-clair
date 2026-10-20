@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mon Mois Clair</string>
-    <string name="notification_channel_payments_name">Paiements</string>
-    <string name="notification_channel_payments_desc">Rappels J−3 et jour d’échéance</string>
+    <string name="notification_channel_payments_name">Rappels de factures</string>
+    <string name="notification_channel_payments_desc">Avant l’échéance, le jour même, et en cas de retard</string>
+    <string name="notification_action_done">FAIT</string>
     <string name="onboarding_saf_title">Dossier de sauvegarde</string>
     <string name="onboarding_permissions_title">Rappels fiables</string>
     <string name="health_title">Santé des rappels</string>

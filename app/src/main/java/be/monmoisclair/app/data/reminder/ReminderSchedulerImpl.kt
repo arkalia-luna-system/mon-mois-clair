@@ -1,5 +1,6 @@
 package be.monmoisclair.app.data.reminder
 
+import android.util.Log
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.domain.ExpenseOverdue
@@ -17,10 +18,13 @@ class ReminderSchedulerImpl @Inject constructor(
     override suspend fun reconcileAll() {
         val expenses = instanceDao.getAllExpenses()
         for (expense in expenses) {
-            when (expense.status) {
-                ExpenseStatus.DONE -> cancelFor(expense.id)
-                ExpenseStatus.TODO -> scheduleForTodo(expense)
-            }
+            // P3-R01 : une facture mal datée ne doit pas couper toute la boucle.
+            runCatching {
+                when (expense.status) {
+                    ExpenseStatus.DONE -> cancelFor(expense.id)
+                    ExpenseStatus.TODO -> scheduleForTodo(expense)
+                }
+            }.onFailure { Log.e(TAG, "rappel ignoré pour ${expense.id}", it) }
         }
     }
 
@@ -79,16 +83,16 @@ class ReminderSchedulerImpl @Inject constructor(
         val payload = ReminderPayload(
             expenseInstanceId = expense.id,
             kind = kind,
-            title = titleFor(kind, expense.isAutoDebit),
+            title = titleFor(kind, expense.label),
             body = bodyFor(expense, kind)
         )
         alarmGateway.schedule(code, triggerEpochMs, payload)
     }
 
-    private fun titleFor(kind: ReminderKind, autoDebit: Boolean): String = when (kind) {
-        ReminderKind.J3 -> if (autoDebit) "Rappel prélèvement (J−3)" else "Rappel paiement (J−3)"
-        ReminderKind.JD -> if (autoDebit) "Prélèvement aujourd'hui" else "Paiement aujourd'hui"
-        ReminderKind.OVERDUE -> if (autoDebit) "Prélèvement en retard" else "Paiement en retard"
+    private fun titleFor(kind: ReminderKind, label: String): String = when (kind) {
+        ReminderKind.J3 -> "Dans 3 jours : $label"
+        ReminderKind.JD -> "Aujourd’hui : $label"
+        ReminderKind.OVERDUE -> "En retard : $label"
     }
 
     private fun bodyFor(expense: ExpenseInstanceEntity, kind: ReminderKind): String {
@@ -115,6 +119,10 @@ class ReminderSchedulerImpl @Inject constructor(
                     "${expense.label} — $amount — échéance le $day dépassée. À régler."
                 }
         }
+    }
+
+    companion object {
+        private const val TAG = "ReminderScheduler"
     }
 
     private fun formatEuro(cents: Long): String {

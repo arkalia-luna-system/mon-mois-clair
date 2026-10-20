@@ -9,14 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.19** (Suite audit S01/S02/S06) |
+| Dernière étape terminée | **6.20** (Passe 3 + polices Source) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Campagne profils · smoke S26 · polices custom (V16/S03 différé) |
-| Audit premium | origine + suite + `docs/AUDIT_PREMIUM_2026-10-20-PASSE-3.md` (passe 3, pas encore codée) |
+| Prochaine sous-étape | Campagne profils · smoke S26 (P3-Q04) · S04 archive photos (plus tard) |
+| Audit premium | Origine + suite + passe 3 (code) · polices V16/S03 branchées |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.20 Passe 3 audit + polices
+
+**Problème :** `PASSE-3.md` — ancre modèle qui saute l’année (F01) ; rappel cassé par un jour 31 (R01) ; scroll notif + recherche (F02) ; divers trop retirés (F03) ; lecture Home (V01–V04, Q02) ; restore technique (R02) ; notif sans FAIT (Q01) ; police système (Q03).
+
+**Codé :** `resolveTemplateAnchor` · clamp `ReminderTiming` + boucle isolée + garde exact alarms · titres « Dans 3 jours : … » · action notif FAIT · Divers `ReducedToZero` · Home (Après divers atténué, 1 teal, recherche vide/phrase, highlight filtré) · restore phrase humaine · Source Serif 4 / Source Sans 3 (OFL).
+
+**Différé :** S04 archive photos · smoke Galaxy P3-Q04.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **145/145** (41 fichiers, 0 échec)  
+**Version :** `0.1.0-6.20` · `versionCode` 25
 
 ### 2026-10-20 — 6.19 Suite audit (fin → début)
 

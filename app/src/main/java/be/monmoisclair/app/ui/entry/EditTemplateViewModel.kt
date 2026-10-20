@@ -23,12 +23,23 @@ data class EditTemplateState(
     val amountText: String = "",
     val dayText: String = "1",
     val anchorMonth: Int = AppClock.currentYearMonth().monthValue,
+    /** Ancre complète en base — pour ne pas recalculer l’année si le mois ne change pas. */
+    val existingAnchor: YearMonth? = null,
     val intervalHint: String = "",
     val error: String? = null,
     val loading: Boolean = true,
     val saved: Boolean = false,
     val saving: Boolean = false
-)
+) {
+    val anchorYearLabel: String
+        get() {
+            val resolved = RecurrenceAnchor.resolveTemplateAnchor(
+                selectedMonth = anchorMonth,
+                existingAnchor = existingAnchor
+            )
+            return "${RecurrenceAnchor.frenchMonthLabel(resolved.monthValue)} ${resolved.year}"
+        }
+}
 
 @HiltViewModel
 class EditTemplateViewModel @Inject constructor(
@@ -69,6 +80,7 @@ class EditTemplateViewModel @Inject constructor(
                 amountText = amountText,
                 dayText = tpl.dayOfMonth.toString(),
                 anchorMonth = anchor.monthValue,
+                existingAnchor = anchor,
                 intervalHint = hint
             )
         }
@@ -88,7 +100,10 @@ class EditTemplateViewModel @Inject constructor(
                 _state.update { it.copy(error = "Vérifiez le montant et le jour (1 à 31).") }
                 return@launch
             }
-            val anchor = RecurrenceAnchor.nextYearMonth(s.anchorMonth)
+            val anchor = RecurrenceAnchor.resolveTemplateAnchor(
+                selectedMonth = s.anchorMonth,
+                existingAnchor = s.existingAnchor
+            )
             _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = updateTemplate(

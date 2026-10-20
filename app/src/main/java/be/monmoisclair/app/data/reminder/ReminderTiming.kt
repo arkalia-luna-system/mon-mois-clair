@@ -1,6 +1,7 @@
 package be.monmoisclair.app.data.reminder
 
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.MonthDayClamp
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -16,8 +17,11 @@ object ReminderTiming {
     val J3_TIME: LocalTime = LocalTime.of(10, 0)
     val JD_TIME: LocalTime = LocalTime.of(9, 0)
 
-    fun dueDate(yearMonth: YearMonth, dayOfMonth: Int): LocalDate =
-        yearMonth.atDay(dayOfMonth)
+    /** Jour d’échéance clampé (31 en février → 28/29) — P3-R01. */
+    fun dueDate(yearMonth: YearMonth, dayOfMonth: Int): LocalDate {
+        val day = MonthDayClamp.clamp(dayOfMonth.coerceIn(1, 31), yearMonth)
+        return yearMonth.atDay(day)
+    }
 
     fun j3Instant(
         yearMonth: YearMonth,

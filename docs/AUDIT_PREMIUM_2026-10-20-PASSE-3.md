@@ -2,6 +2,7 @@
 
 Date : 2026-10-20.  
 Journal en tête au moment de la lecture : **6.19**.  
+**Suivi :** codé en **6.20** (sauf smoke P3-Q04 et S04 archive).  
 Ne remplace pas les deux fichiers précédents. Il les pousse.
 
 - Origine : `docs/AUDIT_PREMIUM_2026-10-20.md`

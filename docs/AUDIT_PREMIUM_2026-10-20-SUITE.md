@@ -2,8 +2,8 @@
 
 Date : 2026-10-20.  
 Fait suite à `docs/AUDIT_PREMIUM_2026-10-20.md`.  
-Version lue ensuite dans `app/build.gradle.kts` : **0.1.0-6.19**.  
-Le journal indique **6.19** comme dernière étape close (suite S01/S02/S06).
+Version lue ensuite dans `app/build.gradle.kts` : **0.1.0-6.20**.  
+Le journal indique **6.20** comme dernière étape close (polices + S01–S06 hors smoke).
 
 Ce fichier garde la trace : ce que le premier audit demandait, ce qui est dans le code, ce qu’il reste à pousser.  
 Pas de smoke Galaxy dans cette passe.
@@ -38,7 +38,7 @@ Comptage confirmé avant push 6.19 : **141/141** (41 fichiers XML, 0 échec).
 | V13 | « autre(s) » et « JSON » | Tenu. « 1 autre » / « N autres ». Restaurer ne dit plus JSON. |
 | V14 | Reste négatif lisible | Tenu. Le chiffre négatif est en brique (`AccentDanger`), avec le mot « Déficit ». |
 | V15 | Un seul format d’euro | Tenu. `1 234,50 €`, signe `−`. |
-| V16 | Police choisie, pas le serif système | **Pas fait.** Différé dans le journal. |
+| V16 | Police choisie, pas le serif système | **Fait en 6.20.** Source Serif 4 + Source Sans 3 (OFL). |
 | V17 | Splash avec le M | Tenu, après correction : le splash pointait vers `ic_mark`, fichier absent (M ivoire invisible sur crème, et ressource manquante). `ic_mark.xml` est le M teal + filet or. |
 | V18 | Retour tactile | Tenu sur FAIT. |
 | V19 | Annuler après FAIT | Tenu. Bandeau « Marqué FAIT » / Annuler. |
@@ -65,9 +65,7 @@ Ces points ne figuraient pas comme bugs ouverts dans le premier tableau, ou ils 
 
 ### S03 — Police encore système
 
-`FontFamily.Serif` / `SansSerif`. Sur le Galaxy, ce n’est pas une paire de carnet. Le journal le marque déjà comme différé. C’est le plus gros écart visuel qui reste, une fois le système de couleurs et de boutons aligné.
-
-**À faire.** Une paire embarquée (serif pour le chiffre, sans pour le reste), licences ouvertes, tailles déjà en place. Pas de nouveau échelle de tailles.
+**Fait en 6.20.** Source Serif 4 (display) + Source Sans 3 (corps), fichiers dans `res/font/`, licences `docs/licenses/`.
 
 ### S04 — Le partage de sécurité ne peut pas reconstruire les photos
 
@@ -87,9 +85,8 @@ Icône après réinstall, splash M teal, barre crème, ajout sur un mois passé,
 
 ## 3. Prochaine vague (quand on code encore)
 
-1. ~~S01~~ ~~S02~~ ~~S06~~ (6.19).  
-2. S03 polices, seul, avec un essai sur le gros chiffre.  
-3. S05 smoke Galaxy.  
-4. Recompter `./gradlew :app:testDebugUnitTest --rerun-tasks` sans autre Gradle en parallèle.
+1. ~~S01~~ ~~S02~~ ~~S03~~ ~~S06~~ (6.19–6.20).  
+2. S05 smoke Galaxy (au doigt).  
+3. S04 archive zip seulement si un jour le poids le permet.
 
 Hors vague, comme dans le premier audit : banque, graphiques, report automatique, troisième bouton, fiche intermédiaire.

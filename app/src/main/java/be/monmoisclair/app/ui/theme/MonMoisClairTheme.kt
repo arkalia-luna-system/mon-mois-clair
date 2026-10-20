@@ -3,19 +3,21 @@ package be.monmoisclair.app.ui.theme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import be.monmoisclair.app.R
 
 private val ColorScheme = lightColorScheme(
     primary = A11yTokens.ButtonFill,
@@ -46,36 +48,51 @@ private val AppShapes = Shapes(
     extraLarge = RoundedCornerShape(12.dp)
 )
 
+/** Source Serif 4 — chiffre / display (carnet). OFL Adobe. */
+private val DisplaySerif = FontFamily(
+    Font(R.font.source_serif4_regular, FontWeight.Normal),
+    Font(R.font.source_serif4_semibold, FontWeight.SemiBold),
+    Font(R.font.source_serif4_semibold, FontWeight.Bold)
+)
+
+/** Source Sans 3 — corps / titres UI. OFL Adobe. */
+private val UiSans = FontFamily(
+    Font(R.font.source_sans3_regular, FontWeight.Normal),
+    Font(R.font.source_sans3_semibold, FontWeight.Medium),
+    Font(R.font.source_sans3_semibold, FontWeight.SemiBold),
+    Font(R.font.source_sans3_semibold, FontWeight.Bold)
+)
+
 private val AppTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold,
+        fontFamily = DisplaySerif,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 34.sp,
         color = A11yTokens.Ink
     ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 30.sp,
         color = A11yTokens.Ink
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minTitleSp.value.sp,
         lineHeight = 28.sp,
         color = A11yTokens.Ink
     ),
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontWeight = FontWeight.Normal,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.Ink,
         lineHeight = 26.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.InkMuted,
         lineHeight = 24.sp
@@ -83,26 +100,26 @@ private val AppTypography = Typography(
     // Pas de couleur figée : les boutons Primary doivent hériter de
     // LocalContentColor (crème sur vert), pas d’Ink sombre illisible.
     labelLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minBodySp
     ),
     // Libellés flottants OutlinedTextField (≥ 18 sp, charte a11y).
     titleSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.Ink
     ),
     bodySmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontWeight = FontWeight.Normal,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.InkMuted,
         lineHeight = 24.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = UiSans,
         fontWeight = FontWeight.Medium,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.InkMuted

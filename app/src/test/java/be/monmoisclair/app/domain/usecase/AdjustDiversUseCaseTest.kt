@@ -57,7 +57,8 @@ class AdjustDiversUseCaseTest {
         val ledger = "2026-10"
         assertThat(adjust(ledger, 1_250L)).isEqualTo(AdjustDiversResult.Success(1_250L))
         assertThat(adjust(ledger, 500L)).isEqualTo(AdjustDiversResult.Success(1_750L))
-        assertThat(adjust(ledger, -2_000L)).isEqualTo(AdjustDiversResult.Success(0L))
+        assertThat(adjust(ledger, -2_000L))
+            .isEqualTo(AdjustDiversResult.ReducedToZero(previousCents = 1_750L))
         assertThat(db.monthLedgerDao().getById(ledger)!!.diversSpentCents).isEqualTo(0L)
     }
 

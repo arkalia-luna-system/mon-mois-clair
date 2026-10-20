@@ -1,7 +1,6 @@
 package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.repository.MutatingRepository
-import be.monmoisclair.app.domain.AppClock
 import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -39,13 +38,6 @@ class UpdateExpenseTemplateUseCase @Inject constructor(
         if (dayOfMonth !in 1..31) {
             return UpdateExpenseTemplateResult.InvalidInput("Le jour doit être entre 1 et 31.")
         }
-        val current = AppClock.currentYearMonth()
-        if (anchorYearMonth.isBefore(current)) {
-            return UpdateExpenseTemplateResult.InvalidInput(
-                "Le mois d’ancre ne peut pas être avant le mois en cours."
-            )
-        }
-
         return mutatingRepository.mutate(
             sideEffectsWhen = { it is UpdateExpenseTemplateResult.Success }
         ) {

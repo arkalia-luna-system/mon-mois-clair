@@ -33,8 +33,9 @@ class RestoreMessagesTest {
     }
 
     @Test
-    fun ioError_includes_detail() {
+    fun ioError_stays_plain_language() {
         val msg = RestoreMessages.from(RestoreResult.IoError("disque plein"))
-        assertThat(msg).contains("disque plein")
+        assertThat(msg).doesNotContain("disque plein")
+        assertThat(msg).contains("n’a pas été modifié")
     }
 }

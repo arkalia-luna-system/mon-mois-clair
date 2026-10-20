@@ -58,6 +58,13 @@ class ReminderTimingTest {
     }
 
     @Test
+    fun day31_inFebruary_doesNotThrow() {
+        val due = ReminderTiming.dueDate(YearMonth.of(2026, 2), 31)
+        assertThat(due).isEqualTo(LocalDate.of(2026, 2, 28))
+        assertThat(ReminderTiming.j3Instant(YearMonth.of(2026, 2), 31)).isNull()
+    }
+
+    @Test
     fun j3_earlyMonth_canBePreviousMonth() {
         // Échéance le 2 → J−3 = 29 septembre 10h
         freeze("2026-09-20T08:00:00+02:00")
@@ -65,6 +72,15 @@ class ReminderTimingTest {
         val zdt = instant.atZone(brussels)
         assertThat(zdt.toLocalDate()).isEqualTo(LocalDate.of(2026, 9, 29))
         assertThat(zdt.hour).isEqualTo(10)
+    }
+
+    @Test
+    fun dueDate_clampsDay31_inFebruary() {
+        // P3-R01 : ne pas lever DateTimeException
+        assertThat(ReminderTiming.dueDate(YearMonth.of(2025, 2), 31))
+            .isEqualTo(LocalDate.of(2025, 2, 28))
+        assertThat(ReminderTiming.dueDate(YearMonth.of(2024, 2), 31))
+            .isEqualTo(LocalDate.of(2024, 2, 29))
     }
 
     private fun freeze(offsetDateTime: String) {

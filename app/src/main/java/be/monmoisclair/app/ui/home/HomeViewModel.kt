@@ -305,6 +305,14 @@ class HomeViewModel @Inject constructor(
                     _diversError.value = null
                     _diversFieldCleared.tryEmit(Unit)
                 }
+                is AdjustDiversResult.ReducedToZero -> {
+                    _diversError.value = if (result.previousCents <= 0L) {
+                        "Il n’y a pas de courses notées."
+                    } else {
+                        "Il n’y a que ${MoneyFormat.formatCents(result.previousCents)} en courses. Tout a été retiré."
+                    }
+                    _diversFieldCleared.tryEmit(Unit)
+                }
                 is AdjustDiversResult.Failed -> _diversError.value = result.message
             }
         }

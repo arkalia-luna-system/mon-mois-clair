@@ -159,16 +159,6 @@ fun HomeScreen(
         }
     }
 
-    LaunchedEffect(state.highlightExpenseId, state.timeline) {
-        val id = state.highlightExpenseId ?: return@LaunchedEffect
-        val index = state.timeline.indexOfFirst {
-            it is TimelineItem.Expense && it.id == id
-        }
-        if (index >= 0) {
-            listState.animateScrollToItem(index)
-        }
-    }
-
     val filteredTimeline = remember(state.timeline, searchQuery) {
         val q = searchQuery.trim()
         if (q.isEmpty()) state.timeline
@@ -180,6 +170,22 @@ fun HomeScreen(
                         item.paymentNote.contains(q, ignoreCase = true)
             }
         }
+    }
+    val searchFieldVisible = !state.loading && state.timeline.size >= 4
+
+    // P3-F02 : scroller dans la liste filtrée (+ offset du champ recherche).
+    LaunchedEffect(state.highlightExpenseId, filteredTimeline, searchQuery, searchFieldVisible) {
+        val id = state.highlightExpenseId ?: return@LaunchedEffect
+        var index = filteredTimeline.indexOfFirst {
+            it is TimelineItem.Expense && it.id == id
+        }
+        if (index < 0 && searchQuery.isNotBlank()) {
+            searchQuery = ""
+            return@LaunchedEffect
+        }
+        if (index < 0) return@LaunchedEffect
+        if (searchFieldVisible) index += 1
+        listState.animateScrollToItem(index)
     }
 
     fun onFaitToggle(expenseId: String, markingDone: Boolean) {
@@ -384,8 +390,8 @@ fun HomeScreen(
                 if (state.diversSpentCents > 0L) {
                     Text(
                         text = "Après divers ${MoneyFormat.formatCents(state.afterDiversCents)}",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = A11yTokens.Ink,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.InkMuted,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -467,32 +473,47 @@ fun HomeScreen(
                                     color = A11yTokens.Ink
                                 )
                                 Text(
-                                    text = "Ajoutez le salaire et les factures pour voir ce qu’il reste.",
+                                    text = "Ajoutez le salaire et les factures avec « + Ajouter » en bas.",
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = A11yTokens.InkMuted,
                                     textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                PrimaryA11yButton(
-                                    text = "+ Ajouter une entrée",
-                                    onClick = { onAdd(state.selectedYearMonth) }
                                 )
                             }
                         }
                     }
                     else -> {
-                        if (state.timeline.size >= 4) {
+                        if (searchFieldVisible) {
                             item(key = "search") {
-                                OutlinedTextField(
-                                    value = searchQuery,
-                                    onValueChange = { searchQuery = it },
-                                    label = { Text("Chercher une facture") },
-                                    singleLine = true,
-                                    shape = MaterialTheme.shapes.medium,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .heightIn(min = A11yTokens.minTouchHeight),
-                                    textStyle = MaterialTheme.typography.bodyLarge
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    OutlinedTextField(
+                                        value = searchQuery,
+                                        onValueChange = { searchQuery = it },
+                                        label = { Text("Chercher une facture") },
+                                        singleLine = true,
+                                        shape = MaterialTheme.shapes.medium,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(min = A11yTokens.minTouchHeight),
+                                        textStyle = MaterialTheme.typography.bodyLarge
+                                    )
+                                    if (searchQuery.isNotBlank()) {
+                                        Text(
+                                            text = "Le reste en haut est celui de tout le mois.",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = A11yTokens.InkMuted
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        if (searchQuery.isNotBlank() && filteredTimeline.isEmpty()) {
+                            item(key = "search-empty") {
+                                Text(
+                                    text = "Rien pour « ${searchQuery.trim()} ». " +
+                                        "Les totaux du haut restent ceux du mois.",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = A11yTokens.InkMuted,
+                                    modifier = Modifier.padding(vertical = 12.dp)
                                 )
                             }
                         }

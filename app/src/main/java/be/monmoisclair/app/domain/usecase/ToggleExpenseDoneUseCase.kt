@@ -59,6 +59,22 @@ class ToggleExpenseDoneUseCase @Inject constructor(
         }
     }
 
+    /** Action notification FAIT : ne bascule pas Remettre si déjà DONE. */
+    suspend fun markDoneIfTodo(expenseId: String): ToggleExpenseDoneResult {
+        val existing = instanceDao.getExpenseById(expenseId)
+            ?: return ToggleExpenseDoneResult.NotFound
+        if (existing.status == ExpenseStatus.DONE) {
+            return ToggleExpenseDoneResult.Toggled(
+                expenseId = existing.id,
+                ledgerId = existing.ledgerId,
+                previousStatus = ExpenseStatus.DONE,
+                newStatus = ExpenseStatus.DONE,
+                doneAtEpochMs = existing.doneAtEpochMs
+            )
+        }
+        return invoke(expenseId)
+    }
+
     private fun flip(expense: ExpenseInstanceEntity): ExpenseInstanceEntity {
         return when (expense.status) {
             ExpenseStatus.TODO -> expense.copy(

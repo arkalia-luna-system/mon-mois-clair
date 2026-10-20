@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,18 +27,25 @@ class ExactAlarmGatewayImpl @Inject constructor(
     }
 
     override fun schedule(requestCode: Int, triggerAtEpochMs: Long, payload: ReminderPayload) {
-        val pending = requireNotNull(pendingIntent(requestCode, payload, create = true)) {
-            "PendingIntent create a échoué pour requestCode=$requestCode"
+        if (!canScheduleExactAlarms()) {
+            // P3-R01 : droit retiré → annuler sans SecurityException qui coupe reconcileAll.
+            cancel(requestCode)
+            return
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                triggerAtEpochMs,
-                pending
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtEpochMs, pending)
+        val pending = pendingIntent(requestCode, payload, create = true) ?: return
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerAtEpochMs,
+                    pending
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtEpochMs, pending)
+            }
+        } catch (e: SecurityException) {
+            Log.e(TAG, "alarme exacte refusée code=$requestCode", e)
         }
     }
 
@@ -72,5 +80,9 @@ class ExactAlarmGatewayImpl @Inject constructor(
                 flags or PendingIntent.FLAG_NO_CREATE
             )
         }
+    }
+
+    private companion object {
+        const val TAG = "ExactAlarm"
     }
 }

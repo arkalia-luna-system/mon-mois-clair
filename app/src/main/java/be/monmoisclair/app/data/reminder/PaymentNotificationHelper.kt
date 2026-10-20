@@ -49,6 +49,17 @@ class PaymentNotificationHelper @Inject constructor(
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        // P3-Q01 : action FAIT sans ouvrir l’app.
+        val markDone = PendingIntent.getBroadcast(
+            context,
+            notificationId + MARK_DONE_REQUEST_OFFSET,
+            Intent(context, ReminderReceiver::class.java).apply {
+                action = ReminderReceiver.ACTION_MARK_DONE
+                putExtra(ReminderReceiver.EXTRA_EXPENSE_ID, expenseInstanceId)
+                putExtra(ReminderReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_reminder)
             .setContentTitle(title)
@@ -57,6 +68,11 @@ class PaymentNotificationHelper @Inject constructor(
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setContentIntent(openApp)
+            .addAction(
+                0,
+                context.getString(R.string.notification_action_done),
+                markDone
+            )
             .build()
 
         NotificationManagerCompat.from(context).notify(notificationId, notification)
@@ -64,5 +80,6 @@ class PaymentNotificationHelper @Inject constructor(
 
     companion object {
         const val CHANNEL_ID = "paiements"
+        private const val MARK_DONE_REQUEST_OFFSET = 100_000
     }
 }

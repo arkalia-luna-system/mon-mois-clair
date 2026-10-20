@@ -79,7 +79,8 @@ class SettingsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             busy = false,
-                            message = "Choisissez WhatsApp, Mail ou une autre app.",
+                            message = "Choisissez une app pour envoyer. " +
+                                "Rappel : les photos de factures restent dans Documents.",
                             isError = false
                         )
                     }

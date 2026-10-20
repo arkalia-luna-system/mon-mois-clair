@@ -315,7 +315,7 @@ Version : `0.1.0-6.18`. Smoke Galaxy toujours à faire (liste ci-dessus).
 | V13 | ✅ | « sauvegarde » / « et N autre(s) » corrigé |
 | V14 | ✅ | AccentDanger + mot « Déficit » |
 | V15 | ✅ | Un formateur `formatCents` |
-| V16 | ⏸ | Polices système (TTF embarquées différées) |
+| V16 | ✅ | Source Serif 4 + Source Sans 3 embarqués (`res/font` → thème) |
 | V17 | ✅ | SplashScreen API |
 | V18 | ✅ | Haptic FAIT |
 | V19 | ✅ | Snackbar Annuler |

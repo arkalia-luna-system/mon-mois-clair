@@ -147,6 +147,26 @@ class ReminderSchedulerImplTest {
         assertThat(a).isAtLeast(0)
     }
 
+    @Test
+    fun reconcileAll_continues_whenOneExpenseHasDay31InFebruary() = runBlocking<Unit> {
+        // P3-R01 : une ligne 31/02 ne doit pas empêcher les autres rappels.
+        seedExpense(
+            id = "exp-bad",
+            ledgerId = "2025-02",
+            day = 31,
+            status = ExpenseStatus.TODO
+        )
+        seedExpense(
+            id = "exp-ok",
+            ledgerId = "2026-10",
+            day = 5,
+            status = ExpenseStatus.TODO
+        )
+        scheduler.reconcileAll()
+        assertThat(gateway.scheduled.any { it.payload.expenseInstanceId == "exp-ok" }).isTrue()
+        assertThat(gateway.scheduled.any { it.payload.title.startsWith("Dans 3 jours") }).isTrue()
+    }
+
     private suspend fun seedExpense(
         id: String,
         ledgerId: String,

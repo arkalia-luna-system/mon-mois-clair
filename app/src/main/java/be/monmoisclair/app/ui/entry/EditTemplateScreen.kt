@@ -108,6 +108,11 @@ fun EditTemplateScreen(
                 onSelect = { viewModel.setDay(it.toString()) }
             )
             Text("Mois d’ancre (prochaine échéance)", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = state.anchorYearLabel,
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)

@@ -17,6 +17,30 @@ object RecurrenceAnchor {
         return candidate
     }
 
+    /**
+     * P3-F01 : édition d’un modèle hors mois.
+     * - Mois inchangé → garder l’ancre `yyyy-MM` en base (pas de saut d’année).
+     * - Mois changé → avancer depuis l’ancre existante, sans passer avant [now].
+     */
+    fun resolveTemplateAnchor(
+        selectedMonth: Int,
+        existingAnchor: YearMonth?,
+        now: YearMonth = AppClock.currentYearMonth()
+    ): YearMonth {
+        val month = selectedMonth.coerceIn(1, 12)
+        // Mois inchangé : l’ancre est la phase (janvier 2026 reste janvier 2026),
+        // même si elle est passée. La recalculer casserait un trimestre.
+        if (existingAnchor != null && existingAnchor.monthValue == month) {
+            return existingAnchor
+        }
+        val start = existingAnchor ?: now
+        var candidate = nextYearMonth(month, from = start)
+        if (candidate.isBefore(now)) {
+            candidate = nextYearMonth(month, from = now)
+        }
+        return candidate
+    }
+
     fun frenchMonthLabel(monthOfYear: Int): String = when (monthOfYear.coerceIn(1, 12)) {
         1 -> "Janvier"
         2 -> "Février"

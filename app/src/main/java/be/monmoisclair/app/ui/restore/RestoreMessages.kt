@@ -14,6 +14,6 @@ object RestoreMessages {
         is RestoreResult.InvalidChecksum ->
             "Sauvegarde corrompue ou modifiée (contrôle d’intégrité échoué)."
         is RestoreResult.IoError ->
-            "Impossible de lire la sauvegarde : ${result.message}"
+            "Impossible de lire cette sauvegarde. Le mois en cours n’a pas été modifié."
     }
 }
