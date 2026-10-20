@@ -9,14 +9,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.25** (échéance hors mois, phrases, photo nommée) |
+| Dernière étape terminée | **6.26** (mois vide sans « À payer 0 € », onboarding « prêts ») |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel, relecture 6.25) · campagne profils |
+| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel) · fin campagne profils |
 | Audit premium | Code clos (`AUDIT_PREMIUM.md`) · smoke partiel (`AUDIT_STATUS.md`) |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.26 Campagne prompts : mois vide + onboarding
+
+**Problème (Correcteur / Senior sur Galaxy) :** un mois sans facture affichait « À payer 0 € » en vert (fausse réussite) ; l’écran permissions disait encore « pas OK » alors que les pastilles disent « Prêt ».
+
+**Codé :** `stickyStillToPayLabel` (masque la ligne si aucune facture ; « Tout est payé » seulement s’il y en a) · phrase onboarding « pas prêts » · tests unitaires dédiés.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **162/162** (47 fichiers, 0 échec)  
+**Version :** `0.1.0-6.26` · `versionCode` 31
 
 ### 2026-10-20 — 6.25 Échéance hors mois, phrases, photo nommée
 

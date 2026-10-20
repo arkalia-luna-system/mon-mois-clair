@@ -132,7 +132,7 @@ fun PermissionsSetupScreen(
         if (report != null && !report.isFullyHealthy) {
             Text(
                 text = "Vous pouvez continuer, mais les rappels risquent de ne pas sonner " +
-                    "tant que tous les points ne sont pas OK.",
+                    "tant que tous les points ne sont pas prêts.",
                 style = MaterialTheme.typography.bodyMedium
             )
         }

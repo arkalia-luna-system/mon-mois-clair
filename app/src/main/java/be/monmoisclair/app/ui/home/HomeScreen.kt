@@ -388,23 +388,21 @@ fun HomeScreen(
                         else -> A11yTokens.Ink
                     }
                 )
-                Text(
-                    text = if (
-                        state.summary.stillToPayCents == 0L &&
-                        state.timeline.any { it is TimelineItem.Expense }
-                    ) {
-                        "Tout est payé"
-                    } else {
-                        "À payer ${MoneyFormat.formatCents(state.summary.stillToPayCents)}"
-                    },
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = when {
-                        state.summary.stillToPayCents == 0L -> A11yTokens.AccentOk
-                        else -> A11yTokens.InkMuted
-                    },
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                stickyStillToPayLabel(
+                    stillToPayCents = state.summary.stillToPayCents,
+                    hasExpenses = state.timeline.any { it is TimelineItem.Expense }
+                )?.let { label ->
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = when {
+                            state.summary.stillToPayCents == 0L -> A11yTokens.AccentOk
+                            else -> A11yTokens.InkMuted
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 if (state.diversSpentCents > 0L) {
                     Text(
                         text = "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}",
