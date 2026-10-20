@@ -135,7 +135,7 @@ dependencies {
 
     implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.biometric:biometric:1.1.0")
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
+    implementation("androidx.work:work-runtime-ktx:2.12.0")
     implementation("androidx.hilt:hilt-work:1.2.0")
     ksp("androidx.hilt:hilt-compiler:1.2.0")
 
@@ -150,7 +150,7 @@ dependencies {
     testImplementation("androidx.room:room-testing:$roomVersion")
     testImplementation("org.robolectric:robolectric:4.14.1")
     testImplementation("androidx.test:core:1.6.1")
-    testImplementation("androidx.work:work-testing:2.9.1")
+    testImplementation("androidx.work:work-testing:2.12.0")
     testImplementation("com.google.truth:truth:1.4.4")
     testImplementation("org.json:json:20240303")
 }
