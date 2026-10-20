@@ -39,8 +39,9 @@ jobs:
           cache: gradle
 
       # Ne pas installer le package obsolète "tools" (casse sdkmanager depuis 2025+).
+      # v4 = runtime Node 24 (évite le warning GitHub « Node.js 20 deprecated »).
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
         with:
           packages: platform-tools platforms;android-35 build-tools;35.0.0
 
@@ -54,7 +55,7 @@ jobs:
 
       - name: Upload test reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unit-test-reports
           # settings.gradle.kts redirige build/ vers ~/.cache/mon-mois-clair/gradle-build/

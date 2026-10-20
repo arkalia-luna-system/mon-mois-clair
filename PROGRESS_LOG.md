@@ -9,14 +9,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.23** (Audit premium A01–C02 + menu Outils + smoke partiel) |
+| Dernière étape terminée | **6.24** (E01/E02/E08 + décimales) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke restant (notif, trimestriel, relecture A01–C02) · campagne profils |
-| Audit premium | `docs/AUDIT_PREMIUM.md` (code clos) · `docs/AUDIT_STATUS.md` |
+| Prochaine sous-étape | E03–E06 · lecture A06+ · smoke Galaxy restant |
+| Audit premium | `docs/AUDIT_PREMIUM.md` · ordre 2 (E01/E02/E08) clos |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.24 Gestes fiche / échéance / photo
+
+**Problème :** Retour jette la saisie (E01) ; échéance hors mois non retirable (E02) ; jpg photo laissé dans le cache (E08) ; montant à 3 décimales tronqué (E07).
+
+**Codé :** `BackHandler` + « Quitter sans enregistrer ? » · `ArchiveExpenseTemplateUseCase` + bouton « Retirer cette échéance » · effacement jpg après capture/annulation · `parseToCents` refuse >2 décimales.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **159/159** (46 fichiers, 0 échec)  
+**Version :** `0.1.0-6.24` · `versionCode` 29
 
 ### 2026-10-20 — 6.23 Audit premium (A01–C02) + menu Outils + smoke
 

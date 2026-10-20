@@ -8,10 +8,10 @@ class BackupHealthCopyTest {
 
     @Test
     fun statusLine_coversAllStates() {
-        assertThat(BackupHealthCopy.statusLine(BackupHealth.OK)).contains("OK")
-        assertThat(BackupHealthCopy.statusLine(BackupHealth.BROKEN)).contains("à régler")
+        assertThat(BackupHealthCopy.statusLine(BackupHealth.OK)).contains("à jour")
+        assertThat(BackupHealthCopy.statusLine(BackupHealth.BROKEN)).contains("ne s’écrit plus")
         assertThat(BackupHealthCopy.statusLine(BackupHealth.NOT_CONFIGURED))
-            .contains("aucun dossier")
+            .contains("Aucun dossier")
     }
 
     @Test

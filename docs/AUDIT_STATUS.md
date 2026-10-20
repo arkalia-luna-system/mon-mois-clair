@@ -1,13 +1,14 @@
 # Audits premium — statut
 
-Lots 6.16 → 6.23 **clos côté code**.  
-Synthèse vivante : [`AUDIT_PREMIUM.md`](AUDIT_PREMIUM.md) (A01–C02 corrigés + liste téléphone).  
-Mesure tests : **157/157** · version `0.1.0-6.23`.
+Lots 6.16 → 6.24 **clos côté code** (sauf smoke + vague lecture/gestes restantes).  
+Synthèse vivante : [`AUDIT_PREMIUM.md`](AUDIT_PREMIUM.md).  
+Mesure tests : **159/159** · version `0.1.0-6.24`.
 
 | Vague | État |
 |-------|------|
 | Origine / suite / passe 3 | ✅ code |
-| A01–A04, B01–B02, C01–C02 | ✅ code (voir `AUDIT_PREMIUM.md`) |
+| A01–A05, B01–B02, C01–C02 | ✅ code |
+| E01, E02, E07, E08 | ✅ code (6.24) |
 | Smoke Galaxy | ✅ partiel — table ci-dessous |
 
 ## Smoke SM-S938B — 2026-10-20 (`0.1.0-6.23`)

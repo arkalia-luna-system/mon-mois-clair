@@ -144,7 +144,7 @@ class HomeViewModel @Inject constructor(
                     selectedYearMonth = ym,
                     monthLabel = DayLabelFormat.monthTitle(ym),
                     isPastMonth = ym.isBefore(current),
-                    canGoPrev = MonthNavigation.canGoPrev(),
+                    canGoPrev = MonthNavigation.canGoPrev(ym, current),
                     canGoNext = MonthNavigation.canGoNext(ym, current),
                     summary = summary,
                     diversSpentCents = divers,
@@ -193,7 +193,7 @@ class HomeViewModel @Inject constructor(
                 items.size == 1 -> {
                     val f = items.first()
                     "À prévoir le mois prochain : ${f.label} (" +
-                        "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth})"
+                        "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth}). Voir"
                 }
                 else -> {
                     val f = items.first()
@@ -201,7 +201,7 @@ class HomeViewModel @Inject constructor(
                     val otherWord = if (others == 1) "autre" else "autres"
                     "À prévoir le mois prochain : ${f.label} (" +
                         "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth}) " +
-                        "et $others $otherWord"
+                        "et $others $otherWord. Voir"
                 }
             }
         }
@@ -209,6 +209,8 @@ class HomeViewModel @Inject constructor(
 
     fun prevMonth() {
         viewModelScope.launch {
+            val current = AppClock.currentYearMonth()
+            if (!MonthNavigation.canGoPrev(selectedMonth.value, current)) return@launch
             val target = selectedMonth.value.minusMonths(1)
             monthCycleEngine.ensureMonthExists(target)
             selectedMonth.value = target
@@ -293,6 +295,10 @@ class HomeViewModel @Inject constructor(
 
     private fun adjustDiversBy(eurosText: String, add: Boolean) {
         viewModelScope.launch {
+            if (MoneyFormat.tooManyFractionDigits(eurosText)) {
+                _diversError.value = MoneyFormat.FRACTION_HINT
+                return@launch
+            }
             val cents = MoneyFormat.parseToCents(eurosText)
             if (cents == null || cents <= 0L) {
                 _diversError.value = "Indiquez un montant valide (ex. 12,50)."

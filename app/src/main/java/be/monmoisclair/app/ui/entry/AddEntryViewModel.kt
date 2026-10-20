@@ -119,7 +119,7 @@ class AddEntryViewModel @Inject constructor(
     fun applyEpcRaw(raw: String) {
         val p = EpcQrParser.parse(raw)
         if (p == null) {
-            _state.update { it.copy(error = "QR Code non reconnu (facture belge EPC attendue).") }
+            _state.update { it.copy(error = "Ce QR n’est pas une facture belge.") }
             return
         }
         applyEpc(p)
@@ -144,6 +144,10 @@ class AddEntryViewModel @Inject constructor(
     fun save() {
         viewModelScope.launch {
             val s = _state.value
+            if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
+                _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
+                return@launch
+            }
             val cents = MoneyFormat.parseToCents(s.amountText)
             val day = s.dayText.trim().toIntOrNull()
             if (cents == null || day == null) {

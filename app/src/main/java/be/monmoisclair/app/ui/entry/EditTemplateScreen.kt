@@ -149,7 +149,11 @@ fun EditTemplateScreen(
                 selectedDay = state.dayText.toIntOrNull(),
                 onSelect = { viewModel.setDay(it.toString()) }
             )
-            Text("Mois d’ancre (prochaine échéance)", style = MaterialTheme.typography.titleLarge)
+            Text(
+                "Mois de la prochaine échéance",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
             Text(
                 text = state.anchorYearLabel,
                 style = MaterialTheme.typography.bodyLarge,
@@ -167,7 +171,7 @@ fun EditTemplateScreen(
                         modifier = Modifier.heightIn(min = A11yTokens.minTouchHeight)
                     ) {
                         Text(
-                            text = RecurrenceAnchor.frenchMonthLabel(m).take(3) + ".",
+                            text = RecurrenceAnchor.frenchMonthLabel(m),
                             style = MaterialTheme.typography.bodyLarge,
                             color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
                             modifier = Modifier

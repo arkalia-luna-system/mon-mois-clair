@@ -7,8 +7,12 @@ import java.time.YearMonth
 class MonthNavigationTest {
 
     @Test
-    fun canGoPrev_alwaysTrue() {
-        assertThat(MonthNavigation.canGoPrev()).isTrue()
+    fun canGoPrev_stopsAtHorizon() {
+        val current = YearMonth.of(2026, 10)
+        assertThat(MonthNavigation.canGoPrev(current, current)).isTrue()
+        val oldest = MonthNavigation.oldestSelectable(current)
+        assertThat(MonthNavigation.canGoPrev(oldest.plusMonths(1), current)).isTrue()
+        assertThat(MonthNavigation.canGoPrev(oldest, current)).isFalse()
     }
 
     @Test
@@ -24,6 +28,7 @@ class MonthNavigationTest {
         val current = YearMonth.of(2026, 10)
         assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 10), current)).isTrue()
         assertThat(MonthNavigation.canSelect(YearMonth.of(2025, 1), current)).isTrue()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2024, 1), current)).isFalse()
         assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 11), current)).isFalse()
     }
 }

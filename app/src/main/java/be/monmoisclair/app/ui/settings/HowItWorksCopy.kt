@@ -46,7 +46,7 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Facture papier",
-            body = "À l’ajout : « Scanner une facture » lit le QR belge (EPC) et préremplit nom, montant " +
+            body = "À l’ajout : « Scanner une facture » lit le QR de la facture belge et préremplit nom, montant " +
                 "et communication. Touchez « Copier la communication » puis collez dans votre app bancaire. " +
                 "Vous pouvez aussi prendre une photo de la facture. Elle se revoit en ouvrant la ligne. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."

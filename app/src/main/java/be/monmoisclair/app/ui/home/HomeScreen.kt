@@ -190,29 +190,30 @@ fun HomeScreen(
         listState.animateScrollToItem(index)
     }
 
+    var pastMarkingDone by remember { mutableStateOf(true) }
+
     fun onFaitToggle(expenseId: String, markingDone: Boolean) {
         // Mois passé : dialogue d’abord — pas de snackbar anticipé.
         if (state.isPastMonth) {
+            pastMarkingDone = markingDone
             viewModel.requestToggleDone(expenseId)
             return
         }
         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
         viewModel.requestToggleDone(expenseId)
-        if (markingDone) {
-            scope.launch {
-                faitUndoActive = true
-                try {
-                    val result = snackbarHostState.showSnackbar(
-                        message = "Marqué FAIT",
-                        actionLabel = "Annuler",
-                        duration = SnackbarDuration.Short
-                    )
-                    if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.requestToggleDone(expenseId)
-                    }
-                } finally {
-                    faitUndoActive = false
+        scope.launch {
+            faitUndoActive = true
+            try {
+                val result = snackbarHostState.showSnackbar(
+                    message = if (markingDone) "Marqué FAIT" else "Remis à payer",
+                    actionLabel = "Annuler",
+                    duration = SnackbarDuration.Long
+                )
+                if (result == SnackbarResult.ActionPerformed) {
+                    viewModel.requestToggleDone(expenseId)
                 }
+            } finally {
+                faitUndoActive = false
             }
         }
     }
@@ -281,7 +282,7 @@ fun HomeScreen(
             },
             confirmButton = {
                 PrimaryA11yButton(
-                    text = "Modifier",
+                    text = if (pastMarkingDone) "Marquer FAIT" else "Remettre à payer",
                     onClick = {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.confirmPastToggle()
@@ -382,7 +383,14 @@ fun HomeScreen(
                     }
                 )
                 Text(
-                    text = "À payer ${MoneyFormat.formatCents(state.summary.stillToPayCents)}",
+                    text = if (
+                        state.summary.stillToPayCents == 0L &&
+                        state.timeline.any { it is TimelineItem.Expense }
+                    ) {
+                        "Tout est payé"
+                    } else {
+                        "À payer ${MoneyFormat.formatCents(state.summary.stillToPayCents)}"
+                    },
                     style = MaterialTheme.typography.bodyLarge,
                     color = when {
                         state.summary.stillToPayCents == 0L -> A11yTokens.AccentOk
@@ -498,7 +506,25 @@ fun HomeScreen(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .heightIn(min = A11yTokens.minTouchHeight),
-                                        textStyle = MaterialTheme.typography.bodyLarge
+                                        textStyle = MaterialTheme.typography.bodyLarge,
+                                        trailingIcon = if (searchQuery.isNotEmpty()) {
+                                            {
+                                                Text(
+                                                    text = "Effacer",
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    color = A11yTokens.ButtonFill,
+                                                    modifier = Modifier
+                                                        .heightIn(min = A11yTokens.minTouchHeight)
+                                                        .clickable(
+                                                            role = Role.Button,
+                                                            onClick = { searchQuery = "" }
+                                                        )
+                                                        .padding(horizontal = 8.dp)
+                                                )
+                                            }
+                                        } else {
+                                            null
+                                        }
                                     )
                                     if (searchQuery.isNotBlank()) {
                                         Text(
@@ -786,7 +812,7 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
                 )
                 Text(
                     text = item.amountLabel,
-                    color = A11yTokens.AccentOk,
+                    color = A11yTokens.Ink,
                     style = MaterialTheme.typography.titleLarge
                 )
             }
@@ -851,19 +877,25 @@ private fun ExpenseRow(
                     exit = fadeOut()
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = item.paymentNote,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        SecondaryA11yButton(
-                            text = "Copier",
-                            onClick = onCopyNote,
-                            fillMaxWidth = false,
-                            modifier = Modifier.widthIn(min = 96.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = item.paymentNote,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
+                            )
+                            SecondaryA11yButton(
+                                text = "Copier",
+                                onClick = onCopyNote,
+                                fillMaxWidth = false,
+                                modifier = Modifier.widthIn(min = 96.dp)
+                            )
+                        }
                     }
                 }
                 ExpenseStatusLine(item = item, onOpenReceipt = onOpenReceipt)

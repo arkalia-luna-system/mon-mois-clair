@@ -3,6 +3,7 @@ package be.monmoisclair.app.ui.entry
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -109,9 +110,34 @@ fun AddEntryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
+    var confirmLeave by remember { mutableStateOf(false) }
     val takePhoto = rememberFullPhotoCapture { bmp ->
         pendingPreview = bmp
         viewModel.attachPreviewBitmap(bmp)
+    }
+    val dirty = state.label.isNotBlank() ||
+        state.amountText.isNotBlank() ||
+        state.paymentNote.isNotBlank() ||
+        state.hasPendingPhoto ||
+        pendingPreview != null ||
+        state.recurrence != RecurrenceChoice.Once ||
+        state.isAutoDebit ||
+        !state.isExpense ||
+        state.dayText != be.monmoisclair.app.domain.AppClock.today().dayOfMonth.toString()
+
+    fun requestLeave() {
+        if (dirty) confirmLeave = true else onCancel()
+    }
+
+    BackHandler { requestLeave() }
+    if (confirmLeave) {
+        DiscardChangesDialog(
+            onStay = { confirmLeave = false },
+            onLeave = {
+                confirmLeave = false
+                onCancel()
+            }
+        )
     }
 
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
@@ -163,7 +189,7 @@ fun AddEntryScreen(
         },
         onApplyFollowing = {},
         onPrimary = viewModel::save,
-        onCancel = onCancel,
+        onCancel = { requestLeave() },
         onDelete = null
     )
 }
@@ -176,7 +202,36 @@ fun EditEntryScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var confirmDelete by remember { mutableStateOf(false) }
+    var confirmLeave by remember { mutableStateOf(false) }
+    var baseline by remember { mutableStateOf<EditEntryState?>(null) }
     LaunchedEffect(state.done) { if (state.done) onDone() }
+    LaunchedEffect(state.loading) {
+        if (!state.loading && baseline == null) baseline = state
+    }
+    val dirty = baseline?.let { b ->
+        state.label != b.label ||
+            state.amountText != b.amountText ||
+            state.dayText != b.dayText ||
+            state.paymentNote != b.paymentNote ||
+            state.isAutoDebit != b.isAutoDebit ||
+            state.recurrence != b.recurrence ||
+            state.applyToFollowing != b.applyToFollowing ||
+            state.hasPendingPhoto
+    } == true
+
+    fun requestLeave() {
+        if (dirty) confirmLeave = true else onCancel()
+    }
+    BackHandler { requestLeave() }
+    if (confirmLeave) {
+        DiscardChangesDialog(
+            onStay = { confirmLeave = false },
+            onLeave = {
+                confirmLeave = false
+                onCancel()
+            }
+        )
+    }
 
     if (state.loading) {
         Column(
@@ -195,7 +250,10 @@ fun EditEntryScreen(
             onDismissRequest = { confirmDelete = false },
             shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
-            title = { Text("Supprimer cette entrée ?") },
+            title = {
+                val name = state.label.trim().ifBlank { "cette entrée" }
+                Text("Supprimer $name ?")
+            },
             text = {
                 Text(
                     if (state.applyToFollowing && state.hasTemplate) {
@@ -339,8 +397,43 @@ fun EditEntryScreen(
         onRecurring = {},
         onApplyFollowing = viewModel::setApplyToFollowing,
         onPrimary = viewModel::save,
-        onCancel = onCancel,
+        onCancel = { requestLeave() },
         onDelete = { confirmDelete = true }
+    )
+}
+
+@Composable
+private fun DiscardChangesDialog(
+    onStay: () -> Unit,
+    onLeave: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onStay,
+        shape = MaterialTheme.shapes.medium,
+        containerColor = A11yTokens.PaperWarm,
+        title = { Text("Quitter sans enregistrer ?") },
+        text = {
+            Text(
+                "Les changements ne seront pas gardés.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
+        confirmButton = {
+            DangerA11yButton(
+                text = "Quitter",
+                onClick = onLeave,
+                fillMaxWidth = false,
+                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+            )
+        },
+        dismissButton = {
+            SecondaryA11yButton(
+                text = "Rester",
+                onClick = onStay,
+                fillMaxWidth = false,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
     )
 }
 
@@ -410,7 +503,7 @@ private fun EntryFormScaffold(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(text = title, style = MaterialTheme.typography.titleLarge)
+            Text(text = title, style = MaterialTheme.typography.headlineMedium)
 
             if (showRecurring) {
                 @OptIn(ExperimentalLayoutApi::class)
@@ -466,13 +559,13 @@ private fun EntryFormScaffold(
             // Édition ponctuelle (sans modèle) : info seule.
             if (!showRecurring && !showFrequencyEdit) {
                 recurrenceInfo?.let { info ->
-                    Text(text = "Fréquence", style = MaterialTheme.typography.titleLarge)
+                    Text(text = "Fréquence", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                     Text(text = info, style = MaterialTheme.typography.bodyLarge)
                 }
             }
 
             if ((showRecurring || showFrequencyEdit) && onRecurrence != null) {
-                Text("Fréquence", style = MaterialTheme.typography.titleLarge)
+                Text("Fréquence", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                 if (showFrequencyEdit) {
                     Text(
                         text = "Le changement s’applique au modèle (cochez « Aussi les mois suivants »).",
@@ -504,7 +597,7 @@ private fun EntryFormScaffold(
                     }
                 }
                 if (showNextDueMonth) {
-                    Text("Prochaine échéance", style = MaterialTheme.typography.titleLarge)
+                    Text("Prochaine échéance", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                     Text(
                         text = "Choisissez le mois où elle tombe (ex. taxe en mars).",
                         style = MaterialTheme.typography.bodyMedium,
@@ -545,7 +638,7 @@ private fun EntryFormScaffold(
                 )
             }
             if (showPaymentAssist) {
-                Text("Facture papier", style = MaterialTheme.typography.titleLarge)
+                Text("Facture papier", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                 if (onScanEpc != null) {
                     SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
                     Text(
@@ -587,7 +680,7 @@ private fun EntryFormScaffold(
                     }
                     receiptPreview?.let { bmp ->
                         Text(
-                            text = "Facture enregistrée — touchez pour l’agrandir.",
+                            text = "Touchez pour agrandir.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted
                         )
@@ -597,7 +690,7 @@ private fun EntryFormScaffold(
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = 280.dp, max = 480.dp)
+                                .height(120.dp)
                                 .clip(MaterialTheme.shapes.medium)
                                 .background(A11yTokens.PaperWarm)
                                 .then(
@@ -612,9 +705,6 @@ private fun EntryFormScaffold(
                                     }
                                 )
                         )
-                    }
-                    if (onViewReceipt != null && hasReceiptPhoto && !hasPendingPhoto) {
-                        SecondaryA11yButton(text = "Voir la facture", onClick = onViewReceipt)
                     }
                 }
             }
@@ -634,12 +724,13 @@ private fun EntryFormScaffold(
             infoMessage?.let {
                 Text(text = it, color = A11yTokens.AccentOk, style = MaterialTheme.typography.bodyLarge)
             }
-            error?.let {
-                Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
-            }
             Spacer(modifier = Modifier.height(8.dp))
         }
 
+        error?.let {
+            Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
         if (!keyboardOpen) {
             Spacer(modifier = Modifier.height(8.dp))

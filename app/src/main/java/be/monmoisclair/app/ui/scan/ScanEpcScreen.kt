@@ -1,10 +1,14 @@
 package be.monmoisclair.app.ui.scan
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -44,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.monmoisclair.app.domain.EpcQrParser
@@ -79,11 +84,20 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
     val nonEpcTold = remember { AtomicBoolean(false) }
     val previewView = remember { PreviewView(context) }
     var pendingRaw by remember { mutableStateOf<String?>(null) }
+    var torchOn by remember { mutableStateOf(false) }
+    var camera by remember { mutableStateOf<Camera?>(null) }
+    var permanentlyDenied by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         hasCamera = granted
+        val activity = context as? android.app.Activity
+        permanentlyDenied = !granted && activity != null &&
+            !ActivityCompat.shouldShowRequestPermissionRationale(
+                activity,
+                Manifest.permission.CAMERA
+            )
         if (!granted) status = "Autorisez la caméra pour scanner la facture."
     }
 
@@ -157,7 +171,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                         .addOnCompleteListener { proxy.close() }
                 }
                 provider.unbindAll()
-                provider.bindToLifecycle(
+                camera = provider.bindToLifecycle(
                     lifecycleOwner,
                     CameraSelector.DEFAULT_BACK_CAMERA,
                     preview,
@@ -171,6 +185,8 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
 
         onDispose {
             disposed = true
+            torchOn = false
+            camera = null
             runCatching { providerHolder[0]?.unbindAll() }
             runCatching {
                 if (future.isDone) future.get().unbindAll()
@@ -239,10 +255,24 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             }
         } else {
             Spacer(Modifier.weight(1f))
-            PrimaryA11yButton(
-                text = "Autoriser la caméra",
-                onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }
-            )
+            if (permanentlyDenied) {
+                SecondaryA11yButton(
+                    text = "Ouvrir les réglages",
+                    onClick = {
+                        context.startActivity(
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.fromParts("package", context.packageName, null)
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                        )
+                    }
+                )
+            } else {
+                PrimaryA11yButton(
+                    text = "Autoriser la caméra",
+                    onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }
+                )
+            }
         }
         Spacer(Modifier.height(12.dp))
         SecondaryA11yButton(text = "Annuler", onClick = onCancel)

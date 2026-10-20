@@ -32,7 +32,8 @@ data class EditTemplateState(
     val loading: Boolean = true,
     val saved: Boolean = false,
     val saving: Boolean = false,
-    val archived: Boolean = false
+    val archived: Boolean = false,
+    val edited: Boolean = false
 ) {
     val anchorYearLabel: String
         get() {
@@ -73,9 +74,9 @@ class EditTemplateViewModel @Inject constructor(
         val anchor = runCatching { YearMonth.parse(tpl.anchorYearMonth) }.getOrNull()
             ?: AppClock.currentYearMonth()
         val hint = when (tpl.intervalMonths) {
-            12 -> "1× par an — les mois suivants suivront cette ancre."
-            3 -> "Tous les 3 mois — les mois suivants suivront cette ancre."
-            else -> "Tous les ${tpl.intervalMonths} mois — les mois suivants suivront cette ancre."
+            12 -> "1× par an — les mois suivants suivront ce mois."
+            3 -> "Tous les 3 mois — les mois suivants suivront ce mois."
+            else -> "Tous les ${tpl.intervalMonths} mois — les mois suivants suivront ce mois."
         }
         _state.update {
             it.copy(
@@ -90,14 +91,18 @@ class EditTemplateViewModel @Inject constructor(
         }
     }
 
-    fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
-    fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
-    fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null) }
-    fun setAnchorMonth(m: Int) = _state.update { it.copy(anchorMonth = m.coerceIn(1, 12)) }
+    fun setLabel(v: String) = _state.update { it.copy(label = v, error = null, edited = true) }
+    fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null, edited = true) }
+    fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null, edited = true) }
+    fun setAnchorMonth(m: Int) = _state.update { it.copy(anchorMonth = m.coerceIn(1, 12), edited = true) }
 
     fun save() {
         viewModelScope.launch {
             val s = _state.value
+            if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
+                _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
+                return@launch
+            }
             val cents = MoneyFormat.parseToCents(s.amountText)
             val day = s.dayText.trim().toIntOrNull()
             if (cents == null || day == null) {

@@ -1,6 +1,7 @@
 package be.monmoisclair.app.data.biometric
 
 import android.content.Context
+import android.util.Log
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -77,7 +78,12 @@ class BiometricAuthGatewayImpl @Inject constructor(
                     ) {
                         onResult(BiometricAuthResult.Cancelled)
                     } else {
-                        onResult(BiometricAuthResult.Failed(errString.toString()))
+                        Log.e("BiometricAuth", "errorCode=$errorCode $errString")
+                        onResult(
+                            BiometricAuthResult.Failed(
+                                "Déverrouillage impossible. Réessayez, ou utilisez le code du téléphone."
+                            )
+                        )
                     }
                 }
 

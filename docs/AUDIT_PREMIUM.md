@@ -1,8 +1,8 @@
 # Audit premium — points encore ouverts
 
 Date : 2026-10-20.  
-Code : étape **6.23** (`0.1.0-6.23`).  
-Mesure tests : **157/157** (45 fichiers, Gradle `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
+Code : étape **6.24** (`0.1.0-6.24`).  
+Mesure tests : **159/159** (46 fichiers, Gradle `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
 
 But : ce qu’il reste à corriger pour que l’app se lise comme un objet fini, pas comme un chantier.  
 Hors sujet (charte, ne pas les ajouter) : banque, cloud, pub, graphiques, report automatique du solde, troisième bouton sur l’accueil.
@@ -193,17 +193,13 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 
 ## Trous de geste
 
-### E01 — Quitter la fiche jette ce qui a été saisi
+### E01 — Quitter la fiche jette ce qui a été saisi — **corrigé**
 
-**Vu dans** `EntryFormScreen`. Pas de `BackHandler`. Le geste Retour oublie nom, montant, jour et photo. Clavier ouvert : « Annuler » est masqué, donc le Retour est la seule sortie, sans question. Wayflyer : ne pas perdre un formulaire en le quittant, ou le dire.
+**Fait.** `BackHandler` + dialogue « Quitter sans enregistrer ? » (Rester / Quitter) sur ajout et édition. Même geste pour Annuler.
 
-**Correction.** Si quelque chose a changé : « Quitter sans enregistrer ? » (« Rester » / « Quitter »). Même dialogue pour « Annuler » et pour le geste Retour.
+### E02 — Une échéance qui n’est pas ce mois-ci ne peut pas être retirée — **corrigé**
 
-### E02 — Une échéance qui n’est pas ce mois-ci ne peut pas être retirée
-
-**Vu dans** `AddEntryUseCase` et `EditTemplateScreen`. Une taxe « 1× par an » en mars, créée en octobre, n’est pas sur l’accueil. Mars prochain est dans le futur : les flèches n’y vont pas. La fiche modèle n’a pas « Retirer ». On ne peut pas supprimer le modèle tant qu’aucune ligne n’existe.
-
-**Correction.** « Retirer cette échéance », avec le nom. Ça désactive le modèle. Les mois déjà notés ne changent pas. Le dire dans la confirmation.
+**Fait.** `ArchiveExpenseTemplateUseCase` + bouton « Retirer cette échéance » (confirmation avec le nom). Désactive le modèle ; mois déjà notés inchangés.
 
 ### E03 — « Annuler » après FAIT disparaît trop vite
 
@@ -229,17 +225,13 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 
 **Correction.** L’erreur juste au-dessus d’Enregistrer, toujours visible.
 
-### E07 — Un montant avec trois décimales est coupé en silence
+### E07 — Un montant avec trois décimales est coupé en silence — **corrigé**
 
-**Vu dans** `MoneyFormat.parseToCents`. « 12,999 » devient 12,99 sans phrase.
+**Fait.** `parseToCents` refuse >2 décimales (`null`).
 
-**Correction.** Plus de deux chiffres après la virgule : refuser. « Écrivez le montant avec une virgule, comme 12,50 ».
+### E08 — La photo prise reste dans le cache — **corrigé**
 
-### E08 — La photo prise reste dans le cache
-
-**Vu dans** `rememberFullPhotoCapture`. `receipt_….jpg` reste dans `cacheDir` après lecture du bitmap.
-
-**Correction.** Effacer le jpg dès qu’il est lu, et si la prise est annulée. La photo gardée est celle de Documents.
+**Fait.** Le jpg temporaire est effacé après lecture ou annulation.
 
 ---
 
@@ -269,8 +261,8 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 | Ordre | Ids | Pourquoi | État |
 |-------|-----|----------|------|
 | 1 | C01, A01–A05, B01, B02, C02 | Phrases techniques, menu, courses, prélèvement, alertes, version | **corrigé** |
-| 2 | E02, E01, E08 | Échéance impossible à retirer, fiche jetée, photo dans le cache | ouvert |
-| 3 | E03, E04, E05, E06, E07 | Annuler trop court, mois sans fin, erreur cachée, montant coupé | ouvert |
+| 2 | E02, E01, E08 (+ E07) | Échéance impossible à retirer, fiche jetée, photo dans le cache | **corrigé** |
+| 3 | E03, E04, E05, E06 | Annuler trop court, mois sans fin, erreur cachée | ouvert |
 | 4 | A06, A07, A11, A12 | Fiche, cartes, « tout est payé » | ouvert |
 | 5 | A08, A09, A10, B03–B05, C03–C05, D01, D02 | Mots, recherche, scan | ouvert |
 | 6 | Liste téléphone | Après le code | ouvert |

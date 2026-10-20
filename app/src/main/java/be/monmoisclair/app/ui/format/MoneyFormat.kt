@@ -67,4 +67,21 @@ object MoneyFormat {
         if (centsPart !in 0..99) return null
         return euros * 100 + centsPart
     }
+
+    /** Plus de deux chiffres après la virgule : ne pas couper en silence. */
+    fun tooManyFractionDigits(raw: String): Boolean {
+        val cleaned = raw.trim()
+            .replace("€", "")
+            .replace("\u00A0", "")
+            .replace("\u202F", "")
+            .replace(" ", "")
+        val sep = when {
+            ',' in cleaned -> ','
+            '.' in cleaned -> '.'
+            else -> return false
+        }
+        return cleaned.substringAfter(sep).length > 2
+    }
+
+    const val FRACTION_HINT = "Écrivez le montant avec une virgule, comme 12,50"
 }

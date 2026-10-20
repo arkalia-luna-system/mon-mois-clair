@@ -150,6 +150,10 @@ class EditEntryViewModel @Inject constructor(
     fun save() {
         viewModelScope.launch {
             val s = _state.value
+            if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
+                _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
+                return@launch
+            }
             val cents = MoneyFormat.parseToCents(s.amountText)
             val day = s.dayText.trim().toIntOrNull()
             if (cents == null || day == null) {

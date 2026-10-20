@@ -9,7 +9,7 @@ import java.time.YearMonth
  */
 object HomeMonthChoices {
     /** 24 mois : navigation année sans grille trop dense (chips courts). */
-    const val DEFAULT_COUNT = 24
+    const val DEFAULT_COUNT = MonthNavigation.HISTORY_MONTHS
 
     fun recentMonths(
         current: YearMonth,
