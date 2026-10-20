@@ -1,17 +1,22 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-19 (lot **6.x** — assistant papiers BE).
+Mise à jour : 2026-10-20 (lot **6.x** + affichage multi-Galaxy).
 
 ## 1. Vision
 
-App **locale, privée, hors-ligne** (Samsung S25 / One UI). Sideload **release signé**.
+App **locale, privée, hors-ligne** (Samsung One UI). Sideload **release signé**.
 
 ### Persona (verrouillé)
+
+| Qui | Appareil | Priorité affichage |
+|-----|----------|--------------------|
+| **Maman** (cadeau) | **Galaxy S26** écran normal **6,3″ FHD+** | **Priorité n°1** |
+| Athalia / Alex | **Galaxy S25 Ultra** **6,9″ QHD+** | Doit rester confortable |
 
 | Question | Réponse |
 |----------|---------|
 | Factures | **Majoritairement papier** |
-| Paiements | **App bancaire sur le même S25** |
+| Paiements | **App bancaire sur le même téléphone** |
 
 ### Freeze Home
 
@@ -24,15 +29,7 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 ## 2. Décisions
 
-**A–I + T1–T8** : inchangés (lots 1–5).
-
-| ID | Décision |
-|----|----------|
-| **J** | **Scanner une facture** (QR EPC/Girocode BE) → préremplit nom, montant, communication. ML Kit offline. |
-| **K** | Photo WebP ≤800px dans SAF (`receipts/{id}.webp`) + champ Communication + **Copier** (presse-papiers). **Jamais** Base64 dans le JSON. |
-| **L** | Bandeau Home si périodique (intervalle > 1) due **le mois prochain** ; sinon invisible. |
-| **T9** | Photos = fichiers SAF ; JSON = chemin relatif seulement. |
-| **T10** | Parser EPC unitaire ; scan CameraX + ML Kit. |
+**A–I + T1–T8** : inchangés (lots 1–5). **J–L + T9–T10** : lot 6.
 
 ## 3. Données
 
@@ -42,23 +39,52 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 
 | Étape | Contenu | État |
 |-------|---------|------|
-| **6.0** | Charte J–L + persona | ✅ |
-| **6.1** | Scanner EPC | ✅ |
-| **6.2** | Photo + note + Copier | ✅ |
-| **6.3** | Bandeau mois prochain | ✅ |
-| **6.3.1** | Fiabilité (restore 1..3, Copier à l’ajout, aide) | ✅ |
+| **6.0–6.3.1** | Assistant papiers + fiabilité | ✅ |
+| **6.4** | Affichage S26 / Ultra (charte §6) | ✅ |
 
-Journal : `PROGRESS_LOG.md`. Smoke device lot 6 : à valider sur S25.
+Journal : `PROGRESS_LOG.md`.
 
 ## 5. Branches Git (verrouillé)
 
 | Branche | Rôle |
 |---------|------|
-| **`develop`** | Travail quotidien (features, correctifs, docs). C’est **la** branche active. |
-| **`main`** | Dépôt « bon » / stable. **Ne pas y pousser au fil de l’eau.** |
+| **`develop`** | Travail quotidien |
+| **`main`** | Stable — merge **seulement** sur demande explicite |
 
-**Règles :**
-1. Tout nouveau travail part de **`develop`** (jamais de branche `wip/…` longue durée sauf exception courte).
-2. **`main` n’est mise à jour que** quand : (a) tests Gradle OK + claims README/PROGRESS alignés, **et** (b) l’utilisatrice le **formule explicitement** (« mets main à jour » / merge develop → main).
-3. Après un merge vers `main`, supprimer les branches jetables (`wip/…`, etc.) locales **et** distantes.
-4. Interdit : force-push sur `main` ; amend de commits déjà poussés sur `main`.
+## 6. Affichage & écrans Galaxy (verrouillé)
+
+### Specs officielles (Samsung)
+
+| Appareil | Diagonale (officiel) | Résolution | Notes |
+|----------|----------------------|------------|-------|
+| **Galaxy S26** | **6,3″** plein rectangle / **6,1″** coins arrondis | **2340×1080 FHD+** · 120 Hz · Dynamic AMOLED 2X | Cible maman |
+| **Galaxy S25 Ultra** | **6,9″** / **6,8″** coins | **3120×1440 QHD+** · 120 Hz · Dynamic AMOLED 2X | Athalia / Alex |
+
+Sources : pages produit Samsung (S26 SM-S942… ; S25 Ultra SM-S938…).  
+Mesure diagonale « full rectangle » ; zone visible un peu moindre (coins + trou caméra).
+
+### Classes de fenêtre (Android / One UI)
+
+- Phones portrait = **Compact** (largeur **&lt; 600 dp**) — S26 **et** Ultra.
+- One UI Design Guide : marges latérales **≥ 24 dp** ; cibles tactiles **≥ 48 dp**.
+- Texte en **sp** (scale accessibilité One UI jusqu’à ~200 %).
+- **Interdit** : layouts figés en px / tests `if (model == Ultra)`.
+
+### Zone boutons tactiles système (**obligatoire**)
+
+La bande basse des **boutons système** (3 boutons ou geste) doit rester **libre** :
+
+1. `safeDrawingPadding()` — encoches / barres système  
+2. `WindowInsets.tappableElement` bas — zone tactile système  
+3. **`A11yTokens.bottomSystemClearance` (28 dp)** — confort familial (évite double appui app + Android)
+
+Appliqué **une seule fois** dans `MainActivity`.  
+**Interdit** de re-ajouter `bottomSystemClearance` dans les LazyColumn / écrans (sinon double marge, surtout sur S26).
+
+### Adaptation hauteur (`DisplayFit`)
+
+- Si `screenHeightDp ≤ 800` → **chrome Home compact** (paddings / titres / hints secondaires réduits) pour laisser de la place à la liste sur S26.
+- Sinon → mode confort Ultra.
+- Bandeau L : fond contrasté (`PaperCream` sur sticky `PaperWarm`), max 3–4 lignes.
+
+Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance`.

@@ -89,6 +89,8 @@ class MainActivity : AppCompatActivity() {
                     onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
                 }
 
+                // Zone libre boutons système : safeDrawing + tappable + bande confort (charte §6).
+                // Une seule fois ici — les écrans ne doivent pas re-ajouter bottomSystemClearance.
                 val rootModifier = Modifier
                     .fillMaxSize()
                     .background(A11yTokens.PaperCream)

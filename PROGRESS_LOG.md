@@ -9,13 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.3.1** (durcissement fiabilité lot 6) |
+| Dernière étape terminée | **6.4** (affichage S26 / Ultra) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Travail quotidien sur `develop` · smoke S25 (scan/photo/bandeau) |
+| Prochaine sous-étape | Smoke S26 maman dès dispo · continuer sur `develop` |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.4 affichage multi-Galaxy (priorité S26 maman)
+
+**Recherche :** specs Samsung S26 6,3″ FHD+ / S25 Ultra 6,9″ QHD+ ; One UI marges ≥24 dp ; Window Compact &lt;600 dp.
+
+**Règles charte §6 :** zone boutons système **obligatoire** (safeDrawing + tappable + `bottomSystemClearance` 28 dp) **une seule fois** dans MainActivity ; `DisplayFit` compact si hauteur ≤800 dp.
+
+**Codé :** sticky Home adapté ; plus de double marge bas dans LazyColumn ; bandeau L contrasté.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **120/120 OK**  
+**Version :** `0.1.0-6.4` · `versionCode` 8  
+**Zone système :** `bottomSystemClearance` 28 dp **conservée** (MainActivity uniquement).
 
 ### 2026-10-19 — 6.3.1 fiabilité (avant gel `main`)
 

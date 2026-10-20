@@ -44,6 +44,8 @@ import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeScreen(
@@ -57,6 +59,7 @@ fun HomeScreen(
     val diversError by viewModel.diversError.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val context = LocalContext.current
+    val fit = rememberDisplayFit()
     var diversInput by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
@@ -113,39 +116,55 @@ fun HomeScreen(
             shadowElevation = 2.dp,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Column(modifier = Modifier.padding(A11yTokens.screenPadding)) {
-                Text(text = "Mon Mois Clair", style = MaterialTheme.typography.headlineMedium)
-                Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier.padding(
+                    horizontal = fit.stickyPaddingHorizontal,
+                    vertical = fit.stickyPaddingVertical
+                )
+            ) {
+                Text(
+                    text = "Mon Mois Clair",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontSize = fit.brandTitleSp.sp
+                    )
+                )
+                Spacer(modifier = Modifier.height(fit.sectionGap))
                 Text(
                     text = "Reste après factures",
                     style = MaterialTheme.typography.titleLarge
                 )
-                Text(
-                    text = "Pas le solde banque — revenus moins factures du mois.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
+                if (!fit.compactHomeChrome) {
+                    Text(
+                        text = "Pas le solde banque — revenus moins factures du mois.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                }
                 Text(
                     text = MoneyFormat.formatCents(state.summary.remainingCents),
-                    style = MaterialTheme.typography.displayLarge
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontSize = fit.remainingAmountSp.sp
+                    )
                 )
                 Text(
                     text = "Encore à payer : " +
                         MoneyFormat.formatCents(state.summary.stillToPayCents),
                     style = MaterialTheme.typography.bodyLarge
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(fit.sectionGap))
                 Text(
                     text = "Courses / divers : " + MoneyFormat.formatCents(state.diversSpentCents),
                     style = MaterialTheme.typography.bodyLarge
                 )
-                Text(
-                    text = "Après divers (indicatif) : " +
-                        MoneyFormat.formatCents(state.afterDiversCents),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
-                Spacer(modifier = Modifier.height(12.dp))
+                if (!fit.compactHomeChrome) {
+                    Text(
+                        text = "Après divers (indicatif) : " +
+                            MoneyFormat.formatCents(state.afterDiversCents),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                }
+                Spacer(modifier = Modifier.height(fit.sectionGap + 2.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -181,7 +200,7 @@ fun HomeScreen(
                             .padding(8.dp)
                     )
                 }
-                if (!state.canGoNext) {
+                if (!state.canGoNext && !fit.compactHomeChrome) {
                     Text(
                         text = "Mois en cours : pas de mois suivant.",
                         style = MaterialTheme.typography.bodyMedium,
@@ -189,15 +208,17 @@ fun HomeScreen(
                     )
                 }
                 state.nextMonthWarning?.let { warning ->
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(fit.sectionGap))
                     Text(
                         text = warning,
                         style = MaterialTheme.typography.bodyLarge,
                         color = A11yTokens.AccentWarn,
+                        maxLines = if (fit.compactHomeChrome) 3 else 4,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(A11yTokens.PaperWarm, RoundedCornerShape(10.dp))
-                            .padding(12.dp)
+                            .background(A11yTokens.PaperCream, RoundedCornerShape(10.dp))
+                            .padding(fit.bannerPadding)
                     )
                 }
             }
@@ -207,15 +228,29 @@ fun HomeScreen(
             state = listState,
             modifier = Modifier.weight(1f).fillMaxWidth(),
             contentPadding = PaddingValues(
-                start = A11yTokens.screenPadding,
-                end = A11yTokens.screenPadding,
-                top = A11yTokens.screenPadding,
-                bottom = A11yTokens.screenPadding + A11yTokens.bottomSystemClearance
+                start = fit.screenPadding,
+                end = fit.screenPadding,
+                top = fit.screenPadding,
+                // Pas de bottomSystemClearance ici : déjà dans MainActivity (boutons système libres).
+                bottom = fit.screenPadding
             ),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             // Saisie divers dans le scroll : le sticky garde le reste lisible + la liste visible.
             item(key = "divers-controls") {
+                if (fit.compactHomeChrome) {
+                    Text(
+                        text = "Après divers (indicatif) : " +
+                            MoneyFormat.formatCents(state.afterDiversCents),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "« Reste après factures » n’est pas le solde banque.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
                 Text(
                     text = "Astuce : « Marquer FAIT » ne supprime pas la ligne — elle devient verte.",
                     style = MaterialTheme.typography.bodyMedium,

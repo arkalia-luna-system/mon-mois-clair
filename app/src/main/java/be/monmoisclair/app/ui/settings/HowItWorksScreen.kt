@@ -39,6 +39,6 @@ fun HowItWorksScreen(onBack: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         SecondaryA11yButton(text = "Retour", onClick = onBack)
-        Spacer(modifier = Modifier.height(A11yTokens.bottomSystemClearance))
+        // Pas de bottomSystemClearance ici : zone boutons système déjà libre via MainActivity.
     }
 }

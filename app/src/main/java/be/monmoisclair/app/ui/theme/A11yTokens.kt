@@ -10,8 +10,9 @@ object A11yTokens {
     val minTouchHeight = 48.dp
     val screenPadding = 24.dp
     /**
-     * Bande vide *en plus* de la zone tappable système (3 boutons / geste).
-     * Évite que maman appuie à la fois sur un bouton de l’app et un bouton Android.
+     * Bande vide **obligatoire** au-dessus des boutons tactiles système (3 boutons / geste).
+     * Appliquée **une seule fois** dans `MainActivity` (avec safeDrawing + tappableElement).
+     * Ne pas la re-ajouter dans les LazyColumn / écrans — sinon double marge sur S26.
      */
     val bottomSystemClearance = 28.dp
 
