@@ -67,15 +67,24 @@ import java.io.File
 @Composable
 private fun rememberFullPhotoCapture(onBitmap: (Bitmap) -> Unit): () -> Unit {
     val context = LocalContext.current
-    var pendingUri by remember { mutableStateOf<Uri?>(null) }
+    var pendingFile by remember { mutableStateOf<File?>(null) }
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { ok ->
-        if (!ok) return@rememberLauncherForActivityResult
-        val uri = pendingUri ?: return@rememberLauncherForActivityResult
-        context.contentResolver.openInputStream(uri)?.use { stream ->
-            BitmapFactory.decodeStream(stream)?.let(onBitmap)
+        val file = pendingFile
+        pendingFile = null
+        if (!ok) {
+            // E08 : annulation → effacer le jpg temporaire.
+            file?.delete()
+            return@rememberLauncherForActivityResult
         }
+        if (file == null || !file.exists()) return@rememberLauncherForActivityResult
+        runCatching {
+            file.inputStream().use { stream ->
+                BitmapFactory.decodeStream(stream)?.let(onBitmap)
+            }
+        }
+        file.delete()
     }
     return {
         val file = File(context.cacheDir, "receipt_${System.currentTimeMillis()}.jpg")
@@ -84,7 +93,7 @@ private fun rememberFullPhotoCapture(onBitmap: (Bitmap) -> Unit): () -> Unit {
             "${context.packageName}.fileprovider",
             file
         )
-        pendingUri = uri
+        pendingFile = file
         launcher.launch(uri)
     }
 }

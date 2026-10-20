@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -22,12 +23,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.RecurrenceAnchor
+import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -42,8 +47,45 @@ fun EditTemplateScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val keyboardOpen = imeOpen()
+    var confirmArchive by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
+
+    if (confirmArchive) {
+        val name = state.label.trim().ifBlank { "cette échéance" }
+        AlertDialog(
+            onDismissRequest = { confirmArchive = false },
+            shape = MaterialTheme.shapes.medium,
+            containerColor = A11yTokens.PaperWarm,
+            title = { Text("Retirer $name ?") },
+            text = {
+                Text(
+                    "L’échéance ne reviendra plus les mois suivants. " +
+                        "Les mois déjà notés sur l’accueil ne changent pas.",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            confirmButton = {
+                DangerA11yButton(
+                    text = "Retirer",
+                    onClick = {
+                        confirmArchive = false
+                        viewModel.archive()
+                    },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                )
+            },
+            dismissButton = {
+                SecondaryA11yButton(
+                    text = "Annuler",
+                    onClick = { confirmArchive = false },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+        )
+    }
 
     if (state.loading) {
         Column(
@@ -146,6 +188,12 @@ fun EditTemplateScreen(
             enabled = !state.saving
         )
         if (!keyboardOpen) {
+            Spacer(Modifier.height(8.dp))
+            DangerA11yButton(
+                text = "Retirer cette échéance",
+                onClick = { confirmArchive = true },
+                enabled = !state.saving
+            )
             Spacer(Modifier.height(8.dp))
             SecondaryA11yButton(text = "Annuler", onClick = onCancel)
         }

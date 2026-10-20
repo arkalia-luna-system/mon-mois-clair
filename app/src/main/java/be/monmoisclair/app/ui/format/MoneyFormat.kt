@@ -61,9 +61,8 @@ object MoneyFormat {
             parts[1].isEmpty() -> 0
             parts[1].length == 1 -> (parts[1].toIntOrNull() ?: return null) * 10
             parts[1].length == 2 -> parts[1].toIntOrNull() ?: return null
-            else -> {
-                parts[1].take(2).toIntOrNull() ?: return null
-            }
+            // E07 : plus de 2 décimales → refuser (pas tronquer en silence).
+            else -> return null
         }
         if (centsPart !in 0..99) return null
         return euros * 100 + centsPart

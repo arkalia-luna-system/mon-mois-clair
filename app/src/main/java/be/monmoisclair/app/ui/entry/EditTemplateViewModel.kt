@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.RecurrenceAnchor
+import be.monmoisclair.app.domain.usecase.ArchiveExpenseTemplateResult
+import be.monmoisclair.app.domain.usecase.ArchiveExpenseTemplateUseCase
 import be.monmoisclair.app.domain.usecase.UpdateExpenseTemplateResult
 import be.monmoisclair.app.domain.usecase.UpdateExpenseTemplateUseCase
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -29,7 +31,8 @@ data class EditTemplateState(
     val error: String? = null,
     val loading: Boolean = true,
     val saved: Boolean = false,
-    val saving: Boolean = false
+    val saving: Boolean = false,
+    val archived: Boolean = false
 ) {
     val anchorYearLabel: String
         get() {
@@ -45,7 +48,8 @@ data class EditTemplateState(
 class EditTemplateViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val templateDao: TemplateDao,
-    private val updateTemplate: UpdateExpenseTemplateUseCase
+    private val updateTemplate: UpdateExpenseTemplateUseCase,
+    private val archiveTemplate: ArchiveExpenseTemplateUseCase
 ) : ViewModel() {
     private val templateId: String = checkNotNull(savedStateHandle["id"])
     private val _state = MutableStateFlow(EditTemplateState())
@@ -120,6 +124,19 @@ class EditTemplateViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, error = "Échéance introuvable.") }
                 is UpdateExpenseTemplateResult.InvalidInput ->
                     _state.update { it.copy(saving = false, error = result.message) }
+            }
+        }
+    }
+
+    /** E02 : retirer l’échéance hors mois (désactive le modèle). */
+    fun archive() {
+        viewModelScope.launch {
+            _state.update { it.copy(saving = true, error = null) }
+            when (archiveTemplate(templateId)) {
+                ArchiveExpenseTemplateResult.Success ->
+                    _state.update { it.copy(saving = false, archived = true, saved = true) }
+                ArchiveExpenseTemplateResult.NotFound ->
+                    _state.update { it.copy(saving = false, error = "Échéance introuvable.") }
             }
         }
     }
