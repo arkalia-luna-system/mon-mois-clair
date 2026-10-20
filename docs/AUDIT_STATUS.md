@@ -1,9 +1,9 @@
 # Audits premium — statut
 
-Lots 6.16 → 6.25 **clos côté code**.  
+Lots 6.16 → 6.26 **clos côté code**.  
 Synthèse : [`AUDIT_PREMIUM.md`](AUDIT_PREMIUM.md).  
-Mesure tests : **159/159** · version `0.1.0-6.25`.  
-Le smoke ci-dessous date d’avant 6.25 : ne pas le marquer fait pour la nouvelle échéance hors mois, les phrases, ni le titre de photo.
+Mesure tests : **162/162** · version `0.1.0-6.26`.  
+Smoke partiel : notif multi-factures + trimestriel encore ⏸ ; le reste listé ci-dessous tient sur Galaxy.
 
 | Vague | État |
 |-------|------|

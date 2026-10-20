@@ -9,14 +9,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.26** (mois vide sans « À payer 0 € », onboarding « prêts ») |
+| Dernière étape terminée | **6.26** (stable gelée sur `main`) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel) · fin campagne profils |
+| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel) |
 | Audit premium | Code clos (`AUDIT_PREMIUM.md`) · smoke partiel (`AUDIT_STATUS.md`) |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — Fin de journée : rangement + gel `main` = `develop` (6.26)
+
+**Fait :** alignment docs audit → 6.26 / 162 tests · ignore `.gradle-agent-prompts/` · nettoyage AppleDouble dans `.git` · release installée sur SM-S938B · `main` alignée sur `develop` (demande explicite) · retour sur `develop`.
+
+**Pas encore :** smoke notif multi-factures · trimestriel nom seul.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **162/162** (47 fichiers, 0 échec)  
+**Version :** `0.1.0-6.26` · `versionCode` 31
 
 ### 2026-10-20 — 6.26 Campagne prompts : mois vide + onboarding
 
