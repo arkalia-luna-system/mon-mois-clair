@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-130%2F130-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-131%2F131-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.13-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.15-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,11 +23,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.13` |
-| Dernière étape | **6.13** Marque (icône M, rappel, ouverture papier) |
+| Version | `0.1.0-6.15` |
+| Dernière étape | **6.15** Marque (M + or, statut blanc, notif) |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** — smoke S26 encore ouvert |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **130/130** OK |
+| Tests unitaires | **131/131** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -98,8 +98,8 @@ Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, fact
 1–5    socle, ledger, rappels, sauvegarde, aide     ✅
 6.0–6.3   scan QR, photo, communication             ✅
 6.4–6.8   écrans Galaxy, menu, fidélité outil       ✅
-6.9–6.13  contraste, en-tête, parcours, marque         ✅
-Smoke device du visuel 6.10–6.13                    à refaire sur téléphone
+6.9–6.15  contraste, parcours, marque, formes 12 dp    ✅
+Smoke device du visuel 6.10–6.15                    à refaire sur téléphone
 ```
 
 

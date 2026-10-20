@@ -21,4 +21,10 @@ class WcagContrastTest {
         assertThat(WcagContrast.ratio(A11yTokens.AccentDanger, A11yTokens.PaperCream)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(A11yTokens.AccentOk, A11yTokens.AccentOkSoft)).isAtLeast(7.0)
     }
+
+    @Test
+    fun negativeRemaining_meetsPremiumContrast() {
+        // Montant négatif en AccentDanger (plus AccentWarn trop pâle).
+        assertThat(WcagContrast.ratio(A11yTokens.AccentDanger, A11yTokens.PaperCream)).isAtLeast(5.4)
+    }
 }

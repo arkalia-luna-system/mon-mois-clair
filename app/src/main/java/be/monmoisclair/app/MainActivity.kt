@@ -3,9 +3,12 @@ package be.monmoisclair.app
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
+import android.graphics.Color as AndroidColor
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -45,9 +48,20 @@ class MainActivity : AppCompatActivity() {
     private var pendingHighlightExpenseId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         pendingHighlightExpenseId = intent?.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
-        enableEdgeToEdge()
+        // Statut blanc + nav crème (cohérent avec themes.xml, pas de flash lavande).
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                AndroidColor.WHITE,
+                AndroidColor.WHITE
+            ),
+            navigationBarStyle = SystemBarStyle.light(
+                AndroidColor.parseColor("#F7F4EB"),
+                AndroidColor.parseColor("#F7F4EB")
+            )
+        )
         setContent {
             MonMoisClairTheme {
                 val mainViewModel: MainViewModel = hiltViewModel()

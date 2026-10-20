@@ -116,6 +116,8 @@ class HomeViewModel @Inject constructor(
                                     status = exp.status
                                 ),
                                 isAutoDebit = exp.isAutoDebit,
+                                paymentNote = exp.paymentNote,
+                                hasReceipt = exp.receiptRelativePath.isNotBlank(),
                                 sortDay = exp.dayOfMonth,
                                 sortLabel = exp.label
                             )

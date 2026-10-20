@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.MonMoisClair" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Crème dès le splash : évite le flash blanc Material. -->
         <item name="android:windowBackground">@color/paper_cream</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- Statut blanc = contraste net des icônes système ; nav crème = app. -->
+        <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:navigationBarColor">@color/paper_cream</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <!-- Android 12+ SplashScreen API — même papier, icône M. -->
+    <style name="Theme.MonMoisClair.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/paper_cream</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MonMoisClair</item>
     </style>
 </resources>

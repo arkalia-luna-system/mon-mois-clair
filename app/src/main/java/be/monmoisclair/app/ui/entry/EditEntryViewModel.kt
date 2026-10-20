@@ -36,6 +36,7 @@ data class EditEntryState(
     val hasPendingPhoto: Boolean = false,
     val copyMessage: String? = null,
     val recurrenceInfo: String? = null,
+    val recurrence: RecurrenceChoice = RecurrenceChoice.Once,
     val hasTemplate: Boolean = false,
     val applyToFollowing: Boolean = false,
     val error: String? = null,
@@ -73,6 +74,7 @@ class EditEntryViewModel @Inject constructor(
                     amountText = if (rem == 0) (e.amountCents / 100).toString() else "%d,%02d".format(e.amountCents / 100, rem),
                     dayText = e.dayOfMonth.toString(),
                     recurrenceInfo = if (e.templateId != null) RecurrenceLabel.forIntervalMonths(1) else RecurrenceLabel.oneOff(),
+                    recurrence = if (e.templateId != null) RecurrenceChoice.Monthly else RecurrenceChoice.Once,
                     hasTemplate = e.templateId != null
                 )
             }
@@ -82,16 +84,25 @@ class EditEntryViewModel @Inject constructor(
             _state.update { it.copy(loading = false, error = "Entrée introuvable.") }; return
         }
         val rem = (e.amountCents % 100).toInt()
-        val recurrenceInfo = e.templateId?.let { tid ->
-            templateDao.getExpenseById(tid)?.let { RecurrenceLabel.forIntervalMonths(it.intervalMonths) }
-        } ?: RecurrenceLabel.oneOff()
+        val interval = e.templateId?.let { tid ->
+            templateDao.getExpenseById(tid)?.intervalMonths
+        }
+        val choice = when (interval) {
+            null -> RecurrenceChoice.Once
+            3 -> RecurrenceChoice.Every3Months
+            12 -> RecurrenceChoice.Yearly
+            else -> RecurrenceChoice.Monthly
+        }
+        val recurrenceInfo = interval?.let { RecurrenceLabel.forIntervalMonths(it) }
+            ?: RecurrenceLabel.oneOff()
         _state.update {
             it.copy(
                 loading = false, label = e.label,
                 amountText = if (rem == 0) (e.amountCents / 100).toString() else "%d,%02d".format(e.amountCents / 100, rem),
                 dayText = e.dayOfMonth.toString(), isAutoDebit = e.isAutoDebit,
                 paymentNote = e.paymentNote, receiptRelativePath = e.receiptRelativePath,
-                recurrenceInfo = recurrenceInfo, hasTemplate = e.templateId != null
+                recurrenceInfo = recurrenceInfo, recurrence = choice,
+                hasTemplate = e.templateId != null
             )
         }
     }
@@ -102,7 +113,21 @@ class EditEntryViewModel @Inject constructor(
     fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v) }
     fun setPaymentNote(v: String) = _state.update { it.copy(paymentNote = v) }
     fun setApplyToFollowing(v: Boolean) = _state.update { it.copy(applyToFollowing = v) }
+    fun setRecurrence(v: RecurrenceChoice) = _state.update {
+        it.copy(
+            recurrence = v,
+            recurrenceInfo = when (v) {
+                RecurrenceChoice.Once -> RecurrenceLabel.oneOff()
+                RecurrenceChoice.Monthly -> RecurrenceLabel.forIntervalMonths(1)
+                RecurrenceChoice.Every3Months -> RecurrenceLabel.forIntervalMonths(3)
+                RecurrenceChoice.Yearly -> RecurrenceLabel.forIntervalMonths(12)
+            },
+            applyToFollowing = if (v != RecurrenceChoice.Once && it.hasTemplate) true else it.applyToFollowing,
+            error = null
+        )
+    }
     fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
+    suspend fun openReceiptUri() = receiptPhotos.openUri(_state.value.receiptRelativePath)
 
     fun copyPaymentNote() {
         val note = _state.value.paymentNote.trim()
@@ -133,10 +158,28 @@ class EditEntryViewModel @Inject constructor(
             }
             var path = s.receiptRelativePath
             pendingBitmap?.let { path = receiptPhotos.saveBitmap(s.id, it); pendingBitmap = null }
+            val interval = when {
+                !s.isExpense || !s.hasTemplate -> null
+                else -> when (s.recurrence) {
+                    RecurrenceChoice.Once -> null
+                    RecurrenceChoice.Monthly -> 1
+                    RecurrenceChoice.Every3Months -> 3
+                    RecurrenceChoice.Yearly -> 12
+                }
+            }
+            if (s.isExpense && s.hasTemplate && s.recurrence == RecurrenceChoice.Once) {
+                _state.update {
+                    it.copy(
+                        error = "Pour passer en « une seule fois », supprimez l’entrée " +
+                            "et recréez-la (le modèle mensuel resterait sinon)."
+                    )
+                }
+                return@launch
+            }
             when (
                 val result = updateInstance(
                     s.id, s.isExpense, s.label, cents, day, s.applyToFollowing,
-                    s.isExpense && s.isAutoDebit, s.paymentNote, path
+                    s.isExpense && s.isAutoDebit, s.paymentNote, path, interval
                 )
             ) {
                 UpdateInstanceResult.Success -> _state.update { it.copy(done = true) }

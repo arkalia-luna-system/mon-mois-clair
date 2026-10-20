@@ -52,6 +52,7 @@ fun RestoreBackupScreen(
     if (showSuccessDialog) {
         AlertDialog(
             onDismissRequest = { /* forcer un OK explicite */ },
+            shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
             title = { Text("Restauration réussie") },
             text = {
@@ -76,6 +77,7 @@ fun RestoreBackupScreen(
     if (pending != null) {
         AlertDialog(
             onDismissRequest = { if (!state.busy) pending = null },
+            shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
             title = { Text("Remplacer toutes les données ?") },
             text = {
@@ -146,7 +148,7 @@ fun RestoreBackupScreen(
             onClick = { pending = PendingRestore.Latest }
         )
         SecondaryA11yButton(
-            text = "Choisir un fichier JSON…",
+            text = "Choisir une copie de sauvegarde…",
             enabled = !state.busy,
             onClick = { pending = PendingRestore.File }
         )

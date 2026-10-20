@@ -25,8 +25,11 @@ object A11yTokens {
     /** Ancien PaperWarm → surface sticky / champs (ivoire un peu plus marqué). */
     val PaperWarm = Color(0xFFEDE8DC)
     val PaperBorder = Color(0xFFE2DDD2)
-    /** Trait des champs : visible, plus doux que l’encre des boutons. */
-    val FieldLine = Color(0xFF6F675C)
+    /**
+     * Trait des champs / outline Material : teinte **intermédiaire**
+     * (entre PaperBorder clair et InkMuted), visible sans durcir le papier.
+     */
+    val FieldLine = Color(0xFF8A8278)
     /** Deep Espresso. */
     val Ink = Color(0xFF1E1B18)
     val InkMuted = Color(0xFF4A453C)

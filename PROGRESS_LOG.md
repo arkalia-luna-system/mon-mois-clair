@@ -9,13 +9,32 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.13** (Marque — icône, rappel, ouverture) |
+| Dernière étape terminée | **6.15** (Marque — M + or, statut blanc, notif) |
 | Étape en cours | *(aucune)* |
 | Prochaine sous-étape | Campagne profils (Chiant/Null/Perf/…) · smoke S26 maman |
+| Audit premium (pas une étape) | `docs/AUDIT_PREMIUM_2026-10-20.md` — points à corriger, rien n’est codé par cet audit |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.15 Marque (complétion)
+
+**Problème :** triangle noir encore perçu ; barre de statut transparente (pas de contraste net) ; trait d’or du mois absent sous le M ; notif à resserrer.
+
+**Codé :** foreground M ivoire + trait `#D99B26` · monochrome Android 13 (M + trait) · `ic_stat_reminder` blanc · `statusBarColor` blanc + `SystemBarStyle.light` · nav crème · `windowBackground` papier · `roundIcon`.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **131/131** (39 fichiers, 0 échec)  
+**Version :** `0.1.0-6.15` · `versionCode` 21
+
+### 2026-10-20 — 6.14 Formes & bordures
+
+**Problème :** coins encore échelonnés (8–20 dp) ; contour de champ trop sombre ; sheets / dialogues pas alignés sur 12 dp.
+
+**Codé :** `AppShapes` à **12 dp** (champs, dialogues, sheets) · `FieldLine` teinte intermédiaire `#8A8278` · `ModalBottomSheet` / `AlertDialog` / `OutlinedTextField` en `shapes.medium` · Permissions/Santé déjà en secondaire · `imePadding` onboarding via `PinnedActionScaffold` · charte inchangée.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **130/130** (39 fichiers, 0 échec)  
+**Version :** `0.1.0-6.14` · `versionCode` 20
 
 ### 2026-10-20 — 6.13 Marque
 
@@ -23,7 +42,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Codé :** M ivoire sur teal `#1B4D4E`, version monochrome (Android 13), icône de rappel blanche, fond de fenêtre papier `#F7F4EB`. Le gros chiffre est un peu plus serré.
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → à confirmer  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **130/130** (39 fichiers, 0 échec)  
 **Version :** `0.1.0-6.13` · `versionCode` 19
 
 ### 2026-10-20 — 6.12 Parcours fini

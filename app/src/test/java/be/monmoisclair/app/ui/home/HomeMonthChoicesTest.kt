@@ -9,10 +9,10 @@ class HomeMonthChoicesTest {
     @Test
     fun recentMonths_startsAtCurrent_neverFuture() {
         val current = YearMonth.of(2026, 10)
-        val months = HomeMonthChoices.recentMonths(current, count = 12)
-        assertThat(months).hasSize(12)
+        val months = HomeMonthChoices.recentMonths(current)
+        assertThat(months).hasSize(24)
         assertThat(months.first()).isEqualTo(current)
-        assertThat(months.last()).isEqualTo(YearMonth.of(2025, 11))
+        assertThat(months.last()).isEqualTo(YearMonth.of(2024, 11))
         assertThat(months).doesNotContain(YearMonth.of(2026, 11))
     }
 

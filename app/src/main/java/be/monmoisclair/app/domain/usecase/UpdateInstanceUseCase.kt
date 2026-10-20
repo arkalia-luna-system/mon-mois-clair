@@ -29,7 +29,9 @@ class UpdateInstanceUseCase @Inject constructor(
         applyToFollowingMonths: Boolean,
         isAutoDebit: Boolean = false,
         paymentNote: String = "",
-        receiptRelativePath: String = ""
+        receiptRelativePath: String = "",
+        /** null = ne pas toucher à l’intervalle du modèle. */
+        intervalMonths: Int? = null
     ): UpdateInstanceResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -69,6 +71,13 @@ class UpdateInstanceUseCase @Inject constructor(
                             .ifEmpty { current.receiptRelativePath }
                     )
                 )
+                if (current.templateId != null && intervalMonths != null) {
+                    templateDao.getExpenseById(current.templateId)?.let { tpl ->
+                        templateDao.updateExpense(
+                            tpl.copy(intervalMonths = intervalMonths.coerceIn(1, 24))
+                        )
+                    }
+                }
                 if (applyToFollowingMonths && current.templateId != null) {
                     val templateId = current.templateId
                     templateDao.getExpenseById(templateId)?.let { tpl ->
@@ -77,7 +86,8 @@ class UpdateInstanceUseCase @Inject constructor(
                                 label = trimmed,
                                 amountCents = amountCents,
                                 dayOfMonth = dayOfMonth,
-                                isAutoDebit = auto
+                                isAutoDebit = auto,
+                                intervalMonths = intervalMonths?.coerceIn(1, 24) ?: tpl.intervalMonths
                             )
                         )
                     }

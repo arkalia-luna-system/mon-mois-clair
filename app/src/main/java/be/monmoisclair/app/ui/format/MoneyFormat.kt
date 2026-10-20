@@ -1,22 +1,39 @@
 package be.monmoisclair.app.ui.format
 
-import java.text.NumberFormat
-import java.util.Locale
-
 object MoneyFormat {
-    private val frBe: NumberFormat = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("fr-BE"))
 
+    /**
+     * Format belge premium : espace fines pour milliers, virgule décimale, € après.
+     * Ex. `1 234,50 €` — jamais le symbole avant le montant.
+     */
     fun formatCents(cents: Long): String {
-        // Affichage uniquement (NumberFormat) — les calculs métier restent en Long.
-        return frBe.format(cents / 100.0)
+        val negative = cents < 0
+        val abs = kotlin.math.abs(cents)
+        val euros = abs / 100
+        val rem = (abs % 100).toInt()
+        val intPart = formatThousands(euros)
+        val body = if (rem == 0) "$intPart €" else "%s,%02d €".format(intPart, rem)
+        return if (negative) "\u2212 $body" else body
     }
 
     fun formatSignedCents(cents: Long, isExpense: Boolean): String {
         val abs = kotlin.math.abs(cents)
-        val euros = abs / 100
-        val rem = (abs % 100).toInt()
-        val body = if (rem == 0) "$euros €" else "%d,%02d €".format(euros, rem)
-        return if (isExpense) "- $body" else "+ $body"
+        val body = formatCents(abs)
+        return if (isExpense) "\u2212 $body" else "+ $body"
+    }
+
+    private fun formatThousands(value: Long): String {
+        val raw = value.toString()
+        if (raw.length <= 3) return raw
+        val sb = StringBuilder()
+        var i = raw.length
+        while (i > 0) {
+            val start = (i - 3).coerceAtLeast(0)
+            if (sb.isNotEmpty()) sb.insert(0, '\u202F') // espace fine insécable
+            sb.insert(0, raw.substring(start, i))
+            i = start
+        }
+        return sb.toString()
     }
 
     /**
@@ -27,6 +44,7 @@ object MoneyFormat {
         val cleaned = raw.trim()
             .replace("€", "")
             .replace("\u00A0", "")
+            .replace("\u202F", "")
             .replace(" ", "")
             .replace(',', '.')
         if (cleaned.isEmpty()) return null
@@ -44,7 +62,6 @@ object MoneyFormat {
             parts[1].length == 1 -> (parts[1].toIntOrNull() ?: return null) * 10
             parts[1].length == 2 -> parts[1].toIntOrNull() ?: return null
             else -> {
-                // Tronque à 2 décimales (saisie clavier)
                 parts[1].take(2).toIntOrNull() ?: return null
             }
         }

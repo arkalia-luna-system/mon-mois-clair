@@ -247,7 +247,7 @@ fun SettingsScreen(
             enabled = !state.busy
         )
         SecondaryA11yButton(
-            text = "Envoyer une copie (WhatsApp ou Mail)",
+            text = "Envoyer une copie de sécurité",
             onClick = viewModel::shareSecurityCopy,
             enabled = !state.busy
         )
@@ -255,6 +255,29 @@ fun SettingsScreen(
             text = "Restaurer une sauvegarde",
             onClick = onOpenRestore,
             enabled = !state.busy
+        )
+
+        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
+        Text(text = "À propos", style = MaterialTheme.typography.titleLarge)
+        Text(
+            text = "Mon Mois Clair — suivi local des paiements du mois.",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        val versionName = try {
+            val p = context.packageManager.getPackageInfo(context.packageName, 0)
+            p.versionName ?: "—"
+        } catch (_: Exception) {
+            "—"
+        }
+        Text(
+            text = "Version $versionName",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
+        Text(
+            text = "Données sur cet appareil uniquement. Pas de compte, pas de cloud.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
         )
     }
 }

@@ -1,5 +1,11 @@
 package be.monmoisclair.app.ui.entry
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,10 +21,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -35,11 +40,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.DangerA11yButton
@@ -48,6 +57,33 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
+import java.io.File
+
+/** Capture plein cadre (pas la miniature TakePicturePreview). */
+@Composable
+private fun rememberFullPhotoCapture(onBitmap: (Bitmap) -> Unit): () -> Unit {
+    val context = LocalContext.current
+    var pendingUri by remember { mutableStateOf<Uri?>(null) }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { ok ->
+        if (!ok) return@rememberLauncherForActivityResult
+        val uri = pendingUri ?: return@rememberLauncherForActivityResult
+        context.contentResolver.openInputStream(uri)?.use { stream ->
+            BitmapFactory.decodeStream(stream)?.let(onBitmap)
+        }
+    }
+    return {
+        val file = File(context.cacheDir, "receipt_${System.currentTimeMillis()}.jpg")
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+        pendingUri = uri
+        launcher.launch(uri)
+    }
+}
 
 @Composable
 fun AddEntryScreen(
@@ -59,9 +95,7 @@ fun AddEntryScreen(
     viewModel: AddEntryViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val photoPicker = androidx.activity.compose.rememberLauncherForActivityResult(
-        androidx.activity.result.contract.ActivityResultContracts.TakePicturePreview()
-    ) { bmp -> if (bmp != null) viewModel.attachPreviewBitmap(bmp) }
+    val takePhoto = rememberFullPhotoCapture(viewModel::attachPreviewBitmap)
 
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
     LaunchedEffect(epcRawResult) {
@@ -91,7 +125,7 @@ fun AddEntryScreen(
         showPaymentAssist = state.isExpense,
         hasPendingPhoto = state.hasPendingPhoto,
         onScanEpc = onScanEpc,
-        onTakePhoto = { photoPicker.launch(null) },
+        onTakePhoto = takePhoto,
         onCopyPaymentNote = viewModel::copyPaymentNote,
         showApplyFollowing = false,
         applyFollowing = false,
@@ -141,6 +175,7 @@ fun EditEntryScreen(
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
+            shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
             title = { Text("Supprimer cette entrée ?") },
             text = {
@@ -171,9 +206,19 @@ fun EditEntryScreen(
         )
     }
 
-    val photoPicker = androidx.activity.compose.rememberLauncherForActivityResult(
-        androidx.activity.result.contract.ActivityResultContracts.TakePicturePreview()
-    ) { bmp -> if (bmp != null) viewModel.attachPreviewBitmap(bmp) }
+    val takePhoto = rememberFullPhotoCapture(viewModel::attachPreviewBitmap)
+    val context = LocalContext.current
+    var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto) {
+        if (state.hasPendingPhoto || state.receiptRelativePath.isBlank()) {
+            if (!state.hasPendingPhoto) receiptBitmap = null
+            return@LaunchedEffect
+        }
+        val uri = viewModel.openReceiptUri() ?: return@LaunchedEffect
+        receiptBitmap = context.contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(it)
+        }
+    }
 
     EntryFormScaffold(
         title = "Modifier l’entrée",
@@ -181,8 +226,11 @@ fun EditEntryScreen(
         amountText = state.amountText,
         dayText = state.dayText,
         isExpense = state.isExpense,
-        recurring = false,
+        recurring = state.recurrence != RecurrenceChoice.Once,
         showRecurring = false,
+        showFrequencyEdit = state.isExpense && state.hasTemplate,
+        recurrence = state.recurrence,
+        onRecurrence = viewModel::setRecurrence,
         recurrenceInfo = state.recurrenceInfo,
         isAutoDebit = state.isAutoDebit,
         onAutoDebit = viewModel::setAutoDebit,
@@ -192,7 +240,8 @@ fun EditEntryScreen(
         showPaymentAssist = state.isExpense,
         hasPendingPhoto = state.hasPendingPhoto,
         hasReceiptPhoto = state.receiptRelativePath.isNotBlank(),
-        onTakePhoto = { photoPicker.launch(null) },
+        receiptPreview = receiptBitmap,
+        onTakePhoto = takePhoto,
         onCopyPaymentNote = viewModel::copyPaymentNote,
         showApplyFollowing = state.hasTemplate,
         applyFollowing = state.applyToFollowing,
@@ -224,7 +273,9 @@ private fun EntryFormScaffold(
     showRecurring: Boolean,
     recurrence: RecurrenceChoice = RecurrenceChoice.Once,
     onRecurrence: ((RecurrenceChoice) -> Unit)? = null,
+    showFrequencyEdit: Boolean = false,
     recurrenceInfo: String? = null,
+    receiptPreview: Bitmap? = null,
     nextDueMonth: Int = 1,
     onNextDueMonth: (Int) -> Unit = {},
     showNextDueMonth: Boolean = false,
@@ -299,6 +350,7 @@ private fun EntryFormScaffold(
                     .then(nameBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
+                shape = MaterialTheme.shapes.medium,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -313,6 +365,7 @@ private fun EntryFormScaffold(
                     .heightIn(min = A11yTokens.minTouchHeight)
                     .then(amountBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
+                shape = MaterialTheme.shapes.medium,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
@@ -327,29 +380,32 @@ private fun EntryFormScaffold(
                 onSelect = { onDay(it.toString()) }
             )
 
-            // Édition : info fréquence seule (pas de double titre « Fréquence »).
-            if (!showRecurring) {
+            // Édition ponctuelle (sans modèle) : info seule.
+            if (!showRecurring && !showFrequencyEdit) {
                 recurrenceInfo?.let { info ->
                     Text(text = "Fréquence", style = MaterialTheme.typography.titleLarge)
                     Text(text = info, style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+
+            if ((showRecurring || showFrequencyEdit) && onRecurrence != null) {
+                Text("Fréquence", style = MaterialTheme.typography.titleLarge)
+                if (showFrequencyEdit) {
                     Text(
-                        text = "Pour changer la fréquence, supprimez cette entrée et recréez-la " +
-                            "(cochez « Aussi les mois suivants » seulement si vous voulez toucher le modèle).",
+                        text = "Le changement s’applique au modèle (cochez « Aussi les mois suivants »).",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted
                     )
                 }
-            }
-
-            if (showRecurring && onRecurrence != null) {
-                Text("Fréquence", style = MaterialTheme.typography.titleLarge)
                 @OptIn(ExperimentalLayoutApi::class)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
-                        onRecurrence(RecurrenceChoice.Once)
+                    if (!showFrequencyEdit) {
+                        TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
+                            onRecurrence(RecurrenceChoice.Once)
+                        }
                     }
                     TypeChip(RecurrenceLabel.chipMonthly(), selected = recurrence == RecurrenceChoice.Monthly) {
                         onRecurrence(RecurrenceChoice.Monthly)
@@ -424,7 +480,8 @@ private fun EntryFormScaffold(
                         .fillMaxWidth()
                         .heightIn(min = A11yTokens.minTouchHeight)
                         .then(noteBring),
-                    textStyle = MaterialTheme.typography.bodyLarge
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    shape = MaterialTheme.shapes.medium
                 )
                 if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
                     SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
@@ -443,6 +500,17 @@ private fun EntryFormScaffold(
                             text = "Photo prête — enregistrée avec la facture.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.AccentOk
+                        )
+                    }
+                    receiptPreview?.let { bmp ->
+                        Image(
+                            bitmap = bmp.asImageBitmap(),
+                            contentDescription = "Photo de la facture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .clip(MaterialTheme.shapes.medium)
                         )
                     }
                 }
@@ -490,7 +558,7 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
         color = fg,
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
+            .clip(MaterialTheme.shapes.medium)
             .background(bg)
             .clickable(role = Role.RadioButton, onClick = onClick)
             .heightIn(min = A11yTokens.minTouchHeight)

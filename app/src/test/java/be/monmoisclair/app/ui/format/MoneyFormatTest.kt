@@ -24,7 +24,16 @@ class MoneyFormatTest {
     @Test
     fun formatSignedCents_expenseAndIncome() {
         assertThat(MoneyFormat.formatSignedCents(47_000L, isExpense = true)).contains("470")
-        assertThat(MoneyFormat.formatSignedCents(47_000L, isExpense = true)).startsWith("-")
+        // Signe moins typographique U+2212 (pas le tiret ASCII)
+        assertThat(MoneyFormat.formatSignedCents(47_000L, isExpense = true)).startsWith("\u2212")
         assertThat(MoneyFormat.formatSignedCents(100_000L, isExpense = false)).startsWith("+")
+    }
+
+    @Test
+    fun formatCents_belgianPremium() {
+        assertThat(MoneyFormat.formatCents(47_000L)).isEqualTo("470 €")
+        assertThat(MoneyFormat.formatCents(47_050L)).isEqualTo("470,50 €")
+        assertThat(MoneyFormat.formatCents(123_456L)).isEqualTo("1\u202F234,56 €")
+        assertThat(MoneyFormat.formatCents(-1_500L)).startsWith("\u2212")
     }
 }

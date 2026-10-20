@@ -23,6 +23,8 @@ sealed interface TimelineItem {
         val doneLabel: String?,
         val isOverdue: Boolean,
         val isAutoDebit: Boolean,
+        val paymentNote: String = "",
+        val hasReceipt: Boolean = false,
         override val sortDay: Int,
         override val sortLabel: String
     ) : TimelineItem

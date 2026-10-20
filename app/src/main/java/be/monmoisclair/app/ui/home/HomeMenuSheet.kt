@@ -48,6 +48,7 @@ fun HomeMenuSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
         containerColor = A11yTokens.PaperCream
     ) {
         Column(
@@ -74,11 +75,11 @@ fun HomeMenuSheet(
                     val selected = ym == selectedYearMonth
                     Surface(
                         color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
-                        shape = RoundedCornerShape(10.dp),
+                        shape = MaterialTheme.shapes.medium,
                         modifier = Modifier.heightIn(min = A11yTokens.minTouchHeight)
                     ) {
                         Text(
-                            text = DayLabelFormat.monthTitle(ym),
+                            text = DayLabelFormat.monthChip(ym, current),
                             style = MaterialTheme.typography.bodyLarge,
                             color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
                             modifier = Modifier

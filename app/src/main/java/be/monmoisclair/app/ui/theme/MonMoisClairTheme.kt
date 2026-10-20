@@ -1,11 +1,16 @@
 package be.monmoisclair.app.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -32,12 +37,13 @@ private val ColorScheme = lightColorScheme(
     outline = A11yTokens.FieldLine
 )
 
+/** Champs, dialogues et sheets : 12 dp partout (One UI / lisibilité). */
 private val AppShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(10.dp),
+    extraSmall = RoundedCornerShape(12.dp),
+    small = RoundedCornerShape(12.dp),
     medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(20.dp)
+    large = RoundedCornerShape(12.dp),
+    extraLarge = RoundedCornerShape(12.dp)
 )
 
 private val AppTypography = Typography(
@@ -83,12 +89,25 @@ private val AppTypography = Typography(
     )
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonMoisClairTheme(content: @Composable () -> Unit) {
+    val ripple = RippleConfiguration(
+        color = A11yTokens.ButtonFill,
+        rippleAlpha = RippleAlpha(
+            draggedAlpha = 0.16f,
+            focusedAlpha = 0.12f,
+            hoveredAlpha = 0.08f,
+            pressedAlpha = 0.16f
+        )
+    )
     MaterialTheme(
         colorScheme = ColorScheme,
         typography = AppTypography,
-        shapes = AppShapes,
-        content = content
-    )
+        shapes = AppShapes
+    ) {
+        CompositionLocalProvider(LocalRippleConfiguration provides ripple) {
+            content()
+        }
+    }
 }

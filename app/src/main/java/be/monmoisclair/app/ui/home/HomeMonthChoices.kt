@@ -8,7 +8,8 @@ import java.time.YearMonth
  * Du mois calendaire courant vers le passé — jamais le futur.
  */
 object HomeMonthChoices {
-    const val DEFAULT_COUNT = 12
+    /** 24 mois : navigation année sans grille trop dense (chips courts). */
+    const val DEFAULT_COUNT = 24
 
     fun recentMonths(
         current: YearMonth,

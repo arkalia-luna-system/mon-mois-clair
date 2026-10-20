@@ -4,8 +4,11 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-    <!-- Blanc seul : Android teinte l’icône de la barre d’état. -->
+    <!-- Blanc seul : Android teinte l’icône de la barre d’état. M + trait. -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M4,20 L4,4 L8,4 L12,11 L16,4 L20,4 L20,20 L16,20 L16,11 L12,17 L8,11 L8,20 Z" />
+        android:pathData="M3,18 L3,3 L8,3 L12,10 L16,3 L21,3 L21,18 L17,18 L17,9 L12,16 L7,9 L7,18 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M5,20 L19,20 L19,22 L5,22 Z" />
 </vector>

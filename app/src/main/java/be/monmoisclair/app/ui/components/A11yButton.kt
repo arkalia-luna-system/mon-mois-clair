@@ -57,18 +57,25 @@ fun SecondaryA11yButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    /** false = compact (ex. FAIT à droite d’une carte — charte un seul primary). */
+    fillMaxWidth: Boolean = true
 ) {
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = A11yTokens.minTouchHeight),
+            .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
+            .heightIn(min = A11yTokens.minTouchHeight)
+            .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, A11yTokens.InkMuted),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = A11yTokens.Ink),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        contentPadding = if (fillMaxWidth) {
+            PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        } else {
+            PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+        }
     ) {
         Text(
             text = text,
