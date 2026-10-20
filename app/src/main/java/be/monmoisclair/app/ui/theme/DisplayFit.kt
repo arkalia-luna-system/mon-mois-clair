@@ -45,12 +45,13 @@ data class DisplayFit(
                 screenWidthDp = screenWidthDp,
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
-                stickyPaddingVertical = if (compact) 10.dp else 16.dp,
+                // Sticky léger : le montant « Reste » domine ; la marque est une légende.
+                stickyPaddingVertical = if (compact) 8.dp else 12.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
                 bannerPadding = if (compact) 10.dp else 12.dp,
-                sectionGap = if (compact) 6.dp else 10.dp,
-                remainingAmountSp = if (compact) 28f else 34f,
-                brandTitleSp = if (compact) 22f else 26f
+                sectionGap = if (compact) 4.dp else 6.dp,
+                remainingAmountSp = if (compact) 36f else 42f,
+                brandTitleSp = if (compact) 13f else 14f
             )
         }
     }

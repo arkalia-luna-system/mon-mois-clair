@@ -36,6 +36,7 @@ import javax.inject.Inject
 data class HomeUiState(
     val loading: Boolean = true,
     val ledgerId: String = "",
+    val selectedYearMonth: java.time.YearMonth = AppClock.currentYearMonth(),
     val monthLabel: String = "",
     val isPastMonth: Boolean = false,
     val canGoPrev: Boolean = false,
@@ -120,6 +121,7 @@ class HomeViewModel @Inject constructor(
                 HomeUiState(
                     loading = false,
                     ledgerId = ledgerId,
+                    selectedYearMonth = ym,
                     monthLabel = DayLabelFormat.monthTitle(ym),
                     isPastMonth = ym.isBefore(current),
                     canGoPrev = MonthNavigation.canGoPrev(),
@@ -195,10 +197,16 @@ class HomeViewModel @Inject constructor(
 
     /** Retour rapide au mois calendaire courant (navigation année / historique). */
     fun goToCurrentMonth() {
+        goToMonth(AppClock.currentYearMonth())
+    }
+
+    /** Saut depuis le calendrier Menu (jamais vers le futur). */
+    fun goToMonth(target: java.time.YearMonth) {
         viewModelScope.launch {
             val current = AppClock.currentYearMonth()
-            monthCycleEngine.ensureMonthExists(current)
-            selectedMonth.value = current
+            if (!MonthNavigation.canSelect(target, current)) return@launch
+            monthCycleEngine.ensureMonthExists(target)
+            selectedMonth.value = target
         }
     }
 

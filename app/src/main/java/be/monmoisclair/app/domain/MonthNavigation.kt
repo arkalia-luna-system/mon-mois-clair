@@ -12,4 +12,7 @@ object MonthNavigation {
     fun canGoPrev(): Boolean = true
 
     fun canGoNext(selected: YearMonth, current: YearMonth): Boolean = selected < current
+
+    /** Saut calendrier Menu : passé ou mois courant, jamais le futur. */
+    fun canSelect(target: YearMonth, current: YearMonth): Boolean = !target.isAfter(current)
 }

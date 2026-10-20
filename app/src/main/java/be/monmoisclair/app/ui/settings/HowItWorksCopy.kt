@@ -48,7 +48,8 @@ object HowItWorksCopy {
             body = "Les factures mensuelles restent sur l’accueil. " +
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
                 "Elles réapparaissent le bon mois ; les autres mois, regardez Réglages → « Échéances hors ce mois ». " +
-                "Pour feuilleter l’historique : flèches ‹ › puis « Revenir au mois en cours »."
+                "Pour feuilleter l’historique : Menu (en haut à droite) → calendrier des mois, " +
+                "ou les flèches ‹ › sur l’accueil."
         ),
         Section(
             title = "Sauvegarde",

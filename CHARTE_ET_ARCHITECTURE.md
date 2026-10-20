@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-20 (lot **6.x** + affichage multi-Galaxy + hub Réglages / usage année).
+Mise à jour : 2026-10-20 (lot **6.x** + **Home ledger / Menu outils**).
 
 ## 1. Vision
 
@@ -18,10 +18,21 @@ App **locale, privée, hors-ligne** (Samsung One UI). Sideload **release signé*
 | Factures | **Majoritairement papier** |
 | Paiements | **App bancaire sur le même téléphone** |
 
-### Freeze Home
+### Accueil = ledger (verrouillé, anti fourre-tout)
 
-Pas de nouvelles options quotidiennes sur l’accueil.  
-**Exception L** : bandeau « À prévoir le mois prochain » seulement si utile.
+L’écran d’accueil n’est **pas** un tableau de bord de toutes les fonctions.  
+Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, divers, ajouter.
+
+| Sur l’accueil (sticky + liste) | Dans **Menu** (bouton en haut à droite) | Ailleurs |
+|--------------------------------|------------------------------------------|----------|
+| Reste / encore à payer (lisibles en premier) | Calendrier des mois (année récente) | Écrans dédiés (Ajout, Santé, Réglages…) |
+| ‹ › mois courant (rapide) | Revenir au mois en cours | |
+| Bandeau L « à prévoir » si utile | Vérifier les alertes, Réglages | |
+| Liste + divers + **Ajouter** | Emplacement réservé aux **futures** fonctions | |
+
+**Interdit** : empiler Santé, Réglages, Device Care, aide, etc. en bas de la liste Home.  
+**Marque** : nom de l’app en **légende discrète** — jamais plus grand que le montant « Reste ».  
+**Futures fonctions** : Menu ou écran dédié — **jamais** un nouveau bouton permanent sur le sticky Home.
 
 ### Stack
 
@@ -42,6 +53,7 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | **6.0–6.3.1** | Assistant papiers + fiabilité | ✅ |
 | **6.4–6.5** | Affichage S26 / Ultra + UX smoke | ✅ |
 | **6.6** | Hub Réglages utile + navigation année | ✅ |
+| **6.7** | Home ledger + Menu (fin du fourre-tout) | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -84,11 +96,12 @@ Appliqué **une seule fois** dans `MainActivity`.
 
 ### Adaptation hauteur (`DisplayFit`)
 
-- Si `screenHeightDp ≤ 800` → **chrome Home compact** (paddings / titres / hints secondaires réduits) pour laisser de la place à la liste sur S26.
+- Si `screenHeightDp ≤ 800` → **chrome Home compact** (paddings réduits) pour laisser la place à la **liste**.
 - Sinon → mode confort Ultra.
-- Bandeau L : fond contrasté (`PaperCream` sur sticky `PaperWarm`), max 3–4 lignes.
+- Montant « Reste » = signal n°1 ; titre marque = légende (sp nettement plus petit).
+- Bandeau L : fond contrasté, max 3–4 lignes.
 
-Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance`.
+Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `HomeMenuSheet`.
 
 ## 7. Hub Réglages & usage sur une année (verrouillé)
 
@@ -109,7 +122,7 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance`.
 |--------|-----|-----------------------------|
 | Loyer, salaire, courses | Home mois courant | OK (liste + reste + divers) |
 | Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
-| Feuilleter 12 mois passés | ‹ › mois | **Revenir au mois en cours** (Home, si mois passé) |
-| Rappels qui ne sonnent pas | Santé (pas Device Care isolé) | Un seul hub |
+| Feuilleter 12 mois passés | Menu → calendrier + ‹ › | **Revenir au mois en cours** (Menu) |
+| Rappels qui ne sonnent pas | Menu → Santé | Un seul hub |
 
-Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé.
+Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages en bas de Home.

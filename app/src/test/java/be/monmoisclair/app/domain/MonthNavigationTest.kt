@@ -18,4 +18,12 @@ class MonthNavigationTest {
         assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 10), current)).isFalse()
         assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 11), current)).isFalse()
     }
+
+    @Test
+    fun canSelect_allowsPastAndCurrent_notFuture() {
+        val current = YearMonth.of(2026, 10)
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 10), current)).isTrue()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2025, 1), current)).isTrue()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 11), current)).isFalse()
+    }
 }

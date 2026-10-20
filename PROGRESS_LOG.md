@@ -9,13 +9,24 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.6** (Réglages utiles + navigation année) |
+| Dernière étape terminée | **6.7** (Home ledger + Menu anti fourre-tout) |
 | Étape en cours | *(aucune)* |
 | Prochaine sous-étape | Smoke S26 maman · continuer sur `develop` |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.7 Home ledger + Menu
+
+**Problème :** sticky « Mon Mois Clair » trop dominant ; Santé / Réglages / tips en bas = fourre-tout, liste noyée.
+
+**Décision charte :** Accueil = ledger uniquement ; **Menu** (haut droite) = calendrier mois + outils + futures fonctions.
+
+**Codé :** sticky léger (marque légende, montant plus grand) · `HomeMenuSheet` · `goToMonth` · plus de boutons Santé/Réglages en bas de liste.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **125/125 OK**  
+**Version :** `0.1.0-6.7` · `versionCode` 12
 
 ### 2026-10-20 — 6.6 Réglages + usage année
 
