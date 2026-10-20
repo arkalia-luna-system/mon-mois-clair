@@ -41,9 +41,17 @@ Pour chaque trou potentiel, répondre :
 
 ## Zones à auditer (obligatoire)
 
+### Fidélité 60 jours (étude 2026 / charte §8)
+- Les 2 questions « payer maintenant / reste vraiment » sont-elles répondables en < 3 s ?
+- FAIT daté rassure-t-il contre « ai-je vraiment payé ? » ?
+- Quelque chose pousse-t-il à abandonner (saisie trop longue, jargon, fourre-tout) ?
+- Liste vs graphiques : rien qui ressemble à un camembert inutile ?
+- Report de solde : l’app laisse-t-elle croire qu’un mois « emporte » l’autre ?
+
 ### Compréhension immédiate
 - Home : comprend-on reste-à-vivre vs encore à payer sans notice ?
-- FAIT : sait-on que la ligne ne disparaît pas ?
+- FAIT : sait-on que la ligne ne disparaît pas ? voit-on la date ?
+- Menu bas : découvre-t-on calendrier + Santé + Réglages sans aide ?
 - Mois Préc./Suiv. : sait-on pourquoi c’est grisé ?
 
 ### Droit à l’erreur

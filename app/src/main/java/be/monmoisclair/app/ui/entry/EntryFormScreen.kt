@@ -445,7 +445,7 @@ private fun EntryFormScaffold(
             if (showApplyFollowing && hasTemplate) {
                 CheckRow(
                     checked = applyFollowing,
-                    label = "Appliquer aussi aux mois suivants (encore à payer)",
+                    label = "Aussi pour les mois suivants (défaut = ce mois-ci seul)",
                     onChecked = onApplyFollowing
                 )
             }

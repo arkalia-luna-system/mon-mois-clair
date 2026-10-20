@@ -9,13 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.7** (Home ledger + Menu anti fourre-tout) |
+| Dernière étape terminée | **6.8** (Fidélité outil — étude 2026) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke S26 maman · continuer sur `develop` |
+| Prochaine sous-étape | Campagne 5 testeurs · smoke S26 maman |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.8 Fidélité outil (étude 2026)
+
+**Charte §8 :** adopter Safe-to-Spend + check-off + FAIT daté + zone pouce + mois indépendants + palette carnet ; refuser graphiques / banque / report auto / rouge sang.
+
+**Codé :** `DoneDateFormat` · barre basse Menu/+ Ajouter · cartes espacées · FAIT à droite · palette A11yTokens · libellé édition « ce mois-ci seul ».
+
+**Docs testeurs :** quinté (correcteur / visuel / produit / senior / validation) + campagne 6.8.
+
+**Smoke S25 :** FAIT le 20/10 · barre Menu/+ Ajouter · versionName 6.8  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **127/127 OK**  
+**Version :** `0.1.0-6.8` · `versionCode` 13
 
 ### 2026-10-20 — 6.7 Home ledger + Menu
 

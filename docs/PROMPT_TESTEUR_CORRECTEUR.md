@@ -90,6 +90,20 @@ Preuves
 - Dump UI (`uiautomator`) et/ou screenshot dans `dist/verify/` (xml/json/md commitables ;
   png locaux OK mais souvent gitignorés).
 
+## Campagne fidélité 6.8 (OBLIGATOIRE si version ≥ 6.8 ou charte §8)
+
+Exercer vraiment (pas survoler) — noter bug / inutile / sous-travaillé :
+
+- [ ] Sticky : « Reste » + « À payer » lisibles sans scroll ; marque discrète
+- [ ] Barre basse : **Menu** + **+ Ajouter** (zone pouce) ; pas Santé/Réglages dans le scroll liste
+- [ ] FAIT ✓ à droite → « À payer » baisse ; badge **FAIT le JJ/MM** (pas seulement FAIT)
+- [ ] Remettre → date disparaît, statut TODO
+- [ ] Menu → calendrier 12 mois + Revenir mois en cours + Santé + Réglages
+- [ ] Éditer montant récurrent : défaut **ce mois-ci seul** (case « Aussi pour les mois suivants » OFF)
+- [ ] Aucun claim report auto / graphique / banque dans README vs comportement
+- [ ] Scan EPC / Copier / photo / partage sauvegarde / restore (smoke si device)
+- [ ] Lister 3 choses « inutiles ou trop lourdes » même mineures
+
 ## Personas (menu — choisis 2 à 4 selon le diff)
 
 A. Première install — seulement si besoin from zero (`pm clear`, `RESET_TESTS_FROM_ZERO.md`)
@@ -99,6 +113,7 @@ D. Samsung (Santé, SAF retour, BackupWorker)
 E. Cas limites (virgule, clamp, clavier, double zone FAIT/édition)
 F. **Feature du diff** (ex. biométrie, Restore JSON, …) — toujours inclus si le diff la touche
 G. **Régression visuelle courte** : Home + un écran formulaire + un dialogue — 2 min
+H. **Fidélité 60 j** (campagne 6.8 ci-dessus) — toujours si release famille
 
 ## Où écrire tes notes (obligatoire)
 
@@ -171,14 +186,6 @@ Structure EXACTE :
 
 ---
 
-## Rappel du duo d’experts
+## Rappel du quinté
 
-| Rôle | Qui | Fait quoi |
-|------|-----|-----------|
-| **Testeur + correcteur** | Agent avec le prompt ci-dessus | Code + visuel + personas, corrige, re-teste |
-| **Validation / claims / push** | L’autre agent | Re-vérifie claims vs code vs tests, puis push si OK |
-
-Enchaînement :
-1. Tu développes / un agent code  
-2. Tu lances le **testeur-correcteur** (ce prompt)  
-3. Tu reviens vers l’**expert validation** avec le rapport pour audit + push
+Voir `docs/README_TESTEURS.md` — validation = prompt n°5 `PROMPT_EXPERT_VALIDATION.md`.

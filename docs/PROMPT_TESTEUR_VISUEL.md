@@ -58,9 +58,13 @@ sauf si un défaut UI bloque l’action.
 
 ### Hiérarchie / clarté
 - [ ] Un écran = un job clair (Home ≠ fourre-tout)
+- [ ] Zone lecture haut = montants ; zone pouce bas = Menu / + Ajouter
+- [ ] Cartes ≥ 12 dp d’écart ; FAIT à droite ≥ 96 dp de largeur min
+- [ ] Palette carnet (crème / teal / russet / sage) — pas blanc pur ni rouge sang
+- [ ] « FAIT le JJ/MM » lisible ; Auto en ocre
 - [ ] Libellés français compréhensibles (pas de jargon dev)
 - [ ] Dialogues destructifs : titre + conséquence + Annuler / action danger
-- [ ] États vides : message + prochaine action évidente
+- [ ] États vides : message + prochaine action évidente (« + Ajouter » en bas)
 - [ ] États désactivés (Préc./Suiv.) visibles sans paraître cassés
 
 ### Formulaires / clavier

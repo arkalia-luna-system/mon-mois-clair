@@ -17,9 +17,10 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Marquer FAIT",
-            body = "Quand vous avez payé (ou vérifié le prélèvement), touchez « Marquer FAIT ✓ ». " +
-                "La ligne reste visible en vert — elle n’est pas effacée. " +
-                "Vous pouvez « Remettre à payer » si vous vous êtes trompée."
+            body = "Quand vous avez payé (ou vérifié le prélèvement), touchez « FAIT ✓ » à droite. " +
+                "La ligne devient verte et affiche « FAIT le … » (date exacte) — preuve rassurante. " +
+                "« Remettre » si vous vous êtes trompée. " +
+                "Chaque mois repart propre : pas de report automatique du reste."
         ),
         Section(
             title = "EN RETARD",
@@ -48,8 +49,8 @@ object HowItWorksCopy {
             body = "Les factures mensuelles restent sur l’accueil. " +
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
                 "Elles réapparaissent le bon mois ; les autres mois, regardez Réglages → « Échéances hors ce mois ». " +
-                "Pour feuilleter l’historique : Menu (en haut à droite) → calendrier des mois, " +
-                "ou les flèches ‹ › sur l’accueil."
+                "Pour feuilleter l’historique : Menu (barre du bas) → calendrier des mois, " +
+                "ou les flèches ‹ › sous le reste."
         ),
         Section(
             title = "Sauvegarde",

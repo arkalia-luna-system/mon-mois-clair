@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,12 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -123,6 +126,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
     ) {
+        // Zone lecture (~30 %) — montants, pas de boutons critiques hors ‹ › mois.
         Surface(
             color = A11yTokens.PaperWarm,
             shadowElevation = 1.dp,
@@ -134,28 +138,13 @@ fun HomeScreen(
                     vertical = fit.stickyPaddingVertical
                 )
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Mon Mois Clair",
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontSize = fit.brandTitleSp.sp
-                        ),
-                        color = A11yTokens.InkMuted,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Text(
-                        text = "Menu",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = A11yTokens.Ink,
-                        modifier = Modifier
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .clickable { menuOpen = true }
-                            .padding(horizontal = 10.dp, vertical = 8.dp)
-                    )
-                }
+                Text(
+                    text = "Mon Mois Clair",
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontSize = fit.brandTitleSp.sp
+                    ),
+                    color = A11yTokens.InkMuted
+                )
                 Text(
                     text = "Reste après factures",
                     style = MaterialTheme.typography.titleLarge
@@ -254,7 +243,7 @@ fun HomeScreen(
                 top = fit.screenPadding,
                 bottom = fit.screenPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)
         ) {
             item(key = "divers-controls") {
                 Text(
@@ -308,7 +297,7 @@ fun HomeScreen(
                         style = MaterialTheme.typography.titleLarge
                     )
                     Text(
-                        text = "Touchez « Ajouter une entrée » plus bas.",
+                        text = "Touchez « + Ajouter » en bas.",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -335,9 +324,36 @@ fun HomeScreen(
                     )
                 }
             }
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                PrimaryA11yButton(text = "Ajouter une entrée", onClick = onAdd)
+        }
+
+        // Zone pouce — barre fixe (étude One UI / thumb zone).
+        HorizontalDivider(color = A11yTokens.PaperBorder)
+        Surface(
+            color = A11yTokens.PaperWarm,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // weight sur Box : évite que le hit-target Menu mange tout l’écran.
+                Box(modifier = Modifier.weight(1f)) {
+                    SecondaryA11yButton(
+                        text = "Menu",
+                        onClick = { menuOpen = true },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Box(modifier = Modifier.weight(1.2f)) {
+                    PrimaryA11yButton(
+                        text = "+ Ajouter",
+                        onClick = onAdd,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
@@ -346,10 +362,11 @@ fun HomeScreen(
 @Composable
 private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
     Surface(
-        color = A11yTokens.PaperWarm,
+        color = A11yTokens.PaperCard,
+        shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 2.dp)
+            .border(1.dp, A11yTokens.PaperBorder, RoundedCornerShape(10.dp))
     ) {
         Column(
             modifier = Modifier
@@ -377,26 +394,31 @@ private fun ExpenseRow(
     onClick: () -> Unit
 ) {
     val bg = when {
-        item.isDone -> A11yTokens.AccentOk.copy(alpha = 0.18f)
+        item.isDone -> A11yTokens.AccentOkSoft
         item.isOverdue -> A11yTokens.AccentDanger.copy(alpha = 0.12f)
-        else -> A11yTokens.PaperWarm
+        else -> A11yTokens.PaperCard
     }
     val borderMod = when {
-        highlighted -> Modifier.border(3.dp, A11yTokens.ButtonFill, RoundedCornerShape(8.dp))
+        highlighted -> Modifier.border(3.dp, A11yTokens.ButtonFill, RoundedCornerShape(10.dp))
         item.isOverdue && !item.isDone ->
-            Modifier.border(2.dp, A11yTokens.AccentDanger, RoundedCornerShape(8.dp))
-        else -> Modifier
+            Modifier.border(2.dp, A11yTokens.AccentDanger, RoundedCornerShape(10.dp))
+        else -> Modifier.border(1.dp, A11yTokens.PaperBorder, RoundedCornerShape(10.dp))
     }
     Surface(
         color = bg,
+        shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
             .then(borderMod)
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .weight(1f)
                     .clickable(onClick = onClick)
             ) {
                 Row(
@@ -408,13 +430,13 @@ private fun ExpenseRow(
                         if (item.isAutoDebit) {
                             Text(
                                 text = "Auto",
-                                color = A11yTokens.InkMuted,
+                                color = A11yTokens.AccentAuto,
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }
                         when {
                             item.isDone -> Text(
-                                text = "FAIT ✓",
+                                text = item.doneLabel ?: "FAIT ✓",
                                 color = A11yTokens.AccentOk,
                                 style = MaterialTheme.typography.labelLarge
                             )
@@ -433,10 +455,11 @@ private fun ExpenseRow(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
             PrimaryA11yButton(
-                text = if (item.isDone) "Remettre à payer" else "Marquer FAIT ✓",
-                onClick = onToggle
+                text = if (item.isDone) "Remettre" else "FAIT ✓",
+                onClick = onToggle,
+                fillMaxWidth = false,
+                modifier = Modifier.widthIn(min = 96.dp)
             )
         }
     }

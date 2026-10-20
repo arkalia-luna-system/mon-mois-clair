@@ -19,13 +19,15 @@ fun PrimaryA11yButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    /** false = bouton compact (ex. FAIT à droite d’une carte). */
+    fillMaxWidth: Boolean = true
 ) {
     Button(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier
-            .fillMaxWidth()
+            .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),

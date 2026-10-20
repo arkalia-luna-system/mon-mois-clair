@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-20 (lot **6.x** + **Home ledger / Menu outils**).
+Mise à jour : 2026-10-20 (lot **6.x** + **fidélité outil quotidien** / étude 2026).
 
 ## 1. Vision
 
@@ -23,16 +23,15 @@ App **locale, privée, hors-ligne** (Samsung One UI). Sideload **release signé*
 L’écran d’accueil n’est **pas** un tableau de bord de toutes les fonctions.  
 Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, divers, ajouter.
 
-| Sur l’accueil (sticky + liste) | Dans **Menu** (bouton en haut à droite) | Ailleurs |
-|--------------------------------|------------------------------------------|----------|
-| Reste / encore à payer (lisibles en premier) | Calendrier des mois (année récente) | Écrans dédiés (Ajout, Santé, Réglages…) |
-| ‹ › mois courant (rapide) | Revenir au mois en cours | |
-| Bandeau L « à prévoir » si utile | Vérifier les alertes, Réglages | |
-| Liste + divers + **Ajouter** | Emplacement réservé aux **futures** fonctions | |
+| Zone lecture (haut ~30 %) | Zone liste (centre) | Zone pouce (bas — barre fixe) |
+|---------------------------|---------------------|--------------------------------|
+| Reste + à payer (gros) | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** · (outils) |
+| ‹ › mois (sous le résumé) | FAIT / Remettre à droite (pouce) | Calendrier + Santé + Réglages dans Menu |
+| Bandeau L si utile | Divers + liste | |
 
-**Interdit** : empiler Santé, Réglages, Device Care, aide, etc. en bas de la liste Home.  
-**Marque** : nom de l’app en **légende discrète** — jamais plus grand que le montant « Reste ».  
-**Futures fonctions** : Menu ou écran dédié — **jamais** un nouveau bouton permanent sur le sticky Home.
+**Interdit** : empiler Santé / Réglages / aide dans le scroll de la liste ; boutons critiques collés en haut hors zone pouce.  
+**Marque** : légende discrète — jamais plus grand que « Reste ».  
+**Futures fonctions** : Menu ou écran dédié — **jamais** un nouveau bouton sur le sticky.
 
 ### Stack
 
@@ -54,6 +53,7 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | **6.4–6.5** | Affichage S26 / Ultra + UX smoke | ✅ |
 | **6.6** | Hub Réglages utile + navigation année | ✅ |
 | **6.7** | Home ledger + Menu (fin du fourre-tout) | ✅ |
+| **6.8** | Fidélité outil (étude 2026) : FAIT daté, palette, barre pouce | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -125,4 +125,58 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `HomeMenuShee
 | Feuilleter 12 mois passés | Menu → calendrier + ‹ › | **Revenir au mois en cours** (Menu) |
 | Rappels qui ne sonnent pas | Menu → Santé | Un seul hub |
 
-Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages en bas de Home.
+Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages dans le scroll Home.
+
+## 8. Fidélité outil quotidien — décisions étude 2026 (verrouillé)
+
+Constat marché : **>75 % abandonnent une app budget sous 60 jours** si la saisie coûte plus que le bénéfice immédiat.  
+Ce qui retient : **réduction de charge cognitive** + réponses instantanées à  
+1) *« Qu’est-ce que je dois payer maintenant ? »*  
+2) *« Combien me reste-t-il vraiment ? »*
+
+### Adopter (codé / obligatoire produit)
+
+| Idée étude | Décision MMC |
+|------------|--------------|
+| Safe-to-Spend (PocketGuard) | Sticky **Reste après factures** + **À payer** = signaux n°1 |
+| Check-off effect | **Marquer FAIT ✓** visible ; baisse immédiate de « À payer » |
+| Preuve anti-doute | Afficher **« FAIT le JJ/MM »** (`doneAtEpochMs`) pas seulement « FAIT » |
+| Liste > graphiques | **Jamais** camembert / courbes — liste verticale + couleurs franches |
+| Zone pouce One UI | Barre basse **Menu · + Ajouter** ; sticky haut = lecture seule |
+| Boutons explicites | Pas de swipe / appui long caché ; tout est écrit |
+| Montant variable | Édition **ce mois-ci seul** par défaut (`applyToFollowing = false`) |
+| Mois indépendants | **Pas de report auto** du reste mois N → N+1 (erreur cumulée) |
+| Palette AMOLED | Fond papier chaud, teal calme, russet (pas rouge sang), sage FAIT |
+| Local-first | Zéro banque, zéro cloud, zéro pub (déjà) |
+
+### Refuser (pièges)
+
+| Idée | Pourquoi non |
+|------|----------------|
+| Connexion bancaire / abonnement | Contredit local-first familial |
+| Enveloppes virtuelles (Goodbudget) | Charge mentale trop haute pour persona maman |
+| Graphiques analytiques | Consultés 1ʳᵉ semaine puis oubliés |
+| Report automatique du solde | Dérive si courses non notées |
+| Menu hamburger icône seule | Découvrabilité ÷2 — toujours **texte** « Menu » |
+| Rouge `#FF0000` / blanc `#FFFFFF` | Anxiété + halo AMOLED |
+
+### Différer (pas bloquant 6.8)
+
+| Idée | Quand |
+|------|-------|
+| Grille jours 1–31 à la place du clavier jour | Lot saisie (après validation famille) |
+| Pastille rouge Santé sur l’onglet Menu | Quand Santé expose un score « KO » simple |
+| Photo / dictée IA (Moneko) | Hors scope — on a déjà scan EPC + photo facture offline |
+
+### Palette « Carnet apaisé » (codes)
+
+| Rôle | Hex | Token |
+|------|-----|--------|
+| Fond | `#F7F4EB` | `PaperCream` |
+| Cartes | `#FFFDF9` | `PaperCard` |
+| Encre | `#1E1B18` | `Ink` |
+| Boutons / bandeau | `#1B4D4E` | `ButtonFill` |
+| FAIT fond | `#E3EFE6` | `AccentOkSoft` |
+| FAIT badge | `#1E5631` | `AccentOk` |
+| Retard | `#B84A27` | `AccentDanger` |
+| Auto | `#D99B26` | `AccentAuto` |

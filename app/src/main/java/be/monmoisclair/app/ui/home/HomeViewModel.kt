@@ -16,6 +16,7 @@ import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
 import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
 import be.monmoisclair.app.ui.format.DayLabelFormat
+import be.monmoisclair.app.ui.format.DoneDateFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -104,6 +105,7 @@ class HomeViewModel @Inject constructor(
                                 label = exp.label,
                                 amountLabel = MoneyFormat.formatSignedCents(exp.amountCents, isExpense = true),
                                 isDone = exp.status == ExpenseStatus.DONE,
+                                doneLabel = DoneDateFormat.label(exp.doneAtEpochMs),
                                 isOverdue = ExpenseOverdue.isOverdue(
                                     ledgerId = exp.ledgerId,
                                     dayOfMonth = exp.dayOfMonth,

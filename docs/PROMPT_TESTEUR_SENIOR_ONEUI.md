@@ -27,14 +27,17 @@ Persona (fixe) :
 
 ## Parcours obligatoires (lents, naïfs)
 
-1. Ouvrir Home : « Je comprends les deux montants ? »
-2. Marquer une dépense FAIT : « Je sais où taper ? J’ai peur de supprimer ? »
-3. Ajouter « Loyer 850 » : clavier, virgule, jour, récurrent — « je bloque où ? »
-4. Se tromper : Annuler une édition ; refuser une suppression
-5. Réglages : « C’est quoi empreinte ? Je dois l’activer ? »
-6. Santé des rappels : « À régler » vs « OK » — « je fais quoi concrètement ? »
-7. Device Care : le texte est-il faisable **seul** sans fils tech ?
-8. Restaurer : « Est-ce que je peux tout casser sans le vouloir ? »
+1. Ouvrir Home : « Je comprends les deux montants en haut ? » (sans scroller)
+2. Marquer FAIT via le bouton à **droite** : « Je sais où taper ? La date FAIT le … me rassure ? »
+3. Toucher **+ Ajouter** en bas (pas chercher un bouton perdu dans la liste)
+4. Ouvrir **Menu** en bas : calendrier mois + alertes + réglages — « je trouve ? »
+5. Ajouter « Loyer 850 » : clavier, virgule, jour, récurrent — « je bloque où ? »
+6. Se tromper : Annuler une édition ; refuser une suppression ; montant « ce mois-ci seul »
+7. Réglages (via Menu) : « C’est quoi empreinte ? Je dois l’activer ? »
+8. Santé des rappels : « À régler » vs « OK » — « je fais quoi concrètement ? »
+9. Device Care : le texte est-il faisable **seul** sans fils tech ?
+10. Restaurer : « Est-ce que je peux tout casser sans le vouloir ? »
+11. Noter tout ce qui est **inutile**, trop petit, ou « j’oublierais cette app demain »
 
 ## Pièges Samsung à chercher
 
