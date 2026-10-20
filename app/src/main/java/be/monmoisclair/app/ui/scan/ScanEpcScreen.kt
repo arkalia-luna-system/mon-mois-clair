@@ -12,10 +12,13 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -146,6 +149,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         Modifier
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
+            .imePadding()
             .padding(A11yTokens.screenPadding)
     ) {
         Text("Scanner une facture", style = MaterialTheme.typography.headlineMedium)
@@ -158,6 +162,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
+                    .clip(RoundedCornerShape(16.dp))
             )
         } else {
             Spacer(Modifier.weight(1f))

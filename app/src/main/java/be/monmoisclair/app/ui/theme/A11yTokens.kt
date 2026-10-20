@@ -25,6 +25,8 @@ object A11yTokens {
     /** Ancien PaperWarm → surface sticky / champs (ivoire un peu plus marqué). */
     val PaperWarm = Color(0xFFEDE8DC)
     val PaperBorder = Color(0xFFE2DDD2)
+    /** Trait des champs : visible, plus doux que l’encre des boutons. */
+    val FieldLine = Color(0xFF6F675C)
     /** Deep Espresso. */
     val Ink = Color(0xFF1E1B18)
     val InkMuted = Color(0xFF4A453C)
@@ -32,9 +34,16 @@ object A11yTokens {
     val AccentOkSoft = Color(0xFFE3EFE6)
     val AccentOk = Color(0xFF1E5631)
     val AccentWarn = Color(0xFF8A5A1E)
-    /** Autumn Russet — retard sans panique bancaire. */
-    val AccentDanger = Color(0xFFB84A27)
-    /** Muted Ochre — prélèvement auto. */
+    /**
+     * Brique automne — retard / erreur.
+     * #B84A27 de l’étude ne fait que ~4,7:1 sur le papier : trop juste.
+     * #8E3418 reste terre cuite (pas rouge sang) et passe ~7:1.
+     */
+    val AccentDanger = Color(0xFF8E3418)
+    /**
+     * Or doux — **fond** de pastille « Auto » seulement.
+     * En texte sur le papier il tombe à ~2,2:1. Le mot « Auto » s’écrit en [Ink].
+     */
     val AccentAuto = Color(0xFFD99B26)
     /** Transformative Teal — boutons / stabilité. */
     val ButtonFill = Color(0xFF1B4D4E)

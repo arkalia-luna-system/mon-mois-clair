@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
+import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.MonthCycleEngine
@@ -60,7 +61,8 @@ class HomeViewModel @Inject constructor(
     private val instanceDao: InstanceDao,
     private val toggleDone: ToggleExpenseDoneUseCase,
     private val adjustDivers: AdjustDiversUseCase,
-    private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase
+    private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase,
+    private val reminderHealth: ReminderHealthChecker
 ) : ViewModel() {
 
     private val selectedMonth = MutableStateFlow(AppClock.currentYearMonth())
@@ -69,6 +71,8 @@ class HomeViewModel @Inject constructor(
     private val nextMonthWarning = MutableStateFlow<String?>(null)
     private val _diversError = MutableStateFlow<String?>(null)
     val diversError: StateFlow<String?> = _diversError.asStateFlow()
+    private val _remindersBlocked = MutableStateFlow(false)
+    val remindersBlocked: StateFlow<Boolean> = _remindersBlocked.asStateFlow()
     private val _diversFieldCleared = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val diversFieldCleared: SharedFlow<Unit> = _diversFieldCleared.asSharedFlow()
 
@@ -152,6 +156,14 @@ class HomeViewModel @Inject constructor(
         }
         viewModelScope.launch {
             selectedMonth.collect { refreshNextMonthWarning(it) }
+        }
+        refreshReminderGate()
+    }
+
+    /** Pastille Menu : notifications ou alarmes exactes refusées. */
+    fun refreshReminderGate() {
+        viewModelScope.launch {
+            _remindersBlocked.value = reminderHealth.check().remindersBlocked
         }
     }
 

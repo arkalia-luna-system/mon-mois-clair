@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-127%2F127-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-130%2F130-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.8-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.13-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,11 +23,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.8` |
-| Dernière étape | **6.8** Fidélité outil (étude 2026) |
-| Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
+| Version | `0.1.0-6.13` |
+| Dernière étape | **6.13** Marque (icône M, rappel, ouverture papier) |
+| Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** — smoke S26 encore ouvert |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **127/127** OK |
+| Tests unitaires | **130/130** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 
@@ -59,6 +59,8 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 | **Menu** (calendrier mois + outils, barre basse) | ✅ |
 | **+ Ajouter** (barre pouce) | ✅ |
 | **FAIT le JJ/MM** (preuve) | ✅ |
+| **Jour 1–31** (grille, pas le clavier) | ✅ |
+| **Menu · Alertes** (notifs / alarmes exactes) | ✅ |
 | **Revenir au mois en cours** (Menu) | ✅ |
 | **Rappels** J−3 / Jour J / overdue + reconcile update/heure/feu | ✅ |
 | **Prochaine échéance (mois)** trimestriel / annuel | ✅ |
@@ -90,15 +92,14 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 
 ## Avancement
 
-```text
-[█████████████████████████]  ~95 %
+Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, facture papier.
 
-1.x–3.5.1  socle + hub + bio + nav mois              ✅
-4.0–4.6  EN RETARD · divers · auto · récurrence      ✅
-5.0–5.4  freeze Home · T5 JSON R8 · ancre mois ·     ✅
-         OVERDUE chain · partage WhatsApp/Mail       ✅
-5.4.1  Aide « Comment ça marche » (Réglages)         ✅
-     Validation S25 Ultra (SM-S938B)                 ✅
+```text
+1–5    socle, ledger, rappels, sauvegarde, aide     ✅
+6.0–6.3   scan QR, photo, communication             ✅
+6.4–6.8   écrans Galaxy, menu, fidélité outil       ✅
+6.9–6.13  contraste, en-tête, parcours, marque         ✅
+Smoke device du visuel 6.10–6.13                    à refaire sur téléphone
 ```
 
 

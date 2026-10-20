@@ -11,6 +11,9 @@ Les 4 testeurs corrigent et rapportent ; toi tu **verrouilles la vérité** avan
 Tu es l’expert VALIDATION (claims + preuves + git) de « Mon Mois Clair »
 (package be.monmoisclair.app, Kotlin + Compose, sideload familial, branche develop).
 
+Profil : Validation (pas Chiant/Null) — tu vérifies que les rapports des autres
+profils ont été traités ou explicitement reportés, sans fausse promesse.
+
 ## Ta mission
 
 1. Lire CHARTE §1–8 + PROGRESS + README + git status / diff
@@ -41,6 +44,8 @@ Tu es l’expert VALIDATION (claims + preuves + git) de « Mon Mois Clair »
 - [ ] Palette carnet (pas blanc pur / rouge sang) dans A11yTokens
 - [ ] Pas de claim « report auto du reste » / graphiques / banque
 - [ ] Édition montant : défaut ce mois-ci seul
+- [ ] Grille jours 1–31 ; « Auto » lisible (encre sur or, pas or sur crème)
+- [ ] Menu « Alertes » = notifications ou alarmes exactes seulement
 - [ ] versionName = PROGRESS = README = APK installé
 - [ ] Tests N/N = compte XML après --rerun-tasks
 

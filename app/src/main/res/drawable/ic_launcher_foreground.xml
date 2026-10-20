@@ -4,7 +4,8 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- M du carnet, dans la zone sûre (le système rogne les bords). -->
     <path
-        android:fillColor="#1A1A1A"
-        android:pathData="M30,70 L54,30 L78,70 Z" />
+        android:fillColor="#FFFDF9"
+        android:pathData="M32,78 L32,34 L44,34 L54,52 L64,34 L76,34 L76,78 L66,78 L66,50 L54,68 L42,50 L42,78 Z" />
 </vector>

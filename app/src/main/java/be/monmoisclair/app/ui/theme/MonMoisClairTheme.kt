@@ -1,12 +1,15 @@
 package be.monmoisclair.app.ui.theme
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 private val ColorScheme = lightColorScheme(
@@ -25,7 +28,16 @@ private val ColorScheme = lightColorScheme(
     surfaceContainerLow = A11yTokens.PaperCream,
     surfaceContainerLowest = A11yTokens.PaperCream,
     error = A11yTokens.AccentDanger,
-    onError = A11yTokens.ButtonText
+    onError = A11yTokens.ButtonText,
+    outline = A11yTokens.FieldLine
+)
+
+private val AppShapes = Shapes(
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(10.dp),
+    medium = RoundedCornerShape(12.dp),
+    large = RoundedCornerShape(16.dp),
+    extraLarge = RoundedCornerShape(20.dp)
 )
 
 private val AppTypography = Typography(
@@ -36,15 +48,17 @@ private val AppTypography = Typography(
         color = A11yTokens.Ink
     ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.Serif,
+        fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 26.sp,
+        fontSize = 24.sp,
+        lineHeight = 30.sp,
         color = A11yTokens.Ink
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Serif,
+        fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minTitleSp.value.sp,
+        lineHeight = 28.sp,
         color = A11yTokens.Ink
     ),
     bodyLarge = TextStyle(
@@ -74,6 +88,7 @@ fun MonMoisClairTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = ColorScheme,
         typography = AppTypography,
+        shapes = AppShapes,
         content = content
     )
 }

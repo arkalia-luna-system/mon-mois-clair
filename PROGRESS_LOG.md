@@ -9,13 +9,72 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.8** (Fidélité outil — étude 2026) |
+| Dernière étape terminée | **6.13** (Marque — icône, rappel, ouverture) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Campagne 5 testeurs · smoke S26 maman |
+| Prochaine sous-étape | Campagne profils (Chiant/Null/Perf/…) · smoke S26 maman |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.13 Marque
+
+**Problème :** l’icône était un triangle noir. Les rappels réutilisaient ce dessin (illisible dans la barre d’état). L’ouverture flashait le blanc Material.
+
+**Codé :** M ivoire sur teal `#1B4D4E`, version monochrome (Android 13), icône de rappel blanche, fond de fenêtre papier `#F7F4EB`. Le gros chiffre est un peu plus serré.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → à confirmer  
+**Version :** `0.1.0-6.13` · `versionCode` 19
+
+### 2026-10-20 — 6.12 Parcours fini
+
+**Audit :** le métier est là (mois, reste, FAIT, rappels, sauvegarde, facture papier). Ce qui faisait encore « chantier » : plusieurs boutons teal sur le même écran, Continuer perdu dans le scroll d’installation, échéances hors mois en texte nu, champs au contour trop dur, README figé à ~95 % / étape 5.4.
+
+**Codé :** `PinnedActionScaffold` (Continuer / Choisir dossier épinglés) · Permissions + Santé = corrections en **secondaire** · shapes Material 8–20 dp · Home « Chargement… » · Scan `imePadding` · échéances hors mois en cartes · README sans barre 95 %.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **130/130 OK**  
+**Version :** `0.1.0-6.12` · `versionCode` 18  
+**Reste device :** smoke S25 des écrans 6.10–6.12 + **S26 maman encore ouvert**.
+
+### 2026-10-20 — 6.11 Rythme visuel
+
+**Audit :** serif sur tous les titres (effet brochure), pile de boutons teal, mois « Oct. », pastille « À régler » trop étroite, menu qui annonçait des fonctions futures, verrou qui parlait d’un bouton vert, restauration qui citait un nom de fichier.
+
+**Codé :** serif seulement pour le montant. Boutons secondaires au trait encre, coins 12 dp. Mois en toutes lettres. Cartes sans carré de jour. Aide aérée. Scan aux coins arrondis. Textes plus courts (réglages, menu, restauration, verrou).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **130/130 OK**  
+**Version :** `0.1.0-6.11` · `versionCode` 17
+
+### 2026-10-20 — 6.10 Calme visuel
+
+**Problème :** l’accueil empilait une plaque (nom, titre, chiffre, ligne, mois, alerte). À la saisie, plusieurs gros boutons restaient au-dessus du clavier et le champ disparaissait.
+
+**Codé :** en-tête = mois + un chiffre + une ligne « Reste · à payer ». Marque hors de l’accueil. Barre du bas et Annuler/Supprimer cachés tant que le clavier est ouvert. Le champ actif remonte. Nom et montant en premier. Boutons calés sur 48 dp.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **130/130 OK**  
+**Version :** `0.1.0-6.10` · `versionCode` 16
+
+### 2026-10-20 — 6.9.1 Validation device + prompts profils
+
+**Smoke S25 Ultra (release) :** Reste/À payer · factures avant divers · FAIT le JJ/MM · Remettre/FAIT · Menu calendrier · grille jours 1–31 · Aide « Reste du mois passé » · versionName.
+
+**Bug corrigé :** clavier sur « Montant divers » masquait +/− Divers → `imePadding()` + `adjustResize` + boutons **au-dessus** du champ.
+
+**Docs :** `docs/PROFILS_TESTEURS.md` (Chiant / Null / Perf / Hostile-doux / Fidélité / Senior) + prompts mis à jour.
+
+**Tests :** à recompter Gradle `--rerun-tasks`  
+**Version :** `0.1.0-6.9.1` · `versionCode` 15
+
+### 2026-10-20 — 6.9 Étude 2026 relue
+
+**Verdict étude :** la leçon (deux questions, check-off, mois indépendants, pas de graphiques) est bonne. Le « 75 % / 60 jours » n’a pas de source. Le S25 n’est pas la cible (S26 6,3″). L’ocre `#D99B26` en texte est illisible (~2,2:1). Le russet `#B84A27` ne fait pas 7:1.
+
+**Codé :** pastilles FAIT / EN RETARD / Auto à contraste ≥ 7:1 · russet `#8E3418` · grille jours 1–31 · factures avant Courses/divers · flèches mois 48 dp · Menu « Alertes » seulement si notifications ou alarmes exactes manquent · aide « Reste du mois passé » + montant de ce mois seul.
+
+**Refusé :** 3ᵉ bouton Réglages, fiche Modifier/Supprimer/Fermer, bouton libellé « À PAYER », report auto, or en couleur de lettres.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **130/130 OK**  
+**Version :** `0.1.0-6.9` · `versionCode` 14
 
 ### 2026-10-20 — 6.8 Fidélité outil (étude 2026)
 

@@ -11,6 +11,10 @@ Ensuite, reviens vers l’**expert validation / push** (l’autre agent) pour re
 Tu es l’expert TESTEUR UTILISATEUR + CORRECTEUR de l’app Android « Mon Mois Clair »
 (package be.monmoisclair.app, Kotlin + Compose, hors-ligne, sideload familial Samsung One UI).
 
+Profil du jour (OBLIGATOIRE — un seul, voir docs/PROFILS_TESTEURS.md) :
+→ [ Chiant | Null | Perf | Hostile-doux | Fidélité 60 j ]
+Tu ADOPTES ce regard jusqu’au bout. Minimum 3 frictions notées (même mineures).
+
 ## Ta mission (dans cet ordre, sans sauter d’étape)
 
 1. COMPRENDRE ce qui a changé / ce qui est promis (git diff + PROGRESS + README)
@@ -90,19 +94,21 @@ Preuves
 - Dump UI (`uiautomator`) et/ou screenshot dans `dist/verify/` (xml/json/md commitables ;
   png locaux OK mais souvent gitignorés).
 
-## Campagne fidélité 6.8 (OBLIGATOIRE si version ≥ 6.8 ou charte §8)
+## Campagne 6.9+ (OBLIGATOIRE) + profil du jour
 
 Exercer vraiment (pas survoler) — noter bug / inutile / sous-travaillé :
 
 - [ ] Sticky : « Reste » + « À payer » lisibles sans scroll ; marque discrète
-- [ ] Barre basse : **Menu** + **+ Ajouter** (zone pouce) ; pas Santé/Réglages dans le scroll liste
-- [ ] FAIT ✓ à droite → « À payer » baisse ; badge **FAIT le JJ/MM** (pas seulement FAIT)
-- [ ] Remettre → date disparaît, statut TODO
-- [ ] Menu → calendrier 12 mois + Revenir mois en cours + Santé + Réglages
-- [ ] Éditer montant récurrent : défaut **ce mois-ci seul** (case « Aussi pour les mois suivants » OFF)
-- [ ] Aucun claim report auto / graphique / banque dans README vs comportement
-- [ ] Scan EPC / Copier / photo / partage sauvegarde / restore (smoke si device)
-- [ ] Lister 3 choses « inutiles ou trop lourdes » même mineures
+- [ ] Factures **avant** Courses / divers
+- [ ] Barre basse : **Menu** + **+ Ajouter** ; pas Santé/Réglages dans le scroll liste
+- [ ] FAIT ✓ / Remettre → badge **FAIT le JJ/MM** ; « À payer » suit
+- [ ] Menu → calendrier 12 mois + Santé + Réglages
+- [ ] Éditer montant récurrent : défaut **ce mois-ci seul**
+- [ ] Jour = grille 1–31 ; montant = clavier décimal
+- [ ] **Divers + clavier ouvert** : +/− toujours tapables (`imePadding`)
+- [ ] Menu « Alertes » sur le bouton seulement si notifs/alarmes KO
+- [ ] Profil Null / Hostile : mois vide, `,,,`, double FAIT, mois passé
+- [ ] ≥3 frictions (obligation profil) + smoke scan/sauvegarde si device
 
 ## Personas (menu — choisis 2 à 4 selon le diff)
 

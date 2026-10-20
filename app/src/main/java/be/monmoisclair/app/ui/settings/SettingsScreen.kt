@@ -1,14 +1,19 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -107,7 +112,7 @@ fun SettingsScreen(
             enabled = !state.busy
         )
 
-        HorizontalDivider(color = A11yTokens.PaperWarm)
+        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
         Text(text = "Confidentialité", style = MaterialTheme.typography.titleLarge)
         Text(
             text = "Par défaut l’app s’ouvre sans code.",
@@ -165,10 +170,10 @@ fun SettingsScreen(
             )
         }
 
-        HorizontalDivider(color = A11yTokens.PaperWarm)
+        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
         Text(text = "Rappels", style = MaterialTheme.typography.titleLarge)
         Text(
-            text = "Pour vérifier que les alertes (notifications, batterie) sont bien autorisées.",
+            text = "Notifications, batterie et Device Care, au même endroit.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
         )
@@ -177,14 +182,8 @@ fun SettingsScreen(
             onClick = onOpenHealth,
             enabled = !state.busy
         )
-        Text(
-            text = "Si rien ne sonne (Samsung) : ouvrez Santé des rappels — " +
-                "batterie, notifications et Device Care sont regroupés là.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
 
-        HorizontalDivider(color = A11yTokens.PaperWarm)
+        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
         Text(text = "Échéances hors ce mois", style = MaterialTheme.typography.titleLarge)
         Text(
             text = "Assurances, taxes, factures 1×/an ou tous les 3 mois — " +
@@ -200,20 +199,33 @@ fun SettingsScreen(
             )
         } else {
             state.offMonthPeriodics.forEach { item ->
-                Text(text = item.label, style = MaterialTheme.typography.titleLarge)
-                Text(
-                    text = viewModel.formatPeriodicAmountLine(item),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = "Prochaine : ${item.nextDueLabel}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.AccentWarn
-                )
+                Surface(
+                    color = A11yTokens.PaperCard,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(14.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(text = item.label, style = MaterialTheme.typography.titleLarge)
+                        Text(
+                            text = viewModel.formatPeriodicAmountLine(item),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "Prochaine : ${item.nextDueLabel}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.AccentWarn
+                        )
+                    }
+                }
             }
         }
 
-        HorizontalDivider(color = A11yTokens.PaperWarm)
+        HorizontalDivider(color = A11yTokens.InkMuted.copy(alpha = 0.25f))
         Text(text = "Sauvegarde", style = MaterialTheme.typography.titleLarge)
         Text(
             text = "Copie automatique dans Documents (3 versions). " +
@@ -235,7 +247,7 @@ fun SettingsScreen(
             enabled = !state.busy
         )
         SecondaryA11yButton(
-            text = "Envoyer une copie de sécurité (WhatsApp / Mail)",
+            text = "Envoyer une copie (WhatsApp ou Mail)",
             onClick = viewModel::shareSecurityCopy,
             enabled = !state.busy
         )

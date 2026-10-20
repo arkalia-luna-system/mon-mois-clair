@@ -1,5 +1,7 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
@@ -19,8 +21,10 @@ fun HowItWorksScreen(onBack: () -> Unit) {
             style = MaterialTheme.typography.bodyLarge
         )
         HowItWorksCopy.sections.forEach { section ->
-            Text(text = section.title, style = MaterialTheme.typography.titleLarge)
-            Text(text = section.body, style = MaterialTheme.typography.bodyLarge)
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(text = section.title, style = MaterialTheme.typography.titleLarge)
+                Text(text = section.body, style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 }

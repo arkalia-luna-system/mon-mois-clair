@@ -69,7 +69,8 @@ fun BiometricLockScreen(
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 16.dp else 32.dp))
         Text(
             text = "Mon Mois Clair",
-            style = MaterialTheme.typography.displayLarge.copy(fontSize = fit.brandTitleSp.sp)
+            style = MaterialTheme.typography.labelLarge,
+            color = A11yTokens.InkMuted
         )
         Text(
             text = "Application verrouillée",
@@ -81,7 +82,7 @@ fun BiometricLockScreen(
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = "Si rien ne s’ouvre : touchez le gros bouton vert ci-dessous.",
+            text = "Si rien ne s’ouvre : touchez « Déverrouiller maintenant ».",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
         )

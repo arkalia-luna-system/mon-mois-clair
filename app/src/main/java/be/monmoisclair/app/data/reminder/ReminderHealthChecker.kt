@@ -29,6 +29,14 @@ data class ReminderHealthReport(
             exactAlarmGranted &&
             batteryOptimizationIgnored &&
             safBackupOk
+
+    /**
+     * Vrai seulement si les rappels ne peuvent pas partir.
+     * La batterie Samsung reste souvent « limitée » sans que l’app soit cassée :
+     * on ne s’en sert pas comme pastille permanente sur l’accueil.
+     */
+    val remindersBlocked: Boolean
+        get() = !notificationsGranted || !exactAlarmGranted
 }
 
 @Singleton

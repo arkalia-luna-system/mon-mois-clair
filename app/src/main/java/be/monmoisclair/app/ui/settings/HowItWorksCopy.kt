@@ -12,19 +12,24 @@ object HowItWorksCopy {
     val sections: List<Section> = listOf(
         Section(
             title = "Le chiffre en haut",
-            body = "« Reste après factures » = vos revenus du mois moins toutes les factures. " +
-                "Ce n’est pas le solde de votre compte en banque."
+            body = "Le gros chiffre, c’est le « Reste après factures » : vos revenus du mois moins toutes les factures. " +
+                "La ligne en dessous dit ce qu’il reste à payer. " +
+                "Ce n’est pas le solde de votre compte en banque. " +
+                "Chaque mois est une page neuve : l’app ne reporte pas toute seule ce qui restait. " +
+                "Pour le noter, ajoutez un revenu « Reste du mois passé », une seule fois."
         ),
         Section(
             title = "Marquer FAIT",
             body = "Quand vous avez payé (ou vérifié le prélèvement), touchez « FAIT ✓ » à droite. " +
                 "La ligne devient verte et affiche « FAIT le … » (date exacte) — preuve rassurante. " +
                 "« Remettre » si vous vous êtes trompée. " +
-                "Chaque mois repart propre : pas de report automatique du reste."
+                "Si le montant change ce mois-ci, ouvrez la ligne et corrigez le chiffre : " +
+                "seul ce mois change, tant que « Aussi les mois suivants » n’est pas coché."
         ),
         Section(
             title = "EN RETARD",
-            body = "Si la date est passée et que ce n’est pas encore FAIT, la ligne devient rouge. " +
+            body = "Si la date est passée et que ce n’est pas encore FAIT, un badge « EN RETARD » apparaît " +
+                "(brique, pas un rouge qui fait peur). " +
                 "L’app vous rappelle chaque jour à 10 h jusqu’à ce que ce soit FAIT."
         ),
         Section(
@@ -50,13 +55,15 @@ object HowItWorksCopy {
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
                 "Elles réapparaissent le bon mois ; les autres mois, regardez Réglages → « Échéances hors ce mois ». " +
                 "Pour feuilleter l’historique : Menu (barre du bas) → calendrier des mois, " +
-                "ou les flèches ‹ › sous le reste."
+                "ou les flèches ‹ › sous le reste. " +
+                "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
+                "Si Menu affiche « Alertes », les rappels ne peuvent pas sonner : ouvrez Vérifier les alertes."
         ),
         Section(
             title = "Sauvegarde",
             body = "À chaque changement, une copie JSON est écrite dans Documents. " +
                 "En cas de nouveau téléphone : Réglages → Restaurer. " +
-                "Pour un téléphone cassé ou volé : Envoyer une copie (WhatsApp / Mail) à quelqu’un de confiance."
+                "Pour un téléphone cassé ou volé : « Envoyer une copie (WhatsApp ou Mail) » à quelqu’un de confiance."
         ),
         Section(
             title = "Empreinte (optionnel)",

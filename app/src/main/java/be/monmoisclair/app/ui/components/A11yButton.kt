@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 
@@ -30,13 +32,23 @@ fun PrimaryA11yButton(
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+        contentPadding = if (fillMaxWidth) {
+            PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        } else {
+            PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+        },
+        shape = MaterialTheme.shapes.medium,
         colors = ButtonDefaults.buttonColors(
             containerColor = A11yTokens.ButtonFill,
             contentColor = A11yTokens.ButtonText
         )
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            maxLines = 2
+        )
     }
 }
 
@@ -53,9 +65,17 @@ fun SecondaryA11yButton(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp)
+        shape = MaterialTheme.shapes.medium,
+        border = BorderStroke(1.dp, A11yTokens.InkMuted),
+        colors = ButtonDefaults.outlinedButtonColors(contentColor = A11yTokens.Ink),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            maxLines = 2
+        )
     }
 }
 
@@ -72,7 +92,9 @@ fun DangerA11yButton(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+        shape = MaterialTheme.shapes.medium,
+        border = BorderStroke(1.dp, A11yTokens.AccentDanger),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = A11yTokens.AccentDanger
         )

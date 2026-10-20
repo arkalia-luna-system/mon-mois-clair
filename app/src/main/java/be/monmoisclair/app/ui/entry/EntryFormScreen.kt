@@ -45,7 +45,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.imeOpen
 
 @Composable
 fun AddEntryScreen(
@@ -255,7 +257,11 @@ private fun EntryFormScaffold(
     onDelete: (() -> Unit)?
 ) {
     val focusManager = LocalFocusManager.current
-    // Champs scrollables + actions épinglées au-dessus du clavier (imePadding).
+    val keyboardOpen = imeOpen()
+    val nameBring = rememberFocusKeepsVisible()
+    val amountBring = rememberFocusKeepsVisible()
+    val noteBring = rememberFocusKeepsVisible()
+    // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -270,19 +276,9 @@ private fun EntryFormScaffold(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(text = title, style = MaterialTheme.typography.headlineMedium)
-
-            if (showPaymentAssist && onScanEpc != null) {
-                PrimaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
-                Text(
-                    text = "Visez le QR Code de la facture papier (Belgique).",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
-            }
+            Text(text = title, style = MaterialTheme.typography.titleLarge)
 
             if (showRecurring) {
-                Text("Type", style = MaterialTheme.typography.titleLarge)
                 @OptIn(ExperimentalLayoutApi::class)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -297,7 +293,10 @@ private fun EntryFormScaffold(
                 value = label,
                 onValueChange = onLabel,
                 label = { Text("Nom (ex. Loyer)") },
-                modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .then(nameBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -309,25 +308,13 @@ private fun EntryFormScaffold(
                 value = amountText,
                 onValueChange = onAmount,
                 label = { Text("Montant (€)") },
-                modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .then(amountBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
-                singleLine = true
-            )
-            OutlinedTextField(
-                value = dayText,
-                onValueChange = onDay,
-                label = { Text("Jour du mois (1–31)") },
-                modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
-                textStyle = MaterialTheme.typography.bodyLarge,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
@@ -335,16 +322,23 @@ private fun EntryFormScaffold(
                 ),
                 singleLine = true
             )
+            DayOfMonthGrid(
+                selectedDay = dayText.trim().toIntOrNull()?.takeIf { it in 1..31 },
+                onSelect = { onDay(it.toString()) }
+            )
 
-            recurrenceInfo?.let { info ->
-                Text(text = "Fréquence", style = MaterialTheme.typography.titleLarge)
-                Text(text = info, style = MaterialTheme.typography.bodyLarge)
-                Text(
-                    text = "Pour changer la fréquence, supprimez cette entrée et recréez-la " +
-                        "(avec « Appliquer aussi aux mois suivants » si besoin).",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
+            // Édition : info fréquence seule (pas de double titre « Fréquence »).
+            if (!showRecurring) {
+                recurrenceInfo?.let { info ->
+                    Text(text = "Fréquence", style = MaterialTheme.typography.titleLarge)
+                    Text(text = info, style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = "Pour changer la fréquence, supprimez cette entrée et recréez-la " +
+                            "(cochez « Aussi les mois suivants » seulement si vous voulez toucher le modèle).",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                }
             }
 
             if (showRecurring && onRecurrence != null) {
@@ -412,13 +406,24 @@ private fun EntryFormScaffold(
                 )
             }
             if (showPaymentAssist) {
-                Text("Paiement (banque)", style = MaterialTheme.typography.titleLarge)
+                Text("Facture papier", style = MaterialTheme.typography.titleLarge)
+                if (onScanEpc != null) {
+                    SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
+                    Text(
+                        text = "Visez le QR de la facture belge.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                }
                 OutlinedTextField(
                     value = paymentNote,
                     onValueChange = onPaymentNote,
                     label = { Text("Communication / note") },
                     placeholder = { Text("+++090/9337/55493+++") },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = A11yTokens.minTouchHeight),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .then(noteBring),
                     textStyle = MaterialTheme.typography.bodyLarge
                 )
                 if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
@@ -445,8 +450,13 @@ private fun EntryFormScaffold(
             if (showApplyFollowing && hasTemplate) {
                 CheckRow(
                     checked = applyFollowing,
-                    label = "Aussi pour les mois suivants (défaut = ce mois-ci seul)",
+                    label = "Aussi les mois suivants",
                     onChecked = onApplyFollowing
+                )
+                Text(
+                    text = "Laissé décoché : seul ce mois change (eau, téléphone, régularisation).",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
                 )
             }
 
@@ -460,11 +470,13 @@ private fun EntryFormScaffold(
         }
 
         PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
-        Spacer(modifier = Modifier.height(8.dp))
-        SecondaryA11yButton(text = "Annuler", onClick = onCancel)
-        if (onDelete != null) {
+        if (!keyboardOpen) {
             Spacer(modifier = Modifier.height(8.dp))
-            DangerA11yButton(text = "Supprimer", onClick = onDelete)
+            SecondaryA11yButton(text = "Annuler", onClick = onCancel)
+            if (onDelete != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                DangerA11yButton(text = "Supprimer", onClick = onDelete)
+            }
         }
     }
 }

@@ -11,10 +11,14 @@ Copie-colle le bloc dans un **nouvel** agent. Puis validation / push par l’aut
 
 ```text
 Tu es l’expert TESTEUR VISUEL + ERGONOMIE de l’app Android « Mon Mois Clair »
-(package be.monmoisclair.app, Kotlin + Jetpack Compose, sideload familial Samsung One UI / S25 Ultra).
+(package be.monmoisclair.app, Kotlin + Jetpack Compose, sideload familial Samsung One UI).
+Cible affichage n°1 = Galaxy S26 6,3″ ; S25 Ultra doit rester confortable.
 
-Public cible : personne qui veut voir clair son mois **sans lunettes idéales**,
-gros doigts, peu de patience, contraste fort souhaité (charte : crème papier, ≥ 18 sp, ≥ 48 dp).
+Profil du jour (OBLIGATOIRE — docs/PROFILS_TESTEURS.md) :
+→ [ Chiant | Perf ]
+Chiant = contraste WCAG, 48 dp, wrap, pastilles Auto/EN RETARD/FAIT.
+Perf = jank scroll, ouverture Menu/Ajouter/caméra, clavier qui pousse mal l’UI.
+Minimum 3 frictions.
 
 ## Ta mission (dans cet ordre)
 
@@ -61,7 +65,7 @@ sauf si un défaut UI bloque l’action.
 - [ ] Zone lecture haut = montants ; zone pouce bas = Menu / + Ajouter
 - [ ] Cartes ≥ 12 dp d’écart ; FAIT à droite ≥ 96 dp de largeur min
 - [ ] Palette carnet (crème / teal / russet / sage) — pas blanc pur ni rouge sang
-- [ ] « FAIT le JJ/MM » lisible ; Auto en ocre
+- [ ] « FAIT le JJ/MM » en pastille forêt (texte ivoire) ; « Auto » = pastille or avec texte encre (jamais l’or en lettres)
 - [ ] Libellés français compréhensibles (pas de jargon dev)
 - [ ] Dialogues destructifs : titre + conséquence + Annuler / action danger
 - [ ] États vides : message + prochaine action évidente (« + Ajouter » en bas)
@@ -69,7 +73,8 @@ sauf si un défaut UI bloque l’action.
 
 ### Formulaires / clavier
 - [ ] Labels toujours visibles
-- [ ] Enregistrer / Continuer pas cachés par le clavier (`imePadding`)
+- [ ] En-tête accueil court (mois + un chiffre + une ligne), pas une plaque
+- [ ] Clavier ouvert : le champ tapé reste visible ; un seul bouton Enregistrer au-dessus
 - [ ] Erreurs de saisie en rouge lisible, pas un toast minuscule
 
 ### Écrans sensibles

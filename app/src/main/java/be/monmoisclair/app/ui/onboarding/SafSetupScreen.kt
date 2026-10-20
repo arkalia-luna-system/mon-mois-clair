@@ -2,15 +2,8 @@ package be.monmoisclair.app.ui.onboarding
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,11 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import be.monmoisclair.app.ui.components.PrimaryA11yButton
-import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
-import be.monmoisclair.app.ui.theme.rememberDisplayFit
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun SafSetupScreen(
@@ -44,19 +34,18 @@ fun SafSetupScreen(
         if (state.completed) onSafReady()
     }
 
-    val fit = rememberDisplayFit()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(A11yTokens.PaperCream)
-            .verticalScroll(rememberScrollState())
-            .padding(A11yTokens.screenPadding),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    PinnedActionScaffold(
+        primaryLabel = if (state.saving) "Enregistrement…" else "Choisir un dossier",
+        primaryEnabled = !state.saving,
+        onPrimary = { launcher.launch(viewModel.openDocumentTreeIntent()) },
+        secondaryLabel = if (onCancel != null) "Retour" else null,
+        onSecondary = onCancel
     ) {
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 12.dp else 24.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Mon Mois Clair",
-            style = MaterialTheme.typography.displayLarge.copy(fontSize = fit.brandTitleSp.sp)
+            style = MaterialTheme.typography.labelLarge,
+            color = A11yTokens.InkMuted
         )
         Text(text = "Dossier de sauvegarde", style = MaterialTheme.typography.headlineMedium)
         Text(
@@ -70,19 +59,6 @@ fun SafSetupScreen(
                 text = msg,
                 color = A11yTokens.AccentDanger,
                 style = MaterialTheme.typography.bodyLarge
-            )
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        PrimaryA11yButton(
-            text = if (state.saving) "Enregistrement…" else "Choisir un dossier",
-            enabled = !state.saving,
-            onClick = { launcher.launch(viewModel.openDocumentTreeIntent()) }
-        )
-        if (onCancel != null) {
-            SecondaryA11yButton(
-                text = "Retour",
-                enabled = !state.saving,
-                onClick = onCancel
             )
         }
     }

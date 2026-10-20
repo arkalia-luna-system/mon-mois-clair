@@ -13,6 +13,10 @@ class HowItWorksCopyTest {
         assertThat(titles).contains("Rappels")
         assertThat(titles).contains("Facture papier")
         assertThat(titles).contains("Sur une année")
+        val all = HowItWorksCopy.sections.joinToString("\n") { it.body }
+        assertThat(all).contains("Reste du mois passé")
+        assertThat(all).contains("Aussi les mois suivants")
+        assertThat(all).contains("1 à 31")
         assertThat(HowItWorksCopy.sections.size).isAtLeast(7)
         HowItWorksCopy.sections.forEach { s ->
             assertThat(s.body.length).isGreaterThan(40)

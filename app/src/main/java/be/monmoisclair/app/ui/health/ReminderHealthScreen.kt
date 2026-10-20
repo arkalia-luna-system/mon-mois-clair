@@ -16,7 +16,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
-import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 
@@ -51,7 +50,14 @@ fun ReminderHealthScreen(
             color = A11yTokens.InkMuted
         )
 
-        report?.let { r ->
+        val r = report
+        if (r == null) {
+            Text(
+                text = "Vérification…",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+        } else {
             HealthStatusRow("Notifications", r.notificationsGranted)
             HealthStatusRow("Alarmes exactes", r.exactAlarmGranted)
             HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
@@ -73,20 +79,21 @@ fun ReminderHealthScreen(
         }
 
         SecondaryA11yButton(text = "Actualiser", onClick = { viewModel.refresh() })
+        // Une seule primaire dans l’app = actions de correction en secondaire (contour).
         if (report?.notificationsGranted == false) {
-            PrimaryA11yButton(
+            SecondaryA11yButton(
                 text = "Réglages notifications",
                 onClick = { context.startActivity(viewModel.intentNotifications()) }
             )
         }
         if (report?.exactAlarmGranted == false) {
-            PrimaryA11yButton(
+            SecondaryA11yButton(
                 text = "Réglages alarmes exactes",
                 onClick = { context.startActivity(viewModel.intentExactAlarm()) }
             )
         }
         if (report?.batteryOptimizationIgnored == false) {
-            PrimaryA11yButton(
+            SecondaryA11yButton(
                 text = "Exemption batterie",
                 onClick = { context.startActivity(viewModel.intentIgnoreBattery()) }
             )

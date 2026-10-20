@@ -58,7 +58,7 @@ fun HomeMenuSheet(
         ) {
             Text(text = "Menu", style = MaterialTheme.typography.headlineMedium)
             Text(
-                text = "Mois et outils — la liste du mois reste sur l’accueil.",
+                text = "Un mois, ou un outil.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )
@@ -122,12 +122,6 @@ fun HomeMenuSheet(
                     onOpenSettings()
                 },
                 modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "D’autres fonctions arriveront ici — pas sur l’accueil.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
             )
         }
     }

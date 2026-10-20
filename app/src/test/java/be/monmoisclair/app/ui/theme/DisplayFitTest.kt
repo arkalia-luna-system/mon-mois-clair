@@ -10,8 +10,7 @@ class DisplayFitTest {
         // S26 FHD+ ~1080×2340 @450dpi ≈ 384×832 ; @480dpi ≈ 360×780
         val fit = DisplayFit.from(screenWidthDp = 360, screenHeightDp = 780)
         assertThat(fit.compactHomeChrome).isTrue()
-        assertThat(fit.remainingAmountSp).isEqualTo(36f)
-        assertThat(fit.brandTitleSp).isLessThan(fit.remainingAmountSp)
+        assertThat(fit.remainingAmountSp).isEqualTo(32f)
     }
 
     @Test
@@ -19,8 +18,7 @@ class DisplayFitTest {
         // Ultra QHD @560dpi ≈ 411×891
         val fit = DisplayFit.from(screenWidthDp = 411, screenHeightDp = 891)
         assertThat(fit.compactHomeChrome).isFalse()
-        assertThat(fit.remainingAmountSp).isEqualTo(42f)
-        assertThat(fit.brandTitleSp).isLessThan(fit.remainingAmountSp)
+        assertThat(fit.remainingAmountSp).isEqualTo(36f)
     }
 
     @Test

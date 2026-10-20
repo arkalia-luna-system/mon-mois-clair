@@ -28,8 +28,8 @@ data class DisplayFit(
     val stickyPaddingHorizontal: Dp,
     val bannerPadding: Dp,
     val sectionGap: Dp,
-    val remainingAmountSp: Float,
-    val brandTitleSp: Float
+    /** Un seul chiffre. Assez grand pour être le signal, assez court pour laisser la liste. */
+    val remainingAmountSp: Float
 ) {
     companion object {
         /**
@@ -48,10 +48,9 @@ data class DisplayFit(
                 // Sticky léger : le montant « Reste » domine ; la marque est une légende.
                 stickyPaddingVertical = if (compact) 8.dp else 12.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
-                bannerPadding = if (compact) 10.dp else 12.dp,
-                sectionGap = if (compact) 4.dp else 6.dp,
-                remainingAmountSp = if (compact) 36f else 42f,
-                brandTitleSp = if (compact) 13f else 14f
+                bannerPadding = if (compact) 8.dp else 10.dp,
+                sectionGap = if (compact) 2.dp else 4.dp,
+                remainingAmountSp = if (compact) 32f else 36f
             )
         }
     }

@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-20 (lot **6.x** + **fidélité outil quotidien** / étude 2026).
+Mise à jour : 2026-10-20 (lot **6.13** — marque : M ivoire sur teal, rappel blanc, ouverture papier).
 
 ## 1. Vision
 
@@ -23,15 +23,19 @@ App **locale, privée, hors-ligne** (Samsung One UI). Sideload **release signé*
 L’écran d’accueil n’est **pas** un tableau de bord de toutes les fonctions.  
 Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, divers, ajouter.
 
-| Zone lecture (haut ~30 %) | Zone liste (centre) | Zone pouce (bas — barre fixe) |
-|---------------------------|---------------------|--------------------------------|
-| Reste + à payer (gros) | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** · (outils) |
-| ‹ › mois (sous le résumé) | FAIT / Remettre à droite (pouce) | Calendrier + Santé + Réglages dans Menu |
-| Bandeau L si utile | Divers + liste | |
+| Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
+|------------------------|---------------------|------------------|
+| Mois ‹ › puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
+| Une ligne « à payer » | FAIT / Remettre à droite | Calendrier + Santé + Réglages dans Menu |
+| Alerte en 2 lignes maximum | Liste d’abord, divers ensuite | **Masquée** tant que le clavier est ouvert |
 
-**Interdit** : empiler Santé / Réglages / aide dans le scroll de la liste ; boutons critiques collés en haut hors zone pouce.  
-**Marque** : légende discrète — jamais plus grand que « Reste ».  
-**Futures fonctions** : Menu ou écran dédié — **jamais** un nouveau bouton sur le sticky.
+L’en-tête n’est **pas** une bannière. Pas de plaque colorée, pas de nom d’app, pas de titre en plus du chiffre.  
+Le « ~30 % » du haut est un **plafond** de zone de lecture, pas une surface à remplir.
+
+**Interdit** : empiler Santé / Réglages / aide dans le scroll ; boutons critiques collés tout en haut.  
+**Marque** : absente de l’accueil. Légende discrète au verrouillage et à l’installation.  
+**Futures fonctions** : Menu ou écran dédié — **jamais** un nouveau bloc sur l’en-tête.  
+**Clavier** : le champ en cours reste visible. Une seule action épinglée (`Enregistrer`). Annuler et Supprimer reviennent quand le clavier se ferme.
 
 ### Stack
 
@@ -54,6 +58,11 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | **6.6** | Hub Réglages utile + navigation année | ✅ |
 | **6.7** | Home ledger + Menu (fin du fourre-tout) | ✅ |
 | **6.8** | Fidélité outil (étude 2026) : FAIT daté, palette, barre pouce | ✅ |
+| **6.9** | Relecture étude : contraste réel, grille des jours, cartes, alertes | ✅ |
+| **6.10** | Calme visuel : en-tête court, clavier qui laisse voir le champ | ✅ |
+| **6.11** | Rythme visuel : serif au chiffre, mois en toutes lettres, écrans allégés | ✅ |
+| **6.12** | Parcours fini : Continuer épinglé, un seul bouton plein, cartes échéances | ✅ |
+| **6.13** | Marque : icône M, rappel blanc, ouverture papier | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -98,7 +107,11 @@ Appliqué **une seule fois** dans `MainActivity`.
 
 - Si `screenHeightDp ≤ 800` → **chrome Home compact** (paddings réduits) pour laisser la place à la **liste**.
 - Sinon → mode confort Ultra.
-- Montant « Reste » = signal n°1 ; titre marque = légende (sp nettement plus petit).
+- Montant « Reste » = signal n°1 (32 sp si l’écran est court, 36 sp sinon). Serif **seulement** pour ce chiffre.
+- Titres d’écran, noms de factures, boutons : sans-serif.
+- Un seul bouton plein (teal). Les autres sont un trait encre, coins 12 dp — pas une pile de pastilles teal.
+- Mois en toutes lettres (« Octobre 2026 »).
+- Nom de l’app : hors de l’accueil. Sur l’écran d’accueil du téléphone : **M ivoire sur teal** (`#1B4D4E`). Les rappels utilisent la même silhouette en blanc.
 - Bandeau L : fond contrasté, max 3–4 lignes.
 
 Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `HomeMenuSheet`.
@@ -123,60 +136,61 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `HomeMenuShee
 | Loyer, salaire, courses | Home mois courant | OK (liste + reste + divers) |
 | Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
 | Feuilleter 12 mois passés | Menu → calendrier + ‹ › | **Revenir au mois en cours** (Menu) |
-| Rappels qui ne sonnent pas | Menu → Santé | Un seul hub |
+| Rappels qui ne sonnent pas | Menu affiche « Alertes », puis Santé | Un seul hub |
 
 Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages dans le scroll Home.
 
-## 8. Fidélité outil quotidien — décisions étude 2026 (verrouillé)
+## 8. Fidélité outil quotidien — étude 2026 relue (verrouillé)
 
-Constat marché : **>75 % abandonnent une app budget sous 60 jours** si la saisie coûte plus que le bénéfice immédiat.  
-Ce qui retient : **réduction de charge cognitive** + réponses instantanées à  
+La leçon utile de l’étude tient : ce qui retient, c’est la **charge de saisie** face au bénéfice immédiat, et deux réponses visibles sans réfléchir —  
 1) *« Qu’est-ce que je dois payer maintenant ? »*  
 2) *« Combien me reste-t-il vraiment ? »*
 
-### Adopter (codé / obligatoire produit)
+Le chiffre « plus de 75 % abandonnent en 60 jours » est une formule de marché **sans source vérifiable**. On garde la leçon, pas le pourcentage comme fait mesuré.
+
+L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3″** (maman). Les règles pouce One UI s’appliquent aux deux ; les cibles de 48 dp doivent tenir dans ~360 dp de large, pas dans un écran Ultra.
+
+### Adopter (codé)
 
 | Idée étude | Décision MMC |
 |------------|--------------|
-| Safe-to-Spend (PocketGuard) | Sticky **Reste après factures** + **À payer** = signaux n°1 |
-| Check-off effect | **Marquer FAIT ✓** visible ; baisse immédiate de « À payer » |
-| Preuve anti-doute | Afficher **« FAIT le JJ/MM »** (`doneAtEpochMs`) pas seulement « FAIT » |
-| Liste > graphiques | **Jamais** camembert / courbes — liste verticale + couleurs franches |
-| Zone pouce One UI | Barre basse **Menu · + Ajouter** ; sticky haut = lecture seule |
-| Boutons explicites | Pas de swipe / appui long caché ; tout est écrit |
-| Montant variable | Édition **ce mois-ci seul** par défaut (`applyToFollowing = false`) |
-| Mois indépendants | **Pas de report auto** du reste mois N → N+1 (erreur cumulée) |
-| Palette AMOLED | Fond papier chaud, teal calme, russet (pas rouge sang), sage FAIT |
-| Local-first | Zéro banque, zéro cloud, zéro pub (déjà) |
+| Safe-to-Spend | Sticky **Reste après factures** + **À payer**. Le montant reste plus grand que les 28–32 sp cités (36 sp compact / 42 sp confort) : c’est le signal n°1 |
+| Check-off | Bouton d’**action** « FAIT ✓ » à droite (≥ 96 dp). « À payer » baisse tout de suite. Le bouton ne s’appelle pas « À PAYER » : un bouton dit l’action |
+| Preuve | Pastille **« FAIT le JJ/MM »** (`doneAtEpochMs`) |
+| Liste > graphiques | Jamais camembert / courbes |
+| Zone pouce | Barre basse **Menu · + Ajouter**, cachée pendant le clavier. Factures en tête ; divers en dessous |
+| Jour d’échéance | Grille **1–31**, cibles ≥ 48 dp, qui se replie (7 colonnes de 48 dp ne tiennent pas sur le S26) |
+| Montant | Clavier décimal. Édition **ce mois-ci seul** par défaut |
+| Mois indépendants | Pas de report auto. Un revenu ponctuel « Reste du mois passé » si elle le veut |
+| Alertes | **Menu** devient « Menu / Alertes » seulement si notifications ou alarmes exactes sont refusées. Pas de pastille permanente pour la batterie Samsung |
+| Local-first | Zéro banque, zéro cloud, zéro pub |
 
-### Refuser (pièges)
+### Refuser
 
 | Idée | Pourquoi non |
 |------|----------------|
-| Connexion bancaire / abonnement | Contredit local-first familial |
-| Enveloppes virtuelles (Goodbudget) | Charge mentale trop haute pour persona maman |
-| Graphiques analytiques | Consultés 1ʳᵉ semaine puis oubliés |
-| Report automatique du solde | Dérive si courses non notées |
-| Menu hamburger icône seule | Découvrabilité ÷2 — toujours **texte** « Menu » |
+| Connexion bancaire / abonnement / enveloppes / graphiques | Charge ou risque inutiles pour ce persona |
+| Report automatique du solde | L’écart (espèces, courses non notées) s’accumule |
+| 3ᵉ bouton bas « Réglages & Sauvegarde » | Étroit sur S26. Réglages est déjà dans Menu, en toutes lettres |
+| Fiche intermédiaire Modifier / Supprimer / Fermer | Un tap de plus. La ligne ouvre déjà l’édition, avec Annuler et Supprimer écrits |
+| Menu hamburger icône seule | Toujours le mot « Menu » |
 | Rouge `#FF0000` / blanc `#FFFFFF` | Anxiété + halo AMOLED |
+| Photo / dictée IA type Moneko | Hors scope — scan EPC + photo facture restent offline |
+| Ocre `#D99B26` **en texte** | Mesuré à **~2,2:1** sur le papier : illisible. L’or est le **fond** de la pastille « Auto », le mot est en encre |
+| Russet `#B84A27` tel quel | Mesuré à **~4,7:1** sur le papier, pas les ~7:1 annoncés. Remplacé par `#8E3418` (toujours brique, pas rouge sang) |
 
-### Différer (pas bloquant 6.8)
+### Palette « Carnet apaisé » (codes mesurés)
 
-| Idée | Quand |
-|------|-------|
-| Grille jours 1–31 à la place du clavier jour | Lot saisie (après validation famille) |
-| Pastille rouge Santé sur l’onglet Menu | Quand Santé expose un score « KO » simple |
-| Photo / dictée IA (Moneko) | Hors scope — on a déjà scan EPC + photo facture offline |
+Contraste via `WcagContrast` (WCAG 2.1). Encre, boutons et pastilles : **≥ 7:1**.  
+Un reste négatif et le bandeau « à prévoir » restent en brun `#8A5A1E` (~5,4:1 sur le papier, au-dessus de 4,5).
 
-### Palette « Carnet apaisé » (codes)
-
-| Rôle | Hex | Token |
-|------|-----|--------|
-| Fond | `#F7F4EB` | `PaperCream` |
-| Cartes | `#FFFDF9` | `PaperCard` |
-| Encre | `#1E1B18` | `Ink` |
-| Boutons / bandeau | `#1B4D4E` | `ButtonFill` |
-| FAIT fond | `#E3EFE6` | `AccentOkSoft` |
-| FAIT badge | `#1E5631` | `AccentOk` |
-| Retard | `#B84A27` | `AccentDanger` |
-| Auto | `#D99B26` | `AccentAuto` |
+| Rôle | Hex | Token | Contraste utile |
+|------|-----|--------|-----------------|
+| Fond | `#F7F4EB` | `PaperCream` | Encre dessus ~15,6:1 |
+| Cartes | `#FFFDF9` | `PaperCard` | Encre dessus ~16,9:1 |
+| Encre | `#1E1B18` | `Ink` | |
+| Boutons | `#1B4D4E` | `ButtonFill` | Ivoire `#FFFDF9` dessus ~9,3:1 |
+| FAIT fond de ligne | `#E3EFE6` | `AccentOkSoft` | |
+| FAIT pastille | `#1E5631` | `AccentOk` | Ivoire dessus ~8,5:1 |
+| Retard / erreur | `#8E3418` | `AccentDanger` | Ivoire dessus ~7,8:1 ; encre brique sur papier ~7,2:1 |
+| Auto (fond de pastille) | `#D99B26` | `AccentAuto` | Encre dessus ~7,1:1 — jamais ce doré comme couleur de lettres |

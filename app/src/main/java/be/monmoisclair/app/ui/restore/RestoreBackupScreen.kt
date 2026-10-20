@@ -119,16 +119,14 @@ fun RestoreBackupScreen(
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = "Restaurer une sauvegarde", style = MaterialTheme.typography.headlineMedium)
         Text(
-            text = "Utilisez une copie mon-mois-clair-backup-1.json " +
-                "(dossier Documents) pour récupérer vos données après " +
-                "réinstallation ou changement de téléphone.",
+            text = "Pour retrouver vos mois après une réinstallation ou un nouveau téléphone.",
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = "Attention : restaurer remplace tout ce qui est dans l’app. " +
-                "Un écran de confirmation vous demandera d’abord d’accepter.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.AccentDanger
+            text = "Restaurer remplace tout ce qui est dans l’app. " +
+                "Un écran vous demandera de confirmer.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
         )
 
         state.message?.let { msg ->
