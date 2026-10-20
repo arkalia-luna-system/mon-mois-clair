@@ -2,7 +2,7 @@
 
 Date : 2026-10-20.  
 Journal en tête au moment de la lecture : **6.19**.  
-**Suivi :** codé en **6.20** (sauf smoke P3-Q04 et S04 archive).  
+**Suivi :** code passe 3 en **6.20** ; S04 archive en **6.21** ; smoke P3-Q04 encore ouvert.  
 Ne remplace pas les deux fichiers précédents. Il les pousse.
 
 - Origine : `docs/AUDIT_PREMIUM_2026-10-20.md`
@@ -164,3 +164,35 @@ Chaque ordre : code, test qui échoue avant la correction quand c’est une règ
 - `app/src/main/java/be/monmoisclair/app/data/reminder/PaymentNotificationHelper.kt`
 - `app/src/main/res/values/strings.xml`
 - `app/src/main/java/be/monmoisclair/app/ui/restore/RestoreMessages.kt`
+
+---
+
+## Vérification 6.20 / 6.21
+
+Mesure : `./gradlew :app:testDebugUnitTest --rerun-tasks` → **148/148** (42 fichiers, 0 échec).  
+Version : `0.1.0-6.21` / `versionCode` 26.
+
+| ID | État | Note |
+|----|------|------|
+| P3-V01 | ✅ | « Après divers » = `bodyLarge` + encre atténuée |
+| P3-V02 | ✅ | Mois vide : phrase seule, un seul teal en bas |
+| P3-V03 | ✅ | « Rien pour « … » » + totaux inchangés |
+| P3-V04 | ✅ | Titres humains + canal « Rappels de factures » |
+| P3-F01 | ✅ | `resolveTemplateAnchor` + année affichée + tests |
+| P3-F02 | ✅ | Scroll sur `filteredTimeline` + offset recherche |
+| P3-F03 | ✅ | `ReducedToZero` + message honnête |
+| P3-R01 | ✅ | Clamp jour + boucle isolée + garde exact alarms + test |
+| P3-R02 | ✅ | Phrase fixe, sans détail plateforme |
+| P3-Q01 | ✅ | Action notification FAIT → `markDoneIfTodo` |
+| P3-Q02 | ✅ | Phrase sous le champ recherche |
+| P3-Q03 | ✅ | Source Serif 4 / Source Sans 3 embarqués |
+| P3-Q04 | ⏸ | Smoke téléphone — pas encore rejoué au doigt |
+
+### Smoke P3-Q04 (à faire sur Galaxy)
+
+1. Notification avec ≥4 factures : bonne ligne sous le doigt ?
+2. Échéance « tous les 3 mois » : corriger seulement le nom → mois futurs intacts ?
+3. Mois vide : un seul bouton teal ?
+4. Recherche « zzzz » : phrase + totaux toujours là ?
+5. Retrait divers > total : message honnête ?
+6. Splash : M teal entier, pas coupé ?

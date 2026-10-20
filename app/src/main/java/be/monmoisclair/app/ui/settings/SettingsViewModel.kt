@@ -80,7 +80,7 @@ class SettingsViewModel @Inject constructor(
                         it.copy(
                             busy = false,
                             message = "Choisissez une app pour envoyer. " +
-                                "Rappel : les photos de factures restent dans Documents.",
+                                "L’archive contient les mois et les photos de factures.",
                             isError = false
                         )
                     }

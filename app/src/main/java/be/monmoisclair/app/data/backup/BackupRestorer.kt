@@ -49,13 +49,30 @@ class BackupRestorer @Inject constructor(
 
     suspend fun restoreFromUri(fileUri: Uri): RestoreResult {
         return try {
-            val json = readUriUtf8(fileUri)
+            val bytes = readUriBytes(fileUri)
+            val (json, receipts) = if (BackupSecurityArchive.looksLikeZip(bytes)) {
+                val unpacked = BackupSecurityArchive.unpack(bytes)
+                unpacked.jsonUtf8 to unpacked.receipts
+            } else {
+                bytes.toString(Charsets.UTF_8) to emptyMap()
+            }
             val document = codec.decodeAndVerify(json)
-            applyDocument(document)
+            val applied = applyDocument(document)
+            if (applied is RestoreResult.Success && receipts.isNotEmpty()) {
+                restoreReceiptsBestEffort(receipts)
+            }
+            applied
         } catch (e: BackupFailure) {
             mapFailure(e)
         } catch (e: Exception) {
             RestoreResult.IoError(e.message ?: "Lecture URI impossible")
+        }
+    }
+
+    private suspend fun restoreReceiptsBestEffort(receipts: Map<String, ByteArray>) {
+        if (!safBackupStore.hasPersistedTree()) return
+        for ((relative, data) in receipts) {
+            runCatching { safBackupStore.writeBinaryRelative(relative, data) }
         }
     }
 
@@ -158,10 +175,10 @@ class BackupRestorer @Inject constructor(
         }
     }
 
-    private fun readUriUtf8(uri: Uri): String {
+    private fun readUriBytes(uri: Uri): ByteArray {
         try {
             context.contentResolver.openInputStream(uri)?.use { input ->
-                return input.readBytes().toString(Charsets.UTF_8)
+                return input.readBytes()
             } ?: throw BackupFailure.Io("openInputStream null pour $uri")
         } catch (e: BackupFailure) {
             throw e

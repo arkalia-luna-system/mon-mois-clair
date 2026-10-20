@@ -119,6 +119,21 @@ class SafDocumentBackupTree(
         return current.uri
     }
 
+    /** Photos webp du dossier receipts, pour l’archive de sécurité (S04). */
+    fun listReceiptBinaries(): Map<String, ByteArray> {
+        val dir = root.findFile("receipts") ?: return emptyMap()
+        if (!dir.isDirectory) return emptyMap()
+        val out = linkedMapOf<String, ByteArray>()
+        for (child in dir.listFiles()) {
+            val name = child.name ?: continue
+            if (!child.isFile || !name.endsWith(".webp", ignoreCase = true)) continue
+            val bytes = context.contentResolver.openInputStream(child.uri)?.use { it.readBytes() }
+                ?: continue
+            out["receipts/$name"] = bytes
+        }
+        return out
+    }
+
     private fun copyThenDelete(from: DocumentFile, toName: String) {
         val bytes = context.contentResolver.openInputStream(from.uri)?.use { it.readBytes() }
             ?: throw BackupFailure.Io("Fallback copy: lecture source impossible")

@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-145%2F145-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-148%2F148-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.20-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.21-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,11 +23,11 @@ Saisie manuelle · backup JSON local · rappels exacts · distribution familiale
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.20` |
-| Dernière étape | **6.20** Passe 3 audit + polices Source |
-| Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** — smoke S26 encore ouvert |
+| Version | `0.1.0-6.21` |
+| Dernière étape | **6.21** Archive ZIP (mois + photos) — smoke Galaxy encore ouvert |
+| Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **145/145** OK |
+| Tests unitaires | **148/148** OK |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md)
 

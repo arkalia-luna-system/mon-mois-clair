@@ -9,24 +9,35 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.20** (Passe 3 + polices Source) |
+| Dernière étape terminée | **6.21** (S04 archive ZIP mois + photos) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Campagne profils · smoke S26 (P3-Q04) · S04 archive photos (plus tard) |
-| Audit premium | Origine + suite + passe 3 (code) · polices V16/S03 branchées |
+| Prochaine sous-étape | Campagne profils · smoke S26 (P3-Q04 / S05) |
+| Audit premium | Passe 3 + S04 tenus · smoke Galaxy encore ouvert |
 
 ---
 
 ## Journal
 
+### 2026-10-20 — 6.21 Archive photos (S04)
+
+**Problème :** partage Mail/WhatsApp n’emportait que le JSON ; les photos restaient hors message.
+
+**Codé :** `BackupSecurityArchive` (ZIP JSON + `receipts/*.webp`, plafond 45 Mo) · `ShareBackupUseCase` envoie l’archive · restore URI ZIP → mois + photos best-effort · textes Réglages / Comment ça marche · `BackupSecurityArchiveTest` · suppression doublon `MarkDoneReceiver`.
+
+**Différé :** smoke Galaxy P3-Q04 / S05 (pas rejoué au doigt dans cette étape).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **148/148** (42 fichiers, 0 échec)  
+**Version :** `0.1.0-6.21` · `versionCode` 26
+
 ### 2026-10-20 — 6.20 Passe 3 audit + polices
 
 **Problème :** `PASSE-3.md` — ancre modèle qui saute l’année (F01) ; rappel cassé par un jour 31 (R01) ; scroll notif + recherche (F02) ; divers trop retirés (F03) ; lecture Home (V01–V04, Q02) ; restore technique (R02) ; notif sans FAIT (Q01) ; police système (Q03).
 
-**Codé :** `resolveTemplateAnchor` · clamp `ReminderTiming` + boucle isolée + garde exact alarms · titres « Dans 3 jours : … » · action notif FAIT · Divers `ReducedToZero` · Home (Après divers atténué, 1 teal, recherche vide/phrase, highlight filtré) · restore phrase humaine · Source Serif 4 / Source Sans 3 (OFL).
+**Codé :** `resolveTemplateAnchor` · clamp `ReminderTiming` + boucle isolée + garde exact alarms · titres « Dans 3 jours : … » · action notif FAIT (`ReminderReceiver.ACTION_MARK_DONE` + `markDoneIfTodo`) · Divers `ReducedToZero` · Home (Après divers atténué, 1 teal, recherche vide/phrase, highlight filtré) · restore phrase humaine · Source Serif 4 / Source Sans 3 (OFL).
 
-**Différé :** S04 archive photos · smoke Galaxy P3-Q04.
+**Différé alors :** smoke Galaxy P3-Q04 · S04 archive (clos en 6.21).
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **145/145** (41 fichiers, 0 échec)  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **148/148** (42 fichiers, 0 échec)  
 **Version :** `0.1.0-6.20` · `versionCode` 25
 
 ### 2026-10-20 — 6.19 Suite audit (fin → début)

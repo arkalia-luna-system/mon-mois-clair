@@ -231,9 +231,9 @@ fun SettingsScreen(
 
         SettingsCard(title = "Sauvegarde") {
             Text(
-                text = "Copie automatique dans Documents (3 versions) : mois + photos de factures. " +
-                    "« Envoyer une copie » partage seulement le fichier de sauvegarde (sans les photos) ; " +
-                    "les photos restent dans le dossier Documents choisi.",
+                text = "Copie automatique dans Documents (3 versions) : mois + photos. " +
+                    "« Envoyer une copie » envoie une archive (mois et photos de factures) " +
+                    "par WhatsApp ou Mail.",
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(

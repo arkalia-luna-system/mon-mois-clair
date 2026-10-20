@@ -104,6 +104,13 @@ class SafBackupStore @Inject constructor(
         }.getOrNull()
     }
 
+    /** Photos présentes dans le dossier SAF (pour partage ZIP). */
+    suspend fun listReceiptBinaries(): Map<String, ByteArray> {
+        val tree = openTreeOrThrow() as? SafDocumentBackupTree
+            ?: return emptyMap()
+        return tree.listReceiptBinaries()
+    }
+
     /** Contenu brut du dernier backup valide (pour partage T8). */
     suspend fun readLatestValidBackupUtf8(): String {
         val tree = openTreeOrThrow()

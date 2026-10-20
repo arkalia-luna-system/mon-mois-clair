@@ -6,7 +6,7 @@ import android.content.Intent
 import androidx.core.content.FileProvider
 import be.monmoisclair.app.data.backup.BackupCoordinator
 import be.monmoisclair.app.data.backup.BackupFailure
-import be.monmoisclair.app.data.backup.BackupFileNames
+import be.monmoisclair.app.data.backup.BackupSecurityArchive
 import be.monmoisclair.app.data.backup.SafBackupStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -19,7 +19,7 @@ sealed class ShareBackupResult {
 }
 
 /**
- * T8 : prépare un [Intent.ACTION_SEND] du dernier JSON backup (WhatsApp / Mail / …).
+ * Prépare un [Intent.ACTION_SEND] : archive ZIP (JSON + photos `receipts/`).
  */
 @Singleton
 class ShareBackupUseCase @Inject constructor(
@@ -37,30 +37,36 @@ class ShareBackupUseCase @Inject constructor(
         return try {
             when (val backup = coordinator.runAutoBackup()) {
                 is BackupCoordinator.Result.Failed ->
-                    return ShareBackupResult.Failed(backup.failure.message ?: "Sauvegarde impossible.")
+                    return ShareBackupResult.Failed(
+                        backup.failure.message ?: "Sauvegarde impossible."
+                    )
                 BackupCoordinator.Result.SkippedNotConfigured ->
                     return ShareBackupResult.Failed("Dossier de sauvegarde non configuré.")
                 is BackupCoordinator.Result.Success -> Unit
             }
             val json = safBackupStore.readLatestValidBackupUtf8()
-            val out = File(context.cacheDir, BackupFileNames.V1)
-            out.writeText(json, Charsets.UTF_8)
+            val receipts = safBackupStore.listReceiptBinaries()
+            val out = File(context.cacheDir, BackupSecurityArchive.SHARE_ZIP_NAME)
+            val packed = BackupSecurityArchive.packToFile(out, json, receipts)
             val uri = FileProvider.getUriForFile(
                 context,
                 "${context.packageName}.fileprovider",
-                out
+                packed.file
             )
+            val photoLine = when (packed.photoCount) {
+                0 -> "Sans photo de facture pour l’instant."
+                1 -> "1 photo de facture incluse."
+                else -> "${packed.photoCount} photos de factures incluses."
+            }
             val send = Intent(Intent.ACTION_SEND).apply {
-                type = "application/json"
+                type = "application/zip"
                 putExtra(Intent.EXTRA_STREAM, uri)
-                // ClipData : sinon WhatsApp / Mail reçoivent souvent un URI sans permission.
                 clipData = ClipData.newRawUri("", uri)
                 putExtra(Intent.EXTRA_SUBJECT, "Sauvegarde Mon Mois Clair")
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    "Copie de sécurité Mon Mois Clair (mois et montants). " +
-                        "Les photos de factures ne sont pas dans ce fichier : " +
-                        "elles restent dans le dossier Documents de l’app."
+                    "Copie de sécurité Mon Mois Clair (mois + photos). $photoLine " +
+                        "À restaurer via Réglages → Restaurer."
                 )
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
@@ -68,7 +74,9 @@ class ShareBackupUseCase @Inject constructor(
         } catch (e: BackupFailure) {
             ShareBackupResult.Failed(e.message ?: "Partage impossible.")
         } catch (e: Exception) {
-            ShareBackupResult.Failed("Partage impossible : ${e.message ?: "erreur inconnue"}")
+            ShareBackupResult.Failed(
+                "Partage impossible. Réessayez, ou copiez le dossier Documents à la main."
+            )
         }
     }
 }

@@ -99,7 +99,12 @@ fun RestoreBackupScreen(
                         when (action) {
                             PendingRestore.Latest -> viewModel.restoreFromLatest()
                             PendingRestore.File -> openDocument.launch(
-                                arrayOf("application/json", "text/*", "*/*")
+                                arrayOf(
+                                    "application/zip",
+                                    "application/json",
+                                    "text/*",
+                                    "*/*"
+                                )
                             )
                             null -> Unit
                         }

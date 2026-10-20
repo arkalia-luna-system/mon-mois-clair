@@ -2,7 +2,7 @@
 
 Date : 2026-10-20.  
 Arbre lu : étape journal **6.15** (`PROGRESS_LOG.md`).  
-**Suivi :** lot **6.16–6.18**. Le détail de ce qui est tenu et de la passe suivante est dans `docs/AUDIT_PREMIUM_2026-10-20-SUITE.md`. Polices custom et animations riches restent différées.  
+**Suivi :** le tableau à jour est dans `docs/AUDIT_PREMIUM_2026-10-20-SUITE.md` (F01–F07, V01–V23, S01–S06). Le verdict plus bas décrit l’état **au moment de l’écriture** (journal 6.15), avant ces corrections.  
 But : passer d’un carnet familial correct à un produit fini, vendable, de gamme haute.  
 Ce fichier **ne code rien**. Il garde l’analyse pour ne pas la perdre.
 
@@ -296,7 +296,7 @@ Version : `0.1.0-6.18`. Smoke Galaxy toujours à faire (liste ci-dessus).
 | F01 | ✅ | `targetYearMonth` + titre « Nouvelle entrée · Mois » + test |
 | F02 | ✅ | Aperçu + « Voir la facture » + chip Facture accueil |
 | F03 | ✅ | TakePicture plein cadre, côté ≥ 1600 |
-| F04 | ✅ | Textes honnêtes (JSON sans photos) — pas d’archive zip |
+| F04 | ✅ | Archive ZIP mois + photos (6.21) ; restore ZIP/JSON |
 | F05 | ✅ | « Reste après factures » / « À payer » / « Après divers » |
 | F06 | ✅ | Bandeau → Réglages |
 | F07 | ✅ | Tap carte → `EditTemplateScreen` |

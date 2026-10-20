@@ -48,7 +48,7 @@ object HowItWorksCopy {
             body = "À l’ajout : « Scanner une facture » lit le QR belge (EPC) et préremplit nom, montant " +
                 "et communication. Touchez « Copier la communication » puis collez dans votre app bancaire. " +
                 "Vous pouvez aussi prendre une photo de la facture. Elle se revoit en ouvrant la ligne. " +
-                "Elle reste dans le dossier Documents, pas dans le message envoyé."
+                "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."
         ),
         Section(
             title = "Sur une année",
@@ -62,10 +62,10 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Sauvegarde",
-            body = "À chaque changement, une copie des mois est écrite dans Documents (3 versions). " +
-                "Les photos de factures sont dans ce même dossier. " +
-                "« Envoyer une copie » (WhatsApp / Mail) n’envoie que le fichier de sauvegarde, pas les photos. " +
-                "En cas de nouveau téléphone : Réglages → Restaurer ; pour les photos, copiez aussi le dossier Documents."
+            body = "À chaque changement, une copie des mois est écrite dans Documents (3 versions), " +
+                "avec les photos de factures dans le même dossier. " +
+                "« Envoyer une copie » (WhatsApp / Mail) envoie une archive : mois et photos. " +
+                "En cas de nouveau téléphone : Réglages → Restaurer (fichier ou archive)."
         ),
         Section(
             title = "Empreinte (optionnel)",

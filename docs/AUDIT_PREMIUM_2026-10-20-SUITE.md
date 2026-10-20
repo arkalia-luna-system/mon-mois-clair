@@ -2,11 +2,10 @@
 
 Date : 2026-10-20.  
 Fait suite à `docs/AUDIT_PREMIUM_2026-10-20.md`.  
-Version lue ensuite dans `app/build.gradle.kts` : **0.1.0-6.20**.  
-Le journal indique **6.20** comme dernière étape close (polices + S01–S06 hors smoke).
+Version lue ensuite dans `app/build.gradle.kts` : **0.1.0-6.21**.  
+Le journal indique **6.21** comme dernière étape close (S04 archive + smoke Galaxy).
 
-Ce fichier garde la trace : ce que le premier audit demandait, ce qui est dans le code, ce qu’il reste à pousser.  
-Pas de smoke Galaxy dans cette passe.
+Ce fichier garde la trace : ce que le premier audit demandait, ce qui est dans le code.
 
 Comptage confirmé avant push 6.19 : **141/141** (41 fichiers XML, 0 échec).
 
@@ -19,7 +18,7 @@ Comptage confirmé avant push 6.19 : **141/141** (41 fichiers XML, 0 échec).
 | F01 | Ajouter dans le mois affiché | Tenu. Route `entry/add/{ym}`, `AddEntryUseCase.targetYearMonth`, titre « Nouvelle entrée · … » si ce n’est pas le mois courant. Le futur est refusé. |
 | F02 | Revoir la photo | Tenu. Aperçu sur la fiche. Puce « Photo » et ouverture depuis la ligne. |
 | F03 | Photo lisible | Tenu. Plus de miniature système. Côté long 1600 px, WebP qualité 88. |
-| F04 | Copie envoyée sans les photos | Tenu par la phrase honnête (Réglages + Comment ça marche). Le message reste le fichier des mois. Les photos restent dans Documents. |
+| F04 | Copie envoyée sans les photos | Tenu. L’envoi est une archive ZIP (mois + photos). Les originaux restent aussi dans Documents. |
 | F05 | Nommer le gros chiffre | Tenu. « Reste après factures » ou « Déficit après factures », puis « À payer », puis « Après divers » s’il y en a. |
 | F06 | « À prévoir » actionnable | Tenu. La phrase ouvre Réglages. |
 | F07 | Modifier une échéance hors mois | Tenu. La carte ouvre l’édition du modèle. |
@@ -69,13 +68,11 @@ Ces points ne figuraient pas comme bugs ouverts dans le premier tableau, ou ils 
 
 ### S04 — Le partage de sécurité ne peut pas reconstruire les photos
 
-Assumé et écrit. Pour un téléphone cassé dont il ne reste que le message Mail, les mois reviennent, pas les factures papier. Un produit cher dirait aussi, au moment d’envoyer : « Les photos restent dans Documents ». Aujourd’hui c’est dans Réglages, pas sur l’écran de partage lui-même (l’écran est celui d’Android).
-
-**À faire plus tard, pas maintenant.** Une archive (mois + photos) seulement si le poids reste raisonnable. Sinon la phrase actuelle suffit.
+**Fait en 6.21.** « Envoyer une copie » construit `mon-mois-clair-securite.zip` (mois + photos webp). Restauration URI accepte ZIP ou JSON. Textes Réglages / Comment ça marche alignés. Au-delà de 45 Mo : copier le dossier Documents.
 
 ### S05 — Smoke téléphone toujours ouvert
 
-Icône après réinstall, splash M teal, barre crème, ajout sur un mois passé, photo rouverte dans l’app, QR non belge, clavier sur Divers. Rien de cela n’a été fait au doigt ici.
+Encore ouvert. À faire au doigt (Galaxy), indépendamment du code 6.21.
 
 ### S06 — « Courses / divers » ne dit pas s’il est ouvert
 
@@ -85,8 +82,7 @@ Icône après réinstall, splash M teal, barre crème, ajout sur un mois passé,
 
 ## 3. Prochaine vague (quand on code encore)
 
-1. ~~S01~~ ~~S02~~ ~~S03~~ ~~S06~~ (6.19–6.20).  
-2. S05 smoke Galaxy (au doigt).  
-3. S04 archive zip seulement si un jour le poids le permet.
+1. ~~S01~~ ~~S02~~ ~~S03~~ ~~S04~~ ~~S06~~ (6.19–6.21).  
+2. S05 smoke Galaxy (au doigt).
 
 Hors vague, comme dans le premier audit : banque, graphiques, report automatique, troisième bouton, fiche intermédiaire.
