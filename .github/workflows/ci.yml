@@ -1,5 +1,5 @@
 # CI — phase 1 + phase 2 soft (lint non bloquant)
-# Objectif : compile + tests unitaires (bloquant) ; lintDebug en rapport (continue-on-error).
+# Objectif : tests unitaires (bloquant) ; lintDebug en rapport (continue-on-error).
 # Pas encore : lint bloquant, detekt, scan CVE bloquant (voir docs/CI.md).
 
 name: CI
@@ -21,16 +21,22 @@ concurrency:
 
 jobs:
   build-and-test:
-    name: Assemble debug + tests unitaires
+    name: Tests unitaires (+ lint soft)
     # Pin explicite : évite l’avis de migration ubuntu-latest → 26.
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 25
     permissions:
       contents: read
 
     env:
       # Pas de daemon en CI (runner éphémère).
-      GRADLE_OPTS: -Dorg.gradle.daemon=false -Dkotlin.compiler.execution.strategy=in-process
+      GRADLE_OPTS: >-
+        -Dorg.gradle.daemon=false
+        -Dorg.gradle.vfs.watch=false
+        -Dkotlin.compiler.execution.strategy=in-process
+      # Accélère sans changer gradle.properties local (T7).
+      ORG_GRADLE_PROJECT_org.gradle.caching: "true"
+      ORG_GRADLE_PROJECT_org.gradle.parallel: "true"
 
     steps:
       - name: Checkout
@@ -41,7 +47,13 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
+          # Le cache dépendances/build est géré par gradle/actions/setup-gradle.
+
+      # Cache ~/.gradle + build-cache (gros gain dès le 2ᵉ run).
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/develop' && github.ref != 'refs/heads/main' }}
 
       # Ne pas installer le package obsolète "tools" (casse sdkmanager depuis 2025+).
       # v4 = runtime Node 24 (évite le warning GitHub « Node.js 20 deprecated »).
@@ -53,12 +65,14 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Assemble debug + unit tests
-        # Même commande locale que la charte / PROGRESS_LOG (sans --rerun-tasks en CI :
-        # le runner est propre à chaque job).
-        run: ./gradlew :app:assembleDebug :app:testDebugUnitTest --stacktrace --no-daemon
+      # Pas d’assembleDebug ici : packaging APK (dex/strip/so) = minutes pour peu
+      # de signal. testDebugUnitTest compile déjà debug + ressources + exécute les tests.
+      # assembleDebug reste la commande locale / release (charte, PROGRESS_LOG).
+      - name: Unit tests
+        run: ./gradlew :app:testDebugUnitTest --stacktrace --no-daemon
 
       # Phase 2 soft : rapport Lint sans faire échouer le job (on durcit plus tard).
+      # 2ᵉ invoc Gradle : build-cache chaud → nettement plus court que le 1er run.
       - name: Lint debug (non bloquant)
         continue-on-error: true
         run: ./gradlew :app:lintDebug --stacktrace --no-daemon

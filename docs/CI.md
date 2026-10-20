@@ -9,8 +9,10 @@ Workflow : [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 
 À chaque push / PR sur **`develop`** (et `main` si merge explicite) :
 
-- compile `assembleDebug`
-- exécute `:app:testDebugUnitTest`
+- exécute `:app:testDebugUnitTest` (compile debug + ressources + tests — **bloquant**)
+- `:app:lintDebug` soft (`continue-on-error`)
+- **pas** d’`assembleDebug` en CI (APK/dex/strip trop lent pour le signal quotidien ; à lancer en local / release)
+- accélération : `gradle/actions/setup-gradle` (cache) + `org.gradle.caching` / `parallel` **en env CI seulement**
 - runner **`ubuntu-24.04`** (pin, pas `ubuntu-latest`)
 - actions à jour (Node 24) : `setup-android@v4`, `upload-artifact@v7`
 - concurrency **sans** annulation du run en cours (`cancel-in-progress: false`) : le job finit ; les pushes suivants attendent (évite les fausses « erreurs » Canceling)
