@@ -11,7 +11,9 @@ Workflow : [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 
 - compile `assembleDebug`
 - exécute `:app:testDebugUnitTest`
+- runner **`ubuntu-24.04`** (pin, pas `ubuntu-latest`)
 - actions à jour (Node 24) : `setup-android@v4`, `upload-artifact@v7`
+- concurrency `cancel-in-progress` : un push annule le run précédent → annotations rouges « Canceling… » sur **l’ancien** run uniquement (normal)
 
 Travail quotidien = **`develop`** uniquement (voir charte §5).
 Échec = le push casse le build ou les tests → à corriger avant de considérer la branche OK.

@@ -11,6 +11,8 @@ on:
   pull_request:
     branches: [develop, main]
 
+# Un seul job actif par branche : le push suivant annule le précédent
+# (annotations « Canceling… » sur l’ancien run = normal, pas un échec).
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -18,7 +20,8 @@ concurrency:
 jobs:
   build-and-test:
     name: Assemble debug + tests unitaires
-    runs-on: ubuntu-latest
+    # Pin explicite : évite l’avis de migration ubuntu-latest → 26.
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
     permissions:
       contents: read
