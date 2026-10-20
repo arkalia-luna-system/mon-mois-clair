@@ -85,19 +85,19 @@ Comparé à des carnets du même genre, pas à une banque.
 
 **Fait.** Bouton « Voir le mois » (même geste).
 
-### C03 — Un échec d’empreinte affiche la phrase du système
+### C03 — Un échec d’empreinte affiche la phrase du système — **corrigé**
 
 **Vu dans** `BiometricAuthGatewayImpl.onAuthenticationError`. Hors annulation, l’écran montre `errString` tel quel. Selon le téléphone, c’est une phrase Android, parfois en anglais.
 
 **Correction.** Phrase fixe : « Déverrouillage impossible. Réessayez, ou utilisez le code du téléphone. » Le code d’erreur reste dans le log.
 
-### C04 — Sur un mois passé, le bouton ne dit pas FAIT
+### C04 — Sur un mois passé, le bouton ne dit pas FAIT — **corrigé**
 
 **Vu dans** `HomeScreen`, dialogue « Mois passé ». On a touché « FAIT » ou « Remettre ». Le bouton de confirmation dit « Modifier ».
 
 **Correction.** « Marquer FAIT » ou « Remettre à payer », selon le geste. « Annuler » reste.
 
-### C05 — Supprimer ne nomme pas la ligne
+### C05 — Supprimer ne nomme pas la ligne — **corrigé**
 
 **Vu dans** `EditEntryScreen`. Le dialogue dit « Supprimer cette entrée ? » sans le nom. Wayflyer : nommer l’action (« Supprimer Loyer ? »), pas « Confirmer ».
 
@@ -105,47 +105,47 @@ Comparé à des carnets du même genre, pas à une banque.
 
 ---
 
-## Lecture (encore ouvert)
+## Lecture
 
 Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvrir A01 ni A05.
 
-### A06 — La photo de facture occupe la moitié de la fiche
+### A06 — La photo de facture occupe la moitié de la fiche — **corrigé**
 
 **Vu dans** `EntryFormScreen`. L’aperçu fait au minimum 280 dp, jusqu’à 480 dp, alors qu’un dialogue existe déjà.
 
 **Correction.** Vignette d’environ 120 dp et « Touchez pour agrandir ». Le grand format reste le dialogue.
 
-### A07 — La fiche d’ajout a quatre titres du même poids
+### A07 — La fiche d’ajout a quatre titres du même poids — **corrigé**
 
 **Vu dans** `EntryFormScaffold`. Le titre d’écran et « Fréquence », « Prochaine échéance », « Facture papier » sont tous en `titleLarge`. Les autres écrans utilisent `headlineMedium` pour le titre de page.
 
 **Correction.** Un seul titre d’écran, en `headlineMedium`. Les blocs en `bodyLarge`, encre atténuée.
 
-### A08 — Un revenu crie plus fort qu’une facture
+### A08 — Un revenu crie plus fort qu’une facture — **corrigé**
 
 **Vu dans** `IncomeRow`. Le montant est en `titleLarge` vert. Le Reste, en serif, doit rester le seul chiffre dominant.
 
 **Correction.** Même taille et même encre que les factures. Le vert reste pour « FAIT » et pour « À payer » à zéro.
 
-### A09 — « À prévoir le mois prochain » ne se voit pas comme un bouton
+### A09 — « À prévoir le mois prochain » ne se voit pas comme un bouton — **corrigé**
 
 **Vu dans** `HomeScreen`. Texte ambre cliquable, sans mot d’action. Appthetics : une alerte dit quoi faire.
 
 **Correction.** Finir par « Voir ». Zone d’au moins 48 dp.
 
-### A10 — La recherche ne se vide pas d’un geste
+### A10 — La recherche ne se vide pas d’un geste — **corrigé**
 
 **Vu dans** `HomeScreen`. AllPaid : la recherche se vide d’un tap. Ici il faut effacer le mot à la main, et le clavier cache la barre du bas.
 
 **Correction.** Une croix dans le champ dès qu’il y a du texte.
 
-### A11 — « Copier » allonge chaque facture qui a une communication
+### A11 — « Copier » allonge chaque facture qui a une communication — **corrigé**
 
 **Vu dans** `ExpenseRow`. Un bouton de 48 dp s’ajoute sous la note.
 
 **Correction.** « Copier » sur la même ligne que la communication, toujours ≥ 48 dp. Pas de swipe.
 
-### A12 — « À payer 0,00 € » ne dit pas que c’est fini
+### A12 — « À payer 0,00 € » ne dit pas que c’est fini — **corrigé**
 
 **Vu dans** `HomeScreen`. S’il ne reste rien, la ligne passe au vert mais garde « À payer 0,00 € ».
 
@@ -153,21 +153,21 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 
 ---
 
-## Langue (encore ouvert)
+## Langue
 
-### B03 — « EPC » n’est pas un mot de facture
+### B03 — « EPC » n’est pas un mot de facture — **corrigé**
 
 **Vu dans** `AddEntryViewModel` et `HowItWorksCopy`. Le scan dit déjà « Ce QR n’est pas une facture belge. »
 
 **Correction.** La même phrase partout. L’aide dit « le QR de la facture belge », sans EPC.
 
-### B04 — La sauvegarde parle en statut machine
+### B04 — La sauvegarde parle en statut machine — **corrigé**
 
 **Vu dans** `BackupHealthCopy`. « État : sauvegarde OK. »
 
 **Correction.** « La copie dans Documents est à jour. » « La copie ne s’écrit plus. Choisissez à nouveau le dossier. » « Aucun dossier Documents choisi. »
 
-### B05 — « Mois d’ancre » est un mot de code
+### B05 — « Mois d’ancre » est un mot de code — **corrigé**
 
 **Vu dans** `EditTemplateScreen`. Titre « Mois d’ancre (prochaine échéance) ». Puces « Jan. » alors que l’ajout écrit « Janvier ».
 
@@ -177,13 +177,13 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 
 ## Geste papier
 
-### D01 — Scanner une facture sans lumière
+### D01 — Scanner une facture sans lumière — **corrigé**
 
 **Vu dans** `ScanEpcScreen`. Pas de lampe. Une facture papier se scanne souvent le soir.
 
 **Correction.** Bouton « Lampe », contour. Flash allumé le temps du scan, éteint en quittant.
 
-### D02 — Caméra refusée : plus de sortie
+### D02 — Caméra refusée : plus de sortie — **corrigé**
 
 **Vu dans** `ScanEpcScreen`. Après un refus définitif, Android n’affiche plus la demande. Le bouton relance une demande qui ne vient pas. Pas de lien vers les réglages de l’app.
 
@@ -201,25 +201,25 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 
 **Fait.** `ArchiveExpenseTemplateUseCase` + bouton « Retirer cette échéance » (confirmation avec le nom). Désactive le modèle ; mois déjà notés inchangés.
 
-### E03 — « Annuler » après FAIT disparaît trop vite
+### E03 — « Annuler » après FAIT disparaît trop vite — **corrigé**
 
 **Vu dans** `HomeScreen`. `SnackbarDuration.Short`, environ 4 secondes. Wayflyer : au moins 5 secondes. « Remettre » n’a pas d’annulation : les rappels repartent.
 
 **Correction.** Bandeau environ 10 secondes (`SnackbarDuration.Long`) après FAIT et après Remettre. Le texte dit ce qui vient d’être fait.
 
-### E04 — FAIT sur la notification ne se reprend pas
+### E04 — FAIT sur la notification ne se reprend pas — **corrigé**
 
 **Vu dans** `ReminderReceiver.handleMarkDone`. AllPaid revient en arrière juste après, aussi depuis la notification. Ici il faut ouvrir l’app et toucher « Remettre ».
 
 **Correction.** Une notification courte « Loyer marqué FAIT » avec l’action « Annuler ». Pas une seconde façon de payer.
 
-### E05 — La flèche vers le passé n’a pas de fin
+### E05 — La flèche vers le passé n’a pas de fin — **corrigé**
 
 **Vu dans** `MonthNavigation.canGoPrev` (toujours vrai) et `HomeViewModel.prevMonth`. Chaque tap crée un mois vide en base. Le menu s’arrête à 24 mois.
 
 **Correction.** Même borne : 24 mois. Au-delà, la flèche est inactive. Ne pas créer de mois plus loin.
 
-### E06 — L’erreur d’enregistrement est au-dessus du pli
+### E06 — L’erreur d’enregistrement est au-dessus du pli — **corrigé**
 
 **Vu dans** `EntryFormScaffold`. « Vérifiez le montant et le jour » est dans le défilement, sous la grille des 31 jours. « Enregistrer » est en bas. On dirait que le bouton ne fait rien.
 
@@ -261,8 +261,5 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 | Ordre | Ids | Pourquoi | État |
 |-------|-----|----------|------|
 | 1 | C01, A01–A05, B01, B02, C02 | Phrases techniques, menu, courses, prélèvement, alertes, version | **corrigé** |
-| 2 | E02, E01, E08 (+ E07) | Échéance impossible à retirer, fiche jetée, photo dans le cache | **corrigé** |
-| 3 | E03, E04, E05, E06 | Annuler trop court, mois sans fin, erreur cachée | ouvert |
-| 4 | A06, A07, A11, A12 | Fiche, cartes, « tout est payé » | ouvert |
-| 5 | A08, A09, A10, B03–B05, C03–C05, D01, D02 | Mots, recherche, scan | ouvert |
-| 6 | Liste téléphone | Après le code | ouvert |
+| 2 | E01–E08, A06–A12, B03–B05, C03–C05, D01, D02 | Fiche, échéance, annuler, horizon, lecture, scan | **corrigé** |
+| 3 | Liste téléphone | Après le code | ouvert |

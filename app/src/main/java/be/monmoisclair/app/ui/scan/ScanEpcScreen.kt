@@ -274,6 +274,16 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 )
             }
         }
+        if (hasCamera) {
+            Spacer(Modifier.height(8.dp))
+            SecondaryA11yButton(
+                text = if (torchOn) "Éteindre la lampe" else "Lampe",
+                onClick = {
+                    torchOn = !torchOn
+                    camera?.cameraControl?.enableTorch(torchOn)
+                }
+            )
+        }
         Spacer(Modifier.height(12.dp))
         SecondaryA11yButton(text = "Annuler", onClick = onCancel)
     }

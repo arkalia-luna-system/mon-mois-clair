@@ -57,6 +57,7 @@ class PaymentNotificationHelper @Inject constructor(
                 action = ReminderReceiver.ACTION_MARK_DONE
                 putExtra(ReminderReceiver.EXTRA_EXPENSE_ID, expenseInstanceId)
                 putExtra(ReminderReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+                putExtra(ReminderReceiver.EXTRA_LABEL, title.substringAfter(": ", title))
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -78,8 +79,34 @@ class PaymentNotificationHelper @Inject constructor(
         NotificationManagerCompat.from(context).notify(notificationId, notification)
     }
 
+    /** E04 : après FAIT depuis la notification, laisser Annuler quelques secondes. */
+    fun showMarkedDoneUndo(notificationId: Int, label: String, expenseInstanceId: String) {
+        ensureChannel()
+        val undo = PendingIntent.getBroadcast(
+            context,
+            notificationId + UNDO_REQUEST_OFFSET,
+            Intent(context, ReminderReceiver::class.java).apply {
+                action = ReminderReceiver.ACTION_UNDO_DONE
+                putExtra(ReminderReceiver.EXTRA_EXPENSE_ID, expenseInstanceId)
+                putExtra(ReminderReceiver.EXTRA_NOTIFICATION_ID, notificationId)
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_stat_reminder)
+            .setContentTitle("$label marqué FAIT")
+            .setContentText("Touchez Annuler pour remettre à payer.")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .setTimeoutAfter(10_000)
+            .addAction(0, context.getString(R.string.notification_action_undo), undo)
+            .build()
+        NotificationManagerCompat.from(context).notify(notificationId, notification)
+    }
+
     companion object {
         const val CHANNEL_ID = "paiements"
         private const val MARK_DONE_REQUEST_OFFSET = 100_000
+        private const val UNDO_REQUEST_OFFSET = 200_000
     }
 }
