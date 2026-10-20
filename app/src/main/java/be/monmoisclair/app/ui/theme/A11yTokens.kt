@@ -44,8 +44,8 @@ object A11yTokens {
      */
     val AccentDanger = Color(0xFF8E3418)
     /**
-     * Or doux — **fond** de pastille « Auto » seulement.
-     * En texte sur le papier il tombe à ~2,2:1. Le mot « Auto » s’écrit en [Ink].
+     * Or doux — **fond** de pastille « Prélèvement » seulement.
+     * En texte sur le papier il tombe à ~2,2:1. Le mot s’écrit en [Ink].
      */
     val AccentAuto = Color(0xFFD99B26)
     /** Transformative Teal — boutons / stabilité. */

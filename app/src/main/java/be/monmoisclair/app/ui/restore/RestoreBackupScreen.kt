@@ -64,7 +64,7 @@ fun RestoreBackupScreen(
             },
             confirmButton = {
                 PrimaryA11yButton(
-                    text = "OK",
+                    text = "Voir le mois",
                     onClick = {
                         showSuccessDialog = false
                         onRestored()

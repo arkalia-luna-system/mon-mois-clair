@@ -1,6 +1,7 @@
 package be.monmoisclair.app.domain.usecase
 
 import android.net.Uri
+import android.util.Log
 import be.monmoisclair.app.data.backup.BackupCoordinator
 import be.monmoisclair.app.data.backup.SafBackupStore
 import be.monmoisclair.app.data.db.dao.AppMetaDao
@@ -49,14 +50,23 @@ class PersistSafFolderUseCase @Inject constructor(
             when (val backup = backupCoordinator.runAutoBackup()) {
                 is BackupCoordinator.Result.Success -> Result.Success
                 // Après persistTreeUri, un skip est anormal → ne pas faire croire au succès.
-                BackupCoordinator.Result.SkippedNotConfigured ->
-                    Result.Failed("Dossier enregistré mais backup initial non exécuté")
-                is BackupCoordinator.Result.Failed ->
-                    Result.Failed(backup.failure.message ?: "Backup initial échoué")
+                BackupCoordinator.Result.SkippedNotConfigured -> {
+                    Log.w(TAG, "Dossier persisté mais backup initial non exécuté")
+                    Result.Failed(SafFolderMessages.PERSIST_FAILED)
+                }
+                is BackupCoordinator.Result.Failed -> {
+                    Log.e(TAG, "Backup initial échoué: ${backup.failure.message}", backup.failure)
+                    Result.Failed(SafFolderMessages.PERSIST_FAILED)
+                }
             }
         } catch (e: Exception) {
-            Result.Failed(e.message ?: "Impossible d'enregistrer le dossier")
+            Log.e(TAG, "Enregistrement dossier impossible: ${e.message}", e)
+            Result.Failed(SafFolderMessages.PERSIST_FAILED)
         }
+    }
+
+    companion object {
+        private const val TAG = "PersistSafFolder"
     }
 }
 

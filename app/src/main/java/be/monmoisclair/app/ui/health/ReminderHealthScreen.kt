@@ -38,14 +38,14 @@ fun ReminderHealthScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = "Santé des rappels", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Alertes", style = MaterialTheme.typography.headlineMedium)
         Text(
-            text = "Vérifiez que Mon Mois Clair peut vraiment vous alerter sur ce Samsung.",
+            text = "Vérifiez que Mon Mois Clair peut vraiment vous prévenir sur ce téléphone.",
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = "Rappels : 3 jours avant (10 h), le jour J (9 h), puis chaque jour à 10 h " +
-                "si une dépense reste « à payer » après l’échéance.",
+            text = "3 jours avant à 10 h, le jour même à 9 h, puis chaque matin à 10 h " +
+                "tant que ce n’est pas payé.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
         )
@@ -59,7 +59,7 @@ fun ReminderHealthScreen(
             )
         } else {
             HealthStatusRow("Notifications", r.notificationsGranted)
-            HealthStatusRow("Alarmes exactes", r.exactAlarmGranted)
+            HealthStatusRow("Réveil à l’heure", r.exactAlarmGranted)
             HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
             if (!r.safBackupOk) {
                 Text(
@@ -70,14 +70,13 @@ fun ReminderHealthScreen(
             }
             if (r.samsungDeviceCareHintNeeded) {
                 Text(
-                    text = "Samsung Device Care : retirez l’app de « Mise en veille » " +
-                        "et « Mise en veille profonde ».",
+                    text = "Dans Samsung, retirez Mon Mois Clair de la mise en veille.",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             if (r.isFullyHealthy) {
                 Text(
-                    text = "Tout est prêt pour les rappels.",
+                    text = "Tout est prêt pour les alertes.",
                     color = A11yTokens.AccentOk,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -94,13 +93,13 @@ fun ReminderHealthScreen(
         }
         if (report?.exactAlarmGranted == false) {
             SecondaryA11yButton(
-                text = "Réglages alarmes exactes",
+                text = "Réglages réveil à l’heure",
                 onClick = { context.startActivity(viewModel.intentExactAlarm()) }
             )
         }
         if (report?.batteryOptimizationIgnored == false) {
             SecondaryA11yButton(
-                text = "Exemption batterie",
+                text = "Batterie non limitée",
                 onClick = { context.startActivity(viewModel.intentIgnoreBattery()) }
             )
         }

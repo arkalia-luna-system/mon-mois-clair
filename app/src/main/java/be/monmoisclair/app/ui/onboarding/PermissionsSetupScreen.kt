@@ -68,10 +68,10 @@ fun PermissionsSetupScreen(
             style = MaterialTheme.typography.labelLarge,
             color = A11yTokens.InkMuted
         )
-        Text(text = "Rappels fiables", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Alertes fiables", style = MaterialTheme.typography.headlineMedium)
         Text(
-            text = "Sur Samsung, il faut autoriser les notifications, les alarmes exactes " +
-                "et désactiver l’optimisation de batterie pour cette application.",
+            text = "Sur Samsung, il faut autoriser les notifications, le réveil à l’heure " +
+                "et laisser la batterie non limitée pour cette application.",
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -104,23 +104,22 @@ fun PermissionsSetupScreen(
 
         if (report != null && !report.exactAlarmGranted) {
             SecondaryA11yButton(
-                text = "Autoriser les alarmes exactes",
+                text = "Autoriser le réveil à l’heure",
                 onClick = { context.startActivity(viewModel.intentExactAlarm()) }
             )
         }
 
         if (report != null && !report.batteryOptimizationIgnored) {
             SecondaryA11yButton(
-                text = "Désactiver l’optimisation batterie",
+                text = "Laisser la batterie non limitée",
                 onClick = { context.startActivity(viewModel.intentIgnoreBattery()) }
             )
         }
 
         if (report?.samsungDeviceCareHintNeeded == true) {
             Text(
-                text = "Samsung Device Care : ouvrez aussi Paramètres → Batterie → " +
-                    "Limites d’utilisation en arrière-plan, et retirez Mon Mois Clair " +
-                    "de « Mise en veille » / « Mise en veille profonde ».",
+                text = "Dans Samsung, retirez Mon Mois Clair de la mise en veille " +
+                    "(Paramètres → Batterie → Limites d’utilisation en arrière-plan).",
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -144,7 +143,7 @@ fun PermissionsSetupScreen(
 private fun HealthChecklist(report: ReminderHealthReport) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         HealthStatusRow("Notifications", report.notificationsGranted)
-        HealthStatusRow("Alarmes exactes", report.exactAlarmGranted)
+        HealthStatusRow("Réveil à l’heure", report.exactAlarmGranted)
         HealthStatusRow("Batterie non limitée", report.batteryOptimizationIgnored)
     }
 }

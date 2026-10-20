@@ -23,4 +23,14 @@ class HomeMonthChoicesTest {
         assertThat(HomeMonthChoices.canSelect(current.minusMonths(1), current)).isTrue()
         assertThat(HomeMonthChoices.canSelect(current.plusMonths(1), current)).isFalse()
     }
+
+    @Test
+    fun yearsInOrder_groupsNewestYearFirst() {
+        val current = YearMonth.of(2026, 10)
+        val months = HomeMonthChoices.recentMonths(current)
+        assertThat(HomeMonthChoices.yearsInOrder(months))
+            .containsExactly(2026, 2025, 2024)
+            .inOrder()
+        assertThat(months.filter { it.year == 2025 }).isNotEmpty()
+    }
 }

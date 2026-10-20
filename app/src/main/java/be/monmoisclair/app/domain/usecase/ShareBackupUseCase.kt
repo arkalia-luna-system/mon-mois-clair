@@ -3,6 +3,7 @@ package be.monmoisclair.app.domain.usecase
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.content.FileProvider
 import be.monmoisclair.app.data.backup.BackupCoordinator
 import be.monmoisclair.app.data.backup.BackupFailure
@@ -30,18 +31,18 @@ class ShareBackupUseCase @Inject constructor(
 
     suspend operator fun invoke(): ShareBackupResult {
         if (!safBackupStore.hasPersistedTree()) {
-            return ShareBackupResult.Failed(
-                "Choisissez d’abord le dossier de sauvegarde (Documents)."
-            )
+            return ShareBackupResult.Failed(ShareBackupMessages.FOLDER_REQUIRED)
         }
         return try {
             when (val backup = coordinator.runAutoBackup()) {
-                is BackupCoordinator.Result.Failed ->
-                    return ShareBackupResult.Failed(
-                        backup.failure.message ?: "Sauvegarde impossible."
-                    )
-                BackupCoordinator.Result.SkippedNotConfigured ->
-                    return ShareBackupResult.Failed("Dossier de sauvegarde non configuré.")
+                is BackupCoordinator.Result.Failed -> {
+                    Log.e(TAG, "Sauvegarde avant partage: ${backup.failure.message}", backup.failure)
+                    return ShareBackupResult.Failed(ShareBackupMessages.FAILED)
+                }
+                BackupCoordinator.Result.SkippedNotConfigured -> {
+                    Log.w(TAG, "Partage: dossier non configuré après contrôle")
+                    return ShareBackupResult.Failed(ShareBackupMessages.FOLDER_REQUIRED)
+                }
                 is BackupCoordinator.Result.Success -> Unit
             }
             val json = safBackupStore.readLatestValidBackupUtf8()
@@ -72,11 +73,15 @@ class ShareBackupUseCase @Inject constructor(
             }
             ShareBackupResult.Ready(Intent.createChooser(send, "Envoyer une copie de sécurité"))
         } catch (e: BackupFailure) {
-            ShareBackupResult.Failed(e.message ?: "Partage impossible.")
+            Log.e(TAG, "Partage BackupFailure: ${e.message}", e)
+            ShareBackupResult.Failed(ShareBackupMessages.FAILED)
         } catch (e: Exception) {
-            ShareBackupResult.Failed(
-                "Partage impossible. Réessayez, ou copiez le dossier Documents à la main."
-            )
+            Log.e(TAG, "Partage inattendu: ${e.message}", e)
+            ShareBackupResult.Failed(ShareBackupMessages.FAILED)
         }
+    }
+
+    companion object {
+        private const val TAG = "ShareBackup"
     }
 }

@@ -17,6 +17,10 @@ object HomeMonthChoices {
     ): List<YearMonth> =
         (0 until count).map { current.minusMonths(it.toLong()) }
 
+    /** Années dans l’ordre d’apparition des mois (récent → ancien). */
+    fun yearsInOrder(months: List<YearMonth>): List<Int> =
+        months.map { it.year }.distinct()
+
     fun canSelect(target: YearMonth, current: YearMonth): Boolean =
         MonthNavigation.canSelect(target, current)
 }

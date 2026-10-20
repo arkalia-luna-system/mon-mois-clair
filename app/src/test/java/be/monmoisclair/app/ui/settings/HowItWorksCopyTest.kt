@@ -10,13 +10,20 @@ class HowItWorksCopyTest {
         val titles = HowItWorksCopy.sections.map { it.title }
         assertThat(titles).contains("Marquer FAIT")
         assertThat(titles).contains("Sauvegarde")
-        assertThat(titles).contains("Rappels")
+        assertThat(titles).contains("Alertes")
+        assertThat(titles).contains("Courses")
+        assertThat(titles).contains("En retard")
         assertThat(titles).contains("Facture papier")
         assertThat(titles).contains("Sur une année")
-        val all = HowItWorksCopy.sections.joinToString("\n") { it.body }
+        val all = HowItWorksCopy.sections.joinToString("\n") { "${it.title}\n${it.body}" }
         assertThat(all).contains("Reste du mois passé")
         assertThat(all).contains("Aussi les mois suivants")
         assertThat(all).contains("1 à 31")
+        assertThat(all).contains("Ajouter")
+        assertThat(all).doesNotContain("EN RETARD")
+        assertThat(all).doesNotContain("+ Divers")
+        assertThat(all).doesNotContain("Santé des rappels")
+        assertThat(all).doesNotContain("Device Care")
         assertThat(HowItWorksCopy.sections.size).isAtLeast(7)
         HowItWorksCopy.sections.forEach { s ->
             assertThat(s.body.length).isGreaterThan(40)

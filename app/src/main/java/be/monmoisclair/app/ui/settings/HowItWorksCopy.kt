@@ -27,21 +27,22 @@ object HowItWorksCopy {
                 "seul ce mois change, tant que « Aussi les mois suivants » n’est pas coché."
         ),
         Section(
-            title = "EN RETARD",
-            body = "Si la date est passée et que ce n’est pas encore FAIT, un badge « EN RETARD » apparaît " +
+            title = "En retard",
+            body = "Si la date est passée et que ce n’est pas encore FAIT, un badge « En retard » apparaît " +
                 "(brique, pas un rouge qui fait peur). " +
                 "L’app vous rappelle chaque jour à 10 h jusqu’à ce que ce soit FAIT."
         ),
         Section(
-            title = "Courses / divers",
+            title = "Courses",
             body = "Pour les petites dépenses sans facture fixe (courses, pharmacie…). " +
-                "Tapez un montant puis « + Divers » ou « − Divers »."
+                "Tapez un montant puis « Ajouter » ou « Retirer »."
         ),
         Section(
-            title = "Rappels",
-            body = "Pour chaque facture : 3 jours avant (10 h), le jour J (9 h), " +
-                "puis chaque jour à 10 h si c’est en retard. " +
-                "Vérifiez « Santé des rappels » et Samsung Device Care si rien ne sonne."
+            title = "Alertes",
+            body = "Pour chaque facture : 3 jours avant à 10 h, le jour même à 9 h, " +
+                "puis chaque matin à 10 h tant que ce n’est pas payé. " +
+                "Vérifiez Menu → Alertes si rien ne sonne. " +
+                "Dans Samsung, retirez Mon Mois Clair de la mise en veille."
         ),
         Section(
             title = "Facture papier",
@@ -59,7 +60,7 @@ object HowItWorksCopy {
                 "ou les flèches à côté du mois. " +
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
                 "Si Menu affiche « Alertes », les rappels ne peuvent pas sonner : " +
-                "Menu → Vérifier les alertes (sinon : Santé des rappels)."
+                "ouvrez Menu → Alertes pour régler notifications, réveil à l’heure et batterie."
         ),
         Section(
             title = "Sauvegarde",

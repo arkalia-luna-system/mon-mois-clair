@@ -6,9 +6,11 @@ import org.junit.Test
 class DeviceCareCopyTest {
 
     @Test
-    fun body_mentions_sleep_limits() {
-        assertThat(DeviceCareCopy.BODY).contains("Mise en veille")
-        assertThat(DeviceCareCopy.BODY).contains("Mise en veille profonde")
-        assertThat(DeviceCareCopy.TITLE).contains("Device Care")
+    fun body_mentions_sleep_without_jargon() {
+        assertThat(DeviceCareCopy.BODY).contains("mise en veille")
+        assertThat(DeviceCareCopy.BODY).contains("Mon Mois Clair")
+        assertThat(DeviceCareCopy.TITLE).doesNotContain("Device Care")
+        assertThat(DeviceCareCopy.BODY).doesNotContain("Device Care")
+        assertThat(DeviceCareCopy.BODY).doesNotContain("Mise en veille profonde")
     }
 }

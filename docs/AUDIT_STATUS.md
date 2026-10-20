@@ -1,25 +1,26 @@
 # Audits premium — statut
 
-Les trois audits du 2026-10-20 (origine, suite, passe 3) sont **clos côté code** (étapes 6.16 → 6.22).  
-Fichiers historiques : [`docs/archive/`](archive/).  
-Dernière mesure tests : **152/152** (`0.1.0-6.22`).
+Lots 6.16 → 6.23 **clos côté code**.  
+Synthèse vivante : [`AUDIT_PREMIUM.md`](AUDIT_PREMIUM.md) (A01–C02 corrigés + liste téléphone).  
+Mesure tests : **157/157** · version `0.1.0-6.23`.
 
-| Vague | Contenu | État |
-|-------|---------|------|
-| Origine + 6.16–6.18 | Mois d’ajout, Reste, photo, FAIT contour, typo… | ✅ |
-| Suite S01–S04, S06 | Photo in-app, snackbar, polices, archive ZIP | ✅ |
-| Passe 3 | Ancre, rappels, divers, notif FAIT, Home | ✅ |
-| Smoke Galaxy (P3-Q04 / S05) | Checklist au doigt | ⏸ ouvert |
+| Vague | État |
+|-------|------|
+| Origine / suite / passe 3 | ✅ code |
+| A01–A04, B01–B02, C01–C02 | ✅ code (voir `AUDIT_PREMIUM.md`) |
+| Smoke Galaxy | ✅ partiel — table ci-dessous |
 
-## Smoke encore à faire (téléphone)
+## Smoke SM-S938B — 2026-10-20 (`0.1.0-6.23`)
 
-1. Notification avec ≥4 factures → bonne ligne  
-2. Échéance trimestrielle : corriger le nom → mois futurs intacts  
-3. Mois vide : un seul bouton teal  
-4. Recherche « zzzz » : phrase + totaux  
-5. Retrait divers > total : message honnête  
-6. Splash : M teal entier  
-7. Menu → Restaurer / Comment ça marche  
-8. Envoyer une copie → ZIP avec photos ; restaurer ce ZIP  
-
-Ne pas rouvrir les audits archivés pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.
+| # | Check | Résultat |
+|---|-------|----------|
+| 1 | Notification ≥4 factures → bonne ligne | ⏸ |
+| 2 | Échéance trimestrielle : nom seul | ⏸ |
+| 3 | Mois vide : un seul teal | ✅ |
+| 4 | Recherche « zzzz » | ✅ |
+| 5 | Retrait courses > total | ✅ |
+| 6 | Splash / cold start | ✅ |
+| 7 | Menu outils / Comment / Restaurer | ✅ (fix Outils hors écran) |
+| 8 | Envoyer copie → ZIP | ✅ `mon-mois-clair-securite.zip` |
+| 9 | Menu années groupées / pastilles / courses | ⏸ à rejouer après install 6.23 complète |
+| 10–11 | Phrases échec / Voir le mois / version affichée | ⏸ |

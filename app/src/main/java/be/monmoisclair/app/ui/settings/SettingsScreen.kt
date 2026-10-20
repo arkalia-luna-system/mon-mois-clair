@@ -169,14 +169,14 @@ fun SettingsScreen(
             }
         }
 
-        SettingsCard(title = "Rappels") {
+        SettingsCard(title = "Alertes") {
             Text(
-                text = "Notifications, batterie et Device Care, au même endroit.",
+                text = "Notifications, réveil à l’heure et batterie, au même endroit.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )
             SecondaryA11yButton(
-                text = "Santé des rappels",
+                text = "Alertes",
                 onClick = onOpenHealth,
                 enabled = !state.busy
             )
@@ -264,16 +264,27 @@ fun SettingsScreen(
 
         val versionName = try {
             val p = context.packageManager.getPackageInfo(context.packageName, 0)
-            p.versionName ?: "—"
+            p.versionName
         } catch (_: Exception) {
-            "—"
+            null
         }
         Text(
-            text = "Mon Mois Clair · $versionName",
+            text = "Mon Mois Clair",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+            modifier = Modifier.padding(top = 8.dp)
         )
+        val stepLabel = AppVersionDisplay.stepLabel(versionName)
+        if (stepLabel != null) {
+            Text(
+                text = stepLabel,
+                style = MaterialTheme.typography.bodySmall,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
         Text(
             text = "Données sur cet appareil uniquement. Pas de compte, pas de cloud.",
             style = MaterialTheme.typography.bodyMedium,

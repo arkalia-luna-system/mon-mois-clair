@@ -1,12 +1,12 @@
 package be.monmoisclair.app.ui.settings
 
-/** Textes Device Care Samsung (testables, sans Android). */
+/** Textes Samsung (testables, sans Android) — ton familial, sans jargon Device Care. */
 object DeviceCareCopy {
-    const val TITLE = "Samsung Device Care"
+    const val TITLE = "Batterie Samsung"
     const val BODY =
-        "Sinon Samsung peut couper les rappels pendant la nuit.\n\n" +
+        "Dans Samsung, retirez Mon Mois Clair de la mise en veille.\n\n" +
             "1. Ouvrez le bouton « Liste optimisation batterie » ci-dessous.\n" +
             "2. Trouvez Mon Mois Clair.\n" +
-            "3. Retirez-la de « Mise en veille » et de « Mise en veille profonde ».\n\n" +
-            "Chemin Samsung : Paramètres → Batterie → Limites d’utilisation en arrière-plan."
+            "3. Retirez-la de la mise en veille.\n\n" +
+            "Chemin : Paramètres → Batterie → Limites d’utilisation en arrière-plan."
 }

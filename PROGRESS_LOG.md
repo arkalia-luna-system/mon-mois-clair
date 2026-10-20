@@ -9,20 +9,31 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.22** (Menu outils + restore photos honnête) |
+| Dernière étape terminée | **6.23** (Audit premium A01–C02 + menu Outils + smoke partiel) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke Galaxy (P3-Q04 / S05) · campagne profils |
-| Audit premium | Clos côté code · archivés dans `docs/archive/` · smoke ouvert |
+| Prochaine sous-étape | Smoke restant (notif, trimestriel, relecture A01–C02) · campagne profils |
+| Audit premium | `docs/AUDIT_PREMIUM.md` (code clos) · `docs/AUDIT_STATUS.md` |
 
 ---
 
 ## Journal
 
+### 2026-10-20 — 6.23 Audit premium (A01–C02) + menu Outils + smoke
+
+**Problème :** points ouverts de `docs/AUDIT_PREMIUM.md` ; smoke SM-S938B : boutons « Outils » hors écran sous le calendrier.
+
+**Codé :** Outils en tête + scroll + `navigationBarsPadding` · **A01** mois par année · **A02** « En retard » · **A03** courses · **A04** « Prélèvement » · **B01** « Alertes » · **B02** version sans `0.1.0-` · **C01** phrases fixes dossier/envoi · **C02** « Voir le mois ».
+
+**Smoke :** recherche zzzz ✅ · mois vide ✅ · courses trop retirées ✅ · Menu / Comment / Restaurer ✅ · share ZIP ✅ · notif + trimestriel + relecture A01–C02 ⏸.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **157/157** (45 fichiers, 0 échec)  
+**Version :** `0.1.0-6.23` · `versionCode` 28
+
 ### 2026-10-20 — 6.22 Stabilisation (absence device)
 
 **Problème :** Menu → Outils trop maigre (doublons) ; restore ZIP pouvait réussir sans remettre les photos ; plafonds mémoire ZIP fragiles ; audits premium encore « vivants » alors que le code est tenu.
 
-**Codé :** Menu outils (Santé / Comment ça marche / Restaurer / Réglages) · `RestoreResult.Success` compte photos écrites + message honnête · sanitization chemins `receipts/` · plafond 45 Mo à l’empaquetage / lecture · tests archive + restore messages · audits déplacés vers `docs/archive/` + `docs/AUDIT_STATUS.md` · suppression `ic_mark` mort.
+**Codé :** Menu outils (Santé / Comment ça marche / Restaurer / Réglages) · `RestoreResult.Success` compte photos écrites + message honnête · sanitization chemins `receipts/` · plafond 45 Mo à l’empaquetage / lecture · tests archive + restore messages · audits ensuite regroupés dans `docs/AUDIT_PREMIUM.md` · suppression `ic_mark` mort.
 
 **Différé :** smoke Galaxy au doigt.
 

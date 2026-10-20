@@ -305,7 +305,6 @@ fun HomeScreen(
         HomeMenuSheet(
             selectedYearMonth = state.selectedYearMonth,
             isPastMonth = state.isPastMonth,
-            alertsNeedAttention = remindersBlocked,
             onDismiss = { menuOpen = false },
             onSelectMonth = viewModel::goToMonth,
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
@@ -394,7 +393,7 @@ fun HomeScreen(
                 )
                 if (state.diversSpentCents > 0L) {
                     Text(
-                        text = "Après divers ${MoneyFormat.formatCents(state.afterDiversCents)}",
+                        text = "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}",
                         style = MaterialTheme.typography.bodyLarge,
                         color = A11yTokens.InkMuted,
                         maxLines = 1,
@@ -564,9 +563,9 @@ fun HomeScreen(
                                 .clickable(
                                     role = Role.Button,
                                     onClickLabel = if (diversExpanded) {
-                                        "Fermer courses et divers"
+                                        "Fermer courses"
                                     } else {
-                                        "Ouvrir courses et divers"
+                                        "Ouvrir courses"
                                     }
                                 ) { diversExpanded = !diversExpanded }
                                 .padding(vertical = 8.dp),
@@ -575,7 +574,7 @@ fun HomeScreen(
                         ) {
                             Text(
                                 text = if (diversExpanded) {
-                                    "Courses / divers"
+                                    "Courses"
                                 } else {
                                     "Noter des courses"
                                 },
@@ -589,7 +588,7 @@ fun HomeScreen(
                         }
                         Text(
                             text = if (state.diversSpentCents > 0L) {
-                                "Après divers ${MoneyFormat.formatCents(state.afterDiversCents)}"
+                                "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}"
                             } else {
                                 "Aucune course notée."
                             },
@@ -604,12 +603,12 @@ fun HomeScreen(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
                                     SecondaryA11yButton(
-                                        text = "− Divers",
+                                        text = "Retirer",
                                         onClick = { viewModel.removeDivers(diversInput) },
                                         modifier = Modifier.weight(1f)
                                     )
                                     SecondaryA11yButton(
-                                        text = "+ Divers",
+                                        text = "Ajouter",
                                         onClick = { viewModel.addDivers(diversInput) },
                                         modifier = Modifier.weight(1f)
                                     )
@@ -621,7 +620,7 @@ fun HomeScreen(
                                         diversInput = it
                                         viewModel.clearDiversError()
                                     },
-                                    label = { Text("Montant divers (€)") },
+                                    label = { Text("Montant (€)") },
                                     singleLine = true,
                                     shape = MaterialTheme.shapes.medium,
                                     keyboardOptions = KeyboardOptions(
@@ -895,13 +894,13 @@ private fun ExpenseStatusLine(
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         if (showAuto) {
-            StatusChip("Auto", A11yTokens.AccentAuto, A11yTokens.Ink)
+            StatusChip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.Ink)
         }
         if (showDone) {
             StatusChip(item.doneLabel ?: "FAIT ✓", A11yTokens.AccentOk, A11yTokens.ButtonText)
         }
         if (showLate) {
-            StatusChip("EN RETARD", A11yTokens.AccentDanger, A11yTokens.ButtonText)
+            StatusChip("En retard", A11yTokens.AccentDanger, A11yTokens.ButtonText)
         }
         if (showReceipt) {
             StatusChip(
