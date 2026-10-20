@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -26,8 +27,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,6 +50,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -221,6 +226,7 @@ fun EditEntryScreen(
     }
     val context = LocalContext.current
     var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var showReceiptDialog by remember { mutableStateOf(false) }
     LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto) {
         if (state.hasPendingPhoto) return@LaunchedEffect
         if (state.receiptRelativePath.isBlank()) {
@@ -230,6 +236,53 @@ fun EditEntryScreen(
         val uri = viewModel.openReceiptUri() ?: return@LaunchedEffect
         receiptBitmap = context.contentResolver.openInputStream(uri)?.use {
             BitmapFactory.decodeStream(it)
+        }
+    }
+
+    if (showReceiptDialog) {
+        val bmp = pendingPreview ?: receiptBitmap
+        Dialog(
+            onDismissRequest = { showReceiptDialog = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Surface(
+                color = A11yTokens.PaperCream,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(A11yTokens.screenPadding)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text("Facture", style = MaterialTheme.typography.titleLarge)
+                    if (bmp != null) {
+                        Image(
+                            bitmap = bmp.asImageBitmap(),
+                            contentDescription = "Photo de la facture",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 280.dp, max = 520.dp)
+                                .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = A11yTokens.ButtonFill)
+                        }
+                    }
+                    PrimaryA11yButton(
+                        text = "Fermer",
+                        onClick = { showReceiptDialog = false }
+                    )
+                }
+            }
         }
     }
 
@@ -255,8 +308,10 @@ fun EditEntryScreen(
         hasReceiptPhoto = state.receiptRelativePath.isNotBlank(),
         receiptPreview = pendingPreview ?: receiptBitmap,
         onTakePhoto = takePhoto,
-        onViewReceipt = if (state.receiptRelativePath.isNotBlank()) {
-            viewModel::viewReceipt
+        onViewReceipt = if (
+            state.receiptRelativePath.isNotBlank() || pendingPreview != null
+        ) {
+            { showReceiptDialog = true }
         } else {
             null
         },
@@ -523,7 +578,7 @@ private fun EntryFormScaffold(
                     }
                     receiptPreview?.let { bmp ->
                         Text(
-                            text = "Facture enregistrée — zoomez en ouvrant l’image ci-dessous.",
+                            text = "Facture enregistrée — touchez pour l’agrandir.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted
                         )

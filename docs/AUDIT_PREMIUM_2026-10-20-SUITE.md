@@ -8,7 +8,7 @@ Le journal indique **6.19** comme dernière étape close (suite S01/S02/S06).
 Ce fichier garde la trace : ce que le premier audit demandait, ce qui est dans le code, ce qu’il reste à pousser.  
 Pas de smoke Galaxy dans cette passe.
 
-Deux compilations Gradle se sont croisées sur le même cache. Dernier comptage lu sans échec : **141 tests, 0 échec** (41 fichiers XML). À recompter au calme avant un nouveau `versionName`.
+Comptage confirmé avant push 6.19 : **141/141** (41 fichiers XML, 0 échec).
 
 ---
 
@@ -57,7 +57,7 @@ Ces points ne figuraient pas comme bugs ouverts dans le premier tableau, ou ils 
 
 ### S01 — Ouvrir la photo dépend d’une autre app
 
-**Fait en 6.19.** Dialog Compose + `loadReceiptBitmap` (plus d’`ACTION_VIEW`).
+**Fait en 6.19.** Accueil : Dialog Compose + `loadReceiptBitmap`. Fiche édition : même Dialog (plus d’`ACTION_VIEW`).
 
 ### S02 — Le message « Copié » et le bandeau FAIT se partagent le même snackbar
 

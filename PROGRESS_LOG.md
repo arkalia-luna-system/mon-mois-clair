@@ -12,7 +12,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Dernière étape terminée | **6.19** (Suite audit S01/S02/S06) |
 | Étape en cours | *(aucune)* |
 | Prochaine sous-étape | Campagne profils · smoke S26 · polices custom (V16/S03 différé) |
-| Audit premium | `docs/AUDIT_PREMIUM_2026-10-20.md` + suite — S01/S02/S06 OK ; S03/S04/S05 ouverts |
+| Audit premium | origine + suite + `docs/AUDIT_PREMIUM_2026-10-20-PASSE-3.md` (passe 3, pas encore codée) |
 
 ---
 
@@ -22,7 +22,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Problème (suite) :** photo via app externe (S01) ; snackbar Copié chasse Annuler FAIT (S02) ; Divers sans libellé ouvert/fermé (S06).
 
-**Codé :** aperçu facture **dans** un Dialog Compose · `faitUndoActive` protège le bandeau Annuler · « Noter des courses » / « Fermer » visibles.
+**Codé :** aperçu facture **dans** un Dialog Compose (accueil + fiche édition, plus d’`ACTION_VIEW`) · `faitUndoActive` protège le bandeau Annuler · « Noter des courses » / « Fermer » visibles.
 
 **Différé :** S03 polices TTF · S04 archive photos · S05 smoke Galaxy.
 
