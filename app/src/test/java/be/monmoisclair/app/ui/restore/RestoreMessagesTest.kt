@@ -13,6 +13,31 @@ class RestoreMessagesTest {
     }
 
     @Test
+    fun success_warns_when_photos_missing() {
+        val msg = RestoreMessages.from(
+            RestoreResult.Success(
+                checksumSha256 = "abc",
+                photosExpected = 2,
+                photosWritten = 0
+            )
+        )
+        assertThat(msg).contains("photos")
+        assertThat(msg).contains("Documents")
+    }
+
+    @Test
+    fun success_mentions_photos_when_all_written() {
+        val msg = RestoreMessages.from(
+            RestoreResult.Success(
+                checksumSha256 = "abc",
+                photosExpected = 2,
+                photosWritten = 2
+            )
+        )
+        assertThat(msg).contains("2 photos")
+    }
+
+    @Test
     fun notConfigured_points_to_folder() {
         val msg = RestoreMessages.from(RestoreResult.NotConfigured)
         assertThat(msg).contains("dossier")

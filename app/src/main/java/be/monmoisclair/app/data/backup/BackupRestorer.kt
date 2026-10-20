@@ -58,10 +58,13 @@ class BackupRestorer @Inject constructor(
             }
             val document = codec.decodeAndVerify(json)
             val applied = applyDocument(document)
-            if (applied is RestoreResult.Success && receipts.isNotEmpty()) {
-                restoreReceiptsBestEffort(receipts)
-            }
-            applied
+            if (applied !is RestoreResult.Success) return applied
+            if (receipts.isEmpty()) return applied
+            val written = restoreReceiptsCounted(receipts)
+            applied.copy(
+                photosExpected = receipts.size,
+                photosWritten = written
+            )
         } catch (e: BackupFailure) {
             mapFailure(e)
         } catch (e: Exception) {
@@ -69,11 +72,17 @@ class BackupRestorer @Inject constructor(
         }
     }
 
-    private suspend fun restoreReceiptsBestEffort(receipts: Map<String, ByteArray>) {
-        if (!safBackupStore.hasPersistedTree()) return
+    /** @return nombre de photos réellement écrites. */
+    private suspend fun restoreReceiptsCounted(receipts: Map<String, ByteArray>): Int {
+        if (!safBackupStore.hasPersistedTree()) return 0
+        var written = 0
         for ((relative, data) in receipts) {
-            runCatching { safBackupStore.writeBinaryRelative(relative, data) }
+            val ok = runCatching {
+                safBackupStore.writeBinaryRelative(relative, data)
+            }.isSuccess
+            if (ok) written++
         }
+        return written
     }
 
     /**
@@ -177,6 +186,15 @@ class BackupRestorer @Inject constructor(
 
     private fun readUriBytes(uri: Uri): ByteArray {
         try {
+            context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
+                val size = pfd.statSize
+                if (size > BackupSecurityArchive.MAX_ZIP_BYTES) {
+                    throw BackupFailure.Io(
+                        "Fichier trop lourd (${size / (1024 * 1024)} Mo). " +
+                            "Copiez le dossier Documents plutôt."
+                    )
+                }
+            }
             context.contentResolver.openInputStream(uri)?.use { input ->
                 return input.readBytes()
             } ?: throw BackupFailure.Io("openInputStream null pour $uri")

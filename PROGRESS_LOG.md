@@ -9,14 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.21** (S04 archive ZIP mois + photos) |
+| Dernière étape terminée | **6.22** (Menu outils + restore photos honnête) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Campagne profils · smoke S26 (P3-Q04 / S05) |
-| Audit premium | Passe 3 + S04 tenus · smoke Galaxy encore ouvert |
+| Prochaine sous-étape | Smoke Galaxy (P3-Q04 / S05) · campagne profils |
+| Audit premium | Clos côté code · archivés dans `docs/archive/` · smoke ouvert |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.22 Stabilisation (absence device)
+
+**Problème :** Menu → Outils trop maigre (doublons) ; restore ZIP pouvait réussir sans remettre les photos ; plafonds mémoire ZIP fragiles ; audits premium encore « vivants » alors que le code est tenu.
+
+**Codé :** Menu outils (Santé / Comment ça marche / Restaurer / Réglages) · `RestoreResult.Success` compte photos écrites + message honnête · sanitization chemins `receipts/` · plafond 45 Mo à l’empaquetage / lecture · tests archive + restore messages · audits déplacés vers `docs/archive/` + `docs/AUDIT_STATUS.md` · suppression `ic_mark` mort.
+
+**Différé :** smoke Galaxy au doigt.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **152/152** (42 fichiers, 0 échec)  
+**Version :** `0.1.0-6.22` · `versionCode` 27
 
 ### 2026-10-20 — 6.21 Archive photos (S04)
 

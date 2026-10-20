@@ -1,7 +1,8 @@
 # Audit premium — suite
 
 Date : 2026-10-20.  
-Fait suite à `docs/AUDIT_PREMIUM_2026-10-20.md`.  
+Fait suite à `AUDIT_PREMIUM_2026-10-20.md` (même dossier archive).  
+Statut vivant : `docs/AUDIT_STATUS.md`.  
 Version lue ensuite dans `app/build.gradle.kts` : **0.1.0-6.21**.  
 Le journal indique **6.21** comme dernière étape close (S04 archive + smoke Galaxy).
 

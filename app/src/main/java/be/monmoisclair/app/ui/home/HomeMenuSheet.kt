@@ -27,18 +27,20 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import java.time.YearMonth
 
 /**
- * Hub d’outils hors ledger — calendrier mois + raccourcis.
- * Les futures fonctions s’ajoutent ici, pas sur le sticky Home.
+ * Hub hors ledger — calendrier mois + outils utiles (pas seulement des doublons).
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeMenuSheet(
     selectedYearMonth: YearMonth,
     isPastMonth: Boolean,
+    alertsNeedAttention: Boolean,
     onDismiss: () -> Unit,
     onSelectMonth: (YearMonth) -> Unit,
     onGoToCurrentMonth: () -> Unit,
     onOpenHealth: () -> Unit,
+    onOpenHowItWorks: () -> Unit,
+    onOpenRestore: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -59,7 +61,7 @@ fun HomeMenuSheet(
         ) {
             Text(text = "Menu", style = MaterialTheme.typography.headlineMedium)
             Text(
-                text = "Un mois, ou un outil.",
+                text = "Choisir un mois, ou un outil.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )
@@ -113,10 +115,32 @@ fun HomeMenuSheet(
             Text(text = "Outils", style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.height(8.dp))
             SecondaryA11yButton(
-                text = "Vérifier les alertes",
+                text = if (alertsNeedAttention) {
+                    "Vérifier les alertes"
+                } else {
+                    "Santé des rappels"
+                },
                 onClick = {
                     onDismiss()
                     onOpenHealth()
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            SecondaryA11yButton(
+                text = "Comment ça marche",
+                onClick = {
+                    onDismiss()
+                    onOpenHowItWorks()
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            SecondaryA11yButton(
+                text = "Restaurer une sauvegarde",
+                onClick = {
+                    onDismiss()
+                    onOpenRestore()
                 },
                 modifier = Modifier.fillMaxWidth()
             )

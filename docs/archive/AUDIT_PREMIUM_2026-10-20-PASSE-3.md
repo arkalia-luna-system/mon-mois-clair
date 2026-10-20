@@ -5,8 +5,9 @@ Journal en tête au moment de la lecture : **6.19**.
 **Suivi :** code passe 3 en **6.20** ; S04 archive en **6.21** ; smoke P3-Q04 encore ouvert.  
 Ne remplace pas les deux fichiers précédents. Il les pousse.
 
-- Origine : `docs/AUDIT_PREMIUM_2026-10-20.md`
-- Suite : `docs/AUDIT_PREMIUM_2026-10-20-SUITE.md`
+- Origine : `AUDIT_PREMIUM_2026-10-20.md` (même dossier archive)
+- Suite : `AUDIT_PREMIUM_2026-10-20-SUITE.md`
+- Statut vivant : `docs/AUDIT_STATUS.md`
 - Cette passe : ce qui reste **après** 6.16–6.19, lu dans le code, pas au doigt.
 
 Domaines couverts : visuel, fonctionnel, fiabilité, produit fini.  

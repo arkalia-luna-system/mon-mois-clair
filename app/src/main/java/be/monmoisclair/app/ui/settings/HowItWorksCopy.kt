@@ -58,7 +58,8 @@ object HowItWorksCopy {
                 "Pour feuilleter l’historique : Menu (barre du bas) → calendrier des mois, " +
                 "ou les flèches à côté du mois. " +
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
-                "Si Menu affiche « Alertes », les rappels ne peuvent pas sonner : ouvrez Vérifier les alertes."
+                "Si Menu affiche « Alertes », les rappels ne peuvent pas sonner : " +
+                "Menu → Vérifier les alertes (sinon : Santé des rappels)."
         ),
         Section(
             title = "Sauvegarde",

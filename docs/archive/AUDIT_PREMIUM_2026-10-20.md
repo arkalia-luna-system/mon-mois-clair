@@ -2,7 +2,8 @@
 
 Date : 2026-10-20.  
 Arbre lu : étape journal **6.15** (`PROGRESS_LOG.md`).  
-**Suivi :** le tableau à jour est dans `docs/AUDIT_PREMIUM_2026-10-20-SUITE.md` (F01–F07, V01–V23, S01–S06). Le verdict plus bas décrit l’état **au moment de l’écriture** (journal 6.15), avant ces corrections.  
+**Suivi (archive) :** tableau dans `AUDIT_PREMIUM_2026-10-20-SUITE.md`. Statut vivant : `docs/AUDIT_STATUS.md`.  
+Le verdict plus bas décrit l’état **au moment de l’écriture** (journal 6.15), avant les corrections 6.16–6.22.  
 But : passer d’un carnet familial correct à un produit fini, vendable, de gamme haute.  
 Ce fichier **ne code rien**. Il garde l’analyse pour ne pas la perdre.
 

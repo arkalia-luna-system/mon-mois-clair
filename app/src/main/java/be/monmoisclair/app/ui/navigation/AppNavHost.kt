@@ -67,6 +67,8 @@ fun AppNavHost(
                     navController.navigate(AppRoute.editEntry(id, isExpense))
                 },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
+                onOpenHowItWorks = { navController.navigate(AppRoute.HowItWorks) },
+                onOpenRestore = { navController.navigate(AppRoute.RestoreBackup) },
                 onOpenSettings = { navController.navigate(AppRoute.Settings) }
             )
         }

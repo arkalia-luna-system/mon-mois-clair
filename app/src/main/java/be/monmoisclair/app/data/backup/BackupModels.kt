@@ -44,7 +44,14 @@ sealed class BackupFailure(
 }
 
 sealed class RestoreResult {
-    data class Success(val checksumSha256: String) : RestoreResult()
+    data class Success(
+        val checksumSha256: String,
+        /** Photos attendues dans l’archive (0 si JSON seul). */
+        val photosExpected: Int = 0,
+        /** Photos réellement réécrites dans Documents. */
+        val photosWritten: Int = 0
+    ) : RestoreResult()
+
     data class InvalidChecksum(val expected: String, val actual: String) : RestoreResult()
     data class UnsupportedSchema(val version: Int) : RestoreResult()
     data class IoError(val message: String) : RestoreResult()

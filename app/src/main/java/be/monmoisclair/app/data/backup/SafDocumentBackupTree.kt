@@ -81,8 +81,9 @@ class SafDocumentBackupTree(
     }
 
     fun writeBinaryRelative(relativePath: String, bytes: ByteArray) {
-        val parts = relativePath.trim('/').split('/').filter { it.isNotEmpty() }
-        if (parts.isEmpty()) throw BackupFailure.Io("Chemin photo vide")
+        val safe = BackupSecurityArchive.sanitizeReceiptPath(relativePath)
+            ?: throw BackupFailure.Io("Chemin photo invalide")
+        val parts = safe.split('/')
         var dir = root
         for (i in 0 until parts.lastIndex) {
             val name = parts[i]
@@ -97,7 +98,7 @@ class SafDocumentBackupTree(
         val fileName = parts.last()
         dir.findFile(fileName)?.delete()
         val created = dir.createFile("image/webp", fileName)
-            ?: throw BackupFailure.Io("createFile photo échoué: $relativePath")
+            ?: throw BackupFailure.Io("createFile photo échoué: $safe")
         val pfd = context.contentResolver.openFileDescriptor(created.uri, "w")
             ?: throw BackupFailure.Io("openFileDescriptor photo null")
         pfd.use { descriptor ->
@@ -110,8 +111,8 @@ class SafDocumentBackupTree(
     }
 
     fun uriForRelative(relativePath: String): Uri? {
-        val parts = relativePath.trim('/').split('/').filter { it.isNotEmpty() }
-        if (parts.isEmpty()) return null
+        val safe = BackupSecurityArchive.sanitizeReceiptPath(relativePath) ?: return null
+        val parts = safe.split('/')
         var current: DocumentFile = root
         for (part in parts) {
             current = current.findFile(part) ?: return null
@@ -124,11 +125,20 @@ class SafDocumentBackupTree(
         val dir = root.findFile("receipts") ?: return emptyMap()
         if (!dir.isDirectory) return emptyMap()
         val out = linkedMapOf<String, ByteArray>()
+        var running = 0L
         for (child in dir.listFiles()) {
             val name = child.name ?: continue
             if (!child.isFile || !name.endsWith(".webp", ignoreCase = true)) continue
+            if (name.contains("..") || name.contains('/')) continue
             val bytes = context.contentResolver.openInputStream(child.uri)?.use { it.readBytes() }
                 ?: continue
+            running += bytes.size.toLong()
+            if (running > BackupSecurityArchive.MAX_ZIP_BYTES) {
+                throw BackupFailure.Io(
+                    "Trop de photos pour un envoi (${running / (1024 * 1024)} Mo). " +
+                        "Copiez le dossier Documents plutôt."
+                )
+            }
             out["receipts/$name"] = bytes
         }
         return out

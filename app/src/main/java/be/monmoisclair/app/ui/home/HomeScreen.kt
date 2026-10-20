@@ -92,6 +92,8 @@ fun HomeScreen(
     onAdd: (YearMonth) -> Unit,
     onEdit: (id: String, isExpense: Boolean) -> Unit,
     onOpenHealth: () -> Unit,
+    onOpenHowItWorks: () -> Unit,
+    onOpenRestore: () -> Unit,
     onOpenSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -303,10 +305,13 @@ fun HomeScreen(
         HomeMenuSheet(
             selectedYearMonth = state.selectedYearMonth,
             isPastMonth = state.isPastMonth,
+            alertsNeedAttention = remindersBlocked,
             onDismiss = { menuOpen = false },
             onSelectMonth = viewModel::goToMonth,
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
             onOpenHealth = onOpenHealth,
+            onOpenHowItWorks = onOpenHowItWorks,
+            onOpenRestore = onOpenRestore,
             onOpenSettings = onOpenSettings
         )
     }
