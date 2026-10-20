@@ -7,7 +7,7 @@
         <item name="android:statusBarColor">@color/paper_cream</item>
         <item name="android:navigationBarColor">@color/paper_cream</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <!-- windowLightNavigationBar : values-v27 (API 27+). -->
     </style>
 
     <!-- Android 12+ SplashScreen API — même papier, icône M. -->

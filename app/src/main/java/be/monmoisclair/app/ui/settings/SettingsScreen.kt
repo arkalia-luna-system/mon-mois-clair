@@ -91,7 +91,7 @@ fun SettingsScreen(
             }
             else -> {
                 viewModel.onEnableAuthResult(
-                    BiometricAuthResult.Failed("Biométrie indisponible sur cet appareil.")
+                    BiometricAuthResult.Failed("Pas disponible sur ce téléphone.")
                 )
             }
         }
@@ -155,7 +155,7 @@ fun SettingsScreen(
                     BiometricAvailability.HardwareUnavailable ->
                         "Capteur indisponible pour le moment."
                     BiometricAvailability.Unsupported ->
-                        "Non supporté sur cet appareil."
+                        "Pas disponible sur ce téléphone."
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
@@ -186,7 +186,7 @@ fun SettingsScreen(
             Text(
                 text = "Assurances, taxes, factures 1×/an ou tous les 3 mois — " +
                     "visibles ici quand elles ne tombent pas ce mois-ci. " +
-                    "Touchez une carte pour corriger montant, jour ou mois d’ancre.",
+                    "Touchez une carte pour corriger le nom, le montant, le jour ou le mois.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )

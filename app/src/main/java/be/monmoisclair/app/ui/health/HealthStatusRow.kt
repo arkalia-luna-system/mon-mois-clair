@@ -21,7 +21,7 @@ fun HealthStatusRow(label: String, ok: Boolean) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = if (ok) "OK" else "À régler",
+            text = if (ok) "Prêt" else "À régler",
             color = if (ok) A11yTokens.AccentOk else A11yTokens.AccentWarn,
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier

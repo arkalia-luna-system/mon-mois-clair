@@ -9,14 +9,34 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.24** (E01/E02/E08 + décimales) |
+| Dernière étape terminée | **6.25** (échéance hors mois, phrases, photo nommée) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel, relecture 6.24) · campagne profils |
+| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel, relecture 6.25) · campagne profils |
 | Audit premium | Code clos (`AUDIT_PREMIUM.md`) · smoke partiel (`AUDIT_STATUS.md`) |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.25 Échéance hors mois, phrases, photo nommée
+
+**Problème :** quitter une échéance hors mois jetait la saisie ; l’erreur restait dans le défilement ; une échéance absente ouvrait une fiche vide ; « OK », « ancre », « intégrité » et « version non supportée » restaient à l’écran ; la photo s’appelait seulement « Facture » ; l’aide ne disait pas que les courses ne changent pas le Reste.
+
+**Codé :** confirmation « Quitter sans enregistrer ? » · erreur au-dessus d’Enregistrer · écran « Cette échéance n’est plus là. » · pastille « Prêt » · restauration en phrases fixes · aide courses + « Copier » · titre de photo = nom de la ligne.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **159/159** (46 fichiers, 0 échec)  
+**Version :** `0.1.0-6.25` · `versionCode` 30
+
+### 2026-10-20 — CI phase 2 soft + phase 3 soft
+
+**Problème :** warning Node 20 sur actions CI ; lint jamais exécuté en CI ; Dependabot Gradle absent.
+
+**Codé :** `setup-android@v4` · `upload-artifact@v7` · step `:app:lintDebug` avec `continue-on-error: true` + artifact rapport · Dependabot Gradle hebdo · correction des **4 erreurs** Lint (`MissingPermission` notif, `NewApi` nav bar v27, `app/lint.xml` opt-in CameraX scan).
+
+**Pas encore :** lint bloquant · Detekt · scan CVE.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **159/159** (46 fichiers, 0 échec)  
+**Version :** inchangée `0.1.0-6.24`
 
 ### 2026-10-20 — 6.24 Gestes fiche / échéance / photo
 

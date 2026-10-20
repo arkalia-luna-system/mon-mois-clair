@@ -33,7 +33,9 @@ data class EditTemplateState(
     val saved: Boolean = false,
     val saving: Boolean = false,
     val archived: Boolean = false,
-    val edited: Boolean = false
+    val edited: Boolean = false,
+    /** Modèle absent : pas de fiche vide à enregistrer. */
+    val missing: Boolean = false
 ) {
     val anchorYearLabel: String
         get() {
@@ -62,7 +64,7 @@ class EditTemplateViewModel @Inject constructor(
 
     private suspend fun load() {
         val tpl = templateDao.getExpenseById(templateId) ?: run {
-            _state.update { it.copy(loading = false, error = "Échéance introuvable.") }
+            _state.update { it.copy(loading = false, missing = true) }
             return
         }
         val rem = (tpl.amountCents % 100).toInt()
@@ -94,7 +96,10 @@ class EditTemplateViewModel @Inject constructor(
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null, edited = true) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null, edited = true) }
     fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null, edited = true) }
-    fun setAnchorMonth(m: Int) = _state.update { it.copy(anchorMonth = m.coerceIn(1, 12), edited = true) }
+    fun setAnchorMonth(m: Int) = _state.update {
+        val next = m.coerceIn(1, 12)
+        if (next == it.anchorMonth) it else it.copy(anchorMonth = next, error = null, edited = true)
+    }
 
     fun save() {
         viewModelScope.launch {

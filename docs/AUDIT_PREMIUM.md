@@ -1,8 +1,8 @@
 # Audit premium — points encore ouverts
 
 Date : 2026-10-20.  
-Code : étape **6.24** (`0.1.0-6.24`).  
-Mesure tests : **159/159** (46 fichiers). Code audit **clos** ; reste la liste téléphone.
+Code : étape **6.25** (`0.1.0-6.25`).  
+Mesure tests : **159/159** (46 fichiers, `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
 
 But : ce qu’il reste à corriger pour que l’app se lise comme un objet fini, pas comme un chantier.  
 Hors sujet (charte, ne pas les ajouter) : banque, cloud, pub, graphiques, report automatique du solde, troisième bouton sur l’accueil.
@@ -15,9 +15,9 @@ Comparé à des carnets du même genre, pas à une banque.
 
 | Repère | Ce qu’ils font | Ici |
 |--------|----------------|-----|
-| [AllPaid](https://lagerland-apps.github.io/apps/allpaid/) | Factures sans banque. « Payé » d’un geste, y compris depuis la notification, avec retour arrière immédiat. Recherche qui se vide. | FAIT dans l’app a un « Annuler » très court. Le FAIT de la notification ne revient pas en arrière. |
-| [Wayflyer — réversibilité](https://design.wayflyer.com/latest/design-guides/reversibility-7dUsBU7U) | Annuler au moins 5 secondes pour un geste courant. Confirmer seulement ce qui détruit, en nommant la chose. Ne pas perdre un formulaire en le quittant. | Snackbar FAIT = `Short` (environ 4 s). Supprimer confirme, sans le nom (C05). Le geste Retour jette la fiche. |
-| [Appthetics](https://www.appthetics.com/blog/budgeting-apps-ux-patterns) | Un état vide dit la suite. Une alerte dit l’action, pas seulement le fait. | Mois vide : déjà une phrase + le bouton du bas. « À prévoir » ne dit pas « Voir » (A09). |
+| [AllPaid](https://lagerland-apps.github.io/apps/allpaid/) | Factures sans banque. « Payé » d’un geste, y compris depuis la notification, avec retour arrière immédiat. Recherche qui se vide. | FAIT et Remettre : bandeau long + Annuler. Notification : action Annuler. Recherche : « Effacer ». |
+| [Wayflyer — réversibilité](https://design.wayflyer.com/latest/design-guides/reversibility-7dUsBU7U) | Annuler au moins 5 secondes pour un geste courant. Confirmer seulement ce qui détruit, en nommant la chose. Ne pas perdre un formulaire en le quittant. | Fiche, édition et échéance hors mois demandent confirmation si quelque chose a changé. Supprimer et Retirer nomment la ligne. |
+| [Appthetics](https://www.appthetics.com/blog/budgeting-apps-ux-patterns) | Un état vide dit la suite. Une alerte dit l’action, pas seulement le fait. | Mois vide : phrase + « + Ajouter ». « À prévoir » se termine par « Voir ». L’aide dit que les courses ne changent pas le Reste. |
 
 **Ne pas copier**, même si ces apps les ont : connexion bancaire, graphiques, catalogue Netflix, cloud, widget d’écran d’accueil, couleurs du fond d’écran. La charte les écarte. Les noter à nouveau ne fait pas avancer le produit.
 
@@ -235,6 +235,12 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 
 ---
 
+## Suite 6.25 — **corrigé**
+
+Échéance hors mois : Retour et Annuler demandent confirmation si le texte a changé. L’erreur de montant est juste au-dessus d’Enregistrer. Si l’échéance n’existe plus, l’écran dit « Cette échéance n’est plus là. » Alertes : pastille « Prêt », plus « OK ». Réglages : plus de « mois d’ancre », plus de « non supporté ». Restauration : phrases fixes, sans numéro de schéma ni « intégrité ». Photo : le titre est le nom de la ligne. Aide : les courses ne changent pas le Reste ; « Copier » sur le mois, « Copier la communication » dans la fiche.
+
+---
+
 ## À vérifier au doigt (pas un correctif de code)
 
 À faire sur le Galaxy, dans cet ordre. Tant que ce n’est pas fait, ne pas écrire « validé téléphone » dans le journal.
@@ -253,6 +259,9 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 12. Fiche à moitié remplie : le geste Retour demande confirmation. Échéance annuelle hors mois : on peut la retirer.
 13. FAIT : « Annuler » reste longtemps. FAIT depuis la notification : une action Annuler.
 14. Scan : lampe, et caméra refusée → réglages.
+15. Échéance hors mois à moitié modifiée : Retour demande « Rester » ou « Quitter ». Un montant du type `12,999` affiche l’erreur au-dessus d’Enregistrer.
+16. Alertes : pastille « Prêt ». Réglages : plus le mot « ancre ».
+17. Photo d’une facture : le titre est son nom. Aide « Courses » : le Reste ne change pas.
 
 ---
 
@@ -262,4 +271,5 @@ Le menu défile (`verticalScroll`) et les années sont groupées : ne pas rouvri
 |-------|-----|----------|------|
 | 1 | C01, A01–A05, B01, B02, C02 | Phrases techniques, menu, courses, prélèvement, alertes, version | **corrigé** |
 | 2 | E01–E08, A06–A12, B03–B05, C03–C05, D01, D02 | Fiche, échéance, annuler, horizon, lecture, scan | **corrigé** |
-| 3 | Liste téléphone | Après le code | ouvert |
+| 3 | Suite 6.25 | Échéance hors mois, phrases, photo nommée | **corrigé** |
+| 4 | Liste téléphone | Après le code | ouvert |

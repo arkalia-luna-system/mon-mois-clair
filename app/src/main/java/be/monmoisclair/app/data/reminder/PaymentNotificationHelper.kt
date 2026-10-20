@@ -1,13 +1,17 @@
 package be.monmoisclair.app.data.reminder
 
+import android.Manifest
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import be.monmoisclair.app.MainActivity
 import be.monmoisclair.app.R
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -76,7 +80,7 @@ class PaymentNotificationHelper @Inject constructor(
             )
             .build()
 
-        NotificationManagerCompat.from(context).notify(notificationId, notification)
+        notifyIfAllowed(notificationId, notification)
     }
 
     /** E04 : après FAIT depuis la notification, laisser Annuler quelques secondes. */
@@ -101,7 +105,23 @@ class PaymentNotificationHelper @Inject constructor(
             .setTimeoutAfter(10_000)
             .addAction(0, context.getString(R.string.notification_action_undo), undo)
             .build()
-        NotificationManagerCompat.from(context).notify(notificationId, notification)
+        notifyIfAllowed(notificationId, notification)
+    }
+
+    private fun notifyIfAllowed(notificationId: Int, notification: Notification) {
+        val manager = NotificationManagerCompat.from(context)
+        if (!manager.areNotificationsEnabled()) return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        try {
+            manager.notify(notificationId, notification)
+        } catch (_: SecurityException) {
+            // Permission retirée entre le check et l’appel.
+        }
     }
 
     companion object {

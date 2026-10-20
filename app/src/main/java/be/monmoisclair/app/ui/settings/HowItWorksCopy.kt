@@ -35,7 +35,9 @@ object HowItWorksCopy {
         Section(
             title = "Courses",
             body = "Pour les petites dépenses sans facture fixe (courses, pharmacie…). " +
-                "Tapez un montant puis « Ajouter » ou « Retirer »."
+                "Tapez un montant puis « Ajouter » ou « Retirer ». " +
+                "Le gros chiffre « Reste après factures » ne change pas. " +
+                "Une ligne « Après courses » montre ce qu’il resterait, à titre indicatif."
         ),
         Section(
             title = "Alertes",
@@ -47,7 +49,8 @@ object HowItWorksCopy {
         Section(
             title = "Facture papier",
             body = "À l’ajout : « Scanner une facture » lit le QR de la facture belge et préremplit nom, montant " +
-                "et communication. Touchez « Copier la communication » puis collez dans votre app bancaire. " +
+                "et communication. Sur le mois, touchez « Copier ». Dans la fiche, « Copier la communication ». " +
+                "Collez ensuite dans votre app bancaire. " +
                 "Vous pouvez aussi prendre une photo de la facture. Elle se revoit en ouvrant la ligne. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."
         ),

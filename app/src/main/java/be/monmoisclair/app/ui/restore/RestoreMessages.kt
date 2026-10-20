@@ -9,9 +9,9 @@ object RestoreMessages {
         is RestoreResult.NotConfigured ->
             "Aucun dossier de sauvegarde configuré. Choisissez d’abord un dossier Documents."
         is RestoreResult.UnsupportedSchema ->
-            "Cette sauvegarde utilise une version non supportée (v${result.version})."
+            "Cette copie ne peut pas être lue par cette app. Le mois en cours n’a pas été modifié."
         is RestoreResult.InvalidChecksum ->
-            "Sauvegarde corrompue ou modifiée (contrôle d’intégrité échoué)."
+            "Cette copie est abîmée ou a été modifiée. Le mois en cours n’a pas été modifié."
         is RestoreResult.IoError ->
             "Impossible de lire cette sauvegarde. Le mois en cours n’a pas été modifié."
     }

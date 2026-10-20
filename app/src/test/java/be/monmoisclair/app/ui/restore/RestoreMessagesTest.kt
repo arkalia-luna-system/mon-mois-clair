@@ -44,17 +44,19 @@ class RestoreMessagesTest {
     }
 
     @Test
-    fun unsupportedSchema_mentions_version() {
+    fun unsupportedSchema_stays_plain() {
         val msg = RestoreMessages.from(RestoreResult.UnsupportedSchema(9))
-        assertThat(msg).contains("9")
+        assertThat(msg).doesNotContain("9")
+        assertThat(msg).contains("n’a pas été modifié")
     }
 
     @Test
-    fun invalidChecksum_mentions_integrity() {
+    fun invalidChecksum_stays_plain() {
         val msg = RestoreMessages.from(
             RestoreResult.InvalidChecksum(expected = "aa", actual = "bb")
         )
-        assertThat(msg.lowercase()).contains("intégrité")
+        assertThat(msg.lowercase()).contains("abîmée")
+        assertThat(msg).doesNotContain("intégrité")
     }
 
     @Test

@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.entry
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,8 +50,49 @@ fun EditTemplateScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val keyboardOpen = imeOpen()
     var confirmArchive by remember { mutableStateOf(false) }
+    var confirmLeave by remember { mutableStateOf(false) }
+
+    fun requestLeave() {
+        if (state.edited) confirmLeave = true else onCancel()
+    }
+
+    BackHandler { requestLeave() }
 
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
+
+    if (confirmLeave) {
+        AlertDialog(
+            onDismissRequest = { confirmLeave = false },
+            shape = MaterialTheme.shapes.medium,
+            containerColor = A11yTokens.PaperWarm,
+            title = { Text("Quitter sans enregistrer ?") },
+            text = {
+                Text(
+                    "Les changements ne seront pas gardés.",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            confirmButton = {
+                DangerA11yButton(
+                    text = "Quitter",
+                    onClick = {
+                        confirmLeave = false
+                        onCancel()
+                    },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                )
+            },
+            dismissButton = {
+                SecondaryA11yButton(
+                    text = "Rester",
+                    onClick = { confirmLeave = false },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+        )
+    }
 
     if (confirmArchive) {
         val name = state.label.trim().ifBlank { "cette échéance" }
@@ -94,6 +137,24 @@ fun EditTemplateScreen(
                 .padding(A11yTokens.screenPadding)
         ) {
             Text("Chargement…", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
+        }
+        return
+    }
+
+    if (state.missing) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(A11yTokens.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Cette échéance n’est plus là.", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "Elle a peut-être déjà été retirée.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+            SecondaryA11yButton(text = "Retour", onClick = onCancel)
         }
         return
     }
@@ -175,15 +236,19 @@ fun EditTemplateScreen(
                             style = MaterialTheme.typography.bodyLarge,
                             color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
                             modifier = Modifier
-                                .clickable { viewModel.setAnchorMonth(m) }
+                                .clickable(
+                                    role = Role.Button,
+                                    onClickLabel = RecurrenceAnchor.frenchMonthLabel(m)
+                                ) { viewModel.setAnchorMonth(m) }
                                 .padding(horizontal = 12.dp, vertical = 12.dp)
                         )
                     }
                 }
             }
-            state.error?.let {
-                Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
-            }
+            Spacer(Modifier.height(8.dp))
+        }
+        state.error?.let {
+            Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
             Spacer(Modifier.height(8.dp))
         }
         PrimaryA11yButton(
@@ -199,7 +264,7 @@ fun EditTemplateScreen(
                 enabled = !state.saving
             )
             Spacer(Modifier.height(8.dp))
-            SecondaryA11yButton(text = "Annuler", onClick = onCancel)
+            SecondaryA11yButton(text = "Annuler", onClick = { requestLeave() })
         }
     }
 }

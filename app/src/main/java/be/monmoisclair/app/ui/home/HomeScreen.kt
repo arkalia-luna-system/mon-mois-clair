@@ -116,6 +116,7 @@ fun HomeScreen(
     /** S02 : ne pas chasser le snackbar « Annuler » FAIT. */
     var faitUndoActive by remember { mutableStateOf(false) }
     var receiptPathToShow by remember { mutableStateOf<String?>(null) }
+    var receiptTitle by remember { mutableStateOf("Facture") }
     var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var receiptLoading by remember { mutableStateOf(false) }
 
@@ -234,7 +235,12 @@ fun HomeScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Facture", style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        text = receiptTitle,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     when {
                         receiptLoading -> {
                             Box(
@@ -570,6 +576,7 @@ fun HomeScreen(
                                         viewModel.copyPaymentNote(item.paymentNote)
                                     },
                                     onOpenReceipt = {
+                                        receiptTitle = item.label.trim().ifBlank { "Facture" }
                                         receiptPathToShow = item.receiptRelativePath
                                     }
                                 )
