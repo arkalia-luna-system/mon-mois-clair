@@ -103,7 +103,7 @@ ksp {
 
 
 dependencies {
-    val roomVersion = "2.6.1"
+    val roomVersion = "2.8.5"
     val hiltVersion = "2.52"
 
     implementation("androidx.core:core-ktx:1.15.0")
