@@ -107,12 +107,19 @@ class EditEntryViewModel @Inject constructor(
     fun copyPaymentNote() {
         val note = _state.value.paymentNote.trim()
         if (note.isEmpty()) {
-            _state.update { it.copy(copyMessage = "Aucune communication à copier.") }
+            _state.update {
+                it.copy(error = "Aucune communication à copier.", copyMessage = null)
+            }
             return
         }
         (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
             .setPrimaryClip(ClipData.newPlainText("communication", note))
-        _state.update { it.copy(copyMessage = "Copié — collez dans votre application bancaire.") }
+        _state.update {
+            it.copy(
+                copyMessage = "Copié — collez dans votre application bancaire.",
+                error = null
+            )
+        }
     }
 
     fun save() {

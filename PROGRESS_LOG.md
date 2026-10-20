@@ -9,13 +9,19 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.4** (affichage S26 / Ultra) |
+| Dernière étape terminée | **6.4.1** (polish affichage / scan) |
 | Étape en cours | *(aucune)* |
 | Prochaine sous-étape | Smoke S26 maman dès dispo · continuer sur `develop` |
 
 ---
 
 ## Journal
+
+### 2026-10-20 — 6.4.1 polish (bugs mineurs)
+
+**Corrigé :** « Aucune communication » en rouge (plus vert) · scan caméra libérée à la sortie · titre lock adapté compact.  
+**Tests :** **120/120 OK**  
+**Version :** `0.1.0-6.4.1` · `versionCode` 9
 
 ### 2026-10-20 — Audit affichages (post-6.4)
 

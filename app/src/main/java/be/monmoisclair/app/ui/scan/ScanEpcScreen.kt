@@ -53,18 +53,100 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
     }
     var status by remember { mutableStateOf("Pointez la caméra vers le QR Code de la facture.") }
     val handled = remember { AtomicBoolean(false) }
+    val previewView = remember { PreviewView(context) }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         hasCamera = granted
         if (!granted) status = "Autorisez la caméra pour scanner la facture."
     }
+
     DisposableEffect(Unit) {
         if (!hasCamera) permissionLauncher.launch(Manifest.permission.CAMERA)
         onDispose { }
     }
+
+    DisposableEffect(hasCamera, lifecycleOwner) {
+        if (!hasCamera) {
+            return@DisposableEffect onDispose { }
+        }
+        val mainExecutor = ContextCompat.getMainExecutor(context)
+        val analysisExecutor = Executors.newSingleThreadExecutor()
+        val scanner = BarcodeScanning.getClient()
+        val providerHolder = arrayOfNulls<ProcessCameraProvider>(1)
+        var disposed = false
+        val future = ProcessCameraProvider.getInstance(context)
+        future.addListener({
+            if (disposed) return@addListener
+            try {
+                val provider = future.get()
+                if (disposed) {
+                    provider.unbindAll()
+                    return@addListener
+                }
+                providerHolder[0] = provider
+                val preview = Preview.Builder().build().also {
+                    it.surfaceProvider = previewView.surfaceProvider
+                }
+                val analysis = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                analysis.setAnalyzer(analysisExecutor) { proxy ->
+                    if (handled.get() || disposed) {
+                        proxy.close()
+                        return@setAnalyzer
+                    }
+                    val media = proxy.image ?: run {
+                        proxy.close()
+                        return@setAnalyzer
+                    }
+                    val image = InputImage.fromMediaImage(media, proxy.imageInfo.rotationDegrees)
+                    scanner.process(image)
+                        .addOnSuccessListener { barcodes ->
+                            if (disposed) return@addOnSuccessListener
+                            val raw = barcodes.firstOrNull {
+                                it.format == Barcode.FORMAT_QR_CODE
+                            }?.rawValue
+                            if (raw != null &&
+                                EpcQrParser.parse(raw) != null &&
+                                handled.compareAndSet(false, true)
+                            ) {
+                                onResult(raw)
+                            }
+                        }
+                        .addOnFailureListener { e -> Log.w("ScanEpc", "fail", e) }
+                        .addOnCompleteListener { proxy.close() }
+                }
+                provider.unbindAll()
+                provider.bindToLifecycle(
+                    lifecycleOwner,
+                    CameraSelector.DEFAULT_BACK_CAMERA,
+                    preview,
+                    analysis
+                )
+            } catch (e: Exception) {
+                Log.e("ScanEpc", "bind", e)
+                if (!disposed) status = "Caméra indisponible."
+            }
+        }, mainExecutor)
+
+        onDispose {
+            disposed = true
+            runCatching { providerHolder[0]?.unbindAll() }
+            runCatching {
+                if (future.isDone) future.get().unbindAll()
+            }
+            runCatching { scanner.close() }
+            analysisExecutor.shutdown()
+        }
+    }
+
     Column(
-        Modifier.fillMaxSize().background(A11yTokens.PaperCream).padding(A11yTokens.screenPadding)
+        Modifier
+            .fillMaxSize()
+            .background(A11yTokens.PaperCream)
+            .padding(A11yTokens.screenPadding)
     ) {
         Text("Scanner une facture", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(8.dp))
@@ -72,58 +154,19 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         Spacer(Modifier.height(12.dp))
         if (hasCamera) {
             AndroidView(
-                factory = { ctx ->
-                    val previewView = PreviewView(ctx)
-                    ProcessCameraProvider.getInstance(ctx).addListener({
-                        val cameraProvider = ProcessCameraProvider.getInstance(ctx).get()
-                        val preview = Preview.Builder().build().also {
-                            it.surfaceProvider = previewView.surfaceProvider
-                        }
-                        val analysis = ImageAnalysis.Builder()
-                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                            .build()
-                        val scanner = BarcodeScanning.getClient()
-                        analysis.setAnalyzer(Executors.newSingleThreadExecutor()) { proxy ->
-                            if (handled.get()) { proxy.close(); return@setAnalyzer }
-                            val media = proxy.image ?: run { proxy.close(); return@setAnalyzer }
-                            val image = InputImage.fromMediaImage(media, proxy.imageInfo.rotationDegrees)
-                            scanner.process(image)
-                                .addOnSuccessListener { barcodes ->
-                                    val raw = barcodes.firstOrNull { it.format == Barcode.FORMAT_QR_CODE }?.rawValue
-                                    if (raw != null && EpcQrParser.parse(raw) != null &&
-                                        handled.compareAndSet(false, true)
-                                    ) onResult(raw)
-                                }
-                                .addOnFailureListener { e -> Log.w("ScanEpc", "fail", e) }
-                                .addOnCompleteListener { proxy.close() }
-                        }
-                        try {
-                            cameraProvider.unbindAll()
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis
-                            )
-                        } catch (e: Exception) {
-                            Log.e("ScanEpc", "bind", e)
-                            status = "Caméra indisponible."
-                        }
-                    }, ContextCompat.getMainExecutor(ctx))
-                    previewView
-                },
-                modifier = Modifier.fillMaxWidth().weight(1f)
+                factory = { previewView },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             )
         } else {
             Spacer(Modifier.weight(1f))
             PrimaryA11yButton(
                 text = "Autoriser la caméra",
-                onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
-                enabled = true
+                onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }
             )
         }
         Spacer(Modifier.height(12.dp))
-        SecondaryA11yButton(
-            text = "Annuler",
-            onClick = onCancel,
-            enabled = true
-        )
+        SecondaryA11yButton(text = "Annuler", onClick = onCancel)
     }
 }

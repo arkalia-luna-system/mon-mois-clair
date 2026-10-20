@@ -19,6 +19,8 @@ import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun BiometricLockScreen(
@@ -30,6 +32,7 @@ fun BiometricLockScreen(
     modifier: Modifier = Modifier
 ) {
     val activity = LocalContext.current as FragmentActivity
+    val fit = rememberDisplayFit()
 
     fun prompt() {
         gateway.authenticate(
@@ -63,8 +66,11 @@ fun BiometricLockScreen(
             .padding(A11yTokens.screenPadding),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
-        Text(text = "Mon Mois Clair", style = MaterialTheme.typography.displayLarge)
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 16.dp else 32.dp))
+        Text(
+            text = "Mon Mois Clair",
+            style = MaterialTheme.typography.displayLarge.copy(fontSize = fit.brandTitleSp.sp)
+        )
         Text(
             text = "Application verrouillée",
             style = MaterialTheme.typography.headlineMedium
