@@ -43,6 +43,11 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            // Sideload famille = ARM only. x86/x86_64 (émulateur) gonflent l’APK
+            // surtout via ML Kit barcode (~12 Mo de .so inutiles sur téléphone).
+            ndk {
+                abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

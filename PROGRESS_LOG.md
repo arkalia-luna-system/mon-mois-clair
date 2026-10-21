@@ -19,6 +19,15 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — APK release allégée (ABI ARM only)
+
+**Problème :** l’APK sideload emmenait les libs **x86/x86_64** (émulateur), surtout ML Kit barcode (~12 Mo inutiles sur téléphone).
+
+**Codé :** `ndk.abiFilters` release = `armeabi-v7a` + `arm64-v8a` seulement. Debug inchangé (émulateurs OK).
+
+**Résultat :** APK **~25 Mo → ~14 Mo**. Scan QR / caméra inchangés sur Galaxy.  
+**Version :** inchangée `0.1.0-6.37`. Pas de suite tests (config packaging).
+
 ### 2026-10-21 — Campagne : sticky Senior + snackbar FAIT
 
 **Vu :** « Hors à payer » opaque (Senior/Produit) ; doute « FAIT efface la ligne ? ».
