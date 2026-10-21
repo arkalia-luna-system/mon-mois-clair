@@ -72,13 +72,19 @@ fun ReminderHealthScreen(
 
         val r = report
         if (r == null) {
+            val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.semantics {
-                    contentDescription = "Vérification des alertes"
-                    liveRegion = LiveRegionMode.Polite
-                }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                    .background(A11yTokens.PaperWarm, busyShape)
+                    .padding(12.dp)
+                    .semantics {
+                        contentDescription = "Vérification des alertes"
+                        liveRegion = LiveRegionMode.Polite
+                    }
             ) {
                 CircularProgressIndicator(
                     color = A11yTokens.ButtonFill,

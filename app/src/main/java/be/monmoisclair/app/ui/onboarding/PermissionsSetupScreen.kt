@@ -140,11 +140,17 @@ fun PermissionsSetupScreen(
         }
 
         if (report?.samsungDeviceCareHintNeeded == true) {
+            val warnShape = MaterialTheme.shapes.medium
             Text(
                 text = "Dans Samsung, retirez Mon Mois Clair de la mise en veille " +
                     "(Paramètres → Batterie → Limites d’utilisation en arrière-plan).",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.AccentWarn
+                color = A11yTokens.AccentWarn,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), warnShape)
+                    .background(A11yTokens.PaperWarm, warnShape)
+                    .padding(12.dp)
             )
         }
 
@@ -154,11 +160,17 @@ fun PermissionsSetupScreen(
         )
 
         if (report != null && !report.isFullyHealthy) {
+            val softShape = MaterialTheme.shapes.medium
             Text(
                 text = "Vous pouvez continuer, mais les rappels risquent de ne pas sonner " +
                     "tant que tous les points ne sont pas prêts.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.AccentWarn
+                color = A11yTokens.AccentWarn,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, softShape)
+                    .background(A11yTokens.PaperWarm, softShape)
+                    .padding(12.dp)
             )
         }
     }

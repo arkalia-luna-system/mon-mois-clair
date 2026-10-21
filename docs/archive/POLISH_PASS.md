@@ -55,6 +55,12 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Alertes : calendrier + OK + lignes santé en cartes | ReminderHealth, HealthStatusRow |
 | P2 | Verrou / modèle / cases / grille jours / menu | Lock, EditTemplate, CheckRow, DayGrid, HomeMenu |
 | P2 | Réglages : bandeau « préparation copie » | `SettingsScreen` |
+| P2 | Splash chargement TalkBack + spinner teal | `MainActivity` |
+| P2 | Danger bouton : hauteur min + texte 2 lignes | `A11yButton` |
+| P2 | Scan : carte si caméra refusée | `ScanEpcScreen` |
+| P2 | Alertes / permissions : busy + Samsung encadrés | Health, Permissions |
+| P2 | Modèle : mois ancre TalkBack radio | `EditTemplateScreen` |
+| P2 | WIP courriers : intros cartes (non commit) | PendingLetterForm, Convert |
 
 ## Encore ouvert (plus tard)
 

@@ -294,10 +294,17 @@ fun EditTemplateScreen(
                             color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
                             modifier = Modifier
                                 .clickable(
-                                    role = Role.Button,
+                                    role = Role.RadioButton,
                                     onClickLabel = label
                                 ) { viewModel.setAnchorMonth(m) }
                                 .padding(horizontal = 12.dp, vertical = 12.dp)
+                                .semantics {
+                                    contentDescription = if (selected) {
+                                        "$label, sélectionné"
+                                    } else {
+                                        label
+                                    }
+                                }
                         )
                     }
                 }

@@ -113,7 +113,8 @@ fun DangerA11yButton(
         enabled = enabled,
         modifier = modifier
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
-            .heightIn(min = A11yTokens.minTouchHeight),
+            .heightIn(min = A11yTokens.minTouchHeight)
+            .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, A11yTokens.AccentDanger),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -121,6 +122,11 @@ fun DangerA11yButton(
             contentColor = A11yTokens.AccentDanger
         )
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
+            maxLines = 2
+        )
     }
 }

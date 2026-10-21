@@ -295,6 +295,22 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             }
         } else {
             Spacer(Modifier.weight(1f))
+            val denyShape = MaterialTheme.shapes.medium
+            Text(
+                text = if (permanentlyDenied) {
+                    "Caméra refusée. Ouvrez les réglages du téléphone pour l’autoriser."
+                } else {
+                    "Autorisez la caméra pour cadrer le QR de la facture."
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, denyShape)
+                    .background(A11yTokens.PaperCard, denyShape)
+                    .padding(14.dp)
+            )
+            Spacer(Modifier.height(12.dp))
             if (permanentlyDenied) {
                 SecondaryA11yButton(
                     text = "Ouvrir les réglages",
