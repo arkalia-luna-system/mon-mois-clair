@@ -291,17 +291,24 @@ fun HomeScreen(
             onDismissRequest = viewModel::dismissPastToggle,
             shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
-            title = { Text("Mois passé", style = MaterialTheme.typography.titleLarge) },
+            title = {
+                Text(
+                    text = "Mois passé",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.Ink
+                )
+            },
             text = {
                 Text(
-                    if (pastMarkingDone) {
+                    text = if (pastMarkingDone) {
                         "Vous êtes sur un mois passé (${state.monthLabel}). " +
                             "Marquer cette ligne FAIT ?"
                     } else {
                         "Vous êtes sur un mois passé (${state.monthLabel}). " +
                             "Remettre cette ligne à payer ?"
                     },
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
                 )
             },
             confirmButton = {

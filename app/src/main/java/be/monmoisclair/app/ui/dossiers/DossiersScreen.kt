@@ -62,9 +62,18 @@ fun DossiersScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+    LaunchedEffect(Unit) {
+        viewModel.shareIntents.collectLatest { intent ->
+            runCatching { context.startActivity(intent) }
+        }
+    }
 
     PinnedBackScaffold(onBack = onBack) {
-        Text(text = "Mes dossiers", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Mes dossiers",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val introShape = MaterialTheme.shapes.medium
         Text(
             text = "Accords et retards — le reste dû est ici, pas sur l’accueil.",

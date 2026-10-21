@@ -663,11 +663,17 @@ private fun DiscardChangesDialog(
         onDismissRequest = onStay,
         shape = MaterialTheme.shapes.medium,
         containerColor = A11yTokens.PaperWarm,
-        title = { Text("Quitter sans enregistrer ?") },
+        title = {
+            Text(
+                text = "Quitter sans enregistrer ?",
+                color = A11yTokens.Ink
+            )
+        },
         text = {
             Text(
-                "Les changements ne seront pas gardés.",
-                style = MaterialTheme.typography.bodyLarge
+                text = "Les changements ne seront pas gardés.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.Ink
             )
         },
         confirmButton = {

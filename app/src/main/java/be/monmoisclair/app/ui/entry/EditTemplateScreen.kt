@@ -200,7 +200,11 @@ fun EditTemplateScreen(
                 .padding(A11yTokens.screenPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Cette échéance n’est plus là.", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "Cette échéance n’est plus là.",
+                style = MaterialTheme.typography.headlineMedium,
+                color = A11yTokens.Ink
+            )
             val missShape = MaterialTheme.shapes.medium
             Text(
                 text = "Elle a peut-être déjà été retirée. Retournez à l’accueil ou aux Réglages.",
@@ -230,7 +234,11 @@ fun EditTemplateScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Modifier l’échéance", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "Modifier l’échéance",
+                style = MaterialTheme.typography.headlineMedium,
+                color = A11yTokens.Ink
+            )
             val hintShape = MaterialTheme.shapes.medium
             Column(
                 modifier = Modifier
