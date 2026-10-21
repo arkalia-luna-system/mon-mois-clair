@@ -46,14 +46,14 @@ fun PinnedActionScaffold(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             content = content
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         if (secondaryLabel != null && onSecondary != null) {
             SecondaryA11yButton(
                 text = secondaryLabel,
                 onClick = onSecondary,
                 enabled = secondaryEnabled
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
         PrimaryA11yButton(
             text = primaryLabel,

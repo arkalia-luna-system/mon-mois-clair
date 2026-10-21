@@ -7,5 +7,5 @@
     <string name="notification_action_undo">Annuler</string>
     <string name="onboarding_saf_title">Dossier de sauvegarde</string>
     <string name="onboarding_permissions_title">Rappels fiables</string>
-    <string name="health_title">Santé des rappels</string>
+    <string name="health_title">Alertes</string>
 </resources>

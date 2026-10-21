@@ -132,7 +132,8 @@ fun SettingsScreen(
         SettingsCard(title = "Confidentialité") {
             Text(
                 text = "Par défaut l’app s’ouvre sans code.",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
             )
             val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
             Row(
@@ -145,6 +146,13 @@ fun SettingsScreen(
                     ) {
                         if (state.biometricEnabled) viewModel.disableBiometric()
                         else requestEnable()
+                    }
+                    .semantics {
+                        contentDescription = if (state.biometricEnabled) {
+                            "Verrouiller avec empreinte ou code, activé"
+                        } else {
+                            "Verrouiller avec empreinte ou code, désactivé"
+                        }
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {

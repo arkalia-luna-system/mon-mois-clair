@@ -201,7 +201,7 @@ private fun DossierRow(
                 )
                 if (item.monthCents > 0L) {
                     Text(
-                        text = MoneyFormat.formatCents(item.monthCents) + " / mois",
+                        text = "${MoneyFormat.formatCents(item.monthCents)} ce mois",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted
                     )

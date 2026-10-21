@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.entry
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -142,6 +143,7 @@ fun EditTemplateScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(A11yTokens.PaperCream)
                 .padding(A11yTokens.screenPadding)
                 .semantics { contentDescription = "Chargement de l’échéance" }
         ) {
@@ -154,12 +156,13 @@ fun EditTemplateScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(A11yTokens.PaperCream)
                 .padding(A11yTokens.screenPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text("Cette échéance n’est plus là.", style = MaterialTheme.typography.headlineMedium)
             Text(
-                text = "Elle a peut-être déjà été retirée.",
+                text = "Elle a peut-être déjà été retirée. Retournez à l’accueil ou aux Réglages.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted
             )

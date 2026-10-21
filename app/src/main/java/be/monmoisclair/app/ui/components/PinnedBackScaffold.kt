@@ -43,7 +43,7 @@ fun PinnedBackScaffold(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             content = content
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         SecondaryA11yButton(
             text = backLabel,
             onClick = onBack,
