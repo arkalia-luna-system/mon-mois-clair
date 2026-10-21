@@ -292,9 +292,10 @@ fun EditTemplateScreen(
                         shape = shape,
                         modifier = Modifier
                             .heightIn(min = A11yTokens.minTouchHeight)
-                            .then(
-                                if (selected) Modifier
-                                else Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+                            .border(
+                                1.dp,
+                                if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
+                                shape
                             )
                     ) {
                         Text(
@@ -321,14 +322,20 @@ fun EditTemplateScreen(
             Spacer(Modifier.height(8.dp))
         }
         state.error?.let {
+            val errShape = MaterialTheme.shapes.medium
             Text(
                 text = it,
                 color = A11yTokens.AccentDanger,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics {
-                    liveRegion = LiveRegionMode.Assertive
-                    contentDescription = it
-                }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                    .background(A11yTokens.PaperWarm, errShape)
+                    .padding(12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Assertive
+                        contentDescription = it
+                    }
             )
             Spacer(Modifier.height(8.dp))
         }

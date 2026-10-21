@@ -13,6 +13,7 @@ Workflow : [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 - `:app:lintDebug` soft (`continue-on-error`)
 - **pas** d’`assembleDebug` en CI (APK/dex/strip trop lent pour le signal quotidien ; à lancer en local / release)
 - accélération : `gradle/actions/setup-gradle` (cache) + `org.gradle.caching` / `parallel` **en env CI seulement**
+- wrapper **Gradle 8.11.1** (AGP 8.7.3) — évite l’avis « 8.9 obsolète » de `setup-gradle`
 - runner **`ubuntu-24.04`** (pin, pas `ubuntu-latest`)
 - actions à jour (Node 24) : `setup-android@v4`, `upload-artifact@v7`
 - **Pas** de `concurrency` : chaque push termine son run. Sinon GitHub annule

@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
+import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import javax.inject.Inject
@@ -40,7 +41,8 @@ class MutatingRepository @Inject constructor(
                 monthLedgerDao = db.monthLedgerDao(),
                 templateDao = db.templateDao(),
                 instanceDao = db.instanceDao(),
-                appMetaDao = db.appMetaDao()
+                appMetaDao = db.appMetaDao(),
+                pendingLetterDao = db.pendingLetterDao()
             )
             context.block()
         }
@@ -57,6 +59,7 @@ class MutatingRepository @Inject constructor(
         val monthLedgerDao: MonthLedgerDao,
         val templateDao: TemplateDao,
         val instanceDao: InstanceDao,
-        val appMetaDao: AppMetaDao
+        val appMetaDao: AppMetaDao,
+        val pendingLetterDao: PendingLetterDao
     )
 }

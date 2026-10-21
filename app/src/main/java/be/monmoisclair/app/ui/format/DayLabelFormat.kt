@@ -21,10 +21,4 @@ object DayLabelFormat {
         ym.atDay(1).format(monthOnlyFmt)
             .replace(".", "")
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.FRENCH) else it.toString() }
-
-    /** Chip Menu : court ; année seulement si ≠ année courante. */
-    fun monthChip(ym: YearMonth, current: YearMonth): String {
-        val short = monthChipShort(ym)
-        return if (ym.year == current.year) short else "$short ${ym.year}"
-    }
 }

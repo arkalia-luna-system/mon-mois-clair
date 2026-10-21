@@ -173,6 +173,7 @@ class BackupRestorer @Inject constructor(
         db.monthLedgerDao().clearAll()
         db.templateDao().clearAllExpenses()
         db.templateDao().clearAllIncomes()
+        db.pendingLetterDao().clearAll()
         db.appMetaDao().clearAll()
     }
 
@@ -191,6 +192,9 @@ class BackupRestorer @Inject constructor(
         }
         if (payload.expenseInstances.isNotEmpty()) {
             db.instanceDao().insertExpenses(payload.expenseInstances)
+        }
+        if (payload.pendingLetters.isNotEmpty()) {
+            db.pendingLetterDao().upsertAll(payload.pendingLetters)
         }
         if (payload.appMeta.isNotEmpty()) {
             db.appMetaDao().upsertAll(payload.appMeta)

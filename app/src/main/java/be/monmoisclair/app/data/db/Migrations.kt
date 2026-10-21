@@ -79,4 +79,22 @@ object Migrations {
             )
         }
     }
+
+    /** Lot D : courriers sans plan (pas de montant, pas dans le Reste). */
+    val MIGRATION_6_7 = object : Migration(6, 7) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `pending_letters` (" +
+                    "`id` TEXT NOT NULL, " +
+                    "`who` TEXT NOT NULL, " +
+                    "`what` TEXT NOT NULL, " +
+                    "`receiptRelativePath` TEXT NOT NULL, " +
+                    "`paymentNote` TEXT NOT NULL, " +
+                    "`iban` TEXT NOT NULL, " +
+                    "`creditorEmail` TEXT NOT NULL, " +
+                    "`createdAtEpochMs` INTEGER NOT NULL, " +
+                    "PRIMARY KEY(`id`))"
+            )
+        }
+    }
 }

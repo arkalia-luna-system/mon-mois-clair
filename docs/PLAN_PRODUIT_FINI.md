@@ -1,9 +1,9 @@
 # Plan — du carnet fini à un outil qui tient aussi les retards
 
-Date : 2026-10-21, mis à jour après clôture lot **C**.  
+Date : 2026-10-21, mis à jour après clôture lot **D**.  
 Départ : carnet tenu.  
-Lots **A, B, C** clos dans le journal (`0.1.0-6.30` … `0.1.0-6.32`, schéma Room **6**).  
-On n’anticipe **pas** D, E, F dans `versionName`, le README ou les badges. Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.
+Lots **A, B, C, D** clos dans le journal (`0.1.0-6.30` … `0.1.0-6.34`, schéma Room **7**).  
+On n’anticipe **pas** E, F dans `versionName`, le README ou les badges. Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.
 
 Lectures liées :
 
@@ -106,23 +106,24 @@ Schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · « 
 
 **Maman.** Ces boutons ne sont pas sur une facture normale. Le scan continue de remplir nom, montant, communication.
 
-### Lot D — Mes dossiers, et le tiroir — commencé (liste), pas clos
+### Lot D — Mes dossiers, et le tiroir — clos au journal 6.34
 
-**Déjà dans l’arbre (6.33 en cours)** : Menu → « Mes dossiers (N) » **seulement si N > 0** · écran liste (à qui, pour quoi, barre versé/total, reste) · hero = nombre + € du mois · toucher ouvre la fiche du mois · aide à jour. **Pas encore** : courriers sans plan, ligne d’accueil « 1 courrier sans plan », phrase « encore N mois si… ».
+Schéma **7** + migration + backup · `pending_letters` · « Ranger sans plan » (ajout) + formulaire Mes dossiers · section liste · conversion versement+reste → accord · bandeau accueil · Menu si dossiers **ou** courriers · **214/214**. Phrase optionnelle « encore N mois si… » **non** livrée (pas bloquante).
 
 **Problème.** Quatre accords ne se voient bien que si on quitte le mois **volontairement**. Une lettre reçue sans plan ne doit pas inventer un montant.
 
-**Il reste pour fermer.**
+**Comportement.**
 
-- Section **« Courriers sans plan »** : photo + qui + pour quoi, **montant vide**. Ça n’entre pas dans le Reste et ne crée pas de ligne de mois (schéma à ajouter).
+- Section **« Courriers sans plan »** : photo + qui + pour quoi, **montant vide**. Ça n’entre pas dans le Reste et ne crée pas de ligne de mois.
 - Dès qu’ils fixent un versement, le courrier devient un dossier du lot B.
 - S’il existe au moins un courrier sans plan : **une** ligne sur l’accueil, même famille que « À prévoir ».
-- Phrase optionnelle « encore environ N mois si le versement reste de X » (disparaît si un mois a divergé).
-- Suite `--rerun-tasks` + journal 6.33.
+- Phrase optionnelle « encore environ N mois si… » : reportée (pas dans 6.34).
 
-**Maman.** 0 dossier : pas de bouton Menu (tenu).
+**Maman.** 0 dossier et 0 courrier : pas de bouton Menu (tenu).
 
-### Lot E — Mettre de côté — pas commencé
+### Lot E — Mettre de côté — clos au journal 6.35
+
+Réglages : montant + jour, facture mensuelle « Mettre de côté », alerte déficit sans bloquer, « Retirer la ligne ». Fiche : « déjà viré — pas disponible ici ». Pas de cagnotte sur l’accueil. Marqueur `app_meta` (`savingsTemplateId`), pas de schéma nouveau. **222/222** `--rerun-tasks`.
 
 **Problème.** Ils ne réservent rien pour eux. Une enveloppe de plus les perdrait.
 
@@ -186,7 +187,7 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 5. Photo d’octobre visible en novembre sans reprendre la photo.
 6. Mois à 30 € au lieu de 50 € : le reste baisse de 30 €.
 7. Reste à 0 : décembre n’a plus la ligne ; novembre FAIT est encore dans l’historique.
-8. Restauration d’un backup **schéma 3** réussit encore. Le schéma **6** (journal 6.32) ramène notes, photos, IBAN, frais et courriers.
+8. Restauration d’un backup **schéma 3** réussit encore. Le schéma **7** (journal 6.34) ramène aussi les courriers sans plan.
 9. `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `README.md` décrivent le lot **après** les tests, pas avant.
 10. Smoke au doigt sur le S25 Ultra, et un coup d’œil texte large sur une largeur S26 (ou émulateur 360 dp × hauteur courte) : menu, fiche repliée, ligne Accord.
 
@@ -210,11 +211,11 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A, B, C clos** (`0.1.0-6.32`, schéma 6, 198 tests) : référence + photo qui reviennent, pastille Accord, reste qui baisse, IBAN / mail / frais, courriers en plus visibles.
+**A–E clos** (`0.1.0-6.35`, schéma 7, 222 tests) : dossiers, courriers sans plan, Mettre de côté.
 
 **Prochain geste produit** :
 
-1. Finir lot D : courriers sans plan (schéma) + smoke « Écrire » / hauteur Accord quand le téléphone revient.
-2. Puis E (Mettre de côté) et F (résumé texte).
+1. Lot F (résumé texte à montrer / envoyer).
+2. Smoke « Écrire » / hauteur Accord dès qu’un accord a un e-mail.
 
 Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.

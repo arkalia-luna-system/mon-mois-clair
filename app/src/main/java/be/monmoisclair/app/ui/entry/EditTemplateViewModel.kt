@@ -126,7 +126,9 @@ class EditTemplateViewModel @Inject constructor(
                 UpdateExpenseTemplateResult.Success ->
                     _state.update { it.copy(saving = false, saved = true) }
                 UpdateExpenseTemplateResult.NotFound ->
-                    _state.update { it.copy(saving = false, error = "Échéance introuvable.") }
+                    _state.update {
+                        it.copy(saving = false, error = "Cette échéance n’est plus là.")
+                    }
                 is UpdateExpenseTemplateResult.InvalidInput ->
                     _state.update { it.copy(saving = false, error = result.message) }
             }
@@ -141,7 +143,9 @@ class EditTemplateViewModel @Inject constructor(
                 ArchiveExpenseTemplateResult.Success ->
                     _state.update { it.copy(saving = false, archived = true, saved = true) }
                 ArchiveExpenseTemplateResult.NotFound ->
-                    _state.update { it.copy(saving = false, error = "Échéance introuvable.") }
+                    _state.update {
+                        it.copy(saving = false, error = "Cette échéance n’est plus là.")
+                    }
             }
         }
     }

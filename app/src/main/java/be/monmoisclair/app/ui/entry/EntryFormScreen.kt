@@ -421,10 +421,15 @@ fun EditEntryScreen(
             },
             text = {
                 Text(
-                    if (state.applyToFollowing && state.hasTemplate) {
-                        "La ligne sera effacée, l’échéance ne reviendra plus, et les mois suivants encore « à payer » seront aussi retirés."
-                    } else {
-                        "Cette action retire la ligne du mois. Vous pourrez en recréer une ensuite."
+                    when {
+                        state.isSavingsLine ->
+                            "La ligne ne reviendra plus les mois suivants. " +
+                                "Les virements déjà marqués FAIT restent."
+                        state.applyToFollowing && state.hasTemplate ->
+                            "La ligne sera effacée, l’échéance ne reviendra plus, " +
+                                "et les mois suivants encore « à payer » seront aussi retirés."
+                        else ->
+                            "Cette action retire la ligne du mois. Vous pourrez en recréer une ensuite."
                     },
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -568,13 +573,13 @@ fun EditEntryScreen(
         isExpense = state.isExpense,
         recurring = state.recurrence != RecurrenceChoice.Once,
         showRecurring = false,
-        showFrequencyEdit = state.hasTemplate || state.isExpense,
+        showFrequencyEdit = (state.hasTemplate || state.isExpense) && !state.isSavingsLine,
         recurrence = state.recurrence,
         onRecurrence = viewModel::setRecurrence,
         recurrenceInfo = state.recurrenceInfo,
         isAutoDebit = state.isAutoDebit,
         onAutoDebit = viewModel::setAutoDebit,
-        showAutoDebit = state.isExpense,
+        showAutoDebit = state.isExpense && !state.isSavingsLine,
         paymentNote = state.paymentNote,
         onPaymentNote = viewModel::setPaymentNote,
         showPaymentAssist = state.isExpense,
@@ -606,10 +611,10 @@ fun EditEntryScreen(
         onViewExtraReceipt = { path -> dialogPath = path },
         onRemoveExtraReceipt = viewModel::removeExtraReceipt,
         onCopyPaymentNote = viewModel::copyPaymentNote,
-        showApplyFollowing = state.hasTemplate,
+        showApplyFollowing = state.hasTemplate && !state.isSavingsLine,
         applyFollowing = state.applyToFollowing,
         hasTemplate = state.hasTemplate,
-        showDossierSection = state.isExpense,
+        showDossierSection = state.isExpense && !state.isSavingsLine,
         dossierExpanded = state.dossierExpanded,
         onDossierExpanded = viewModel::setDossierExpanded,
         causeLabel = state.causeLabel,
@@ -619,6 +624,8 @@ fun EditEntryScreen(
         isAgreement = state.isAgreement,
         remainingCents = state.remainingCents,
         isSettled = state.isSettled,
+        isSavingsLine = state.isSavingsLine,
+        savingsTransferredCents = state.savingsTransferredCents,
         iban = state.iban,
         onIban = viewModel::setIban,
         onCopyIban = viewModel::copyIban,
@@ -729,6 +736,8 @@ private fun EntryFormScaffold(
     isAgreement: Boolean = false,
     remainingCents: Long? = null,
     isSettled: Boolean = false,
+    isSavingsLine: Boolean = false,
+    savingsTransferredCents: Long = 0L,
     iban: String = "",
     onIban: (String) -> Unit = {},
     onCopyIban: (() -> Unit)? = null,
@@ -832,6 +841,31 @@ private fun EntryFormScaffold(
                 ),
                 singleLine = true
             )
+            if (isSavingsLine) {
+                val savingsShape = MaterialTheme.shapes.medium
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, savingsShape)
+                        .background(A11yTokens.PaperWarm, savingsShape)
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = "Ce n’est pas de l’argent gardé dans l’application.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                    if (savingsTransferredCents > 0L) {
+                        Text(
+                            text = "Déjà viré : ${MoneyFormat.formatCents(savingsTransferredCents)} " +
+                                "— pas disponible ici.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted
+                        )
+                    }
+                }
+            }
             DayOfMonthGrid(
                 selectedDay = dayText.trim().toIntOrNull()?.takeIf { it in 1..31 },
                 onSelect = { onDay(it.toString()) }
@@ -1041,7 +1075,7 @@ private fun EntryFormScaffold(
                             onDone = { focusManager.clearFocus() }
                         )
                     )
-                    if (onWriteMail != null) {
+                    if (onWriteMail != null && creditorEmail.isNotBlank()) {
                         SecondaryA11yButton(text = "Écrire", onClick = onWriteMail)
                     }
                     if (isAgreement) {
@@ -1102,7 +1136,7 @@ private fun EntryFormScaffold(
                 OutlinedTextField(
                     value = paymentNote,
                     onValueChange = onPaymentNote,
-                    label = { Text("Communication / note") },
+                    label = { Text("Référence / communication") },
                     placeholder = { Text("+++090/9337/55493+++") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1190,23 +1224,31 @@ private fun EntryFormScaffold(
                     }
                     if (isAgreement && extraReceiptPaths.isNotEmpty()) {
                         Text(
-                            text = "Autres courriers",
+                            text = if (hasReceiptPhoto) "Autres courriers" else "Courriers",
                             style = MaterialTheme.typography.bodyLarge,
                             color = A11yTokens.InkMuted
                         )
                         extraReceiptPaths.forEachIndexed { index, path ->
-                            val n = index + 2
-                            if (onViewExtraReceipt != null) {
-                                SecondaryA11yButton(
-                                    text = "Voir le courrier $n",
-                                    onClick = { onViewExtraReceipt(path) }
-                                )
-                            }
-                            if (onRemoveExtraReceipt != null) {
-                                SecondaryA11yButton(
-                                    text = "Enlever le courrier $n",
-                                    onClick = { onRemoveExtraReceipt(path) }
-                                )
+                            val n = if (hasReceiptPhoto) index + 2 else index + 1
+                            @OptIn(ExperimentalLayoutApi::class)
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                if (onViewExtraReceipt != null) {
+                                    SecondaryA11yButton(
+                                        text = "Voir le courrier $n",
+                                        onClick = { onViewExtraReceipt(path) },
+                                        fillMaxWidth = false
+                                    )
+                                }
+                                if (onRemoveExtraReceipt != null) {
+                                    SecondaryA11yButton(
+                                        text = "Enlever le courrier $n",
+                                        onClick = { onRemoveExtraReceipt(path) },
+                                        fillMaxWidth = false
+                                    )
+                                }
                             }
                         }
                     }

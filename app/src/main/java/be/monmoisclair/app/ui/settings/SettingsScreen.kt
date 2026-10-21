@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -37,8 +40,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
 import kotlinx.coroutines.flow.collectLatest
 
@@ -136,6 +141,96 @@ fun SettingsScreen(
                 onClick = onOpenHowItWorks,
                 enabled = !state.busy
             )
+        }
+
+        SettingsCard(title = "Mettre de côté") {
+            Text(
+                text = "Une facture mensuelle, virée vers un autre compte. " +
+                    "Elle entre dans le Reste dès le 1er. " +
+                    "Ce n’est pas de l’argent gardé dans l’application.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+            OutlinedTextField(
+                value = state.savingsAmountText,
+                onValueChange = viewModel::setSavingsAmount,
+                label = { Text("Montant (€)") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = A11yTokens.minTouchHeight),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                singleLine = true,
+                shape = MaterialTheme.shapes.medium,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                enabled = !state.busy && !state.savingsBusy
+            )
+            DayOfMonthGrid(
+                selectedDay = state.savingsDay,
+                onSelect = { day ->
+                    if (!state.savingsBusy && !state.busy) viewModel.setSavingsDay(day)
+                }
+            )
+            state.savingsDeficit?.let { deficit ->
+                val deficitShape = MaterialTheme.shapes.medium
+                Text(
+                    text = deficit,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.AccentWarn,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), deficitShape)
+                        .background(A11yTokens.PaperWarm, deficitShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Polite
+                            contentDescription = deficit
+                        }
+                )
+            }
+            state.savingsNextMonthNote?.let { note ->
+                Text(
+                    text = note,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+            }
+            SecondaryA11yButton(
+                text = if (state.savingsBusy) {
+                    "Enregistrement…"
+                } else if (state.savingsActive) {
+                    "Mettre à jour"
+                } else {
+                    "Activer"
+                },
+                onClick = viewModel::saveSavings,
+                enabled = !state.busy && !state.savingsBusy
+            )
+            if (state.savingsActive) {
+                DangerA11yButton(
+                    text = "Retirer la ligne",
+                    onClick = viewModel::removeSavings,
+                    enabled = !state.busy && !state.savingsBusy
+                )
+            }
+            state.savingsMessage?.let { msg ->
+                Text(
+                    text = msg,
+                    color = if (state.savingsMessageError) {
+                        A11yTokens.AccentDanger
+                    } else {
+                        A11yTokens.AccentOk
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.semantics {
+                        liveRegion = if (state.savingsMessageError) {
+                            LiveRegionMode.Assertive
+                        } else {
+                            LiveRegionMode.Polite
+                        }
+                        contentDescription = msg
+                    }
+                )
+            }
         }
 
         SettingsCard(title = "Confidentialité") {
@@ -240,7 +335,7 @@ fun SettingsScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                     state.offMonthPeriodics.forEach { item ->
                         Surface(
-                            color = A11yTokens.PaperCream,
+                            color = A11yTokens.PaperWarm,
                             shape = MaterialTheme.shapes.medium,
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -19,7 +19,7 @@ sealed interface TimelineItem {
         val label: String,
         val amountLabel: String,
         val isDone: Boolean,
-        /** Ex. « FAIT le 04/10 » — null si pas encore coché. */
+        /** Ex. « FAIT le 04/10/26 » — null si pas encore coché. */
         val doneLabel: String?,
         val isOverdue: Boolean,
         val isAutoDebit: Boolean,

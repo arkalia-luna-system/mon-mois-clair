@@ -9,6 +9,7 @@ import be.monmoisclair.app.data.db.Migrations
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
+import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.BackupHealth
@@ -36,7 +37,8 @@ object DatabaseModule {
                 Migrations.MIGRATION_2_3,
                 Migrations.MIGRATION_3_4,
                 Migrations.MIGRATION_4_5,
-                Migrations.MIGRATION_5_6
+                Migrations.MIGRATION_5_6,
+                Migrations.MIGRATION_6_7
             )
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
@@ -65,4 +67,7 @@ object DatabaseModule {
 
     @Provides
     fun provideAppMetaDao(db: AppDatabase): AppMetaDao = db.appMetaDao()
+
+    @Provides
+    fun providePendingLetterDao(db: AppDatabase): PendingLetterDao = db.pendingLetterDao()
 }

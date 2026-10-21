@@ -8,6 +8,8 @@ object AppMetaKeys {
     const val LAST_BACKUP_AT_EPOCH_MS = "lastBackupAtEpochMs"
     const val LAST_BACKUP_CHECKSUM_SHA256 = "lastBackupChecksumSha256"
     const val BACKUP_HEALTH = "backupHealth"
+    /** Lot E — id du modèle « Mettre de côté ». Vide = pas activé. */
+    const val SAVINGS_TEMPLATE_ID = "savingsTemplateId"
 
-    const val CURRENT_SCHEMA_VERSION = "6"
+    const val CURRENT_SCHEMA_VERSION = "7"
 }

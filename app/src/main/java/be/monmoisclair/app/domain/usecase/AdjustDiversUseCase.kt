@@ -27,15 +27,15 @@ class AdjustDiversUseCase @Inject constructor(
      */
     suspend operator fun invoke(ledgerId: String, deltaCents: Long): AdjustDiversResult {
         if (deltaCents == 0L) {
-            return AdjustDiversResult.Failed("Montant nul.")
+            return AdjustDiversResult.Failed("Indiquez un montant.")
         }
         val ym = runCatching { java.time.YearMonth.parse(ledgerId) }.getOrElse {
-            return AdjustDiversResult.Failed("Mois invalide.")
+            return AdjustDiversResult.Failed("Ce mois n’est pas disponible.")
         }
         monthCycleEngine.ensureMonthExists(ym)
         return mutatingRepository.mutate(rescheduleReminders = false) {
             val ledger = monthLedgerDao.getById(ledgerId)
-                ?: return@mutate AdjustDiversResult.Failed("Mois introuvable.")
+                ?: return@mutate AdjustDiversResult.Failed("Ce mois n’est pas disponible.")
             val current = ledger.diversSpentCents
             if (deltaCents < 0L && -deltaCents > current) {
                 // P3-F03 : ne pas faire croire qu’on a retiré le montant tapé.

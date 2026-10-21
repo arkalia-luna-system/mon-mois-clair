@@ -61,7 +61,8 @@ class BackupCoordinatorTest {
                 db.monthLedgerDao(),
                 db.templateDao(),
                 db.instanceDao(),
-                db.appMetaDao()
+                db.appMetaDao(),
+                db.pendingLetterDao()
             ),
             codec = codec,
             safBackupStore = store,
@@ -84,7 +85,8 @@ class BackupCoordinatorTest {
             db.monthLedgerDao(),
             db.templateDao(),
             db.instanceDao(),
-            db.appMetaDao()
+            db.appMetaDao(),
+            db.pendingLetterDao()
         ).readPayload()
 
         val document = codec.buildDocument(1, 42L, "Europe/Brussels", payload)

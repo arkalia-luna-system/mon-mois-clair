@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.33** — Mes dossiers liste + EuroFormat).
+Mise à jour : 2026-10-21 (lot **6.35** — Mettre de côté).
 
 ## 1. Vision
 
@@ -35,17 +35,17 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 |-------|------|--------|
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
 | **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 |
-| **Sans les futures** | Revenus − factures **déjà FAIT** (= Reste + À payer) | Seulement s’il reste à payer (> 0) |
+| **Hors à payer** | Revenus − factures **déjà FAIT** (= Reste + À payer) | Seulement s’il reste à payer (> 0) |
 | **Après courses** | Reste − courses / divers du mois | Seulement si courses > 0 |
 
-Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Sans les futures = brun `#8A5A1E` ; Après courses = muted.  
+Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Hors à payer = brun `#8A5A1E` ; Après courses = muted.  
 Pas de plaque colorée, pas de nom d’app dans l’en-tête.
 
 **Interdit** : empiler Alertes / aide / restore dans le Menu (ils vivent dans **Réglages**) ; boutons critiques collés tout en haut.  
 **Marque** : absente de l’accueil. Légende discrète au verrouillage et à l’installation.  
 **Futures fonctions** : Réglages ou écran dédié — **jamais** un nouveau bloc sur l’en-tête.  
 **Clavier** : le champ en cours reste visible. Une seule action épinglée (`Enregistrer`). Annuler et Supprimer reviennent quand le clavier se ferme.  
-**Photo facture** : revoir / reprendre depuis la fiche **et** pastille « Facture » sur la ligne (hors zone « Modifier »).  
+**Photo facture** : revoir / reprendre depuis la fiche **et** bouton « Voir la photo » sur la ligne (hors zone « Modifier »).  
 **Fréquence** : mensuel / 3 mois / annuel / une fois — **modifiable** sur la fiche, sans supprimer pour recommencer.
 
 ### Stack
@@ -58,7 +58,7 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 ## 3. Données
 
-Room / backup schéma **6** (étape 6.32) : mémoire papier (4) + dossier (5) + IBAN / e-mail / frais / courriers en plus (`extraReceiptPaths`). Reste dû = départ + frais − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros. Sur la fiche d’un accord : Copier l’IBAN, Écrire (brouillon mail), ajouter/voir/enlever des courriers.
+Room / backup schéma **7** (étape 6.34) : mémoire papier (4) + dossier (5) + IBAN / e-mail / frais / extras (6) + `pending_letters` (courriers sans plan). Reste dû = départ + frais − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros ; bandeau « courrier sans plan · Voir » seulement s’il y en a. Sur la fiche d’un accord : Copier l’IBAN, Écrire (brouillon mail), ajouter/voir/enlever des courriers.
 
 ## 4. Plan
 
@@ -80,7 +80,9 @@ Room / backup schéma **6** (étape 6.32) : mémoire papier (4) + dossier (5) + 
 | **6.30** | Lot A : note/photo sur modèle · matérialisation · Copier 12 chiffres (mod 97) | ✅ |
 | **6.31** | Lot B : dossier replié · reste calculé · pastille Accord · arrêt si soldé | ✅ |
 | **6.32** | Lot C : IBAN · e-mail · frais · photos extras visibles (voir/enlever) | ✅ |
-| **6.33** | Mes dossiers (Menu si N>0) · EuroFormat · mailto URI · garde IBAN ajout | ✅ partiel D |
+| **6.33** | Mes dossiers (Menu si N>0) · EuroFormat · mailto URI · garde IBAN ajout | ✅ |
+| **6.34** | Courriers sans plan (`pending_letters`) · bandeau accueil · conversion → accord | ✅ lot D |
+| **6.35** | Mettre de côté (Réglages, facture mensuelle, alerte déficit) | ✅ lot E |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -173,7 +175,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 
 | Idée étude | Décision MMC |
 |------------|--------------|
-| Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Sans les futures** (si besoin) + **Après courses** (si besoin). Gros chiffre = signal n°1 (36 sp compact / 42 sp confort) |
+| Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Hors à payer** (si besoin) + **Après courses** (si besoin). Gros chiffre = signal n°1 (36 sp compact / 42 sp confort) |
 | Check-off | Bouton d’**action** « FAIT ✓ » à droite (≥ 96 dp). « À payer » baisse tout de suite. Le bouton ne s’appelle pas « À PAYER » : un bouton dit l’action |
 | Preuve | Pastille **« FAIT le JJ/MM »** (`doneAtEpochMs`) |
 | Liste > graphiques | Jamais camembert / courbes |
@@ -188,7 +190,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 
 | Idée | Pourquoi non |
 |------|----------------|
-| Connexion bancaire / abonnement / enveloppes / graphiques | Charge ou risque inutiles pour ce persona |
+| Connexion bancaire / abonnement / enveloppes multiples / graphiques | Charge ou risque inutiles. Une seule facture « Mettre de côté » (virement vers un autre compte, pas une cagnotte à l’écran) est admise |
 | Report automatique du solde | L’écart (espèces, courses non notées) s’accumule |
 | 3ᵉ bouton bas « Réglages & Sauvegarde » | Étroit sur S26. Réglages est déjà dans Menu, en toutes lettres |
 | Fiche intermédiaire Modifier / Supprimer / Fermer | Un tap de plus. La ligne ouvre déjà l’édition, avec Annuler et Supprimer écrits |

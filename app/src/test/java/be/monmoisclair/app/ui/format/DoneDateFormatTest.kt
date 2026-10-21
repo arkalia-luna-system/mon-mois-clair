@@ -31,6 +31,6 @@ class DoneDateFormatTest {
     @Test
     fun formatsDayMonthInBrussels() {
         val ms = Instant.parse("2026-10-04T10:00:00Z").toEpochMilli()
-        assertThat(DoneDateFormat.label(ms)).isEqualTo("FAIT le 04/10")
+        assertThat(DoneDateFormat.label(ms)).isEqualTo("FAIT le 04/10/26")
     }
 }

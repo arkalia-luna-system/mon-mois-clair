@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,10 +48,21 @@ fun HomeMenuSheet(
     onSelectMonth: (YearMonth) -> Unit,
     onGoToCurrentMonth: () -> Unit,
     onOpenSettings: () -> Unit,
-    /** 0 = pas de bouton (zéro dossier = zéro pixel). */
+    /** 0 = pas de bouton (zéro dossier = zéro pixel), sauf courriers sans plan. */
     dossierCount: Int = 0,
+    pendingLetterCount: Int = 0,
     onOpenDossiers: () -> Unit = {}
 ) {
+    val showDossiers = dossierCount > 0 || pendingLetterCount > 0
+    val menuDossierLabel = when {
+        dossierCount > 0 && pendingLetterCount > 0 ->
+            "Mes dossiers ($dossierCount) · $pendingLetterCount courrier" +
+                if (pendingLetterCount > 1) "s" else ""
+        dossierCount > 0 -> "Mes dossiers ($dossierCount)"
+        else ->
+            "Mes dossiers · $pendingLetterCount courrier" +
+                if (pendingLetterCount > 1) "s" else ""
+    }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val current = AppClock.currentYearMonth()
     val months = HomeMonthChoices.recentMonths(current)
@@ -72,7 +84,7 @@ fun HomeMenuSheet(
             Text(text = "Menu", style = MaterialTheme.typography.headlineMedium)
             val introShape = MaterialTheme.shapes.medium
             Text(
-                text = if (dossierCount > 0) {
+                text = if (showDossiers) {
                     "Réglages, dossiers, ou un autre mois."
                 } else {
                     "Réglages, ou un autre mois."
@@ -82,6 +94,7 @@ fun HomeMenuSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, introShape)
+                    .background(A11yTokens.PaperCard, introShape)
                     .padding(horizontal = 12.dp, vertical = 10.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -94,10 +107,10 @@ fun HomeMenuSheet(
                 },
                 modifier = Modifier.fillMaxWidth()
             )
-            if (dossierCount > 0) {
+            if (showDossiers) {
                 Spacer(modifier = Modifier.height(8.dp))
                 SecondaryA11yButton(
-                    text = "Mes dossiers ($dossierCount)",
+                    text = menuDossierLabel,
                     onClick = {
                         onDismiss()
                         onOpenDossiers()
@@ -131,9 +144,10 @@ fun HomeMenuSheet(
                             shape = chipShape,
                             modifier = Modifier
                                 .heightIn(min = A11yTokens.minTouchHeight)
-                                .then(
-                                    if (selected) Modifier
-                                    else Modifier.border(1.dp, A11yTokens.PaperBorder, chipShape)
+                                .border(
+                                    1.dp,
+                                    if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
+                                    chipShape
                                 )
                                 .semantics(mergeDescendants = true) {
                                     contentDescription = if (selected) {

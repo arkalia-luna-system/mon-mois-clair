@@ -9,6 +9,8 @@ object AppRoute {
     const val Settings = "settings"
     const val HowItWorks = "how_it_works"
     const val Dossiers = "dossiers"
+    const val PendingLetterForm = "dossiers/pending/new"
+    const val ConvertPendingLetter = "dossiers/pending/convert/{letterId}"
     const val AddEntry = "entry/add/{ym}"
     const val ScanEpc = "entry/scan_epc"
     const val EditEntry = "entry/edit/{id}/{isExpense}"
@@ -20,4 +22,7 @@ object AppRoute {
         "entry/edit/$id/${if (isExpense) "true" else "false"}"
 
     fun editTemplate(id: String): String = "template/edit/$id"
+
+    fun convertPendingLetter(letterId: String): String =
+        "dossiers/pending/convert/$letterId"
 }

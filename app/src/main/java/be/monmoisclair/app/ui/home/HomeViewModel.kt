@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
+import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
@@ -59,8 +60,10 @@ data class HomeUiState(
     /** Demande confirm FAIT sur mois passé (T4). */
     val pendingPastToggleId: String? = null,
     val nextMonthWarning: String? = null,
-    /** Lot D — 0 = pas d’entrée Menu « Mes dossiers ». */
-    val dossierCount: Int = 0
+    /** Lot D — 0 = pas d’entrée Menu « Mes dossiers » (sauf courriers). */
+    val dossierCount: Int = 0,
+    /** Lot D — bandeau accueil si > 0. */
+    val pendingLetterCount: Int = 0
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -71,6 +74,7 @@ class HomeViewModel @Inject constructor(
     private val monthLedgerDao: MonthLedgerDao,
     private val instanceDao: InstanceDao,
     private val templateDao: TemplateDao,
+    private val pendingLetterDao: PendingLetterDao,
     private val toggleDone: ToggleExpenseDoneUseCase,
     private val adjustDivers: AdjustDiversUseCase,
     private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase,
@@ -168,8 +172,11 @@ class HomeViewModel @Inject constructor(
                 )
             }
         },
-        nextMonthWarning
-    ) { base, warning -> base.copy(nextMonthWarning = warning) }
+        nextMonthWarning,
+        pendingLetterDao.observeCount()
+    ) { base, warning, pendingCount ->
+        base.copy(nextMonthWarning = warning, pendingLetterCount = pendingCount)
+    }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5_000),
@@ -275,6 +282,11 @@ class HomeViewModel @Inject constructor(
         pendingPastToggleId.value = null
     }
 
+    /** Annuler après FAIT/Remettre — sans redemander le dialogue « mois passé ». */
+    fun undoToggleDone(expenseId: String) {
+        performToggle(expenseId)
+    }
+
     private fun performToggle(expenseId: String) {
         viewModelScope.launch {
             toggleDone.invoke(expenseId)
@@ -348,7 +360,7 @@ class HomeViewModel @Inject constructor(
             _userMessages.tryEmit(prepared.userMessage)
             return
         }
-        SensitiveClipboard.setPlainText(appContext, "communication", prepared.clipboardText)
+        SensitiveClipboard.setPlainText(appContext, "Communication", prepared.clipboardText)
         _userMessages.tryEmit(prepared.userMessage)
     }
 

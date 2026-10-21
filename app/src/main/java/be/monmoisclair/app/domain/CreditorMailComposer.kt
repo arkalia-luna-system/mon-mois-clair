@@ -36,6 +36,16 @@ object CreditorMailComposer {
         return Draft(to = to, subject = subject, body = lines.joinToString("\n"))
     }
 
+    /** Une arobase, un nom avant, un point dans le domaine. Pas un validateur complet. */
+    fun looksLikeEmail(raw: String): Boolean {
+        val t = raw.trim()
+        val at = t.indexOf('@')
+        if (at <= 0 || at != t.lastIndexOf('@')) return false
+        val domain = t.substring(at + 1)
+        val dot = domain.indexOf('.')
+        return dot > 0 && dot < domain.lastIndex
+    }
+
     /**
      * URI `mailto:` complète (destinataire + subject + body).
      * Ne pas passer par [android.net.Uri.Builder] sur un mailto opaque :

@@ -9,11 +9,15 @@ import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
+import be.monmoisclair.app.domain.usecase.ConfigureSavingsResult
+import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
 import be.monmoisclair.app.domain.usecase.ListOffMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.OffMonthPeriodic
 import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
+import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -32,7 +36,16 @@ data class SettingsUiState(
     val offMonthPeriodics: List<OffMonthPeriodic> = emptyList(),
     val message: String? = null,
     val isError: Boolean = false,
-    val busy: Boolean = false
+    val busy: Boolean = false,
+    val savingsAmountText: String = "",
+    val savingsDay: Int = 1,
+    val savingsActive: Boolean = false,
+    val savingsDeficit: String? = null,
+    /** Ce mois est déjà viré : le montant saisi attend le mois suivant. */
+    val savingsNextMonthNote: String? = null,
+    val savingsBusy: Boolean = false,
+    val savingsMessage: String? = null,
+    val savingsMessageError: Boolean = false
 )
 
 @HiltViewModel
@@ -41,7 +54,8 @@ class SettingsViewModel @Inject constructor(
     val biometricAuth: BiometricAuthGateway,
     private val healthStore: BackupHealthStore,
     private val listOffMonth: ListOffMonthPeriodicsUseCase,
-    private val shareBackup: ShareBackupUseCase
+    private val shareBackup: ShareBackupUseCase,
+    private val configureSavings: ConfigureSavingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -49,6 +63,7 @@ class SettingsViewModel @Inject constructor(
 
     private val _shareIntents = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
     val shareIntents: SharedFlow<Intent> = _shareIntents.asSharedFlow()
+    private var savingsPreviewJob: Job? = null
 
     init {
         refresh()
@@ -56,6 +71,7 @@ class SettingsViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
+            val savings = configureSavings.read()
             _uiState.update {
                 it.copy(
                     loading = false,
@@ -64,8 +80,157 @@ class SettingsViewModel @Inject constructor(
                     backupHealth = healthStore.read(),
                     offMonthPeriodics = listOffMonth(),
                     message = null,
-                    isError = false
+                    isError = false,
+                    savingsActive = savings.active,
+                    savingsAmountText = if (savings.active) {
+                        MoneyFormat.centsToEditable(savings.amountCents)
+                    } else {
+                        ""
+                    },
+                    savingsDay = savings.dayOfMonth.coerceIn(1, 31),
+                    savingsDeficit = null,
+                    savingsNextMonthNote = null,
+                    savingsMessage = null,
+                    savingsMessageError = false
                 )
+            }
+        }
+    }
+
+    fun setSavingsAmount(value: String) {
+        _uiState.update {
+            it.copy(
+                savingsAmountText = value,
+                savingsDeficit = null,
+                savingsNextMonthNote = null,
+                savingsMessage = null,
+                savingsMessageError = false
+            )
+        }
+        savingsPreviewJob?.cancel()
+        savingsPreviewJob = viewModelScope.launch {
+            if (MoneyFormat.tooManyFractionDigits(value)) return@launch
+            val cents = MoneyFormat.parseToCents(value) ?: return@launch
+            if (cents <= 0L) return@launch
+            val preview = configureSavings.previewAmount(cents)
+            val deficit = if (!preview.alreadyTransferredThisMonth && preview.remainingCents < 0L) {
+                "Ce mois passerait en déficit de ${MoneyFormat.formatCents(-preview.remainingCents)}. " +
+                    "Vous pouvez quand même enregistrer."
+            } else {
+                null
+            }
+            val nextNote = if (preview.alreadyTransferredThisMonth) {
+                "Ce mois est déjà FAIT. Le nouveau montant commence le mois suivant."
+            } else {
+                null
+            }
+            _uiState.update { cur ->
+                if (cur.savingsAmountText != value) {
+                    cur
+                } else {
+                    cur.copy(savingsDeficit = deficit, savingsNextMonthNote = nextNote)
+                }
+            }
+        }
+    }
+
+    fun setSavingsDay(day: Int) {
+        if (day !in 1..31) return
+        _uiState.update { it.copy(savingsDay = day) }
+    }
+
+    fun saveSavings() {
+        val s = _uiState.value
+        if (s.busy || s.savingsBusy) return
+        if (MoneyFormat.tooManyFractionDigits(s.savingsAmountText)) {
+            _uiState.update {
+                it.copy(savingsMessage = MoneyFormat.FRACTION_HINT, savingsMessageError = true)
+            }
+            return
+        }
+        val cents = MoneyFormat.parseToCents(s.savingsAmountText)
+        if (cents == null || cents <= 0L) {
+            _uiState.update {
+                it.copy(
+                    savingsMessage = "Indiquez un montant à mettre de côté.",
+                    savingsMessageError = true
+                )
+            }
+            return
+        }
+        _uiState.update {
+            it.copy(savingsBusy = true, savingsMessage = null, savingsMessageError = false)
+        }
+        viewModelScope.launch {
+            when (val result = configureSavings.save(cents, s.savingsDay)) {
+                ConfigureSavingsResult.Saved -> {
+                    val again = configureSavings.read()
+                    _uiState.update {
+                        it.copy(
+                            savingsBusy = false,
+                            savingsActive = again.active,
+                            savingsAmountText = if (again.active) {
+                                MoneyFormat.centsToEditable(again.amountCents)
+                            } else {
+                                s.savingsAmountText
+                            },
+                            savingsDay = if (again.active) again.dayOfMonth else s.savingsDay,
+                            savingsDeficit = null,
+                            savingsNextMonthNote = null,
+                            savingsMessage = "C’est noté. La ligne « Mettre de côté » est dans le mois.",
+                            savingsMessageError = false
+                        )
+                    }
+                }
+                is ConfigureSavingsResult.InvalidInput -> {
+                    _uiState.update {
+                        it.copy(
+                            savingsBusy = false,
+                            savingsMessage = result.message,
+                            savingsMessageError = true
+                        )
+                    }
+                }
+                ConfigureSavingsResult.Removed -> {
+                    _uiState.update { it.copy(savingsBusy = false) }
+                }
+            }
+        }
+    }
+
+    fun removeSavings() {
+        if (_uiState.value.busy || _uiState.value.savingsBusy) return
+        _uiState.update {
+            it.copy(savingsBusy = true, savingsMessage = null, savingsMessageError = false)
+        }
+        viewModelScope.launch {
+            when (val result = configureSavings.remove()) {
+                ConfigureSavingsResult.Removed -> {
+                    _uiState.update {
+                        it.copy(
+                            savingsBusy = false,
+                            savingsActive = false,
+                            savingsAmountText = "",
+                            savingsDay = 1,
+                            savingsDeficit = null,
+                            savingsNextMonthNote = null,
+                            savingsMessage = "Ligne retirée. Les virements déjà marqués FAIT restent.",
+                            savingsMessageError = false
+                        )
+                    }
+                }
+                is ConfigureSavingsResult.InvalidInput -> {
+                    _uiState.update {
+                        it.copy(
+                            savingsBusy = false,
+                            savingsMessage = result.message,
+                            savingsMessageError = true
+                        )
+                    }
+                }
+                ConfigureSavingsResult.Saved -> {
+                    _uiState.update { it.copy(savingsBusy = false) }
+                }
             }
         }
     }

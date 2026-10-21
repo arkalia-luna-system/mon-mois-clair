@@ -5,13 +5,19 @@ import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.PersistableBundle
 
 /**
  * Presse-papiers pour IBAN / communication : marque le contenu comme sensible
- * (Android 13+) pour limiter l’aperçu système.
+ * (Android 13+) et l’efface après un court délai.
  */
 object SensitiveClipboard {
+
+    private const val CLEAR_AFTER_MS = 60_000L
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private var clearRunnable: Runnable? = null
 
     fun setPlainText(context: Context, label: String, text: String) {
         val clip = ClipData.newPlainText(label, text)
@@ -22,5 +28,17 @@ object SensitiveClipboard {
         }
         val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cm.setPrimaryClip(clip)
+        scheduleClear(cm)
+    }
+
+    private fun scheduleClear(cm: ClipboardManager) {
+        clearRunnable?.let { mainHandler.removeCallbacks(it) }
+        val runnable = Runnable {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                runCatching { cm.clearPrimaryClip() }
+            }
+        }
+        clearRunnable = runnable
+        mainHandler.postDelayed(runnable, CLEAR_AFTER_MS)
     }
 }

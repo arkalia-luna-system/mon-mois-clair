@@ -64,6 +64,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -211,7 +212,7 @@ fun HomeScreen(
                     duration = SnackbarDuration.Long
                 )
                 if (result == SnackbarResult.ActionPerformed) {
-                    viewModel.requestToggleDone(expenseId)
+                    viewModel.undoToggleDone(expenseId)
                 }
             } finally {
                 faitUndoActive = false
@@ -268,7 +269,7 @@ fun HomeScreen(
                         }
                         else -> {
                             Text(
-                                text = "Photo introuvable dans Documents. " +
+                                text = "Impossible d’ouvrir cette photo. " +
                                     "Ouvrez la ligne pour en reprendre une.",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = A11yTokens.AccentDanger
@@ -355,6 +356,7 @@ fun HomeScreen(
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
             onOpenSettings = onOpenSettings,
             dossierCount = state.dossierCount,
+            pendingLetterCount = state.pendingLetterCount,
             onOpenDossiers = onOpenDossiers
         )
     }
@@ -442,7 +444,8 @@ fun HomeScreen(
                             else -> A11yTokens.InkMuted
                         },
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.semantics { contentDescription = label }
                     )
                 }
                 stickyWithoutUnpaidLabel(
@@ -454,16 +457,20 @@ fun HomeScreen(
                         style = MaterialTheme.typography.bodyLarge,
                         color = A11yTokens.AccentWarn,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.semantics { contentDescription = label }
                     )
                 }
                 if (state.diversSpentCents > 0L) {
+                    val afterLabel =
+                        "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}"
                     Text(
-                        text = "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}",
+                        text = afterLabel,
                         style = MaterialTheme.typography.bodyLarge,
                         color = A11yTokens.InkMuted,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.semantics { contentDescription = afterLabel }
                     )
                 }
                 if (state.summary.remainingCents < 0L &&
@@ -497,6 +504,33 @@ fun HomeScreen(
                             ) { onOpenSettings() }
                             .padding(horizontal = 12.dp, vertical = 10.dp)
                             .semantics { contentDescription = warning }
+                    )
+                }
+                if (state.pendingLetterCount > 0) {
+                    val pendingLabel = if (state.pendingLetterCount == 1) {
+                        "1 courrier sans plan · Voir"
+                    } else {
+                        "${state.pendingLetterCount} courriers sans plan · Voir"
+                    }
+                    val pendingShape = MaterialTheme.shapes.medium
+                    Text(
+                        text = pendingLabel,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.Ink,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(top = fit.sectionGap)
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
+                            .border(1.dp, A11yTokens.PaperBorder, pendingShape)
+                            .background(A11yTokens.PaperWarm, pendingShape)
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Ouvrir Mes dossiers"
+                            ) { onOpenDossiers() }
+                            .padding(horizontal = 12.dp, vertical = 10.dp)
+                            .semantics { contentDescription = pendingLabel }
                     )
                 }
             }
@@ -537,12 +571,15 @@ fun HomeScreen(
                     }
                     state.timeline.isEmpty() -> {
                         item {
+                            val emptyShape = MaterialTheme.shapes.medium
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 32.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                                    .padding(vertical = 24.dp)
+                                    .border(1.dp, A11yTokens.PaperBorder, emptyShape)
+                                    .background(A11yTokens.PaperCard, emptyShape)
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Text(
                                     text = "Rien encore ce mois",
@@ -552,8 +589,7 @@ fun HomeScreen(
                                 Text(
                                     text = "Ajoutez le salaire et les factures avec « + Ajouter » en bas.",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.InkMuted,
-                                    textAlign = TextAlign.Center
+                                    color = A11yTokens.InkMuted
                                 )
                             }
                         }
@@ -604,12 +640,18 @@ fun HomeScreen(
                         }
                         if (searchQuery.isNotBlank() && filteredTimeline.isEmpty()) {
                             item(key = "search-empty") {
+                                val searchEmptyShape = MaterialTheme.shapes.medium
                                 Text(
                                     text = "Rien pour « ${searchQuery.trim()} ». " +
                                         "Les totaux du haut restent ceux du mois.",
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = A11yTokens.InkMuted,
-                                    modifier = Modifier.padding(vertical = 12.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 12.dp)
+                                        .border(1.dp, A11yTokens.PaperBorder, searchEmptyShape)
+                                        .background(A11yTokens.PaperCard, searchEmptyShape)
+                                        .padding(14.dp)
                                 )
                             }
                         }
@@ -658,93 +700,113 @@ fun HomeScreen(
                     (state.timeline.isNotEmpty() || state.diversSpentCents > 0L)
                 if (showDivers) {
                     item(key = "divers-controls") {
-                        Row(
+                        val diversShape = MaterialTheme.shapes.medium
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight)
-                                .clickable(
-                                    role = Role.Button,
-                                    onClickLabel = if (diversExpanded) {
-                                        "Fermer courses"
-                                    } else {
-                                        "Ouvrir courses"
-                                    }
-                                ) { diversExpanded = !diversExpanded }
-                                .padding(vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .border(1.dp, A11yTokens.PaperBorder, diversShape)
+                                .background(A11yTokens.PaperCard, diversShape)
+                                .padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            Text(
-                                text = if (diversExpanded) {
-                                    "Courses"
-                                } else {
-                                    "Noter des courses"
-                                },
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = if (diversExpanded) "Fermer" else "Ouvrir",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.ButtonFill
-                            )
-                        }
-                        Text(
-                            text = if (state.diversSpentCents > 0L) {
-                                "Noté ${MoneyFormat.formatCents(state.diversSpentCents)}"
-                            } else {
-                                "Aucune course notée."
-                            },
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted
-                        )
-                        AnimatedVisibility(visible = diversExpanded) {
-                            Column {
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    SecondaryA11yButton(
-                                        text = "Retirer",
-                                        onClick = { viewModel.removeDivers(diversInput) },
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    SecondaryA11yButton(
-                                        text = "Ajouter",
-                                        onClick = { viewModel.addDivers(diversInput) },
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                OutlinedTextField(
-                                    value = diversInput,
-                                    onValueChange = {
-                                        diversInput = it
-                                        viewModel.clearDiversError()
-                                    },
-                                    label = { Text("Montant (€)") },
-                                    singleLine = true,
-                                    shape = MaterialTheme.shapes.medium,
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Decimal
-                                    ),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .heightIn(min = A11yTokens.minTouchHeight)
-                                        .then(diversBring),
-                                    textStyle = MaterialTheme.typography.bodyLarge
-                                )
-                                diversError?.let { err ->
-                                    Spacer(modifier = Modifier.height(6.dp))
-                                    Text(
-                                        text = err,
-                                        color = A11yTokens.AccentDanger,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.semantics {
-                                            liveRegion = LiveRegionMode.Assertive
-                                            contentDescription = err
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = A11yTokens.minTouchHeight)
+                                    .clickable(
+                                        role = Role.Button,
+                                        onClickLabel = if (diversExpanded) {
+                                            "Fermer courses"
+                                        } else {
+                                            "Ouvrir courses"
                                         }
+                                    ) { diversExpanded = !diversExpanded },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = if (diversExpanded) {
+                                        "Courses"
+                                    } else {
+                                        "Noter des courses"
+                                    },
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                Text(
+                                    text = if (diversExpanded) "Fermer" else "Ouvrir",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = A11yTokens.ButtonFill
+                                )
+                            }
+                            Text(
+                                text = if (state.diversSpentCents > 0L) {
+                                    "Noté ${MoneyFormat.formatCents(state.diversSpentCents)}"
+                                } else {
+                                    "Aucune course notée."
+                                },
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                            AnimatedVisibility(visible = diversExpanded) {
+                                Column {
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        SecondaryA11yButton(
+                                            text = "Retirer",
+                                            onClick = { viewModel.removeDivers(diversInput) },
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        SecondaryA11yButton(
+                                            text = "Ajouter",
+                                            onClick = { viewModel.addDivers(diversInput) },
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    OutlinedTextField(
+                                        value = diversInput,
+                                        onValueChange = {
+                                            diversInput = it
+                                            viewModel.clearDiversError()
+                                        },
+                                        label = { Text("Montant (€)") },
+                                        singleLine = true,
+                                        shape = MaterialTheme.shapes.medium,
+                                        keyboardOptions = KeyboardOptions(
+                                            keyboardType = KeyboardType.Decimal,
+                                            imeAction = ImeAction.Done
+                                        ),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(min = A11yTokens.minTouchHeight)
+                                            .then(diversBring),
+                                        textStyle = MaterialTheme.typography.bodyLarge
                                     )
+                                    diversError?.let { err ->
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        val errShape = MaterialTheme.shapes.medium
+                                        Text(
+                                            text = err,
+                                            color = A11yTokens.AccentDanger,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .border(
+                                                    1.dp,
+                                                    A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                                                    errShape
+                                                )
+                                                .background(A11yTokens.PaperWarm, errShape)
+                                                .padding(12.dp)
+                                                .semantics {
+                                                    liveRegion = LiveRegionMode.Assertive
+                                                    contentDescription = err
+                                                }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -862,9 +924,10 @@ private fun StatusChip(
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
             .semantics { contentDescription = "Statut : $text" }
-            .then(
-                if (outlined) Modifier.border(1.dp, A11yTokens.FieldLine, shape)
-                else Modifier
+            .border(
+                1.dp,
+                if (outlined) A11yTokens.FieldLine else A11yTokens.PaperBorder,
+                shape
             )
             .background(container, shape)
             .padding(horizontal = hPad, vertical = vPad)
@@ -924,7 +987,8 @@ private fun ExpenseRow(
     val shape = MaterialTheme.shapes.medium
     val bg = when {
         item.isDone -> A11yTokens.AccentOkSoft
-        item.isOverdue -> A11yTokens.AccentDanger.copy(alpha = 0.22f)
+        // Lavis discret : le contour 2 dp porte déjà l’alerte (pas un fond « criard »).
+        item.isOverdue -> A11yTokens.AccentDanger.copy(alpha = 0.10f)
         else -> A11yTokens.PaperCard
     }
     val borderMod = when {
@@ -942,7 +1006,7 @@ private fun ExpenseRow(
     ) {
         Row(
             modifier = Modifier.padding(rowPad),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             DayBadge(item.dayLabel)
@@ -959,8 +1023,13 @@ private fun ExpenseRow(
                     Text(
                         text = item.label,
                         style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = item.amountLabel,
+                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
+                        style = MaterialTheme.typography.titleLarge
                     )
                     if (item.causeLabel.isNotBlank()) {
                         Text(
@@ -971,11 +1040,6 @@ private fun ExpenseRow(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    Text(
-                        text = item.amountLabel,
-                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
-                        style = MaterialTheme.typography.titleLarge
-                    )
                 }
                 // Hors zone « Modifier » : Copier / photo ne doivent pas ouvrir l’édition.
                 AnimatedVisibility(
@@ -999,7 +1063,11 @@ private fun ExpenseRow(
                             text = "Copier",
                             onClick = onCopyNote,
                             fillMaxWidth = false,
-                            modifier = Modifier.widthIn(min = 96.dp)
+                            modifier = Modifier
+                                .widthIn(min = 96.dp)
+                                .semantics {
+                                    contentDescription = "Copier la communication"
+                                }
                         )
                     }
                 }
@@ -1009,7 +1077,15 @@ private fun ExpenseRow(
                 text = if (item.isDone) "Remettre" else "FAIT ✓",
                 onClick = onToggle,
                 fillMaxWidth = false,
-                modifier = Modifier.widthIn(min = 96.dp)
+                modifier = Modifier
+                    .widthIn(min = 96.dp)
+                    .semantics {
+                        contentDescription = if (item.isDone) {
+                            "Remettre à payer"
+                        } else {
+                            "Marquer FAIT"
+                        }
+                    }
             )
         }
     }

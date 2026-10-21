@@ -214,10 +214,16 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             .padding(A11yTokens.screenPadding)
     ) {
         Text("Scanner une facture", style = MaterialTheme.typography.headlineMedium)
+        val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Cadrez le QR belge de la facture. La lampe aide dans le noir.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, tipShape)
+                .background(A11yTokens.PaperCard, tipShape)
+                .padding(14.dp)
         )
         Spacer(Modifier.height(8.dp))
         val statusColor = when (status) {
@@ -228,6 +234,11 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             "Autorisez la caméra pour scanner la facture." -> A11yTokens.AccentDanger
             else -> A11yTokens.Ink
         }
+        val statusBorder = when (statusColor) {
+            A11yTokens.AccentOk -> A11yTokens.AccentOk.copy(alpha = 0.4f)
+            A11yTokens.AccentDanger -> A11yTokens.AccentDanger.copy(alpha = 0.4f)
+            else -> A11yTokens.PaperBorder
+        }
         val statusShape = MaterialTheme.shapes.medium
         Text(
             status,
@@ -235,7 +246,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             color = statusColor,
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, statusShape)
+                .border(1.dp, statusBorder, statusShape)
                 .background(A11yTokens.PaperWarm, statusShape)
                 .padding(horizontal = 12.dp, vertical = 10.dp)
                 .semantics {

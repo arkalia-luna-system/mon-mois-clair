@@ -15,7 +15,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import be.monmoisclair.app.domain.usecase.StartDestination
+import be.monmoisclair.app.ui.dossiers.ConvertPendingLetterScreen
 import be.monmoisclair.app.ui.dossiers.DossiersScreen
+import be.monmoisclair.app.ui.dossiers.PendingLetterFormScreen
 import be.monmoisclair.app.ui.entry.AddEntryScreen
 import be.monmoisclair.app.ui.entry.EditEntryScreen
 import be.monmoisclair.app.ui.entry.EditTemplateScreen
@@ -86,6 +88,37 @@ fun AppNavHost(
                 },
                 onOpenTemplate = { id ->
                     navController.navigate(AppRoute.editTemplate(id))
+                },
+                onConvertPending = { letterId ->
+                    navController.navigate(AppRoute.convertPendingLetter(letterId))
+                },
+                onAddPending = {
+                    navController.navigate(AppRoute.PendingLetterForm)
+                }
+            )
+        }
+        composable(AppRoute.PendingLetterForm) {
+            PendingLetterFormScreen(
+                onBack = { navController.popBackStack() },
+                onSaved = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(
+            route = AppRoute.ConvertPendingLetter,
+            arguments = listOf(navArgument("letterId") { type = NavType.StringType })
+        ) {
+            ConvertPendingLetterScreen(
+                onBack = { navController.popBackStack() },
+                onConverted = { instanceId ->
+                    if (instanceId != null) {
+                        navController.navigate(AppRoute.editEntry(instanceId, isExpense = true)) {
+                            popUpTo(AppRoute.Dossiers) { inclusive = false }
+                        }
+                    } else {
+                        navController.popBackStack()
+                    }
                 }
             )
         }

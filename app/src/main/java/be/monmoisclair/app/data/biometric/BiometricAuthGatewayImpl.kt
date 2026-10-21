@@ -45,7 +45,7 @@ class BiometricAuthGatewayImpl @Inject constructor(
             BiometricAvailability.HardwareUnavailable -> {
                 onResult(
                     BiometricAuthResult.Failed(
-                        "Biométrie temporairement indisponible. Réessayez dans un instant."
+                        "Empreinte ou code temporairement indisponible. Réessayez dans un instant."
                     )
                 )
                 return
@@ -53,7 +53,7 @@ class BiometricAuthGatewayImpl @Inject constructor(
             BiometricAvailability.Unsupported -> {
                 onResult(
                     BiometricAuthResult.Failed(
-                        "Ce téléphone ne permet pas le verrouillage biométrique."
+                        "Ce téléphone ne permet pas le verrouillage par empreinte ou code."
                     )
                 )
                 return

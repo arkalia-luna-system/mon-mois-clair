@@ -15,6 +15,8 @@ import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
+import be.monmoisclair.app.domain.usecase.CreatePendingLetterResult
+import be.monmoisclair.app.domain.usecase.CreatePendingLetterUseCase
 import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -63,6 +65,7 @@ class AddEntryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val appContext: Context,
     private val addEntry: AddEntryUseCase,
+    private val createPendingLetter: CreatePendingLetterUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
     private val instanceDao: InstanceDao,
     private val mutatingRepository: MutatingRepository
@@ -139,7 +142,7 @@ class AddEntryViewModel @Inject constructor(
             }
             return
         }
-        SensitiveClipboard.setPlainText(appContext, "communication", prepared.clipboardText)
+        SensitiveClipboard.setPlainText(appContext, "Communication", prepared.clipboardText)
         _state.update {
             it.copy(copyMessage = prepared.userMessage, error = null)
         }
@@ -171,6 +174,58 @@ class AddEntryViewModel @Inject constructor(
 
     fun setIban(v: String) = _state.update { it.copy(iban = v, error = null) }
     fun setCreditorEmail(v: String) = _state.update { it.copy(creditorEmail = v, error = null) }
+
+    /**
+     * Lot D — range photo / qui / pour quoi sans montant (pas dans le Reste).
+     * Visible seulement si le bloc accord est ouvert et le reste dû est vide.
+     */
+    fun saveAsPendingLetter() {
+        viewModelScope.launch {
+            val s = _state.value
+            if (!s.isExpense || !s.dossierExpanded) return@launch
+            if (s.openingRemainingText.trim().isNotEmpty()) {
+                _state.update {
+                    it.copy(error = "Videz le reste dû pour ranger sans plan, ou Enregistrer un accord.")
+                }
+                return@launch
+            }
+            val who = s.label.trim()
+            if (who.isEmpty()) {
+                _state.update { it.copy(error = "Indiquez à qui (le nom en haut).") }
+                return@launch
+            }
+            _state.update { it.copy(saving = true, error = null) }
+            when (
+                val result = createPendingLetter(
+                    who = who,
+                    what = s.causeLabel,
+                    paymentNote = s.paymentNote,
+                    iban = s.iban,
+                    creditorEmail = s.creditorEmail
+                )
+            ) {
+                is CreatePendingLetterResult.InvalidInput -> {
+                    _state.update { it.copy(saving = false, error = result.message) }
+                }
+                is CreatePendingLetterResult.Success -> {
+                    val bmp = pendingBitmap
+                    if (bmp != null) {
+                        runCatching {
+                            val saved = receiptPhotos.saveBitmap(result.id, bmp)
+                            mutatingRepository.mutate(rescheduleReminders = false) {
+                                val letter = pendingLetterDao.getById(result.id) ?: return@mutate
+                                pendingLetterDao.upsert(
+                                    letter.copy(receiptRelativePath = saved.relativePath)
+                                )
+                            }
+                        }
+                        pendingBitmap = null
+                    }
+                    _state.update { it.copy(saving = false, saved = true, error = null) }
+                }
+            }
+        }
+    }
 
     fun save() {
         viewModelScope.launch {
@@ -205,7 +260,8 @@ class AddEntryViewModel @Inject constructor(
             if (s.isExpense && s.dossierExpanded && openingCents == null && hasCreditorBits) {
                 _state.update {
                     it.copy(
-                        error = "Indiquez le reste dû, ou videz l’IBAN et l’e-mail."
+                        error = "Indiquez le reste dû, ou « Ranger sans plan », " +
+                            "ou videz l’IBAN et l’e-mail."
                     )
                 }
                 return@launch
@@ -249,17 +305,18 @@ class AddEntryViewModel @Inject constructor(
             ) {
                 is AddEntryResult.Success -> {
                     createdInstanceId = result.instanceId
-                    val photoFailed = !attachPendingPhoto(result.instanceId)
+                    // documentsOk : la copie SAF peut échouer ; la photo locale suffit pour rester.
+                    val (photoOk, _) = attachPendingPhoto(result.instanceId)
                     pendingBitmap = null
                     _state.update {
                         it.copy(
                             saving = false,
-                            saved = !photoFailed,
-                            error = if (photoFailed) {
+                            saved = photoOk,
+                            error = if (photoOk) {
+                                null
+                            } else {
                                 "Facture enregistrée. La photo n’a pas suivi — " +
                                     "reprenez-en une, puis Enregistrer."
-                            } else {
-                                null
                             }
                         )
                     }
@@ -282,7 +339,7 @@ class AddEntryViewModel @Inject constructor(
             return
         }
         _state.update { it.copy(saving = true, error = null) }
-        val ok = attachPendingPhoto(instanceId)
+        val (ok, _) = attachPendingPhoto(instanceId)
         pendingBitmap = null
         _state.update {
             it.copy(
@@ -297,33 +354,44 @@ class AddEntryViewModel @Inject constructor(
         }
     }
 
-    /** @return false si une photo était en attente et que l’écriture a échoué. */
-    private suspend fun attachPendingPhoto(instanceId: String): Boolean {
-        val bmp = pendingBitmap ?: return true
+    /** @return Pair(ok, documentsCopyOk) — ok = écriture locale réussie. */
+    private suspend fun attachPendingPhoto(instanceId: String): Pair<Boolean, Boolean> {
+        val bmp = pendingBitmap ?: return true to true
         return runCatching {
+            var documentsOk = true
             val expense = instanceDao.getExpenseById(instanceId)
             if (expense != null) {
-                val instancePath = receiptPhotos.saveBitmap(expense.id, bmp)
+                val instanceSave = receiptPhotos.saveBitmap(expense.id, bmp)
+                documentsOk = documentsOk && instanceSave.documentsCopyOk
                 val templateId = expense.templateId
                 val canonical = templateId?.let { receiptPhotos.saveBitmap(it, bmp) }
+                if (canonical != null) documentsOk = documentsOk && canonical.documentsCopyOk
                 mutatingRepository.mutate {
                     instanceDao.getExpenseById(expense.id)?.let {
-                        instanceDao.updateExpense(it.copy(receiptRelativePath = instancePath))
+                        instanceDao.updateExpense(
+                            it.copy(receiptRelativePath = instanceSave.relativePath)
+                        )
                     }
                     if (templateId != null && canonical != null) {
                         templateDao.getExpenseById(templateId)?.let { tpl ->
-                            templateDao.updateExpense(tpl.copy(receiptRelativePath = canonical))
+                            templateDao.updateExpense(
+                                tpl.copy(receiptRelativePath = canonical.relativePath)
+                            )
                         }
                     }
                 }
             } else {
                 val canonical = receiptPhotos.saveBitmap(instanceId, bmp)
+                documentsOk = canonical.documentsCopyOk
                 mutatingRepository.mutate {
                     templateDao.getExpenseById(instanceId)?.let { tpl ->
-                        templateDao.updateExpense(tpl.copy(receiptRelativePath = canonical))
+                        templateDao.updateExpense(
+                            tpl.copy(receiptRelativePath = canonical.relativePath)
+                        )
                     }
                 }
             }
-        }.isSuccess
+            true to documentsOk
+        }.getOrElse { false to false }
     }
 }

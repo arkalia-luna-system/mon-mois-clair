@@ -1,5 +1,7 @@
 package be.monmoisclair.app.domain
 
+import java.util.Locale
+
 /**
  * Communication structurée belge (OGM / VCS) : 12 chiffres, les 2 derniers = modulo 97
  * des 10 premiers (reste 0 → 97). Affichage courant : `+++XXX/XXXX/XXXXX+++`.
@@ -54,4 +56,15 @@ object BelgianStructuredCommunication {
 
     /** Exemple canonique du plan : base 0 → contrôle 97. */
     const val EXAMPLE_VALID_DISPLAY = "+++000/0000/00097+++"
+
+    /** Presse-papiers banque : lettres et chiffres, majuscules. L’écran garde la saisie. */
+    fun ibanForClipboard(raw: String): String =
+        raw.filter { it.isLetterOrDigit() }.uppercase(Locale.ROOT)
+
+    /** 2 lettres + reste, longueur ISO (15 à 34). */
+    fun ibanLooksCopyable(compact: String): Boolean =
+        compact.length in 15..34 &&
+            compact.length >= 2 &&
+            compact[0].isLetter() &&
+            compact[1].isLetter()
 }

@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
 import be.monmoisclair.app.data.db.entity.IncomeTemplateEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
+import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 
 data class BackupPayload(
     val ledgers: List<MonthLedgerEntity>,
@@ -13,7 +14,9 @@ data class BackupPayload(
     val expenseTemplates: List<ExpenseTemplateEntity>,
     val incomeInstances: List<IncomeInstanceEntity>,
     val expenseInstances: List<ExpenseInstanceEntity>,
-    val appMeta: List<AppMetaEntity>
+    val appMeta: List<AppMetaEntity>,
+    /** Schéma 7+ ; vide pour les sauvegardes 1–6. */
+    val pendingLetters: List<PendingLetterEntity> = emptyList()
 )
 
 data class BackupDocument(

@@ -20,26 +20,28 @@ class ReceiptPhotoStore @Inject constructor(
 ) {
     fun relativePathFor(expenseId: String) = "receipts/$expenseId.webp"
 
-    suspend fun saveFromUri(expenseId: String, source: Uri): String {
+    suspend fun saveFromUri(expenseId: String, source: Uri): PhotoSaveResult {
         val bytes = context.contentResolver.openInputStream(source)?.use {
-            // Plafond photo unique (~12 Mo) — évite OOM sur un JPEG très lourd.
+            // Plafond lecture (~12 Mo) — le décodage est ensuite sous-échantillonné.
             BackupSecurityArchive.readBounded(it, 12L * 1024L * 1024L)
         } ?: throw BackupFailure.Io("Impossible de lire la photo")
-        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        val bitmap = decodeJpegBytesBounded(bytes)
             ?: throw BackupFailure.Io("Image illisible")
         return saveBitmap(expenseId, bitmap)
     }
 
     /**
      * Écrit d’abord une copie **locale** (relecture fiable), puis Documents (SAF).
-     * Si SAF échoue, la photo reste visible dans l’app ; la prochaine sauvegarde réessaiera.
+     * Si SAF échoue, la photo reste visible dans l’app ([PhotoSaveResult.documentsCopyOk] = false).
      */
-    suspend fun saveBitmap(expenseId: String, bitmap: Bitmap): String {
+    suspend fun saveBitmap(expenseId: String, bitmap: Bitmap): PhotoSaveResult {
         val webp = compressWebp(bitmap)
         val relative = relativePathFor(expenseId)
         writeLocal(relative, webp)
-        runCatching { safBackupStore.writeBinaryRelative(relative, webp) }
-        return relative
+        val documentsOk = runCatching {
+            safBackupStore.writeBinaryRelative(relative, webp)
+        }.isSuccess
+        return PhotoSaveResult(relativePath = relative, documentsCopyOk = documentsOk)
     }
 
     suspend fun openUri(relativePath: String): Uri? =
@@ -83,6 +85,23 @@ class ReceiptPhotoStore @Inject constructor(
 
         /** Au-dessus de ~400 Ko : baisser la qualité, sans viser 80 Ko. */
         const val SOFT_MAX_BYTES = 400 * 1024
+
+        data class PhotoSaveResult(
+            val relativePath: String,
+            val documentsCopyOk: Boolean
+        )
+
+        /** Décode un JPEG/PNG déjà lu en mémoire, borné à [MAX_SIDE_PX] (anti-OOM galerie). */
+        fun decodeJpegBytesBounded(bytes: ByteArray, maxSide: Int = MAX_SIDE_PX): Bitmap? {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+            if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+            val longest = maxOf(bounds.outWidth, bounds.outHeight)
+            var sample = 1
+            while (longest / sample > maxSide) sample *= 2
+            val opts = BitmapFactory.Options().apply { inSampleSize = sample }
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
+        }
 
         fun compressWebp(source: Bitmap, maxSide: Int = MAX_SIDE_PX, quality: Int = WEBP_QUALITY): ByteArray {
             val scaled = scaleMax(source, maxSide)

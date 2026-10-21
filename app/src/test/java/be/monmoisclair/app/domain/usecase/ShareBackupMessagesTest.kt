@@ -8,7 +8,7 @@ class ShareBackupMessagesTest {
     @Test
     fun failed_isFixedFamilyPhrase() {
         val msg = ShareBackupMessages.FAILED
-        assertThat(msg).startsWith("Partage impossible.")
+        assertThat(msg).startsWith("Impossible d’envoyer la copie.")
         assertThat(msg).contains("Documents")
         assertThat(msg).doesNotContain("BackupFailure")
         assertThat(msg).doesNotContain("Rename")

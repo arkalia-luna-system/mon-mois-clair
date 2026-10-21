@@ -4,6 +4,7 @@ import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
+import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import com.google.common.truth.Truth.assertThat
@@ -143,5 +144,35 @@ class BackupJsonCodecTest {
             expenseInstances = samplePayload().expenseInstances.reversed()
         )
         assertThat(codec.encodePayloadCanonical(p1)).isEqualTo(codec.encodePayloadCanonical(p2))
+    }
+
+    @Test
+    fun emptyPendingLetters_omittedFromCanonical_matchesLegacyPayload() {
+        val withEmpty = samplePayload().copy(pendingLetters = emptyList())
+        val json = codec.encodePayloadCanonical(withEmpty)
+        assertThat(json).doesNotContain("pendingLetters")
+    }
+
+    @Test
+    fun pendingLetters_roundTrip() {
+        val letter = PendingLetterEntity(
+            id = "pending-1",
+            who = "Étude",
+            what = "Hôpital",
+            receiptRelativePath = "receipts/pending-1.webp",
+            paymentNote = "+++000/0000/00097+++",
+            iban = "BE68539007547034",
+            creditorEmail = "a@b.be",
+            createdAtEpochMs = 9L
+        )
+        val payload = samplePayload().copy(pendingLetters = listOf(letter))
+        val schema = AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt()
+        val doc = codec.buildDocument(schema, 1L, "Europe/Brussels", payload)
+        val decoded = codec.decodeAndVerify(codec.encodeDocument(doc))
+        val out = decoded.payload.pendingLetters.single()
+        assertThat(out.who).isEqualTo("Étude")
+        assertThat(out.what).isEqualTo("Hôpital")
+        assertThat(out.iban).isEqualTo("BE68539007547034")
+        assertThat(out.receiptRelativePath).isEqualTo("receipts/pending-1.webp")
     }
 }

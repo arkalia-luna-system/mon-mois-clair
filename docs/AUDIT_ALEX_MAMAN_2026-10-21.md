@@ -1,10 +1,10 @@
 # Audit — maman, Alex, et le brief « dossiers »
 
 Date du premier constat : 2026-10-21.  
-Relecture du code : le même jour ; lots A/B/C ensuite clos au journal (**6.32**).
+Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
-Dernière étape **fermée** dans le journal : **6.32** (`0.1.0-6.32`, `versionCode` 37), schéma **6**, tests **198/198** (`--rerun-tasks`).  
-Lots A/B/C tenus. Ouvert : smoke « Écrire » sur téléphone, lots D/E/F.
+Dernière étape **fermée** dans le journal : **6.35** (`0.1.0-6.35`, `versionCode` 40), schéma **7**, tests **222/222** (`--rerun-tasks`).  
+Lots A–E tenus. Ouvert : smoke « Écrire » sur téléphone, lot F.
 
 Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
 Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
@@ -278,9 +278,9 @@ Clos au **6.32** (UI voir/enlever, aide, suite **198/198**). Reste ouvert hors c
 | Trou | Pourquoi ce n’est pas « juste du polish » |
 |------|-----------------------------------------------|
 | Baisser le montant / ajouter des frais **après** un FAIT qui avait effacé le mois suivant | **Corrigé** : `AgreementFuturesSync.afterAmountOrFeesChange` depuis `UpdateInstanceUseCase` (même si la ligne reste DONE). Toggle garde `afterToggle` (FAIT intermédiaire inchangé) |
-| Écran « Mes dossiers » | **Liste livrée** (Menu si N>0, barre, reste). Manque encore : courriers sans plan + ligne d’accueil |
-| Courrier sans plan | Une lettre reçue sans versement fixé n’a pas de tiroir. Si on met un montant pour « ne pas l’oublier », elle entre dans le Reste. C’est le piège que le lot D doit fermer |
-| Mettre de côté | Pas de ligne dans Réglages, pas de facture épargne, pas de phrase « déjà viré, pas disponible ici ». La charte refuse toujours les enveloppes multiples ; l’exception « une facture » n’est pas écrite |
+| Écran « Mes dossiers » | **Clos 6.34** (Menu si N>0 ou courriers, barre, reste, section sans plan) |
+| Courrier sans plan | **Clos 6.34** — `pending_letters`, bandeau accueil, conversion vers accord |
+| Mettre de côté | **Clos 6.35.** Réglages (montant, jour, déficit annoncé, retirer). Fiche : « déjà viré — pas disponible ici ». Accueil inchangé tant que ce n’est pas activé. Charte : enveloppes multiples refusées, une facture admise |
 | Résumé à montrer | Pas de texte partageable (revenus, charges, à qui, pour quoi, versement, reste, référence). Pas de faux PDF CPAS — et il ne faut pas en ajouter |
 | Smoke téléphone | Le journal 6.27 laissait ouvert : notification avec plusieurs factures, nom seul sur une échéance trimestrielle. `AUDIT_STATUS.md` les coche ensuite en manuel. Cette relecture **n’a pas** refait le geste, et n’a pas regardé la ligne Accord sur un écran court |
 | Checklist « zéro dossier = zéro mot » | L’accueil tient. Le formulaire d’une dépense a **un** bouton de plus, replié : « C’est un retard ou un accord ? ». L’aide contient la section. C’est l’écart accepté au lot B. Ce n’est pas zéro pixel au sens strict du plan §5 point 2 |
@@ -292,7 +292,7 @@ Le produit utile n’est pas « une app de dettes ». C’est le carnet, plus un
 
 Alex a les deux vies : un accord à montant à peu près fixe, et des mois où il verse ce qu’il a. Le modèle « ouverture + frais − FAIT réels » tient les deux, à condition qu’on ne montre pas « mois 4 sur 12 ». Ce compteur a été refusé et il n’est pas dans l’UI. Il ne faut pas le réintroduire au lot D sous prétexte d’une barre. La barre, si elle vient, est « déjà versé / (départ + frais) ». Le nombre de mois n’apparaît qu’avec « si le versement reste de X », et disparaît dès qu’un mois a divergé.
 
-Ils ne mettent même pas 1 € de côté. Une cagnotte à l’écran serait dépensée dans la tête, ou ignorée. L’épargne prévue est une facture de plus, virée vers un autre compte, absente du résumé « dettes ». Pas maintenant. C est clos (6.32) : D/E/F un à la fois, avec migration + suite tests le même jour.
+Ils ne mettent même pas 1 € de côté. Une cagnotte à l’écran serait dépensée dans la tête, ou ignorée. L’épargne est une facture de plus, virée vers un autre compte. Elle est dans Réglages ; l’accueil ne la montre qu’une fois activée. Le résumé du lot F ne devra pas la compter comme une dette.
 
 Le bouton replié sur chaque nouvelle dépense est le seul pixel nouveau que maman voit sans l’avoir demandé. Le garder fermé, sans le mot huissier, est la bonne limite. L’ouvrir par erreur puis quitter sans enregistrer ne doit rien créer : c’est le cas si le reste dû reste vide (`openingRemainingCents` null). Si elle remplit le reste par curiosité, elle crée un dossier. La phrase sous le champ (« Laissez vide si ce n’est pas un accord ») porte cette responsabilité. Elle est facile à rater sur un écran court. À relire au doigt, pas à rallonger avec un second avertissement.
 
@@ -310,7 +310,19 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Lot A — mémoire du papier | Tenu dans le code et dans le journal 6.30 |
 | Lot B — accord replié | Tenu (6.31) ; trou sync futures à l’édition **corrigé** (`AgreementFuturesSync`, branché Update + Toggle) |
 | Lot C — IBAN, mail, frais, plusieurs photos | Clos **6.32** — schéma 6, UI courriers, **198/198** |
-| Lot D — Mes dossiers | Liste + Menu (N>0) en cours ; courriers sans plan pas faits |
-| Lots E, F | Pas commencés |
+| Lot D — Mes dossiers + courriers sans plan | Clos **6.34** — schéma 7, bandeau, conversion, **214/214** |
+| Lot E — Mettre de côté | Clos **6.35** — **222/222** |
+| Lot F | Pas commencé |
 
-Prochaine action utile : fermer D (courriers sans plan) ; smoke « Écrire » dès qu’un accord a un e-mail (6.33 déjà installé sur S938B). Pas de pastille « Huissier ».
+Prochaine action utile : lot F ; smoke « Écrire » dès qu’un accord a un e-mail. Pas de pastille « Huissier ».
+
+### 7.7 Passe du 21 octobre, après-midi
+
+Corrigé dans le code (puis lot E clos au 6.35 avec suite complète) :
+
+- Accueil : le gros montant reste sous le nom. « Pour quoi » passe dessous, pour ne pas couper le chiffre.
+- Aide : « Voir la photo », plus une pastille « Facture » qui n’existe pas. La photo suit à l’ajout ; à l’édition, seulement avec « Aussi les mois suivants ».
+- « Écrire » n’apparaît que si l’e-mail est rempli (comme « Copier l’IBAN »).
+- Copier l’IBAN enlève les espaces et met en majuscules. L’écran garde la saisie.
+- Deux boutons par courrier en plus (Voir / Enlever) tiennent sur une ligne quand la largeur le permet.
+- Lot E clos (journal 6.35).

@@ -21,8 +21,8 @@ fun stickyStillToPayLabel(
 
 /**
  * Revenus − factures déjà FAIT (= Reste + À payer).
- * Seulement s’il reste des futures à payer — pour que maman voie
- * « ce qu’il resterait si on retire encore les factures non payées ».
+ * Seulement s’il reste des lignes à payer — pour voir ce qu’il resterait
+ * si on ne comptait que ce qui est déjà réglé.
  */
 fun stickyWithoutUnpaidLabel(
     remainingCents: Long,
@@ -30,5 +30,5 @@ fun stickyWithoutUnpaidLabel(
     formatCents: (Long) -> String = MoneyFormat::formatCents
 ): String? {
     if (stillToPayCents <= 0L) return null
-    return "Sans les futures ${formatCents(remainingCents + stillToPayCents)}"
+    return "Hors à payer ${formatCents(remainingCents + stillToPayCents)}"
 }

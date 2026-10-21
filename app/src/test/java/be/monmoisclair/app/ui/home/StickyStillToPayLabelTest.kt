@@ -27,6 +27,6 @@ class StickyStillToPayLabelTest {
         assertThat(stickyWithoutUnpaidLabel(45_000L, 0L)).isNull()
         assertThat(
             stickyWithoutUnpaidLabel(45_000L, 30_000L) { cents -> "${cents / 100} €" }
-        ).isEqualTo("Sans les futures 750 €")
+        ).isEqualTo("Hors à payer 750 €")
     }
 }

@@ -15,7 +15,7 @@ object HowItWorksCopy {
             body = "Le gros chiffre, c’est le « Reste après factures » : vos revenus du mois moins toutes les factures " +
                 "(payées ou non). " +
                 "« À payer » dit ce qui reste à régler. " +
-                "« Sans les futures » (en brun) montre ce qu’il resterait si on ne comptait que les factures déjà FAIT. " +
+                "« Hors à payer » (en brun) montre ce qu’il resterait si on ne comptait que les factures déjà FAIT. " +
                 "Ce n’est pas le solde de votre compte en banque. " +
                 "Chaque mois est une page neuve : l’app ne reporte pas toute seule ce qui restait. " +
                 "Pour le noter, ajoutez un revenu « Reste du mois passé », une seule fois."
@@ -30,7 +30,7 @@ object HowItWorksCopy {
         Section(
             title = "Marquer FAIT",
             body = "Quand vous avez payé (ou vérifié le prélèvement), touchez « FAIT ✓ » à droite. " +
-                "La ligne devient verte et affiche « FAIT le … » (date exacte) — preuve rassurante. " +
+                "La ligne devient verte et affiche « FAIT le … » (jour, mois et année) — preuve rassurante. " +
                 "« Remettre » si vous vous êtes trompée. " +
                 "Si le montant change ce mois-ci, ouvrez la ligne et corrigez le chiffre : " +
                 "seul ce mois change, tant que « Aussi les mois suivants » n’est pas coché."
@@ -51,13 +51,14 @@ object HowItWorksCopy {
         Section(
             title = "Facture papier",
             body = "À l’ajout : « Scanner une facture » lit le QR de la facture belge et préremplit nom, montant " +
-                "et communication. Sur le mois, touchez « Copier ». Dans la fiche, « Copier la communication ». " +
-                "Si c’est une communication structurée valide, le presse-papiers reçoit les 12 chiffres " +
+                "et référence. Sur le mois, touchez « Copier ». Dans la fiche, « Copier la communication ». " +
+                "Si c’est une référence bancaire valide (12 chiffres), le presse-papiers les reçoit " +
                 "(l’écran garde le +++). Collez ensuite dans votre app bancaire. " +
                 "Sur une facture répétée, la communication suit les mois suivants. " +
-                "La photo aussi si vous cochez « Aussi les mois suivants ». " +
-                "Vous pouvez aussi prendre une photo : pastille « Facture » sur la ligne, ou touchez la vignette " +
-                "dans la fiche pour l’agrandir. Vous pouvez reprendre la photo sans tout recréer. " +
+                "À l’ajout, la photo d’une facture qui revient est reprise les mois suivants. " +
+                "Dans la fiche, elle ne suit que si vous cochez « Aussi les mois suivants ». " +
+                "Sur le mois, « Voir la photo » ouvre le papier. Dans la fiche, touchez la vignette " +
+                "pour l’agrandir. Vous pouvez reprendre la photo sans tout recréer. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."
         ),
         Section(
@@ -73,7 +74,19 @@ object HowItWorksCopy {
                 "vous pouvez voir ou enlever chaque courrier. " +
                 "Le motif des frais affiché est le dernier saisi. " +
                 "S’il y a au moins un accord : Menu → « Mes dossiers » " +
-                "(reste dû et barre ; rien sur l’accueil)."
+                "(reste dû et barre ; rien sur l’accueil). " +
+                "Sans versement encore : « Ranger sans plan » (photo + qui + pour quoi) — " +
+                "le courrier n’entre pas dans le Reste. Une ligne sur l’accueil " +
+                "« courrier sans plan · Voir » s’affiche s’il y en a."
+        ),
+        Section(
+            title = "Mettre de côté",
+            body = "Réglages → « Mettre de côté » crée une facture mensuelle, virée vers un autre compte. " +
+                "Elle entre dans le Reste dès le 1er, comme le loyer. " +
+                "FAIT quand le virement est fait. " +
+                "Ce n’est pas de l’argent gardé dans l’application. " +
+                "La fiche dit « déjà viré » : cette somme n’est pas disponible ici. " +
+                "Tant que vous ne l’activez pas, l’accueil ne change pas."
         ),
         Section(
             title = "Sur une année",

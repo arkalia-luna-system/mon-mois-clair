@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
 import be.monmoisclair.app.data.db.entity.IncomeTemplateEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
+import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import org.json.JSONArray
 import org.json.JSONObject
@@ -54,7 +55,7 @@ class BackupJsonCodec {
         val root = JSONObject(json)
         val schemaVersion = root.getInt("schemaVersion")
         // v1 = historique ; v2 = diversSpent + isAutoDebit (CURRENT).
-        if (schemaVersion !in 1..6) {
+        if (schemaVersion !in 1..7) {
             throw BackupFailure.UnsupportedSchema(schemaVersion)
         }
         val payload = jsonToPayload(root.getJSONObject("payload"))
@@ -77,25 +78,29 @@ class BackupJsonCodec {
 
     private fun payloadToJson(payload: BackupPayload): JSONObject {
         val obj = JSONObject()
-        putSorted(
-            obj,
-            linkedMapOf(
-                "appMeta" to JSONArray(payload.appMeta.sortedBy { it.key }.map { metaToJson(it) }),
-                "expenseInstances" to JSONArray(
-                    payload.expenseInstances.sortedBy { it.id }.map { expenseInstanceToJson(it) }
-                ),
-                "expenseTemplates" to JSONArray(
-                    payload.expenseTemplates.sortedBy { it.id }.map { expenseTemplateToJson(it) }
-                ),
-                "incomeInstances" to JSONArray(
-                    payload.incomeInstances.sortedBy { it.id }.map { incomeInstanceToJson(it) }
-                ),
-                "incomeTemplates" to JSONArray(
-                    payload.incomeTemplates.sortedBy { it.id }.map { incomeTemplateToJson(it) }
-                ),
-                "ledgers" to JSONArray(payload.ledgers.sortedBy { it.id }.map { ledgerToJson(it) })
-            )
+        val map = linkedMapOf<String, Any>(
+            "appMeta" to JSONArray(payload.appMeta.sortedBy { it.key }.map { metaToJson(it) }),
+            "expenseInstances" to JSONArray(
+                payload.expenseInstances.sortedBy { it.id }.map { expenseInstanceToJson(it) }
+            ),
+            "expenseTemplates" to JSONArray(
+                payload.expenseTemplates.sortedBy { it.id }.map { expenseTemplateToJson(it) }
+            ),
+            "incomeInstances" to JSONArray(
+                payload.incomeInstances.sortedBy { it.id }.map { incomeInstanceToJson(it) }
+            ),
+            "incomeTemplates" to JSONArray(
+                payload.incomeTemplates.sortedBy { it.id }.map { incomeTemplateToJson(it) }
+            ),
+            "ledgers" to JSONArray(payload.ledgers.sortedBy { it.id }.map { ledgerToJson(it) })
         )
+        // Absent si vide → checksum identique aux sauvegardes schéma ≤6.
+        if (payload.pendingLetters.isNotEmpty()) {
+            map["pendingLetters"] = JSONArray(
+                payload.pendingLetters.sortedBy { it.id }.map { pendingLetterToJson(it) }
+            )
+        }
+        putSorted(obj, map)
         return obj
     }
 
@@ -106,7 +111,10 @@ class BackupJsonCodec {
             expenseTemplates = obj.getJSONArray("expenseTemplates").mapObjects { expenseTemplateFromJson(it) },
             incomeInstances = obj.getJSONArray("incomeInstances").mapObjects { incomeInstanceFromJson(it) },
             expenseInstances = obj.getJSONArray("expenseInstances").mapObjects { expenseInstanceFromJson(it) },
-            appMeta = obj.getJSONArray("appMeta").mapObjects { metaFromJson(it) }
+            appMeta = obj.getJSONArray("appMeta").mapObjects { metaFromJson(it) },
+            pendingLetters = obj.optJSONArray("pendingLetters")
+                ?.mapObjects { pendingLetterFromJson(it) }
+                .orEmpty()
         )
     }
 
@@ -261,6 +269,29 @@ class BackupJsonCodec {
     private fun metaFromJson(o: JSONObject) = AppMetaEntity(
         key = o.getString("key"),
         value = o.getString("value")
+    )
+
+    private fun pendingLetterToJson(e: PendingLetterEntity): JSONObject =
+        sortedJson(
+            "createdAtEpochMs" to e.createdAtEpochMs,
+            "creditorEmail" to e.creditorEmail,
+            "iban" to e.iban,
+            "id" to e.id,
+            "paymentNote" to e.paymentNote,
+            "receiptRelativePath" to e.receiptRelativePath,
+            "what" to e.what,
+            "who" to e.who
+        )
+
+    private fun pendingLetterFromJson(o: JSONObject) = PendingLetterEntity(
+        id = o.getString("id"),
+        who = o.getString("who"),
+        what = o.optString("what", ""),
+        receiptRelativePath = o.optString("receiptRelativePath", ""),
+        paymentNote = o.optString("paymentNote", ""),
+        iban = o.optString("iban", ""),
+        creditorEmail = o.optString("creditorEmail", ""),
+        createdAtEpochMs = o.getLong("createdAtEpochMs")
     )
 
     private fun sortedJson(vararg pairs: Pair<String, Any?>): JSONObject {

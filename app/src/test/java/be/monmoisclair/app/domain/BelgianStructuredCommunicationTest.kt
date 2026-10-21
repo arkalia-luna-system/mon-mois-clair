@@ -47,6 +47,14 @@ class BelgianStructuredCommunicationTest {
     }
 
     @Test
+    fun iban_stripsSpacesAndKeepsLetters() {
+        val compact = BelgianStructuredCommunication.ibanForClipboard("be68 5390 0754 7034")
+        assertThat(compact).isEqualTo("BE68539007547034")
+        assertThat(BelgianStructuredCommunication.ibanLooksCopyable(compact)).isTrue()
+        assertThat(BelgianStructuredCommunication.ibanLooksCopyable("123")).isFalse()
+    }
+
+    @Test
     fun empty_yieldsNoClipboard() {
         val copy = BelgianStructuredCommunication.prepareCopy("   ")
         assertThat(copy.clipboardText).isEmpty()

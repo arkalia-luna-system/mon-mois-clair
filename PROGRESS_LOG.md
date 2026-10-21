@@ -9,15 +9,46 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.33** (Mes dossiers liste + EuroFormat/mailto/polish) |
-| Étape en cours | Lot D à finir : **courriers sans plan** (schéma 7) |
-| Prochaine sous-étape | Table `pending_letters` + section Mes dossiers + bandeau accueil · smoke « Écrire » sur un vrai accord · puis E/F |
+| Dernière étape terminée | **6.35** (Lot E clos : Mettre de côté) |
+| Étape en cours | — |
+| Prochaine sous-étape | Lot **F** (résumé texte) · smoke « Écrire » / hauteur Accord |
 | Audit premium | Code clos · punch list audit traitée |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.35 Lot E clos : Mettre de côté
+
+**Problème :** rien n’était réservé pour eux ; une cagnotte à l’écran les perdrait.
+
+**Codé :**
+- Réglages « Mettre de côté » (montant, jour, alerte déficit avant enregistrement, retirer)
+- Facture mensuelle ordinaire · entre dans le Reste · FAIT = virement vers un autre compte
+- Fiche : « déjà viré — pas disponible ici » · marqueur `app_meta` `savingsTemplateId` (pas de schéma nouveau)
+- Aide + charte §8 (une facture admise, pas d’enveloppes multiples)
+- `SavingsProjection` + `ConfigureSavingsUseCase` + tests
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **222/222** (58 fichiers, 0 échec)  
+**Version :** `0.1.0-6.35` · `versionCode` 40  
+**Pas encore :** lot F · smoke « Écrire »
+
+### 2026-10-21 — 6.34 Lot D clos : courriers sans plan
+
+**Problème :** une lettre reçue sans versement n’avait pas de tiroir ; inventer un montant la mettait dans le Reste.
+
+**Codé :**
+- Schéma Room/backup **7** · table `pending_letters` · migration 6→7
+- « Ranger sans plan » (fiche ajout) + formulaire depuis Mes dossiers
+- Section « Courriers sans plan » · conversion → accord (versement + reste)
+- Bandeau accueil « N courrier(s) sans plan · Voir » · Menu si dossiers **ou** courriers
+- Backup JSON : clé `pendingLetters` seulement si non vide (checksum schéma ≤6 intact)
+- Alignement test `ShareBackupMessages` (phrase polish)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **214/214** (56 fichiers, 0 échec)  
+**Version :** `0.1.0-6.34` · `versionCode` 39  
+**Pas encore :** phrase « encore N mois si… » · smoke « Écrire » / hauteur Accord · clôture E (code présent, suite non relancée) · F
 
 ### 2026-10-21 — Polish premium (cartes papier, sans Gradle)
 

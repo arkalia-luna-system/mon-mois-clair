@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -30,20 +33,24 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 import be.monmoisclair.app.domain.usecase.DossierListItem
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
+import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
 
 /**
- * Lot D — Mes dossiers. Absent du Menu s’il n’y a aucun accord.
- * Pas de total de dettes en criant : hero = nombre + versements du mois.
+ * Lot D — Mes dossiers + courriers sans plan.
+ * Absent du Menu s’il n’y a ni accord ni courrier.
  */
 @Composable
 fun DossiersScreen(
     onBack: () -> Unit,
     onOpenInstance: (id: String) -> Unit,
     onOpenTemplate: (id: String) -> Unit,
+    onConvertPending: (letterId: String) -> Unit,
+    onAddPending: () -> Unit,
     viewModel: DossiersViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -58,25 +65,50 @@ fun DossiersScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         Text(text = "Mes dossiers", style = MaterialTheme.typography.headlineMedium)
+        val introShape = MaterialTheme.shapes.medium
         Text(
             text = "Accords et retards — le reste dû est ici, pas sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, introShape)
+                .background(A11yTokens.PaperCard, introShape)
+                .padding(14.dp)
         )
 
         if (state.loading) {
-            Text(
-                text = "Chargement…",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics {
-                    contentDescription = "Chargement des dossiers"
-                    liveRegion = LiveRegionMode.Polite
-                }
-            )
+            val busyShape = MaterialTheme.shapes.medium
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                    .background(A11yTokens.PaperCard, busyShape)
+                    .padding(12.dp)
+                    .semantics {
+                        contentDescription = "Chargement des dossiers"
+                        liveRegion = LiveRegionMode.Polite
+                    }
+            ) {
+                CircularProgressIndicator(
+                    color = A11yTokens.ButtonFill,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(28.dp)
+                )
+                Text(
+                    text = "Chargement…",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
+            }
             return@PinnedBackScaffold
         }
         val snap = state.snapshot
-        if (snap.items.isEmpty()) {
+        val pending = state.pendingLetters
+
+        if (snap.items.isEmpty() && pending.isEmpty()) {
             val emptyShape = MaterialTheme.shapes.medium
             Column(
                 modifier = Modifier
@@ -93,51 +125,100 @@ fun DossiersScreen(
                 )
                 Text(
                     text = "Sur une facture, ouvrez « C’est un retard ou un accord ? » " +
-                        "et indiquez combien il reste aujourd’hui.",
+                        "et indiquez combien il reste aujourd’hui. " +
+                        "Sans montant encore : « Ranger sans plan ».",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.InkMuted
                 )
             }
+            SecondaryA11yButton(
+                text = "Ranger un courrier sans plan",
+                onClick = onAddPending
+            )
             return@PinnedBackScaffold
         }
 
-        val heroCount = snap.items.count { !it.isSettled }
-        val heroLabel = when {
-            heroCount == 0 -> "Tout est soldé"
-            snap.monthTotalCents > 0L ->
-                "$heroCount dossier${if (heroCount > 1) "s" else ""} · " +
-                    MoneyFormat.formatCents(snap.monthTotalCents) + " ce mois"
-            else ->
-                "$heroCount dossier${if (heroCount > 1) "s" else ""}"
-        }
-        val heroShape = MaterialTheme.shapes.medium
-        Text(
-            text = heroLabel,
-            style = MaterialTheme.typography.titleLarge,
-            color = if (heroCount == 0) A11yTokens.AccentOk else A11yTokens.Ink,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, heroShape)
-                .background(A11yTokens.PaperWarm, heroShape)
-                .padding(horizontal = 14.dp, vertical = 12.dp)
-                .semantics {
-                    liveRegion = LiveRegionMode.Polite
-                    contentDescription = heroLabel
-                }
-        )
-
-        Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
-            snap.items.forEach { item ->
-                DossierRow(
-                    item = item,
-                    onClick = {
-                        val id = item.openInstanceId
-                        if (id != null) onOpenInstance(id)
-                        else onOpenTemplate(item.templateId)
+        if (snap.items.isNotEmpty()) {
+            val heroCount = snap.items.count { !it.isSettled }
+            val heroLabel = when {
+                heroCount == 0 -> "Tout est soldé"
+                snap.monthTotalCents > 0L ->
+                    "$heroCount dossier${if (heroCount > 1) "s" else ""} · " +
+                        MoneyFormat.formatCents(snap.monthTotalCents) + " ce mois"
+                else ->
+                    "$heroCount dossier${if (heroCount > 1) "s" else ""}"
+            }
+            val heroShape = MaterialTheme.shapes.medium
+            Text(
+                text = heroLabel,
+                style = MaterialTheme.typography.titleLarge,
+                color = if (heroCount == 0) A11yTokens.AccentOk else A11yTokens.Ink,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, heroShape)
+                    .background(A11yTokens.PaperCard, heroShape)
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription = heroLabel
                     }
-                )
+            )
+
+            Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
+                snap.items.forEach { item ->
+                    DossierRow(
+                        item = item,
+                        onClick = {
+                            val id = item.openInstanceId
+                            if (id != null) onOpenInstance(id)
+                            else onOpenTemplate(item.templateId)
+                        }
+                    )
+                }
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        val pendingIntroShape = MaterialTheme.shapes.medium
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, pendingIntroShape)
+                .background(A11yTokens.PaperCard, pendingIntroShape)
+                .padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Text(
+                text = "Courriers sans plan",
+                style = MaterialTheme.typography.titleLarge,
+                color = A11yTokens.Ink
+            )
+            Text(
+                text = "Reçus, sans versement fixé — rien dans le Reste.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+        }
+        if (pending.isEmpty()) {
+            Text(
+                text = "Aucun pour le moment.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
+                pending.forEach { letter ->
+                    PendingLetterRow(
+                        letter = letter,
+                        onClick = { onConvertPending(letter.id) }
+                    )
+                }
+            }
+        }
+        SecondaryA11yButton(
+            text = "Ranger un courrier sans plan",
+            onClick = onAddPending
+        )
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
@@ -207,12 +288,60 @@ private fun DossierRow(
                 )
                 if (item.monthCents > 0L) {
                     Text(
-                        text = "${MoneyFormat.formatCents(item.monthCents)} ce mois",
+                        text = MoneyFormat.formatCents(item.monthCents) + " / mois",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun PendingLetterRow(
+    letter: PendingLetterEntity,
+    onClick: () -> Unit
+) {
+    val shape = MaterialTheme.shapes.medium
+    val a11y = buildString {
+        append(letter.who)
+        if (letter.what.isNotBlank()) append(", ${letter.what}")
+        append(", courrier sans plan")
+        if (letter.receiptRelativePath.isNotBlank()) append(", avec photo")
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = A11yTokens.minTouchHeight)
+            .clip(shape)
+            .background(A11yTokens.PaperCard)
+            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .clickable(
+                role = Role.Button,
+                onClickLabel = "Fixer un versement",
+                onClick = onClick
+            )
+            .semantics { contentDescription = a11y }
+            .padding(14.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(letter.who, style = MaterialTheme.typography.titleLarge, color = A11yTokens.Ink)
+        if (letter.what.isNotBlank()) {
+            Text(
+                letter.what,
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+        }
+        Text(
+            text = if (letter.receiptRelativePath.isNotBlank()) {
+                "Sans montant · photo · toucher pour fixer un versement"
+            } else {
+                "Sans montant · toucher pour fixer un versement"
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
     }
 }

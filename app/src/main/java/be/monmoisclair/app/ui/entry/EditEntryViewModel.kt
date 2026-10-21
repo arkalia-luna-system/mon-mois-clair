@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
@@ -15,7 +16,10 @@ import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.ReceiptPathList
+import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import be.monmoisclair.app.domain.usecase.ConfigureSavingsResult
+import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
 import be.monmoisclair.app.domain.usecase.DeleteInstanceResult
 import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
 import be.monmoisclair.app.domain.usecase.UpdateInstanceResult
@@ -65,9 +69,14 @@ data class EditEntryState(
     val feeAddText: String = "",
     val feeNoteText: String = "",
     val extraReceiptPaths: String = "",
+    /** Lot E — cette ligne est « Mettre de côté ». */
+    val isSavingsLine: Boolean = false,
+    val savingsTransferredCents: Long = 0L,
     val error: String? = null,
     val done: Boolean = false,
     val loading: Boolean = true,
+    /** Ligne absente (supprimée pendant l’ouverture). */
+    val missing: Boolean = false,
     /** Intent mail à lancer une fois (consommé par l’UI). */
     val mailDraft: CreditorMailComposer.Draft? = null
 )
@@ -80,7 +89,9 @@ class EditEntryViewModel @Inject constructor(
     private val templateDao: TemplateDao,
     private val updateInstance: UpdateInstanceUseCase,
     private val deleteInstance: DeleteInstanceUseCase,
-    private val receiptPhotos: ReceiptPhotoStore
+    private val receiptPhotos: ReceiptPhotoStore,
+    private val appMetaDao: AppMetaDao,
+    private val configureSavings: ConfigureSavingsUseCase
 ) : ViewModel() {
     private val entryId: String = checkNotNull(savedStateHandle["id"])
     private val isExpenseArg: Boolean = savedStateHandle.get<String>("isExpense") == "true"
@@ -93,7 +104,10 @@ class EditEntryViewModel @Inject constructor(
     private suspend fun load() {
         if (!isExpenseArg) {
             val e = instanceDao.getIncomeById(entryId) ?: run {
-                _state.update { it.copy(loading = false, error = "Introuvable.") }; return
+                _state.update {
+                    it.copy(loading = false, missing = true)
+                }
+                return
             }
             _state.update {
                 it.copy(
@@ -108,7 +122,10 @@ class EditEntryViewModel @Inject constructor(
             return
         }
         val e = instanceDao.getExpenseById(entryId) ?: run {
-            _state.update { it.copy(loading = false, error = "Introuvable.") }; return
+            _state.update {
+                it.copy(loading = false, missing = true)
+            }
+            return
         }
         val interval = e.templateId?.let { tid ->
             templateDao.getExpenseById(tid)?.intervalMonths
@@ -128,6 +145,13 @@ class EditEntryViewModel @Inject constructor(
         } ?: 0L
         val fees = tpl?.addedFeesCents ?: 0L
         val remaining = DossierRemaining.remainingCents(opening, paid, fees)
+        val savingsId = appMetaDao.get(AppMetaKeys.SAVINGS_TEMPLATE_ID)?.value?.trim().orEmpty()
+        val isSavings = tpl != null && tpl.active && tpl.id == savingsId
+        val transferred = if (isSavings && e.templateId != null) {
+            instanceDao.sumAmountCentsByTemplateAndStatus(e.templateId, ExpenseStatus.DONE)
+        } else {
+            0L
+        }
         _state.update {
             it.copy(
                 loading = false, label = e.label,
@@ -145,7 +169,9 @@ class EditEntryViewModel @Inject constructor(
                 creditorEmail = tpl?.creditorEmail.orEmpty(),
                 addedFeesCents = fees,
                 addedFeesNote = tpl?.addedFeesNote.orEmpty(),
-                extraReceiptPaths = tpl?.extraReceiptPaths.orEmpty()
+                extraReceiptPaths = tpl?.extraReceiptPaths.orEmpty(),
+                isSavingsLine = isSavings,
+                savingsTransferredCents = transferred
             )
         }
     }
@@ -258,7 +284,14 @@ class EditEntryViewModel @Inject constructor(
             _state.update { it.copy(error = "Aucun IBAN à copier.", copyMessage = null) }
             return
         }
-        SensitiveClipboard.setPlainText(appContext, "iban", iban)
+        val compact = BelgianStructuredCommunication.ibanForClipboard(iban)
+        if (!BelgianStructuredCommunication.ibanLooksCopyable(compact)) {
+            _state.update {
+                it.copy(error = "Vérifiez l’IBAN sur le courrier.", copyMessage = null)
+            }
+            return
+        }
+        SensitiveClipboard.setPlainText(appContext, "IBAN", compact)
         _state.update {
             it.copy(
                 copyMessage = BelgianStructuredCommunication.IBAN_COPIED_OK,
@@ -278,7 +311,11 @@ class EditEntryViewModel @Inject constructor(
             paymentNote = s.paymentNote
         )
         if (draft.to.isBlank()) {
-            _state.update { it.copy(error = "Indiquez d’abord l’e-mail du créancier.") }
+            _state.update { it.copy(error = "Indiquez d’abord l’e-mail (pour Écrire).") }
+            return
+        }
+        if (!CreditorMailComposer.looksLikeEmail(draft.to)) {
+            _state.update { it.copy(error = "Vérifiez l’e-mail.", mailDraft = null) }
             return
         }
         _state.update { it.copy(mailDraft = draft, error = null) }
@@ -289,7 +326,7 @@ class EditEntryViewModel @Inject constructor(
     fun mailLaunchFailed() = _state.update {
         it.copy(
             mailDraft = null,
-            error = "Aucune application Mail trouvée sur cet appareil."
+            error = "Aucune application Mail trouvée sur ce téléphone."
         )
     }
 
@@ -301,7 +338,7 @@ class EditEntryViewModel @Inject constructor(
             }
             return
         }
-        SensitiveClipboard.setPlainText(appContext, "communication", prepared.clipboardText)
+        SensitiveClipboard.setPlainText(appContext, "Communication", prepared.clipboardText)
         _state.update {
             it.copy(copyMessage = prepared.userMessage, error = null)
         }
@@ -322,6 +359,7 @@ class EditEntryViewModel @Inject constructor(
             }
             var path = s.receiptRelativePath
             var extraAppend = ""
+            var documentsHint: String? = null
             val cleared = s.receiptCleared && pendingBitmap == null
             pendingBitmap?.let { bmp ->
                 val owner = if (s.applyToFollowing) {
@@ -330,12 +368,22 @@ class EditEntryViewModel @Inject constructor(
                     s.id
                 }
                 if (s.isAgreement && path.isNotBlank() && !cleared) {
-                    extraAppend = receiptPhotos.saveBitmap(
+                    val saved = receiptPhotos.saveBitmap(
                         "$owner-extra-${AppClock.nowEpochMs()}",
                         bmp
                     )
+                    extraAppend = saved.relativePath
+                    if (!saved.documentsCopyOk) {
+                        documentsHint =
+                            "Photo enregistrée. La copie dans Documents a échoué — elle sera retentée."
+                    }
                 } else {
-                    path = receiptPhotos.saveBitmap(owner, bmp)
+                    val saved = receiptPhotos.saveBitmap(owner, bmp)
+                    path = saved.relativePath
+                    if (!saved.documentsCopyOk) {
+                        documentsHint =
+                            "Photo enregistrée. La copie dans Documents a échoué — elle sera retentée."
+                    }
                 }
                 pendingBitmap = null
             }
@@ -386,11 +434,11 @@ class EditEntryViewModel @Inject constructor(
                     label = s.label,
                     amountCents = cents,
                     dayOfMonth = day,
-                    applyToFollowingMonths = s.applyToFollowing,
+                    applyToFollowingMonths = s.applyToFollowing || s.isSavingsLine,
                     isAutoDebit = s.isExpense && s.isAutoDebit,
                     paymentNote = s.paymentNote,
                     receiptRelativePath = path,
-                    intervalMonths = interval,
+                    intervalMonths = if (s.isSavingsLine) 1 else interval,
                     clearReceipt = cleared && path.isBlank(),
                     causeLabel = when {
                         !s.isExpense -> ""
@@ -408,8 +456,11 @@ class EditEntryViewModel @Inject constructor(
                     extraReceiptPathsReplace = if (s.isAgreement) s.extraReceiptPaths else null
                 )
             ) {
-                UpdateInstanceResult.Success -> _state.update { it.copy(done = true) }
-                UpdateInstanceResult.NotFound -> _state.update { it.copy(error = "Introuvable.") }
+                UpdateInstanceResult.Success -> _state.update {
+                    it.copy(done = true, copyMessage = documentsHint)
+                }
+                UpdateInstanceResult.NotFound ->
+                    _state.update { it.copy(error = "Cette ligne n’est plus là.") }
                 is UpdateInstanceResult.InvalidInput -> _state.update { it.copy(error = result.message) }
             }
         }
@@ -417,9 +468,19 @@ class EditEntryViewModel @Inject constructor(
 
     fun delete() {
         viewModelScope.launch {
+            if (_state.value.isSavingsLine) {
+                when (configureSavings.remove()) {
+                    ConfigureSavingsResult.Removed -> _state.update { it.copy(done = true) }
+                    else -> _state.update {
+                        it.copy(error = "La ligne n’a pas pu être retirée. Réessayez depuis Réglages.")
+                    }
+                }
+                return@launch
+            }
             when (deleteInstance(_state.value.id, _state.value.isExpense, _state.value.applyToFollowing)) {
                 DeleteInstanceResult.Success -> _state.update { it.copy(done = true) }
-                DeleteInstanceResult.NotFound -> _state.update { it.copy(error = "Introuvable.") }
+                DeleteInstanceResult.NotFound ->
+                    _state.update { it.copy(error = "Cette ligne n’est plus là.") }
             }
         }
     }
