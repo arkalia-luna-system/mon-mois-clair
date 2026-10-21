@@ -67,11 +67,11 @@ sauf si un défaut UI bloque l’action.
 - [ ] Zone lecture haut = montants ; zone pouce bas = Menu / + Ajouter
 - [ ] Cartes ≥ 12 dp d’écart ; FAIT à droite ≥ 96 dp de largeur min
 - [ ] Palette carnet (crème / teal / russet / sage) — pas blanc pur ni rouge sang
-- [ ] « FAIT le JJ/MM » en pastille forêt (texte ivoire) ; « Auto » = pastille or avec texte encre (jamais l’or en lettres)
-- [ ] Libellés français compréhensibles (pas de jargon dev)
-- [ ] Dialogues destructifs : titre + conséquence + Annuler / action danger
-- [ ] États vides : message + prochaine action évidente (« + Ajouter » en bas)
-- [ ] États désactivés (Préc./Suiv.) visibles sans paraître cassés
+- [ ] « FAIT le JJ/MM » pastille forêt ; « Auto » or + encre ; « Accord » chaud + encre (discret)
+- [ ] Accueil : **pas** d’euros de reste dû sur la ligne ; cause sous le nom (ou montant selon layout)
+- [ ] Bandeau « courrier sans plan » seulement s’il y en a ; Mes dossiers seulement si N>0
+- [ ] Libellés français ; dialogues destructifs clairs ; états vides + « + Ajouter »
+- [ ] Mes dossiers / résumé : lisible, pas tableau dense anxiogène
 
 ### Formulaires / clavier
 - [ ] Labels toujours visibles

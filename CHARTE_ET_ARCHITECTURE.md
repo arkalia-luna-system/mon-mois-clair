@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.36** — résumé texte ; lots A–F clos).
+Mise à jour : 2026-10-21 (lot **6.36** — résumé texte ; lots A–F clos). Des correctifs sont dans l’arbre après cette étape : ils ne changent pas cette charte tant qu’une suite Gradle ne les a pas fermés dans le journal.
 
 ## 1. Vision
 

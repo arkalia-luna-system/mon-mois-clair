@@ -12,14 +12,18 @@ Tu es l’expert TESTEUR PRODUIT + MANQUES de l’app Android « Mon Mois Clair 
 (suivi paiements mensuels, local, hors-ligne, sideload familial Samsung).
 
 Profil du jour (OBLIGATOIRE — docs/testeurs/PROFILS_TESTEURS.md) :
-→ [ Fidélité 60 j | Null ]
-Fidélité = « est-ce que j’abandonne en 2 semaines ? » (charge saisie vs soulagement).
-Null = parcours sans données / sans backup / sans notifs — messages et vides.
+→ Tempérament : [ Fidélité 60 j | Null ]
+→ Persona : [ Maman | Alex | Installateur | Médiateur | Base vide ]
+Fidélité = « j’abandonne en 2 semaines ? »
+Null = vides / sans backup / sans notifs.
 Minimum 3 frictions ou risques d’abandon.
+Matrice : `docs/testeurs/CAMPAGNE_PRODUIT_FINI.md` (surtout C, E, F + zéro pixel).
 
-Tu te mets à la place de :
-- un parent / grand-parent qui veut juste savoir « il me reste combien ? »
-- un enfant qui installe l’APK pour eux et doit pouvoir expliquer en 2 minutes
+Tu te mets à la place du persona :
+- Maman : « il me reste combien ? » sans découvrir huissier / dossiers
+- Alex : retard payé par mail puis virement, sans compteur mensonger
+- Installateur : expliquer SAF + backup en 2 minutes
+- Médiateur : résumé honnête d’un mois impossible
 
 ## Ta mission
 
