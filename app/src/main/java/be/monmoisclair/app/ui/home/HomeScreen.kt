@@ -978,17 +978,14 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
                 .clickable(onClickLabel = "Modifier", onClick = onClick)
                 .padding(rowPad),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             DayBadge(item.dayLabel)
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 4.dp)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = item.label,
                     style = MaterialTheme.typography.bodyLarge,
-                    maxLines = if (compact) 1 else 2,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
@@ -1035,51 +1032,30 @@ private fun ExpenseRow(
         Row(
             modifier = Modifier.padding(rowPad),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             DayBadge(item.dayLabel)
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(lineGap)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClickLabel = "Modifier", onClick = onClick),
-                    verticalArrangement = Arrangement.spacedBy(lineGap)
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    // Compact + accord : pastille sur la 1ʳᵉ ligne pour ne pas
-                    // pousser montant / FAIT (hauteur ~800 dp, plan sortie §3).
-                    if (compact && item.isAgreement) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Text(
-                                text = item.label,
-                                style = MaterialTheme.typography.bodyLarge,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f)
-                            )
-                            StatusChip(
-                                "Accord",
-                                A11yTokens.PaperWarm,
-                                A11yTokens.Ink,
-                                outlined = true,
-                                compact = true
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = item.label,
-                            style = MaterialTheme.typography.bodyLarge,
-                            maxLines = if (compact) 1 else 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    // Accord : « pour quoi » juste sous le nom (plan §B / audit),
-                    // puis le montant — plus lisible que montant puis cause.
+                    Text(
+                        text = item.label,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = item.amountLabel,
+                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
+                        style = MaterialTheme.typography.titleLarge
+                    )
                     if (item.causeLabel.isNotBlank()) {
                         Text(
                             text = item.causeLabel,
