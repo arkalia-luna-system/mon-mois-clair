@@ -41,6 +41,10 @@ data class EntryFormState(
     val isAutoDebit: Boolean = false,
     val paymentNote: String = "",
     val hasPendingPhoto: Boolean = false,
+    /** Lot B — bloc replié « retard ou accord ». */
+    val dossierExpanded: Boolean = false,
+    val causeLabel: String = "",
+    val openingRemainingText: String = "",
     val copyMessage: String? = null,
     val error: String? = null,
     val saved: Boolean = false,
@@ -97,6 +101,11 @@ class AddEntryViewModel @Inject constructor(
     fun setPaymentNote(v: String) = _state.update {
         it.copy(paymentNote = v, error = null, copyMessage = null)
     }
+    fun setDossierExpanded(v: Boolean) = _state.update { it.copy(dossierExpanded = v, error = null) }
+    fun setCauseLabel(v: String) = _state.update { it.copy(causeLabel = v, error = null) }
+    fun setOpeningRemainingText(v: String) = _state.update {
+        it.copy(openingRemainingText = v, error = null)
+    }
     fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
 
     fun copyPaymentNote() {
@@ -152,6 +161,24 @@ class AddEntryViewModel @Inject constructor(
                 _state.update { it.copy(error = "Vérifiez le montant et le jour (1 à 31).") }
                 return@launch
             }
+            val openingRaw = s.openingRemainingText.trim()
+            val openingCents = when {
+                !s.isExpense || !s.dossierExpanded || openingRaw.isEmpty() -> null
+                else -> MoneyFormat.parseToCents(openingRaw)
+            }
+            if (s.isExpense && s.dossierExpanded && openingRaw.isNotEmpty() && openingCents == null) {
+                _state.update { it.copy(error = "Vérifiez le reste dû (montant).") }
+                return@launch
+            }
+            if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
+                _state.update {
+                    it.copy(
+                        error = "Un accord doit être une facture qui revient " +
+                            "(mensuel, 3 mois ou annuel)."
+                    )
+                }
+                return@launch
+            }
             val recurring = s.recurrence != RecurrenceChoice.Once
             val interval = when (s.recurrence) {
                 RecurrenceChoice.Once, RecurrenceChoice.Monthly -> 1
@@ -172,16 +199,42 @@ class AddEntryViewModel @Inject constructor(
                     intervalMonths = interval,
                     targetYearMonth = s.targetYearMonth,
                     anchorYearMonth = anchor,
-                    isAutoDebit = s.isExpense && s.isAutoDebit, paymentNote = s.paymentNote
+                    isAutoDebit = s.isExpense && s.isAutoDebit,
+                    paymentNote = s.paymentNote,
+                    causeLabel = if (s.isExpense && s.dossierExpanded) s.causeLabel else "",
+                    openingRemainingCents = openingCents
                 )
             ) {
                 is AddEntryResult.Success -> {
                     pendingBitmap?.let { bmp ->
                         runCatching {
-                            val path = receiptPhotos.saveBitmap(result.instanceId, bmp)
-                            mutatingRepository.mutate {
-                                instanceDao.getExpenseById(result.instanceId)?.let {
-                                    instanceDao.updateExpense(it.copy(receiptRelativePath = path))
+                            val expense = instanceDao.getExpenseById(result.instanceId)
+                            if (expense != null) {
+                                val instancePath = receiptPhotos.saveBitmap(expense.id, bmp)
+                                val templateId = expense.templateId
+                                val canonical = templateId?.let { receiptPhotos.saveBitmap(it, bmp) }
+                                mutatingRepository.mutate {
+                                    instanceDao.getExpenseById(expense.id)?.let {
+                                        instanceDao.updateExpense(
+                                            it.copy(receiptRelativePath = instancePath)
+                                        )
+                                    }
+                                    if (templateId != null && canonical != null) {
+                                        templateDao.getExpenseById(templateId)?.let { tpl ->
+                                            templateDao.updateExpense(
+                                                tpl.copy(receiptRelativePath = canonical)
+                                            )
+                                        }
+                                    }
+                                }
+                            } else {
+                                val canonical = receiptPhotos.saveBitmap(result.instanceId, bmp)
+                                mutatingRepository.mutate {
+                                    templateDao.getExpenseById(result.instanceId)?.let { tpl ->
+                                        templateDao.updateExpense(
+                                            tpl.copy(receiptRelativePath = canonical)
+                                        )
+                                    }
                                 }
                             }
                         }

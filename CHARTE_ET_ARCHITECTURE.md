@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.30** — mémoire papier sur le modèle, Copier modulo 97).
+Mise à jour : 2026-10-21 (lot **6.31** — dossier/accord replié, pastille Accord).
 
 ## 1. Vision
 
@@ -58,7 +58,7 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 ## 3. Données
 
-Room / backup schema **4** : `paymentNote`, `receiptRelativePath` sur `expense_instances` **et** `expense_templates` (mémoire papier : communication + photo canonique reprises à la matérialisation).
+Room / backup schema **5** : mémoire papier (schéma 4) + dossier (`causeLabel`, `openingRemainingCents` nullable sur `expense_templates`). Reste dû = départ − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros.
 
 ## 4. Plan
 
@@ -78,6 +78,7 @@ Room / backup schema **4** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | **6.27** | Sticky Sans les futures · Menu = Réglages · photo + fréquence éditables | ✅ |
 | **6.28–6.29** | Punch list premium (photo au doigt, Copier hors Modifier, Alertes) | ✅ |
 | **6.30** | Lot A : note/photo sur modèle · matérialisation · Copier 12 chiffres (mod 97) | ✅ |
+| **6.31** | Lot B : dossier replié · reste calculé · pastille Accord · arrêt si soldé | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

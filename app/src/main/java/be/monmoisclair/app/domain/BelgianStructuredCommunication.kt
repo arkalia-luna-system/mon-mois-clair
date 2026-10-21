@@ -28,10 +28,14 @@ object BelgianStructuredCommunication {
             return CopyResult("", "Aucune communication à copier.")
         }
         val digits = trimmed.filter { it.isDigit() }
-        val looksStructured = trimmed.contains("+++") || digits.length == 12
-        if (digits.length == 12 && isValidMod97(digits)) {
+        val structural = trimmed.all {
+            it.isDigit() || it == '+' || it == '/' || it == '*' || it.isWhitespace()
+        }
+        if (structural && digits.length == 12 && isValidMod97(digits)) {
             return CopyResult(clipboardText = digits, userMessage = COPIED_OK)
         }
+        val looksStructured = trimmed.contains("+++") || trimmed.contains("***") ||
+            (structural && digits.length == 12)
         if (looksStructured) {
             return CopyResult(clipboardText = trimmed, userMessage = VERIFY_ON_MAIL)
         }

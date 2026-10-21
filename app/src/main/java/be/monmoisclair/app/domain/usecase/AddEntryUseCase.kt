@@ -45,7 +45,10 @@ class AddEntryUseCase @Inject constructor(
         anchorYearMonth: YearMonth? = null,
         isAutoDebit: Boolean = false,
         paymentNote: String = "",
-        receiptRelativePath: String = ""
+        receiptRelativePath: String = "",
+        /** Lot B — null = pas un dossier. */
+        causeLabel: String = "",
+        openingRemainingCents: Long? = null
     ): AddEntryResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -57,7 +60,18 @@ class AddEntryUseCase @Inject constructor(
         if (dayOfMonth !in 1..31) {
             return AddEntryResult.InvalidInput("Le jour doit être entre 1 et 31.")
         }
+        if (openingRemainingCents != null) {
+            if (openingRemainingCents <= 0L) {
+                return AddEntryResult.InvalidInput("Le reste dû doit être positif.")
+            }
+            if (!recurring) {
+                return AddEntryResult.InvalidInput(
+                    "Un accord doit être une facture qui revient (mensuel, 3 mois ou annuel)."
+                )
+            }
+        }
         val interval = if (recurring) intervalMonths.coerceIn(1, 24) else 1
+        val cause = causeLabel.trim()
 
         val current = AppClock.currentYearMonth()
         val ym = targetYearMonth ?: current
@@ -90,6 +104,8 @@ class AddEntryUseCase @Inject constructor(
                             anchorYearMonth = anchor,
                             paymentNote = paymentNote.trim(),
                             receiptRelativePath = receiptRelativePath.trim(),
+                            causeLabel = cause,
+                            openingRemainingCents = openingRemainingCents,
                             createdAtEpochMs = now,
                             archivedAtEpochMs = null
                         )

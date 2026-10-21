@@ -61,6 +61,15 @@ object HowItWorksCopy {
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."
         ),
         Section(
+            title = "Retard ou accord",
+            body = "Sous la fréquence, « C’est un retard ou un accord ? » reste fermé. " +
+                "Ouvrez-le seulement pour un plan : à qui, pour quoi, et combien il reste aujourd’hui. " +
+                "Le mois montre le versement et une pastille « Accord », pas le total de la dette. " +
+                "Chaque FAIT baisse le reste du montant réellement payé. " +
+                "Quand il ne reste plus rien, les mois suivants ne créent plus de ligne. " +
+                "La fiche dit « Soldé ». Les mois déjà payés restent."
+        ),
+        Section(
             title = "Sur une année",
             body = "Les factures mensuelles restent sur l’accueil. " +
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +

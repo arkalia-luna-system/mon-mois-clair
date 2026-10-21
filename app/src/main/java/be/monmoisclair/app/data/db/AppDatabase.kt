@@ -23,7 +23,7 @@ import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
         ExpenseInstanceEntity::class,
         AppMetaEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

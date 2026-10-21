@@ -166,6 +166,7 @@ fun HomeScreen(
                 is TimelineItem.Income -> item.label.contains(q, ignoreCase = true)
                 is TimelineItem.Expense ->
                     item.label.contains(q, ignoreCase = true) ||
+                        item.causeLabel.contains(q, ignoreCase = true) ||
                         item.paymentNote.contains(q, ignoreCase = true)
             }
         }
@@ -886,9 +887,18 @@ private fun ExpenseRow(
                     Text(
                         text = item.label,
                         style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 2,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
+                    if (item.causeLabel.isNotBlank()) {
+                        Text(
+                            text = item.causeLabel,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     Text(
                         text = item.amountLabel,
                         color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
@@ -940,14 +950,18 @@ private fun ExpenseStatusLine(
     onOpenReceipt: () -> Unit
 ) {
     val showAuto = item.isAutoDebit
+    val showAgreement = item.isAgreement
     val showDone = item.isDone
     val showLate = item.isOverdue && !item.isDone
     val showReceipt = item.hasReceipt
-    if (!showAuto && !showDone && !showLate && !showReceipt) return
+    if (!showAuto && !showAgreement && !showDone && !showLate && !showReceipt) return
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
+        if (showAgreement) {
+            StatusChip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink)
+        }
         if (showAuto) {
             StatusChip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.Ink)
         }

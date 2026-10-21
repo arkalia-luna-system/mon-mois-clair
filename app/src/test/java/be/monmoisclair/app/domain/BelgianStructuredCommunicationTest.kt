@@ -40,6 +40,13 @@ class BelgianStructuredCommunicationTest {
     }
 
     @Test
+    fun freeNoteWithDigits_isNotStripped() {
+        val copy = BelgianStructuredCommunication.prepareCopy("loyer 000000000097")
+        assertThat(copy.clipboardText).isEqualTo("loyer 000000000097")
+        assertThat(copy.userMessage).isEqualTo(BelgianStructuredCommunication.COPIED_OK)
+    }
+
+    @Test
     fun empty_yieldsNoClipboard() {
         val copy = BelgianStructuredCommunication.prepareCopy("   ")
         assertThat(copy.clipboardText).isEmpty()

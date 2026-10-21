@@ -2,9 +2,16 @@ package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
+import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.DossierRemaining
+import be.monmoisclair.app.domain.InstanceIds
+import be.monmoisclair.app.domain.MonthDayClamp
+import be.monmoisclair.app.domain.RecurrenceRules
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import java.time.Instant
+import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,6 +55,7 @@ class ToggleExpenseDoneUseCase @Inject constructor(
 
             val updated = flip(existing)
             instanceDao.updateExpense(updated)
+            syncAgreementAfterToggle(updated)
 
             ToggleExpenseDoneResult.Toggled(
                 expenseId = updated.id,
@@ -73,6 +81,85 @@ class ToggleExpenseDoneUseCase @Inject constructor(
             )
         }
         return invoke(expenseId)
+    }
+
+    /**
+     * Accord soldé : retire les lignes encore « à payer » des mois d’après
+     * (même si le mois a déjà été ouvert).
+     * « Remettre » : ces lignes reviennent, sans dépasser le reste.
+     */
+    private suspend fun MutatingRepository.MutationContext.syncAgreementAfterToggle(
+        updated: ExpenseInstanceEntity
+    ) {
+        val templateId = updated.templateId ?: return
+        val template = templateDao.getExpenseById(templateId) ?: return
+        val opening = template.openingRemainingCents ?: return
+        val paid = instanceDao.sumAmountCentsByTemplateAndStatus(templateId, ExpenseStatus.DONE)
+        if (DossierRemaining.isSettled(opening, paid)) {
+            val futures = instanceDao.expensesFromTemplateFromLedger(templateId, updated.ledgerId)
+                .filter { it.ledgerId > updated.ledgerId && it.status == ExpenseStatus.TODO }
+            for (item in futures) {
+                instanceDao.deleteExpense(item)
+            }
+            return
+        }
+        if (updated.status != ExpenseStatus.TODO) return
+        val anchor = RecurrenceRules.parseAnchorOrNull(template.anchorYearMonth)
+            ?: YearMonth.from(
+                Instant.ofEpochMilli(template.createdAtEpochMs)
+                    .atZone(AppClock.zone)
+                    .toLocalDate()
+            )
+        var pocket = (DossierRemaining.remainingCents(opening, paid) ?: return) - updated.amountCents
+        if (pocket < 0L) pocket = 0L
+        val futureLedgers = monthLedgerDao.getAll()
+            .map { it.id }
+            .filter { it > updated.ledgerId }
+            .sorted()
+        for (ledgerId in futureLedgers) {
+            val ym = runCatching { YearMonth.parse(ledgerId) }.getOrNull() ?: continue
+            if (!RecurrenceRules.shouldMaterialize(anchor, template.intervalMonths, ym)) continue
+            val id = InstanceIds.expenseFromTemplate(ledgerId, templateId)
+            val existing = instanceDao.getExpenseById(id)
+            if (existing != null) {
+                if (existing.status == ExpenseStatus.TODO) pocket -= existing.amountCents
+                if (pocket < 0L) pocket = 0L
+                continue
+            }
+            if (pocket <= 0L) continue
+            val amount = minOf(template.amountCents, pocket)
+            insertAgreementInstance(template, ledgerId, ym, id, amount)
+            pocket -= amount
+        }
+    }
+
+    private suspend fun MutatingRepository.MutationContext.insertAgreementInstance(
+        template: ExpenseTemplateEntity,
+        ledgerId: String,
+        yearMonth: YearMonth,
+        id: String,
+        amountCents: Long
+    ) {
+        instanceDao.insertExpense(
+            ExpenseInstanceEntity(
+                id = id,
+                ledgerId = ledgerId,
+                templateId = template.id,
+                label = template.label,
+                amountCents = amountCents,
+                dayOfMonth = MonthDayClamp.clamp(template.dayOfMonth, yearMonth),
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = template.remindJ3,
+                remindJd = template.remindJd,
+                isAutoDebit = template.isAutoDebit,
+                paymentNote = template.paymentNote,
+                receiptRelativePath = template.receiptRelativePath,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = AppClock.nowEpochMs()
+            )
+        )
     }
 
     private fun flip(expense: ExpenseInstanceEntity): ExpenseInstanceEntity {

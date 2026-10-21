@@ -46,4 +46,16 @@ object Migrations {
             )
         }
     }
+
+    /** Lot B : dossier / accord (cause + reste de départ). */
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN causeLabel TEXT NOT NULL DEFAULT ''"
+            )
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN openingRemainingCents INTEGER"
+            )
+        }
+    }
 }

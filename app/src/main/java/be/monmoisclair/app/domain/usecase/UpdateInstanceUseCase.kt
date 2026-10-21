@@ -39,7 +39,14 @@ class UpdateInstanceUseCase @Inject constructor(
         isAutoDebit: Boolean = false,
         paymentNote: String = "",
         receiptRelativePath: String = "",
-        intervalMonths: Int? = null
+        intervalMonths: Int? = null,
+        causeLabel: String = "",
+        /** Null = ne pas changer ; Long = définir si le modèle n’a pas encore de départ. */
+        openingRemainingCents: Long? = null,
+        /** true = tenter d’écrire [openingRemainingCents] (création / conversion dossier). */
+        setOpeningRemaining: Boolean = false,
+        /** true = effacer la photo de cette ligne (un chemin vide seul ne l’efface pas). */
+        clearReceipt: Boolean = false
     ): UpdateInstanceResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -54,6 +61,10 @@ class UpdateInstanceUseCase @Inject constructor(
         if (intervalMonths != null && intervalMonths != -1 && intervalMonths !in 1..24) {
             return UpdateInstanceResult.InvalidInput("Fréquence invalide.")
         }
+        if (setOpeningRemaining && openingRemainingCents != null && openingRemainingCents <= 0L) {
+            return UpdateInstanceResult.InvalidInput("Le reste dû doit être positif.")
+        }
+        val cause = causeLabel.trim()
 
         val exists = if (isExpense) {
             instanceDao.getExpenseById(id) != null
@@ -71,8 +82,11 @@ class UpdateInstanceUseCase @Inject constructor(
                 val ym = YearMonth.parse(current.ledgerId)
                 val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
                 val auto = isAutoDebit
-                val receipt = receiptRelativePath.trim()
-                    .ifEmpty { current.receiptRelativePath }
+                val receipt = when {
+                    clearReceipt -> ""
+                    receiptRelativePath.isBlank() -> current.receiptRelativePath
+                    else -> receiptRelativePath.trim()
+                }
 
                 when {
                     intervalMonths == -1 && current.templateId != null -> {
@@ -101,6 +115,7 @@ class UpdateInstanceUseCase @Inject constructor(
                         if (current.templateId == null) {
                             val tid = "tpl-exp-${UUID.randomUUID()}"
                             val now = AppClock.nowEpochMs()
+                            val opening = if (setOpeningRemaining) openingRemainingCents else null
                             templateDao.insertExpense(
                                 ExpenseTemplateEntity(
                                     id = tid,
@@ -119,6 +134,8 @@ class UpdateInstanceUseCase @Inject constructor(
                                     } else {
                                         ""
                                     },
+                                    causeLabel = cause,
+                                    openingRemainingCents = opening,
                                     createdAtEpochMs = now,
                                     archivedAtEpochMs = null
                                 )
@@ -146,11 +163,16 @@ class UpdateInstanceUseCase @Inject constructor(
                     )
                 )
 
-                // Lot A : la communication suit toujours le modèle (même sans « mois suivants »).
-                // La photo modèle seulement si « Aussi les mois suivants ».
+                // Lot A : communication (toujours) + photo (si mois suivants).
+                // Lot B : causeLabel toujours ; openingRemaining seulement si encore null.
                 if (current.templateId != null) {
                     val templateId = current.templateId
                     templateDao.getExpenseById(templateId)?.let { tpl ->
+                        val opening = when {
+                            tpl.openingRemainingCents != null -> tpl.openingRemainingCents
+                            setOpeningRemaining -> openingRemainingCents
+                            else -> null
+                        }
                         templateDao.updateExpense(
                             if (applyToFollowingMonths) {
                                 tpl.copy(
@@ -164,10 +186,16 @@ class UpdateInstanceUseCase @Inject constructor(
                                         else -> tpl.intervalMonths
                                     },
                                     paymentNote = note,
-                                    receiptRelativePath = receipt
+                                    receiptRelativePath = receipt,
+                                    causeLabel = cause,
+                                    openingRemainingCents = opening
                                 )
                             } else {
-                                tpl.copy(paymentNote = note)
+                                tpl.copy(
+                                    paymentNote = note,
+                                    causeLabel = cause,
+                                    openingRemainingCents = opening
+                                )
                             }
                         )
                     }
@@ -188,6 +216,15 @@ class UpdateInstanceUseCase @Inject constructor(
                                     receiptRelativePath = receipt
                                 )
                             )
+                        }
+                    } else {
+                        // Mois déjà créés : la communication suit, pas la photo ni le montant.
+                        val others = instanceDao.expensesFromTemplateFromLedger(
+                            templateId,
+                            current.ledgerId
+                        ).filter { it.id != current.id && it.status == ExpenseStatus.TODO }
+                        for (item in others) {
+                            instanceDao.updateExpense(item.copy(paymentNote = note))
                         }
                     }
                 }

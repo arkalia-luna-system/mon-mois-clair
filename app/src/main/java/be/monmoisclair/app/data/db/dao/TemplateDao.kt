@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.IncomeTemplateEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TemplateDao {
@@ -15,6 +16,9 @@ interface TemplateDao {
 
     @Query("SELECT * FROM expense_templates WHERE active = 1")
     suspend fun activeExpenseTemplates(): List<ExpenseTemplateEntity>
+
+    @Query("SELECT * FROM expense_templates ORDER BY id ASC")
+    fun observeExpenseTemplates(): Flow<List<ExpenseTemplateEntity>>
 
     @Query("SELECT * FROM income_templates WHERE id = :id")
     suspend fun getIncomeById(id: String): IncomeTemplateEntity?

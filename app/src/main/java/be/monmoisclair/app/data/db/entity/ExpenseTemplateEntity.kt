@@ -25,6 +25,13 @@ data class ExpenseTemplateEntity(
     val paymentNote: String = "",
     /** Photo canonique `receipts/….webp` — reprise si l’instance n’en a pas. */
     val receiptRelativePath: String = "",
+    /** Lot B — « pour quoi » (cause). Vide si facture ordinaire. */
+    val causeLabel: String = "",
+    /**
+     * Lot B — reste de départ en centimes. `null` = pas un dossier.
+     * Le reste actuel se calcule (départ − FAIT), il n’est pas stocké.
+     */
+    val openingRemainingCents: Long? = null,
     val createdAtEpochMs: Long,
     val archivedAtEpochMs: Long?
 )

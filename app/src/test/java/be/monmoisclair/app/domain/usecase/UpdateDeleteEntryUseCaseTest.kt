@@ -302,6 +302,8 @@ class UpdateDeleteEntryUseCaseTest {
         assertThat(tplAfterNote.paymentNote).isEqualTo("+++000/0000/00097+++")
         assertThat(tplAfterNote.receiptRelativePath).isEqualTo("")
         assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.paymentNote)
+            .isEqualTo("+++000/0000/00097+++")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.receiptRelativePath)
             .isEqualTo("")
 
         update(
@@ -320,6 +322,41 @@ class UpdateDeleteEntryUseCaseTest {
             .isEqualTo("+++000/0000/00097+++")
         assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.receiptRelativePath)
             .isEqualTo("receipts/canon.webp")
+    }
+
+    @Test
+    fun update_clearReceipt_removesThisMonthOnly() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-photo",
+                label = "Eau",
+                amountCents = 4_000L,
+                dayOfMonth = 8,
+                active = true,
+                receiptRelativePath = "receipts/modele.webp",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-10", "exp:2026-10:tpl-photo", "tpl-photo", 4_000L)
+        db.instanceDao().updateExpense(
+            db.instanceDao().getExpenseById("exp:2026-10:tpl-photo")!!.copy(
+                receiptRelativePath = "receipts/octobre.webp"
+            )
+        )
+        update(
+            id = "exp:2026-10:tpl-photo",
+            isExpense = true,
+            label = "Eau",
+            amountCents = 4_000L,
+            dayOfMonth = 8,
+            applyToFollowingMonths = false,
+            clearReceipt = true
+        )
+        assertThat(db.instanceDao().getExpenseById("exp:2026-10:tpl-photo")!!.receiptRelativePath)
+            .isEqualTo("")
+        assertThat(db.templateDao().getExpenseById("tpl-photo")!!.receiptRelativePath)
+            .isEqualTo("receipts/modele.webp")
     }
 
     private suspend fun seedLinkedExpense(

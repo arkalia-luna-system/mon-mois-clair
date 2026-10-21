@@ -54,7 +54,7 @@ class BackupJsonCodec {
         val root = JSONObject(json)
         val schemaVersion = root.getInt("schemaVersion")
         // v1 = historique ; v2 = diversSpent + isAutoDebit (CURRENT).
-        if (schemaVersion !in 1..4) {
+        if (schemaVersion !in 1..5) {
             throw BackupFailure.UnsupportedSchema(schemaVersion)
         }
         val payload = jsonToPayload(root.getJSONObject("payload"))
@@ -152,12 +152,14 @@ class BackupJsonCodec {
             "amountCents" to e.amountCents,
             "anchorYearMonth" to e.anchorYearMonth,
             "archivedAtEpochMs" to e.archivedAtEpochMs,
+            "causeLabel" to e.causeLabel,
             "createdAtEpochMs" to e.createdAtEpochMs,
             "dayOfMonth" to e.dayOfMonth,
             "id" to e.id,
             "intervalMonths" to e.intervalMonths,
             "isAutoDebit" to e.isAutoDebit,
             "label" to e.label,
+            "openingRemainingCents" to e.openingRemainingCents,
             "paymentNote" to e.paymentNote,
             "receiptRelativePath" to e.receiptRelativePath,
             "remindJ3" to e.remindJ3,
@@ -177,6 +179,8 @@ class BackupJsonCodec {
         anchorYearMonth = o.optString("anchorYearMonth", ""),
         paymentNote = o.optString("paymentNote", ""),
         receiptRelativePath = o.optString("receiptRelativePath", ""),
+        causeLabel = o.optString("causeLabel", ""),
+        openingRemainingCents = o.nullableLong("openingRemainingCents"),
         createdAtEpochMs = o.getLong("createdAtEpochMs"),
         archivedAtEpochMs = o.nullableLong("archivedAtEpochMs")
     )

@@ -11,8 +11,10 @@ import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
+import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.EpcQrParser
+import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.DeleteInstanceResult
 import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
 import be.monmoisclair.app.domain.usecase.UpdateInstanceResult
@@ -36,12 +38,23 @@ data class EditEntryState(
     val isAutoDebit: Boolean = false,
     val paymentNote: String = "",
     val receiptRelativePath: String = "",
+    /** L’utilisateur a touché « Enlever la photo ». */
+    val receiptCleared: Boolean = false,
     val hasPendingPhoto: Boolean = false,
     val copyMessage: String? = null,
     val recurrenceInfo: String? = null,
     val recurrence: RecurrenceChoice = RecurrenceChoice.Once,
     val hasTemplate: Boolean = false,
     val applyToFollowing: Boolean = false,
+    val dossierExpanded: Boolean = false,
+    val causeLabel: String = "",
+    /** Saisie seulement pour convertir une facture en dossier. */
+    val openingRemainingText: String = "",
+    /** Déjà un dossier (opening fixé). */
+    val isAgreement: Boolean = false,
+    /** Reste calculé (null = pas un dossier). */
+    val remainingCents: Long? = null,
+    val isSettled: Boolean = false,
     val error: String? = null,
     val done: Boolean = false,
     val loading: Boolean = true
@@ -98,6 +111,12 @@ class EditEntryViewModel @Inject constructor(
         }
         val recurrenceInfo = interval?.let { RecurrenceLabel.forIntervalMonths(it) }
             ?: RecurrenceLabel.oneOff()
+        val tpl = e.templateId?.let { templateDao.getExpenseById(it) }
+        val opening = tpl?.openingRemainingCents
+        val paid = e.templateId?.let {
+            instanceDao.sumAmountCentsByTemplateAndStatus(it, ExpenseStatus.DONE)
+        } ?: 0L
+        val remaining = DossierRemaining.remainingCents(opening, paid)
         _state.update {
             it.copy(
                 loading = false, label = e.label,
@@ -105,7 +124,12 @@ class EditEntryViewModel @Inject constructor(
                 dayText = e.dayOfMonth.toString(), isAutoDebit = e.isAutoDebit,
                 paymentNote = e.paymentNote, receiptRelativePath = e.receiptRelativePath,
                 recurrenceInfo = recurrenceInfo, recurrence = choice,
-                hasTemplate = e.templateId != null
+                hasTemplate = e.templateId != null,
+                causeLabel = tpl?.causeLabel.orEmpty(),
+                isAgreement = DossierRemaining.isDossier(opening),
+                remainingCents = remaining,
+                isSettled = DossierRemaining.isSettled(opening, paid),
+                dossierExpanded = DossierRemaining.isDossier(opening)
             )
         }
     }
@@ -116,6 +140,11 @@ class EditEntryViewModel @Inject constructor(
     fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v) }
     fun setPaymentNote(v: String) = _state.update { it.copy(paymentNote = v) }
     fun setApplyToFollowing(v: Boolean) = _state.update { it.copy(applyToFollowing = v) }
+    fun setDossierExpanded(v: Boolean) = _state.update { it.copy(dossierExpanded = v, error = null) }
+    fun setCauseLabel(v: String) = _state.update { it.copy(causeLabel = v, error = null) }
+    fun setOpeningRemainingText(v: String) = _state.update {
+        it.copy(openingRemainingText = v, error = null)
+    }
     fun setRecurrence(v: RecurrenceChoice) = _state.update {
         it.copy(
             recurrence = v,
@@ -129,11 +158,19 @@ class EditEntryViewModel @Inject constructor(
             error = null
         )
     }
-    fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
+    fun attachPreviewBitmap(b: Bitmap) {
+        pendingBitmap = b
+        _state.update { it.copy(hasPendingPhoto = true, receiptCleared = false) }
+    }
     fun clearReceiptPhoto() {
         pendingBitmap = null
         _state.update {
-            it.copy(hasPendingPhoto = false, receiptRelativePath = "", error = null)
+            it.copy(
+                hasPendingPhoto = false,
+                receiptRelativePath = "",
+                receiptCleared = true,
+                error = null
+            )
         }
     }
     suspend fun openReceiptUri() = receiptPhotos.openUri(_state.value.receiptRelativePath)
@@ -193,7 +230,16 @@ class EditEntryViewModel @Inject constructor(
                 return@launch
             }
             var path = s.receiptRelativePath
-            pendingBitmap?.let { path = receiptPhotos.saveBitmap(s.id, it); pendingBitmap = null }
+            val cleared = s.receiptCleared && pendingBitmap == null
+            pendingBitmap?.let { bmp ->
+                val owner = if (s.applyToFollowing) {
+                    instanceDao.getExpenseById(s.id)?.templateId ?: s.id
+                } else {
+                    s.id
+                }
+                path = receiptPhotos.saveBitmap(owner, bmp)
+                pendingBitmap = null
+            }
             // null = inchangé ; -1 = une fois ; 1/3/12 = intervalle (crée le modèle si besoin).
             val interval: Int? = if (!s.isExpense) {
                 null
@@ -205,10 +251,45 @@ class EditEntryViewModel @Inject constructor(
                     RecurrenceChoice.Yearly -> 12
                 }
             }
+            val wantOpening = s.isExpense && s.dossierExpanded && !s.isAgreement
+            val openingRaw = s.openingRemainingText.trim()
+            val openingCents = when {
+                !wantOpening || openingRaw.isEmpty() -> null
+                else -> MoneyFormat.parseToCents(openingRaw)
+            }
+            if (wantOpening && openingRaw.isNotEmpty() && openingCents == null) {
+                _state.update { it.copy(error = "Vérifiez le reste dû (montant).") }
+                return@launch
+            }
+            if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
+                _state.update {
+                    it.copy(
+                        error = "Un accord doit être une facture qui revient " +
+                            "(mensuel, 3 mois ou annuel)."
+                    )
+                }
+                return@launch
+            }
             when (
                 val result = updateInstance(
-                    s.id, s.isExpense, s.label, cents, day, s.applyToFollowing,
-                    s.isExpense && s.isAutoDebit, s.paymentNote, path, interval
+                    id = s.id,
+                    isExpense = s.isExpense,
+                    label = s.label,
+                    amountCents = cents,
+                    dayOfMonth = day,
+                    applyToFollowingMonths = s.applyToFollowing,
+                    isAutoDebit = s.isExpense && s.isAutoDebit,
+                    paymentNote = s.paymentNote,
+                    receiptRelativePath = path,
+                    intervalMonths = interval,
+                    clearReceipt = cleared && path.isBlank(),
+                    causeLabel = when {
+                        !s.isExpense -> ""
+                        s.isAgreement || s.dossierExpanded -> s.causeLabel
+                        else -> ""
+                    },
+                    openingRemainingCents = openingCents,
+                    setOpeningRemaining = openingCents != null
                 )
             ) {
                 UpdateInstanceResult.Success -> _state.update { it.copy(done = true) }

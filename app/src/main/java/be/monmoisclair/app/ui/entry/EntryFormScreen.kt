@@ -60,6 +60,8 @@ import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
+import be.monmoisclair.app.ui.format.MoneyFormat
+import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
 import java.io.File
@@ -123,6 +125,9 @@ fun AddEntryScreen(
         pendingPreview != null ||
         state.recurrence != RecurrenceChoice.Once ||
         state.isAutoDebit ||
+        state.dossierExpanded ||
+        state.causeLabel.isNotBlank() ||
+        state.openingRemainingText.isNotBlank() ||
         !state.isExpense ||
         state.dayText != be.monmoisclair.app.domain.AppClock.today().dayOfMonth.toString()
 
@@ -220,6 +225,16 @@ fun AddEntryScreen(
         showApplyFollowing = false,
         applyFollowing = false,
         hasTemplate = false,
+        showDossierSection = state.isExpense,
+        dossierExpanded = state.dossierExpanded,
+        onDossierExpanded = viewModel::setDossierExpanded,
+        causeLabel = state.causeLabel,
+        onCauseLabel = viewModel::setCauseLabel,
+        openingRemainingText = state.openingRemainingText,
+        onOpeningRemainingText = viewModel::setOpeningRemainingText,
+        isAgreement = false,
+        remainingCents = null,
+        isSettled = false,
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
@@ -270,6 +285,9 @@ fun EditEntryScreen(
             state.isAutoDebit != b.isAutoDebit ||
             state.recurrence != b.recurrence ||
             state.applyToFollowing != b.applyToFollowing ||
+            state.dossierExpanded != b.dossierExpanded ||
+            state.causeLabel != b.causeLabel ||
+            state.openingRemainingText != b.openingRemainingText ||
             state.hasPendingPhoto ||
             state.receiptRelativePath != b.receiptRelativePath
     } == true
@@ -451,6 +469,16 @@ fun EditEntryScreen(
         showApplyFollowing = state.hasTemplate,
         applyFollowing = state.applyToFollowing,
         hasTemplate = state.hasTemplate,
+        showDossierSection = state.isExpense,
+        dossierExpanded = state.dossierExpanded,
+        onDossierExpanded = viewModel::setDossierExpanded,
+        causeLabel = state.causeLabel,
+        onCauseLabel = viewModel::setCauseLabel,
+        openingRemainingText = state.openingRemainingText,
+        onOpeningRemainingText = viewModel::setOpeningRemainingText,
+        isAgreement = state.isAgreement,
+        remainingCents = state.remainingCents,
+        isSettled = state.isSettled,
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = "Enregistrer",
@@ -535,6 +563,16 @@ private fun EntryFormScaffold(
     showApplyFollowing: Boolean,
     applyFollowing: Boolean,
     hasTemplate: Boolean,
+    showDossierSection: Boolean = false,
+    dossierExpanded: Boolean = false,
+    onDossierExpanded: (Boolean) -> Unit = {},
+    causeLabel: String = "",
+    onCauseLabel: (String) -> Unit = {},
+    openingRemainingText: String = "",
+    onOpeningRemainingText: (String) -> Unit = {},
+    isAgreement: Boolean = false,
+    remainingCents: Long? = null,
+    isSettled: Boolean = false,
     infoMessage: String? = null,
     error: String?,
     primaryLabel: String,
@@ -554,6 +592,13 @@ private fun EntryFormScaffold(
     val nameBring = rememberFocusKeepsVisible()
     val amountBring = rememberFocusKeepsVisible()
     val noteBring = rememberFocusKeepsVisible()
+    val causeBring = rememberFocusKeepsVisible()
+    val remainingBring = rememberFocusKeepsVisible()
+    val nameFieldLabel = if (showDossierSection && dossierExpanded) {
+        "À qui (ex. Étude Leroy)"
+    } else {
+        "Nom (ex. Loyer)"
+    }
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
         modifier = Modifier
@@ -585,7 +630,7 @@ private fun EntryFormScaffold(
             OutlinedTextField(
                 value = label,
                 onValueChange = onLabel,
-                label = { Text("Nom (ex. Loyer)") },
+                label = { Text(nameFieldLabel) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = A11yTokens.minTouchHeight)
@@ -703,6 +748,68 @@ private fun EntryFormScaffold(
                     color = A11yTokens.InkMuted
                 )
             }
+            if (showDossierSection) {
+                SecondaryA11yButton(
+                    text = if (dossierExpanded) {
+                        "C’est un retard ou un accord ? ▴"
+                    } else {
+                        "C’est un retard ou un accord ? ▾"
+                    },
+                    onClick = { onDossierExpanded(!dossierExpanded) }
+                )
+                if (dossierExpanded) {
+                    if (isSettled) {
+                        Text(
+                            text = "Soldé",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = A11yTokens.AccentOk
+                        )
+                    }
+                    remainingCents?.let { rem ->
+                        if (!isSettled) {
+                            Text(
+                                text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser. " +
+                                    "Chaque FAIT baisse ce chiffre.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                        }
+                    }
+                    OutlinedTextField(
+                        value = causeLabel,
+                        onValueChange = onCauseLabel,
+                        label = { Text("Pour quoi (ex. Hôpital 2025)") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
+                            .then(causeBring),
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        singleLine = true,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    if (!isAgreement) {
+                        OutlinedTextField(
+                            value = openingRemainingText,
+                            onValueChange = onOpeningRemainingText,
+                            label = { Text("Combien reste-t-il aujourd’hui ?") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .then(remainingBring),
+                            textStyle = MaterialTheme.typography.bodyLarge,
+                            singleLine = true,
+                            shape = MaterialTheme.shapes.medium,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                        )
+                        Text(
+                            text = "Le montant plus haut est le versement du mois. " +
+                                "Laissez vide si ce n’est pas un accord.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted
+                        )
+                    }
+                }
+            }
             if (showPaymentAssist) {
                 Text("Facture papier", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                 if (onScanEpc != null) {
@@ -801,7 +908,15 @@ private fun EntryFormScaffold(
             }
 
             infoMessage?.let {
-                Text(text = it, color = A11yTokens.AccentOk, style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = it,
+                    color = if (it == BelgianStructuredCommunication.VERIFY_ON_MAIL) {
+                        A11yTokens.AccentWarn
+                    } else {
+                        A11yTokens.AccentOk
+                    },
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
         }

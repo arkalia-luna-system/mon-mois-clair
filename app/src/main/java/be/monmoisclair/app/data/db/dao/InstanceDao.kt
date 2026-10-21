@@ -49,6 +49,21 @@ interface InstanceDao {
     suspend fun allExpensesByStatus(status: ExpenseStatus): List<ExpenseInstanceEntity>
 
     @Query(
+        "SELECT COALESCE(SUM(amountCents), 0) FROM expense_instances " +
+            "WHERE templateId = :templateId AND status = :status"
+    )
+    suspend fun sumAmountCentsByTemplateAndStatus(
+        templateId: String,
+        status: ExpenseStatus
+    ): Long
+
+    @Query(
+        "SELECT * FROM expense_instances WHERE templateId = :templateId " +
+            "ORDER BY ledgerId ASC, dayOfMonth ASC"
+    )
+    suspend fun expensesByTemplate(templateId: String): List<ExpenseInstanceEntity>
+
+    @Query(
         "SELECT * FROM expense_instances WHERE templateId = :templateId " +
             "AND ledgerId >= :fromLedgerIdInclusive"
     )

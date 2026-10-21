@@ -11,6 +11,7 @@ import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
 sealed class EnsureMonthResult {
     data class Created(
         val ledgerId: String,
@@ -77,12 +78,23 @@ class MonthCycleEngine @Inject constructor(
                 if (!RecurrenceRules.shouldMaterialize(anchor, template.intervalMonths, yearMonth)) {
                     return@mapNotNull null
                 }
+                // Lot B : accord soldé → plus de ligne. Dernier mois = le reste, pas la mensualité pleine.
+                var amountCents = template.amountCents
+                if (DossierRemaining.isDossier(template.openingRemainingCents)) {
+                    val paid = instanceDao.sumAmountCentsByTemplateAndStatus(
+                        template.id,
+                        ExpenseStatus.DONE
+                    )
+                    val rem = DossierRemaining.remainingCents(template.openingRemainingCents, paid)
+                    if (rem == null || rem <= 0L) return@mapNotNull null
+                    if (rem < amountCents) amountCents = rem
+                }
                 ExpenseInstanceEntity(
                     id = InstanceIds.expenseFromTemplate(ledgerId, template.id),
                     ledgerId = ledgerId,
                     templateId = template.id,
                     label = template.label,
-                    amountCents = template.amountCents,
+                    amountCents = amountCents,
                     dayOfMonth = MonthDayClamp.clamp(template.dayOfMonth, yearMonth),
                     status = ExpenseStatus.TODO,
                     doneAtEpochMs = null,

@@ -9,14 +9,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.30** (lot A — mémoire papier + Copier mod 97) |
+| Dernière étape terminée | **6.31** (lot B — dossier / accord replié) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Lot B du plan produit (dossier retard, replié) |
+| Prochaine sous-étape | Lot C du plan produit (IBAN, e-mail, multi-photos) |
 | Audit premium | Code clos · punch list audit traitée |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.31 Lot B : dossier / accord (replié)
+
+**Problème :** un seul nom ; pas de reste dû ; la ligne continue après la fin de la dette.
+
+**Codé :** schéma **5** (`causeLabel`, `openingRemainingCents` nullable sur `expense_templates`) · reste = départ − FAIT (centimes réels) · arrêt de matérialisation si soldé · fiche : bloc « C’est un retard ou un accord ? » · accueil : ligne 2 « pour quoi » + pastille **Accord** (sans euros de dette) · fiche « Soldé » · pas d’entrée Menu « Mes dossiers » (lot D). 0 dossier = accueil inchangé.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **183/183** (50 fichiers, 0 échec)  
+**Version :** `0.1.0-6.31` · `versionCode` 36
 
 ### 2026-10-21 — 6.30 Lot A : mémoire du papier (invisible)
 

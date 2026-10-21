@@ -2,8 +2,10 @@ package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.RecurrenceRules
+import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,10 +39,20 @@ class ListOffMonthPeriodicsUseCase @Inject constructor(
                     return@mapNotNull null
                 }
                 val next = nextOccurrence(anchor, t.intervalMonths, current)
+                var amount = t.amountCents
+                if (DossierRemaining.isDossier(t.openingRemainingCents)) {
+                    val paid = db.instanceDao().sumAmountCentsByTemplateAndStatus(
+                        t.id,
+                        ExpenseStatus.DONE
+                    )
+                    val rem = DossierRemaining.remainingCents(t.openingRemainingCents, paid)
+                    if (rem == null || rem <= 0L) return@mapNotNull null
+                    if (rem < amount) amount = rem
+                }
                 OffMonthPeriodic(
                     templateId = t.id,
                     label = t.label,
-                    amountCents = t.amountCents,
+                    amountCents = amount,
                     dayOfMonth = t.dayOfMonth,
                     intervalMonths = t.intervalMonths,
                     nextDueYearMonth = next.toString(),

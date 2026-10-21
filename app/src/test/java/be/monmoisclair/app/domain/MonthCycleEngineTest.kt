@@ -186,6 +186,52 @@ class MonthCycleEngineTest {
         assertThat(db.monthLedgerDao().getById("2026-06")).isNotNull()
     }
 
+    /** Lot B : accord soldé → plus de ligne le mois suivant. */
+    @Test
+    fun ensureMonth_skipsSettledDossier() = runBlocking {
+        freezeAt("2026-02-01T10:00:00+01:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-dossier",
+                label = "Étude Leroy",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                active = true,
+                causeLabel = "Hôpital",
+                openingRemainingCents = 5_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        // Janvier déjà FAIT pour le montant total → soldé.
+        db.monthLedgerDao().insert(
+            be.monmoisclair.app.data.db.entity.MonthLedgerEntity(
+                id = "2026-01",
+                yearMonth = "2026-01",
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity(
+                id = "exp:2026-01:tpl-dossier",
+                ledgerId = "2026-01",
+                templateId = "tpl-dossier",
+                label = "Étude Leroy",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.DONE,
+                doneAtEpochMs = 2L,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        engine.ensureMonthExists(YearMonth.of(2026, 2))
+        assertThat(db.instanceDao().observeExpenses("2026-02").first()).isEmpty()
+    }
+
     /** Lot A : communication + photo du modèle suivent le mois nouveau. */
     @Test
     fun ensureMonth_copiesPaymentNoteAndReceiptFromTemplate() = runBlocking {

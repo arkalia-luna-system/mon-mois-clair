@@ -8,10 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
+import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
+import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.MonthNavigation
@@ -67,6 +69,7 @@ class HomeViewModel @Inject constructor(
     private val monthCycleEngine: MonthCycleEngine,
     private val monthLedgerDao: MonthLedgerDao,
     private val instanceDao: InstanceDao,
+    private val templateDao: TemplateDao,
     private val toggleDone: ToggleExpenseDoneUseCase,
     private val adjustDivers: AdjustDiversUseCase,
     private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase,
@@ -93,10 +96,12 @@ class HomeViewModel @Inject constructor(
             combine(
                 instanceDao.observeIncomes(ledgerId),
                 instanceDao.observeExpenses(ledgerId),
+                templateDao.observeExpenseTemplates(),
                 monthLedgerDao.observeAll(),
-                highlightExpenseId,
-                pendingPastToggleId
-            ) { incomes, expenses, ledgers, highlight, pendingToggle ->
+                combine(highlightExpenseId, pendingPastToggleId) { h, p -> h to p }
+            ) { incomes, expenses, templates, ledgers, highlightPair ->
+                val (highlight, pendingToggle) = highlightPair
+                val tplById = templates.associateBy { it.id }
                 val summary = MonthSummaryCalculator.compute(incomes, expenses)
                 val divers = ledgers.firstOrNull { it.id == ledgerId }?.diversSpentCents ?: 0L
                 val timeline = buildList {
@@ -113,6 +118,7 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                     expenses.forEach { exp ->
+                        val tpl = exp.templateId?.let { tplById[it] }
                         add(
                             TimelineItem.Expense(
                                 id = exp.id,
@@ -130,6 +136,8 @@ class HomeViewModel @Inject constructor(
                                 paymentNote = exp.paymentNote,
                                 hasReceipt = exp.receiptRelativePath.isNotBlank(),
                                 receiptRelativePath = exp.receiptRelativePath,
+                                causeLabel = tpl?.causeLabel.orEmpty(),
+                                isAgreement = DossierRemaining.isDossier(tpl?.openingRemainingCents),
                                 sortDay = exp.dayOfMonth,
                                 sortLabel = exp.label
                             )

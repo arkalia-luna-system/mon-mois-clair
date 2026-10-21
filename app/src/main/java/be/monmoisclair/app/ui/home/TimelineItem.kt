@@ -26,6 +26,10 @@ sealed interface TimelineItem {
         val paymentNote: String = "",
         val hasReceipt: Boolean = false,
         val receiptRelativePath: String = "",
+        /** Lot B — « pour quoi » (vide si facture ordinaire). */
+        val causeLabel: String = "",
+        /** Lot B — pastille Accord (dossier avec reste de départ). */
+        val isAgreement: Boolean = false,
         override val sortDay: Int,
         override val sortLabel: String
     ) : TimelineItem
