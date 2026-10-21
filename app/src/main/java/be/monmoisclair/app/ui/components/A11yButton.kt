@@ -81,7 +81,10 @@ fun SecondaryA11yButton(
             .heightIn(min = A11yTokens.minTouchHeight)
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(1.dp, A11yTokens.FieldLine),
+        border = BorderStroke(
+            1.dp,
+            if (enabled) A11yTokens.FieldLine else A11yTokens.FieldLine.copy(alpha = 0.45f)
+        ),
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = A11yTokens.Ink,
             disabledContentColor = A11yTokens.InkMuted.copy(alpha = 0.55f)
@@ -121,10 +124,14 @@ fun DangerA11yButton(
             .heightIn(min = A11yTokens.minTouchHeight)
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(1.dp, A11yTokens.AccentDanger),
+        border = BorderStroke(
+            1.dp,
+            if (enabled) A11yTokens.AccentDanger else A11yTokens.AccentDanger.copy(alpha = 0.4f)
+        ),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = A11yTokens.AccentDanger
+            contentColor = A11yTokens.AccentDanger,
+            disabledContentColor = A11yTokens.AccentDanger.copy(alpha = 0.45f)
         )
     ) {
         Text(

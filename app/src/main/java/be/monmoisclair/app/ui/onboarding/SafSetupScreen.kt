@@ -82,7 +82,7 @@ fun SafSetupScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperWarm, busyShape)
+                    .background(A11yTokens.PaperCard, busyShape)
                     .padding(12.dp)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite

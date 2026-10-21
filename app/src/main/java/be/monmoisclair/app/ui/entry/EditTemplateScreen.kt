@@ -78,11 +78,17 @@ fun EditTemplateScreen(
             onDismissRequest = { confirmLeave = false },
             shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
-            title = { Text("Quitter sans enregistrer ?") },
+            title = {
+                Text(
+                    text = "Quitter sans enregistrer ?",
+                    color = A11yTokens.Ink
+                )
+            },
             text = {
                 Text(
-                    "Les changements ne seront pas gardés.",
-                    style = MaterialTheme.typography.bodyLarge
+                    text = "Les changements ne seront pas gardés.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
                 )
             },
             confirmButton = {
@@ -113,12 +119,18 @@ fun EditTemplateScreen(
             onDismissRequest = { confirmArchive = false },
             shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
-            title = { Text("Retirer $name ?") },
+            title = {
+                Text(
+                    text = "Retirer $name ?",
+                    color = A11yTokens.Ink
+                )
+            },
             text = {
                 Text(
-                    "L’échéance ne reviendra plus les mois suivants. " +
+                    text = "L’échéance ne reviendra plus les mois suivants. " +
                         "Les mois déjà notés sur l’accueil ne changent pas.",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
                 )
             },
             confirmButton = {
@@ -158,7 +170,7 @@ fun EditTemplateScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperWarm, busyShape)
+                    .background(A11yTokens.PaperCard, busyShape)
                     .padding(12.dp)
                     .semantics {
                         contentDescription = "Chargement de l’échéance"

@@ -21,7 +21,11 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 fun HowItWorksScreen(onBack: () -> Unit) {
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = HowItWorksCopy.TITLE, style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = HowItWorksCopy.TITLE,
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val introShape = MaterialTheme.shapes.medium
         Text(
             text = "Guide court pour utiliser Mon Mois Clair sans stress.",

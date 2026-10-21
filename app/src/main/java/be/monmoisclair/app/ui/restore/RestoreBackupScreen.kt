@@ -68,12 +68,18 @@ fun RestoreBackupScreen(
             onDismissRequest = { /* forcer un OK explicite */ },
             shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
-            title = { Text("Restauration réussie") },
+            title = {
+                Text(
+                    text = "Restauration réussie",
+                    color = A11yTokens.Ink
+                )
+            },
             text = {
                 Text(
                     text = state.message
                         ?: "Les données affichées viennent de la sauvegarde.",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
                 )
             },
             confirmButton = {
@@ -95,14 +101,20 @@ fun RestoreBackupScreen(
             onDismissRequest = { if (!state.busy) pending = null },
             shape = MaterialTheme.shapes.medium,
             containerColor = A11yTokens.PaperWarm,
-            title = { Text("Remplacer toutes les données ?") },
+            title = {
+                Text(
+                    text = "Remplacer toutes les données ?",
+                    color = A11yTokens.Ink
+                )
+            },
             text = {
                 Text(
                     text = "La restauration remplace toutes les données de l’application " +
                         "(tous les mois) par le contenu de la sauvegarde. " +
                         "Le dossier de sauvegarde choisi sur ce téléphone est conservé. " +
                         "Cette action ne peut pas être annulée.",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
                 )
             },
             confirmButton = {
@@ -208,7 +220,7 @@ fun RestoreBackupScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperWarm, busyShape)
+                    .background(A11yTokens.PaperCard, busyShape)
                     .padding(12.dp)
                     .semantics {
                         contentDescription = "Restauration en cours"

@@ -80,7 +80,11 @@ fun PermissionsSetupScreen(
             style = MaterialTheme.typography.labelLarge,
             color = A11yTokens.InkMuted
         )
-        Text(text = "Alertes fiables", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Alertes fiables",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +

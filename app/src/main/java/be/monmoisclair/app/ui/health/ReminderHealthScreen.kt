@@ -115,10 +115,16 @@ fun ReminderHealthScreen(
                 HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
             }
             if (!r.safBackupOk) {
+                val safShape = MaterialTheme.shapes.medium
                 Text(
                     text = "La sauvegarde se vérifie dans Réglages.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, safShape)
+                        .background(A11yTokens.PaperCard, safShape)
+                        .padding(12.dp)
                 )
             }
             if (r.samsungDeviceCareHintNeeded) {

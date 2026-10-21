@@ -182,14 +182,20 @@ fun PendingLetterFormScreen(
                 )
             }
             if (state.saving) {
+                val busyShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Enregistrement du courrier…",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier.semantics {
-                        liveRegion = LiveRegionMode.Polite
-                        contentDescription = "Enregistrement du courrier"
-                    }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                        .background(A11yTokens.PaperCard, busyShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Polite
+                            contentDescription = "Enregistrement du courrier"
+                        }
                 )
             }
             PrimaryA11yButton(

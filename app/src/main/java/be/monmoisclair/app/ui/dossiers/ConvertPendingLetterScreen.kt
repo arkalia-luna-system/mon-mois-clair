@@ -90,7 +90,8 @@ fun ConvertPendingLetterScreen(
             ) {
                 Text(
                     text = state.error ?: "Ce courrier n’est plus là.",
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = A11yTokens.Ink
                 )
                 Text(
                     text = "Il a peut-être déjà été converti ou retiré.",
@@ -122,7 +123,8 @@ fun ConvertPendingLetterScreen(
                 )
             }
             Text(
-                text = "Le courrier devient un accord : le versement entre dans le Reste du mois.",
+                text = "Le courrier devient un accord : le versement entre dans le Reste du mois. " +
+                    "IBAN et e-mail se remplissent ensuite dans la fiche.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted
             )
@@ -175,14 +177,20 @@ fun ConvertPendingLetterScreen(
                 )
             }
             if (state.saving) {
+                val busyShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Création de l’accord…",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier.semantics {
-                        liveRegion = LiveRegionMode.Polite
-                        contentDescription = "Création de l’accord"
-                    }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                        .background(A11yTokens.PaperCard, busyShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Polite
+                            contentDescription = "Création de l’accord"
+                        }
                 )
             }
             PrimaryA11yButton(

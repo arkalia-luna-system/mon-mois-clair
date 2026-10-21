@@ -81,7 +81,11 @@ fun HomeMenuSheet(
                 .padding(horizontal = A11yTokens.screenPadding)
                 .padding(bottom = 28.dp)
         ) {
-            Text(text = "Menu", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "Menu",
+                style = MaterialTheme.typography.headlineMedium,
+                color = A11yTokens.Ink
+            )
             val introShape = MaterialTheme.shapes.medium
             Text(
                 text = if (showDossiers) {
@@ -124,9 +128,11 @@ fun HomeMenuSheet(
             Text(
                 text = "Mois",
                 style = MaterialTheme.typography.titleLarge,
+                color = A11yTokens.Ink,
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, monthsShape)
+                    .background(A11yTokens.PaperCard, monthsShape)
                     .padding(horizontal = 12.dp, vertical = 10.dp)
             )
             val byYear = months.groupBy { it.year }
@@ -194,6 +200,7 @@ fun HomeMenuSheet(
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, pastShape)
+                        .background(A11yTokens.PaperCard, pastShape)
                         .padding(horizontal = 12.dp, vertical = 10.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))

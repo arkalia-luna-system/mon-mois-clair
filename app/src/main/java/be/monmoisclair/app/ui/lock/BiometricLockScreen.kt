@@ -97,7 +97,8 @@ fun BiometricLockScreen(
             )
             Text(
                 text = "Application verrouillée",
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
+                color = A11yTokens.Ink
             )
         }
         val tipShape = MaterialTheme.shapes.medium
