@@ -47,7 +47,11 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -356,6 +360,10 @@ fun EditEntryScreen(
                 .fillMaxSize()
                 .background(A11yTokens.PaperCream)
                 .padding(A11yTokens.screenPadding)
+                .semantics {
+                    contentDescription = "Chargement de la fiche"
+                    liveRegion = LiveRegionMode.Polite
+                }
         ) {
             Text("Chargement…", style = MaterialTheme.typography.bodyLarge)
         }
@@ -374,7 +382,7 @@ fun EditEntryScreen(
             text = {
                 Text(
                     if (state.applyToFollowing && state.hasTemplate) {
-                        "La ligne sera effacée, le modèle désactivé, et les mois suivants encore « à payer » seront aussi supprimés."
+                        "La ligne sera effacée, l’échéance ne reviendra plus, et les mois suivants encore « à payer » seront aussi retirés."
                     } else {
                         "Cette action retire la ligne du mois. Vous pourrez en recréer une ensuite."
                     },

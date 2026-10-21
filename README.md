@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-198%2F198-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-208%2F208-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.32-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.33-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,12 +23,12 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.32` |
-| Dernière étape | **6.32** Lot C — IBAN, mail, frais, courriers en plus (voir/enlever) |
+| Version | `0.1.0-6.33` |
+| Dernière étape | **6.33** Mes dossiers (liste) + EuroFormat / mailto |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **198/198** OK |
-| Schéma Room | **6** (migration depuis 5) — IBAN, e-mail, frais, `extraReceiptPaths` |
+| Tests unitaires | **208/208** OK |
+| Schéma Room | **6** — IBAN, e-mail, frais, `extraReceiptPaths` |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)
 
@@ -75,7 +75,7 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 | **Accord / retard** (replié, pastille, reste dû, arrêt si soldé) | ✅ |
 | **IBAN · Écrire · frais** (fiche accord) | ✅ |
 | **Bandeau « mois prochain »** (périodiques) | ✅ |
-| **Mes dossiers / lettre sans plan** | ⏳ lot D |
+| **Mes dossiers** (Menu si N>0, reste dû) | ✅ liste · ⏳ courriers sans plan |
 | **Mettre de côté** | ⏳ lot E |
 | **Résumé à envoyer** | ⏳ lot F |
 
@@ -106,8 +106,9 @@ Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, fact
 6.30      Lot A — mémoire papier (note/photo modèle)   ✅
 6.31      Lot B — dossier / pastille Accord            ✅
 6.32      Lot C — IBAN, mail, frais, courriers         ✅
-D / E / F Mes dossiers · épargne · résumé              ⏳
-Smoke « Écrire » (mail) + hauteur courte Accord        ⏳ Galaxy
+6.33      Mes dossiers (liste) · EuroFormat · mailto   ✅ partiel D
+          Courriers sans plan · E · F                  ⏳
+Smoke « Écrire » + hauteur Accord                      ⏳ Galaxy
 ```
 
 

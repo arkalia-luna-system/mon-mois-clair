@@ -45,7 +45,10 @@ fun HomeMenuSheet(
     onDismiss: () -> Unit,
     onSelectMonth: (YearMonth) -> Unit,
     onGoToCurrentMonth: () -> Unit,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    /** 0 = pas de bouton (zéro dossier = zéro pixel). */
+    dossierCount: Int = 0,
+    onOpenDossiers: () -> Unit = {}
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val current = AppClock.currentYearMonth()
@@ -81,6 +84,17 @@ fun HomeMenuSheet(
                 },
                 modifier = Modifier.fillMaxWidth()
             )
+            if (dossierCount > 0) {
+                Spacer(modifier = Modifier.height(8.dp))
+                SecondaryA11yButton(
+                    text = "Mes dossiers ($dossierCount)",
+                    onClick = {
+                        onDismiss()
+                        onOpenDossiers()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Mois", style = MaterialTheme.typography.titleLarge)

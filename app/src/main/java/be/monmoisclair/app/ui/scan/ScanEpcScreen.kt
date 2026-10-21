@@ -86,6 +86,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
     )
     val handled = remember { AtomicBoolean(false) }
     val nonEpcTold = remember { AtomicBoolean(false) }
+    val mlFailTold = remember { AtomicBoolean(false) }
     val previewView = remember { PreviewView(context) }
     var pendingRaw by remember { mutableStateOf<String?>(null) }
     var torchOn by remember { mutableStateOf(false) }
@@ -171,7 +172,14 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                                 }
                             }
                         }
-                        .addOnFailureListener { e -> Log.w("ScanEpc", "fail", e) }
+                        .addOnFailureListener { e ->
+                            Log.w("ScanEpc", "fail", e)
+                            if (mlFailTold.compareAndSet(false, true)) {
+                                mainExecutor.execute {
+                                    status = "Lecture du QR impossible. Recadrez ou réessayez."
+                                }
+                            }
+                        }
                         .addOnCompleteListener { proxy.close() }
                 }
                 provider.unbindAll()

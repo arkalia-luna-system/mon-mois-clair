@@ -38,4 +38,11 @@ class MoneyFormatTest {
         assertThat(MoneyFormat.formatCents(123_456L)).isEqualTo("1\u202F234,56 €")
         assertThat(MoneyFormat.formatCents(-1_500L)).startsWith("\u2212")
     }
+
+    @Test
+    fun centsToEditable_noEuroNoThousands() {
+        assertThat(MoneyFormat.centsToEditable(47_000L)).isEqualTo("470")
+        assertThat(MoneyFormat.centsToEditable(47_050L)).isEqualTo("470,50")
+        assertThat(MoneyFormat.centsToEditable(123_400L)).isEqualTo("1234")
+    }
 }

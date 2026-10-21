@@ -71,7 +71,9 @@ object HowItWorksCopy {
                 "Sur un accord : IBAN (Copier), e-mail (Écrire), frais (« Ils ont ajouté un montant »). " +
                 "Une nouvelle photo s’ajoute aux courriers sans remplacer la première ; " +
                 "vous pouvez voir ou enlever chaque courrier. " +
-                "Le motif des frais affiché est le dernier saisi."
+                "Le motif des frais affiché est le dernier saisi. " +
+                "S’il y a au moins un accord : Menu → « Mes dossiers » " +
+                "(reste dû et barre ; rien sur l’accueil)."
         ),
         Section(
             title = "Sur une année",

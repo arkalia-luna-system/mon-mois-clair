@@ -1,7 +1,5 @@
 package be.monmoisclair.app.ui.entry
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
@@ -17,6 +15,7 @@ import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
+import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -140,8 +139,7 @@ class AddEntryViewModel @Inject constructor(
             }
             return
         }
-        (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-            .setPrimaryClip(ClipData.newPlainText("communication", prepared.clipboardText))
+        SensitiveClipboard.setPlainText(appContext, "communication", prepared.clipboardText)
         _state.update {
             it.copy(copyMessage = prepared.userMessage, error = null)
         }

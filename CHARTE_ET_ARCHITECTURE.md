@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.32** — IBAN, mail, frais, courriers en plus).
+Mise à jour : 2026-10-21 (lot **6.33** — Mes dossiers liste + EuroFormat).
 
 ## 1. Vision
 
@@ -80,6 +80,7 @@ Room / backup schéma **6** (étape 6.32) : mémoire papier (4) + dossier (5) + 
 | **6.30** | Lot A : note/photo sur modèle · matérialisation · Copier 12 chiffres (mod 97) | ✅ |
 | **6.31** | Lot B : dossier replié · reste calculé · pastille Accord · arrêt si soldé | ✅ |
 | **6.32** | Lot C : IBAN · e-mail · frais · photos extras visibles (voir/enlever) | ✅ |
+| **6.33** | Mes dossiers (Menu si N>0) · EuroFormat · mailto URI · garde IBAN ajout | ✅ partiel D |
 
 Journal : `PROGRESS_LOG.md`.
 

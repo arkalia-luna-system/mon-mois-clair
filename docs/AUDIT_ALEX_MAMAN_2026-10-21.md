@@ -278,7 +278,7 @@ Clos au **6.32** (UI voir/enlever, aide, suite **198/198**). Reste ouvert hors c
 | Trou | Pourquoi ce n’est pas « juste du polish » |
 |------|-----------------------------------------------|
 | Baisser le montant / ajouter des frais **après** un FAIT qui avait effacé le mois suivant | **Corrigé** : `AgreementFuturesSync.afterAmountOrFeesChange` depuis `UpdateInstanceUseCase` (même si la ligne reste DONE). Toggle garde `afterToggle` (FAIT intermédiaire inchangé) |
-| Écran « Mes dossiers » | Quatre accords ne se comparent qu’en ouvrant chaque mois. Pas d’entrée de menu. Voulu jusqu’au lot D |
+| Écran « Mes dossiers » | **Liste livrée** (Menu si N>0, barre, reste). Manque encore : courriers sans plan + ligne d’accueil |
 | Courrier sans plan | Une lettre reçue sans versement fixé n’a pas de tiroir. Si on met un montant pour « ne pas l’oublier », elle entre dans le Reste. C’est le piège que le lot D doit fermer |
 | Mettre de côté | Pas de ligne dans Réglages, pas de facture épargne, pas de phrase « déjà viré, pas disponible ici ». La charte refuse toujours les enveloppes multiples ; l’exception « une facture » n’est pas écrite |
 | Résumé à montrer | Pas de texte partageable (revenus, charges, à qui, pour quoi, versement, reste, référence). Pas de faux PDF CPAS — et il ne faut pas en ajouter |
@@ -310,6 +310,7 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Lot A — mémoire du papier | Tenu dans le code et dans le journal 6.30 |
 | Lot B — accord replié | Tenu (6.31) ; trou sync futures à l’édition **corrigé** (`AgreementFuturesSync`, branché Update + Toggle) |
 | Lot C — IBAN, mail, frais, plusieurs photos | Clos **6.32** — schéma 6, UI courriers, **198/198** |
-| Lots D, E, F | Pas commencés |
+| Lot D — Mes dossiers | Liste + Menu (N>0) en cours ; courriers sans plan pas faits |
+| Lots E, F | Pas commencés |
 
-Prochaine action utile : smoke Galaxy « Écrire » ; lot D seulement si besoin « Mes dossiers ». Pas de pastille « Huissier ».
+Prochaine action utile : fermer D (courriers sans plan) ; smoke « Écrire » au retour téléphone. Pas de pastille « Huissier ».

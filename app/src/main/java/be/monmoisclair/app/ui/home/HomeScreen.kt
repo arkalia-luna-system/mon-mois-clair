@@ -95,6 +95,7 @@ fun HomeScreen(
     onEdit: (id: String, isExpense: Boolean) -> Unit,
     onOpenSettings: () -> Unit,
     onOpenHealth: () -> Unit = {},
+    onOpenDossiers: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -325,7 +326,9 @@ fun HomeScreen(
             onDismiss = { menuOpen = false },
             onSelectMonth = viewModel::goToMonth,
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
-            onOpenSettings = onOpenSettings
+            onOpenSettings = onOpenSettings,
+            dossierCount = state.dossierCount,
+            onOpenDossiers = onOpenDossiers
         )
     }
 

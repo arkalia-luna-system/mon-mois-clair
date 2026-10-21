@@ -187,7 +187,7 @@ fun EditTemplateScreen(
             )
             Text(
                 text = "Les mois déjà notés sur l’accueil ne changent pas. " +
-                    "Les mois suivants suivront ce modèle.",
+                    "Les mois suivants suivront cette échéance.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )

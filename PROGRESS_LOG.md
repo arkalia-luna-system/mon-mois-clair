@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.32** (lot C — IBAN / mail / frais / courriers en plus) |
-| Étape en cours | Lots D / E / F (pas commencés) — voir plan produit |
-| Prochaine sous-étape | Lot D seulement si besoin « Mes dossiers » / lettre sans plan. Sinon smoke Galaxy « Écrire » |
+| Dernière étape terminée | **6.33** (Mes dossiers liste + EuroFormat/mailto/polish) |
+| Étape en cours | Lot D à finir : courriers sans plan · smoke « Écrire » au retour téléphone |
+| Prochaine sous-étape | Schéma courrier sans plan + ligne d’accueil · puis E/F |
 | Audit premium | Code clos · punch list audit traitée |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -50,17 +50,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 **Tests :** suite déjà **198/198** (52 fichiers) au 6.32 — pas de nouveau test métier ici.  
 **Version :** inchangée `0.1.0-6.32`
 
+### 2026-10-21 — 6.33 Mes dossiers (liste) + EuroFormat / mailto / polish
+
+**Contexte :** pause téléphone — suite code sans smoke device.
+
+**Codé :**
+- Lot D **partiel** : Menu « Mes dossiers (N) » si N>0 · écran liste (barre, reste, hero € mois) · `ListDossiersUseCase`
+- `EuroFormat` + `mailtoUri` + garde IBAN à l’ajout
+- Polish a11y multi-agents (live regions, haptique, copy empty mois, pastilles compactes…)
+
+**Pas encore (D) :** courriers sans plan, ligne d’accueil.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **208/208** (55 fichiers, 0 échec)  
+**Version :** `0.1.0-6.33` · `versionCode` 38
+
 ### 2026-10-21 — Pause : push sécurité polish + EuroFormat + mailto
 
-**Contexte :** téléphone indisponible un moment — on sécurise l’arbre puis on continue.
-
-**Codé (multi-agents) :**
-- `EuroFormat` (milliers `\u202F`) → MoneyFormat / mail / notifs
-- `CreditorMailComposer.mailtoUri` (subject/body dans l’URI, plus d’extras SENDTO)
-- Garde ajout : IBAN/e-mail sans reste dû → message clair
-- A11y / copy : empty mois, pastilles compactes, live regions, haptique boutons, menu mois, grille jours, onboarding, aide
-
-**Tests :** à recompter après suite `--rerun-tasks` (pas de smoke Galaxy pendant la pause).
+**Contexte :** premier push sécurité pendant l’absence (commit `a15f7e4`).
 
 ### 2026-10-21 — Fix sync futures accord (édition montant / frais)
 

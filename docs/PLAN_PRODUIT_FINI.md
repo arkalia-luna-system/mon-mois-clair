@@ -106,22 +106,21 @@ Schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · « 
 
 **Maman.** Ces boutons ne sont pas sur une facture normale. Le scan continue de remplir nom, montant, communication.
 
-### Lot D — Mes dossiers, et le tiroir — pas commencé
+### Lot D — Mes dossiers, et le tiroir — commencé (liste), pas clos
+
+**Déjà dans l’arbre (6.33 en cours)** : Menu → « Mes dossiers (N) » **seulement si N > 0** · écran liste (à qui, pour quoi, barre versé/total, reste) · hero = nombre + € du mois · toucher ouvre la fiche du mois · aide à jour. **Pas encore** : courriers sans plan, ligne d’accueil « 1 courrier sans plan », phrase « encore N mois si… ».
 
 **Problème.** Quatre accords ne se voient bien que si on quitte le mois **volontairement**. Une lettre reçue sans plan ne doit pas inventer un montant.
 
-**Comportement.**
+**Il reste pour fermer.**
 
-- Écran ouvert depuis le menu. Hero : **« 4 dossiers · 180 € ce mois »** (somme des versements prévus encore actifs). Pas la somme des dettes.
-- Carte : à qui, pour quoi, barre (déjà versé / départ + frais), en dessous le reste en corps de texte, phrase « encore environ N mois si le versement reste de 50 € ». Dernier FAIT daté. Accès aux photos.
-- Si le versement a déjà varié : pas de N mois. Seulement la barre et le reste.
-- Section **« Courriers sans plan »** : photo + qui + pour quoi, **montant vide**. Ça n’entre pas dans le Reste et ne crée pas de ligne de mois.
+- Section **« Courriers sans plan »** : photo + qui + pour quoi, **montant vide**. Ça n’entre pas dans le Reste et ne crée pas de ligne de mois (schéma à ajouter).
 - Dès qu’ils fixent un versement, le courrier devient un dossier du lot B.
-- S’il existe au moins un courrier sans plan : **une** ligne sur l’accueil, même famille que « À prévoir », « 1 courrier sans plan · Voir ». Pas de montant.
+- S’il existe au moins un courrier sans plan : **une** ligne sur l’accueil, même famille que « À prévoir ».
+- Phrase optionnelle « encore environ N mois si le versement reste de X » (disparaît si un mois a divergé).
+- Suite `--rerun-tasks` + journal 6.33.
 
-**Tests.** Courrier sans `agreement` : mois inchangé, reste inchangé, ligne d’accueil présente. 0 courrier en attente : pas de ligne. Hero = somme des versements du mois, pas des restes. Pourcentage affiché cohérent avec les centimes.
-
-**Maman.** 0 dossier et 0 courrier : pas de ligne, pas d’écran.
+**Maman.** 0 dossier : pas de bouton Menu (tenu).
 
 ### Lot E — Mettre de côté — pas commencé
 
@@ -213,10 +212,9 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 **A, B, C clos** (`0.1.0-6.32`, schéma 6, 198 tests) : référence + photo qui reviennent, pastille Accord, reste qui baisse, IBAN / mail / frais, courriers en plus visibles.
 
-**Prochain geste produit** (choisir, pas enchaîner) :
+**Prochain geste produit** :
 
-1. Smoke Galaxy : « Écrire » ouvre un vrai brouillon Mail ; ligne Accord sur hauteur courte.
-2. **Lot D** — Mes dossiers + courrier sans plan — seulement si quatre accords deviennent pénibles à comparer mois par mois.
-3. Puis E (Mettre de côté) et F (résumé texte). Pas avant.
+1. Finir lot D : courriers sans plan (schéma) + smoke « Écrire » / hauteur Accord quand le téléphone revient.
+2. Puis E (Mettre de côté) et F (résumé texte).
 
 Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.

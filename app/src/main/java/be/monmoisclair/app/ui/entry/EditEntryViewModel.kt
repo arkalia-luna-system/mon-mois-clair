@@ -1,7 +1,5 @@
 package be.monmoisclair.app.ui.entry
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
@@ -22,6 +20,7 @@ import be.monmoisclair.app.domain.usecase.DeleteInstanceResult
 import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
 import be.monmoisclair.app.domain.usecase.UpdateInstanceResult
 import be.monmoisclair.app.domain.usecase.UpdateInstanceUseCase
+import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -259,10 +258,12 @@ class EditEntryViewModel @Inject constructor(
             _state.update { it.copy(error = "Aucun IBAN à copier.", copyMessage = null) }
             return
         }
-        (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-            .setPrimaryClip(ClipData.newPlainText("iban", iban))
+        SensitiveClipboard.setPlainText(appContext, "iban", iban)
         _state.update {
-            it.copy(copyMessage = "IBAN copié — collez dans votre application bancaire.", error = null)
+            it.copy(
+                copyMessage = BelgianStructuredCommunication.IBAN_COPIED_OK,
+                error = null
+            )
         }
     }
 
@@ -300,8 +301,7 @@ class EditEntryViewModel @Inject constructor(
             }
             return
         }
-        (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-            .setPrimaryClip(ClipData.newPlainText("communication", prepared.clipboardText))
+        SensitiveClipboard.setPlainText(appContext, "communication", prepared.clipboardText)
         _state.update {
             it.copy(copyMessage = prepared.userMessage, error = null)
         }

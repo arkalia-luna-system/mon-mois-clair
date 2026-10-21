@@ -8,6 +8,7 @@ object AppRoute {
     const val RestoreBackup = "restore_backup"
     const val Settings = "settings"
     const val HowItWorks = "how_it_works"
+    const val Dossiers = "dossiers"
     const val AddEntry = "entry/add/{ym}"
     const val ScanEpc = "entry/scan_epc"
     const val EditEntry = "entry/edit/{id}/{isExpense}"

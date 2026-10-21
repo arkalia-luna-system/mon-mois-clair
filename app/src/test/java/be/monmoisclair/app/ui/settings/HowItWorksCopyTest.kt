@@ -31,6 +31,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("pastille « Accord »")
         assertThat(all).contains("IBAN")
         assertThat(all).contains("courriers")
+        assertThat(all).contains("Mes dossiers")
         assertThat(all).doesNotContain("ancre")
         assertThat(all).doesNotContain("EN RETARD")
         assertThat(all).doesNotContain("+ Divers")

@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import be.monmoisclair.app.domain.usecase.StartDestination
+import be.monmoisclair.app.ui.dossiers.DossiersScreen
 import be.monmoisclair.app.ui.entry.AddEntryScreen
 import be.monmoisclair.app.ui.entry.EditEntryScreen
 import be.monmoisclair.app.ui.entry.EditTemplateScreen
@@ -73,7 +74,19 @@ fun AppNavHost(
                     navController.navigate(AppRoute.editEntry(id, isExpense))
                 },
                 onOpenSettings = { navController.navigate(AppRoute.Settings) },
-                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) }
+                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
+                onOpenDossiers = { navController.navigate(AppRoute.Dossiers) }
+            )
+        }
+        composable(AppRoute.Dossiers) {
+            DossiersScreen(
+                onBack = { navController.popBackStack() },
+                onOpenInstance = { id ->
+                    navController.navigate(AppRoute.editEntry(id, isExpense = true))
+                },
+                onOpenTemplate = { id ->
+                    navController.navigate(AppRoute.editTemplate(id))
+                }
             )
         }
         composable(AppRoute.Settings) {

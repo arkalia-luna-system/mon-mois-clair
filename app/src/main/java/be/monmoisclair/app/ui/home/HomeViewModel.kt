@@ -1,7 +1,5 @@
 package be.monmoisclair.app.ui.home
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
@@ -24,6 +22,7 @@ import be.monmoisclair.app.domain.usecase.AdjustDiversResult
 import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
 import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
+import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.DoneDateFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -59,7 +58,9 @@ data class HomeUiState(
     val highlightExpenseId: String? = null,
     /** Demande confirm FAIT sur mois passé (T4). */
     val pendingPastToggleId: String? = null,
-    val nextMonthWarning: String? = null
+    val nextMonthWarning: String? = null,
+    /** Lot D — 0 = pas d’entrée Menu « Mes dossiers ». */
+    val dossierCount: Int = 0
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -146,6 +147,9 @@ class HomeViewModel @Inject constructor(
                 }.sortedWith(compareBy({ it.sortDay }, { it.sortLabel }))
 
                 val current = AppClock.currentYearMonth()
+                val dossierCount = templates.count {
+                    it.active && DossierRemaining.isDossier(it.openingRemainingCents)
+                }
                 HomeUiState(
                     loading = false,
                     ledgerId = ledgerId,
@@ -159,7 +163,8 @@ class HomeViewModel @Inject constructor(
                     afterDiversCents = summary.remainingCents - divers,
                     timeline = timeline,
                     highlightExpenseId = highlight,
-                    pendingPastToggleId = pendingToggle
+                    pendingPastToggleId = pendingToggle,
+                    dossierCount = dossierCount
                 )
             }
         },
@@ -343,8 +348,7 @@ class HomeViewModel @Inject constructor(
             _userMessages.tryEmit(prepared.userMessage)
             return
         }
-        (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-            .setPrimaryClip(ClipData.newPlainText("communication", prepared.clipboardText))
+        SensitiveClipboard.setPlainText(appContext, "communication", prepared.clipboardText)
         _userMessages.tryEmit(prepared.userMessage)
     }
 
