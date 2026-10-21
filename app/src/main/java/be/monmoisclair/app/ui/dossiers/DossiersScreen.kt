@@ -41,6 +41,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -59,6 +60,9 @@ fun DossiersScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val sectionGap = if (fit.compactHomeChrome) 10.dp else 16.dp
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) viewModel.refresh()
@@ -87,7 +91,7 @@ fun DossiersScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, introShape)
                 .background(A11yTokens.PaperCard, introShape)
-                .padding(14.dp)
+                .padding(tipPad)
         )
 
         if (state.loading) {
@@ -199,15 +203,15 @@ fun DossiersScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(sectionGap))
         val pendingIntroShape = MaterialTheme.shapes.medium
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, pendingIntroShape)
                 .background(A11yTokens.PaperCard, pendingIntroShape)
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+                .padding(tipPad),
+            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 4.dp else 6.dp)
         ) {
             Text(
                 text = "Courriers sans plan",
@@ -230,7 +234,10 @@ fun DossiersScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, emptyPendingShape)
                     .background(A11yTokens.PaperCard, emptyPendingShape)
-                    .padding(horizontal = 14.dp, vertical = 12.dp)
+                    .padding(
+                        horizontal = tipPad,
+                        vertical = if (fit.compactHomeChrome) 10.dp else 12.dp
+                    )
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
@@ -246,15 +253,15 @@ fun DossiersScreen(
             text = "Ranger un courrier sans plan",
             onClick = onAddPending
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
         val summaryShape = MaterialTheme.shapes.medium
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, summaryShape)
                 .background(A11yTokens.PaperCard, summaryShape)
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(tipPad),
+            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             Text(
                 text = "Résumé à montrer",
@@ -309,6 +316,8 @@ private fun DossierRow(
     item: DossierListItem,
     onClick: () -> Unit
 ) {
+    val fit = rememberDisplayFit()
+    val rowPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     val shape = MaterialTheme.shapes.medium
     val progress = if (item.totalDueCents > 0L) {
         (item.paidCents.toFloat() / item.totalDueCents.toFloat()).coerceIn(0f, 1f)
@@ -330,8 +339,8 @@ private fun DossierRow(
             .border(1.dp, A11yTokens.PaperBorder, shape)
             .clickable(role = Role.Button, onClickLabel = "Ouvrir le dossier", onClick = onClick)
             .semantics { contentDescription = a11y }
-            .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(rowPad),
+        verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 4.dp else 6.dp)
     ) {
         Text(item.who, style = MaterialTheme.typography.titleLarge, color = A11yTokens.Ink)
         if (item.what.isNotBlank()) {
@@ -394,6 +403,8 @@ private fun PendingLetterRow(
     letter: PendingLetterEntity,
     onClick: () -> Unit
 ) {
+    val fit = rememberDisplayFit()
+    val rowPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     val shape = MaterialTheme.shapes.medium
     val a11y = buildString {
         append(letter.who)
@@ -414,8 +425,8 @@ private fun PendingLetterRow(
                 onClick = onClick
             )
             .semantics { contentDescription = a11y }
-            .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(rowPad),
+        verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 2.dp else 4.dp)
     ) {
         Text(letter.who, style = MaterialTheme.typography.titleLarge, color = A11yTokens.Ink)
         if (letter.what.isNotBlank()) {

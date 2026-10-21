@@ -32,6 +32,7 @@ import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 fun ConvertPendingLetterScreen(
@@ -40,6 +41,8 @@ fun ConvertPendingLetterScreen(
     viewModel: ConvertPendingLetterViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     LaunchedEffect(state.done) {
         if (state.done) onConverted(state.createdInstanceId)
     }
@@ -107,8 +110,8 @@ fun ConvertPendingLetterScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, tipShape)
                 .background(A11yTokens.PaperCard, tipShape)
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+                .padding(tipPad),
+            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 4.dp else 6.dp)
         ) {
             Text(
                 text = state.who.ifBlank { "Courrier" },

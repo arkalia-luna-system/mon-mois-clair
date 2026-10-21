@@ -39,6 +39,7 @@ import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.health.HealthStatusRow
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 fun PermissionsSetupScreen(
@@ -49,6 +50,8 @@ fun PermissionsSetupScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val report = state.report
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
 
     val notifLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -74,7 +77,7 @@ fun PermissionsSetupScreen(
             viewModel.finishOnboarding(allowContinueWithWarnings = !healthy)
         }
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         Text(
             text = "Mon Mois Clair",
             style = MaterialTheme.typography.labelLarge,
@@ -95,7 +98,7 @@ fun PermissionsSetupScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, tipShape)
                 .background(A11yTokens.PaperCard, tipShape)
-                .padding(14.dp)
+                .padding(tipPad)
         )
 
         if (report != null) {

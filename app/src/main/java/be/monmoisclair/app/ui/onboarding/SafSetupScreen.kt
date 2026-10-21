@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 fun SafSetupScreen(
@@ -31,6 +32,8 @@ fun SafSetupScreen(
     viewModel: SafSetupViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -49,7 +52,7 @@ fun SafSetupScreen(
         secondaryLabel = if (onCancel != null) "Retour" else null,
         onSecondary = onCancel
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         Text(
             text = "Mon Mois Clair",
             style = MaterialTheme.typography.labelLarge,
@@ -71,7 +74,7 @@ fun SafSetupScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, tipShape)
                 .background(A11yTokens.PaperCard, tipShape)
-                .padding(14.dp)
+                .padding(tipPad)
         )
         if (state.saving) {
             val busyShape = MaterialTheme.shapes.medium

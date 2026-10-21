@@ -58,6 +58,7 @@ import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
@@ -207,6 +208,8 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         }
     }
 
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     Column(
         Modifier
             .fillMaxSize()
@@ -227,9 +230,9 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, tipShape)
                 .background(A11yTokens.PaperCard, tipShape)
-                .padding(14.dp)
+                .padding(tipPad)
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
         val statusColor = when (status) {
             "Facture reconnue." -> A11yTokens.AccentOk
             "Ce QR n’est pas une facture belge.",
@@ -252,8 +255,11 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 .fillMaxWidth()
                 .border(1.dp, statusBorder, statusShape)
                 .background(
-                    if (statusColor == A11yTokens.Ink) A11yTokens.PaperCard
-                    else A11yTokens.PaperWarm,
+                    when (statusColor) {
+                        A11yTokens.Ink -> A11yTokens.PaperCard
+                        A11yTokens.AccentOk -> A11yTokens.AccentOkSoft
+                        else -> A11yTokens.PaperWarm
+                    },
                     statusShape
                 )
                 .padding(horizontal = 12.dp, vertical = 10.dp)

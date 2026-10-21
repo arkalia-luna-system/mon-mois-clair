@@ -36,6 +36,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 private enum class PendingRestore {
     Latest,
@@ -152,8 +153,10 @@ fun RestoreBackupScreen(
         )
     }
 
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         Text(
             text = "Restaurer une sauvegarde",
             style = MaterialTheme.typography.headlineMedium,
@@ -165,8 +168,8 @@ fun RestoreBackupScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, tipShape)
                 .background(A11yTokens.PaperCard, tipShape)
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(tipPad),
+            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 6.dp else 8.dp)
         ) {
             Text(
                 text = "Pour retrouver vos mois après une réinstallation ou un nouveau téléphone.",
@@ -197,7 +200,10 @@ fun RestoreBackupScreen(
                             else A11yTokens.AccentOk.copy(alpha = 0.35f),
                             msgShape
                         )
-                        .background(A11yTokens.PaperWarm, msgShape)
+                        .background(
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            msgShape
+                        )
                         .padding(12.dp)
                         .semantics {
                             liveRegion = if (err) {
