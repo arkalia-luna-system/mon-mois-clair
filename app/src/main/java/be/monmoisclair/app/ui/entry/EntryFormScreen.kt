@@ -1301,7 +1301,11 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .clip(shape)
             .background(bg, shape)
-            .then(if (selected) Modifier else Modifier.border(1.dp, A11yTokens.PaperBorder, shape))
+            .border(
+                1.dp,
+                if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
+                shape
+            )
             .clickable(role = Role.RadioButton, onClick = onClick)
             .heightIn(min = A11yTokens.minTouchHeight)
             .padding(horizontal = 16.dp, vertical = 12.dp)
