@@ -385,6 +385,31 @@ fun EditEntryScreen(
         return
     }
 
+    if (state.missing) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(A11yTokens.PaperCream)
+                .padding(A11yTokens.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Cette ligne n’est plus là.", style = MaterialTheme.typography.headlineMedium)
+            val missShape = MaterialTheme.shapes.medium
+            Text(
+                text = "Elle a peut-être déjà été retirée. Retournez à l’accueil.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, missShape)
+                    .background(A11yTokens.PaperCard, missShape)
+                    .padding(14.dp)
+            )
+            SecondaryA11yButton(text = "Retour", onClick = onCancel)
+        }
+        return
+    }
+
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
@@ -988,7 +1013,7 @@ private fun EntryFormScaffold(
                         singleLine = true,
                         shape = MaterialTheme.shapes.medium,
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Ascii,
+                            keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
                         ),
                         keyboardActions = KeyboardActions(
