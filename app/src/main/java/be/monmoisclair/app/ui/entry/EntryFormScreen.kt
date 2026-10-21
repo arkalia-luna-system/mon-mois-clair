@@ -882,12 +882,18 @@ private fun EntryFormScaffold(
             if ((showRecurring || showFrequencyEdit) && onRecurrence != null) {
                 Text("Fréquence", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                 if (showFrequencyEdit) {
+                    val freqTipShape = MaterialTheme.shapes.medium
                     Text(
                         text = "Vous pouvez corriger une erreur (mensuel, 3 mois, annuel, une fois) " +
                             "sans supprimer la ligne. Pour les mois déjà créés : cochez " +
                             "« Aussi les mois suivants ».",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.PaperBorder, freqTipShape)
+                            .background(A11yTokens.PaperWarm, freqTipShape)
+                            .padding(12.dp)
                     )
                 }
                 @OptIn(ExperimentalLayoutApi::class)
@@ -1025,11 +1031,17 @@ private fun EntryFormScaffold(
                             shape = MaterialTheme.shapes.medium,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
+                        val openTipShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Le montant plus haut est le versement du mois. " +
                                 "Laissez vide si ce n’est pas un accord.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted
+                            color = A11yTokens.InkMuted,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, A11yTokens.PaperBorder, openTipShape)
+                                .background(A11yTokens.PaperCard, openTipShape)
+                                .padding(10.dp)
                         )
                         if (onSaveAsPendingLetter != null &&
                             openingRemainingText.isBlank()
@@ -1039,11 +1051,17 @@ private fun EntryFormScaffold(
                                 onClick = onSaveAsPendingLetter,
                                 enabled = primaryEnabled
                             )
+                            val pendingTipShape = MaterialTheme.shapes.medium
                             Text(
                                 text = "Photo et nom seulement — rien dans le Reste " +
                                     "tant que le versement n’est pas fixé.",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted
+                                color = A11yTokens.InkMuted,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(1.dp, A11yTokens.PaperBorder, pendingTipShape)
+                                    .background(A11yTokens.PaperWarm, pendingTipShape)
+                                    .padding(10.dp)
                             )
                         }
                     }

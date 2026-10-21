@@ -37,7 +37,12 @@ fun DayOfMonthGrid(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        Text(text = "Jour du mois", style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = "Jour du mois",
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
+        )
+        Spacer(Modifier.height(6.dp))
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)

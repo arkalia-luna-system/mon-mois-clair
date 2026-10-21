@@ -186,6 +186,17 @@ fun HomeMenuSheet(
             }
             if (isPastMonth) {
                 Spacer(modifier = Modifier.height(10.dp))
+                val pastShape = MaterialTheme.shapes.medium
+                Text(
+                    text = "Vous consultez un mois passé. Les totaux ne bougent plus.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, pastShape)
+                        .padding(horizontal = 12.dp, vertical = 10.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
                 SecondaryA11yButton(
                     text = "Revenir au mois en cours",
                     onClick = {

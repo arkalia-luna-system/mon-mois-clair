@@ -51,7 +51,11 @@ fun ReminderHealthScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = "Alertes", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Alertes",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val introShape = MaterialTheme.shapes.medium
         Text(
             text = "Vérifiez que Mon Mois Clair peut vraiment vous prévenir sur ce téléphone.",
