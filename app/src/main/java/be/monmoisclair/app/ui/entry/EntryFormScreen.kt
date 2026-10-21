@@ -1270,6 +1270,9 @@ private fun EntryFormScaffold(
                             value = feeNoteText,
                             onValueChange = onFeeNoteText,
                             label = { Text("Motif (ex. frais de rappel)") },
+                            supportingText = {
+                                Text("Le nouveau motif remplace l’ancien — pas une liste datée.")
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = A11yTokens.minTouchHeight),

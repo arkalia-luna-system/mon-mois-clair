@@ -19,6 +19,13 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Audit §8 : rien d’ouvert à coder
+
+**Relu §8 :** lots A–F + 6.37 tenus · sécurité déjà dans `SECURITY.md` · écarts acceptés (zéro pixel, motif frais = dernier, lint soft).  
+**Seul geste UI :** hint sous le champ motif frais (« remplace l’ancien »), pour coller à la décision écrite.  
+**Pas rouvert :** liste de frais datée, S26 réel, `androidTest`.  
+**Tests :** **233/233** (`--rerun-tasks`, 59 fichiers). Version inchangée `0.1.0-6.37`.
+
 ### 2026-10-21 — Nettoyage caches / strings mortes
 
 **Fait :** caches locaux (`.gradle` jetable, `~/.cache/mon-mois-clair`, Gradle **8.9** obsolète) · dumps `suite_pe` · 3 `@string` jamais référencés retirés (`onboarding_*_title`, `health_title` — textes déjà en dur UI).  

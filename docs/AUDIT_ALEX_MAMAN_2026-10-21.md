@@ -375,9 +375,11 @@ Pour maman et Alex, le geste premium est déjà le carnet : un gros reste, l’o
 
 Ce qui empêche de dire « produit fini premium » :
 
-1. Le S26 réel n’a pas été tenu. La sim. 360×780 + police 1,3 a vu la pastille Accord et un FAIT de 48 dp. La suite **231/231** ne remplace pas ce téléphone.
-2. Trois lettres de frais : une somme et le dernier motif. Les photos en plus compensent en partie.
+1. Le S26 réel n’a pas été tenu. La sim. 360×780 + police 1,3 a vu la pastille Accord et un FAIT de 48 dp. La suite unitaire ne remplace pas ce téléphone.
+2. Trois lettres de frais : une somme et le dernier motif (**accepté** — aide + hint sous le champ motif). Liste datée = chantier séparé, pas rouvert ici. Les photos en plus compensent en partie.
 3. La pastille Accord est volontairement discrète (encre sur fond chaud). Lisible sur la sim., pas mesurée au contraste sur le téléphone de maman.
+
+**Décisions produit §8 pour le code : toutes tranchées.** Reste hors code : S26 en main, tests instrumentés, liste de frais datée (si un jour).
 
 À ne pas ajouter pour « faire plus premium » : enveloppes, courbe, snowball, taux, PDF CPAS, onglet dettes, puce Huissier.
 
