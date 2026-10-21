@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.31** — dossier/accord replié, pastille Accord).
+Mise à jour : 2026-10-21 (lot **6.32** — IBAN, mail, frais, courriers en plus).
 
 ## 1. Vision
 
@@ -58,9 +58,7 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 ## 3. Données
 
-Journal clos : Room / backup schéma **5** (étape 6.31) — mémoire papier (schéma 4) + dossier (`causeLabel`, `openingRemainingCents` nullable sur `expense_templates`). Reste dû = départ + frais ajoutés − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros.
-
-Arbre de travail, **pas clos** : `AppDatabase` version **6** (`iban`, `creditorEmail`, `extraReceiptPaths`, `addedFeesCents`, `addedFeesNote`). `versionName` encore `0.1.0-6.31`. Ne pas traiter le 6 comme une étape livrée tant que le journal et une suite `--rerun-tasks` ne le disent pas. Détail : `docs/AUDIT_ALEX_MAMAN_2026-10-21.md` partie 7.
+Room / backup schéma **6** (étape 6.32) : mémoire papier (4) + dossier (5) + IBAN / e-mail / frais / courriers en plus (`extraReceiptPaths`). Reste dû = départ + frais − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros. Sur la fiche d’un accord : Copier l’IBAN, Écrire (brouillon mail), ajouter/voir/enlever des courriers.
 
 ## 4. Plan
 
@@ -81,6 +79,7 @@ Arbre de travail, **pas clos** : `AppDatabase` version **6** (`iban`, `creditorE
 | **6.28–6.29** | Punch list premium (photo au doigt, Copier hors Modifier, Alertes) | ✅ |
 | **6.30** | Lot A : note/photo sur modèle · matérialisation · Copier 12 chiffres (mod 97) | ✅ |
 | **6.31** | Lot B : dossier replié · reste calculé · pastille Accord · arrêt si soldé | ✅ |
+| **6.32** | Lot C : IBAN · e-mail · frais · photos extras visibles (voir/enlever) | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

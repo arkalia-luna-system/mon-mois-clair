@@ -67,7 +67,11 @@ object HowItWorksCopy {
                 "Le mois montre le versement et une pastille « Accord », pas le total de la dette. " +
                 "Chaque FAIT baisse le reste du montant réellement payé. " +
                 "Quand c’est soldé, la ligne ne revient plus le mois suivant. " +
-                "La fiche dit « Soldé ». Les mois déjà payés restent."
+                "La fiche dit « Soldé ». Les mois déjà payés restent. " +
+                "Sur un accord : IBAN (Copier), e-mail (Écrire), frais (« Ils ont ajouté un montant »). " +
+                "Une nouvelle photo s’ajoute aux courriers sans remplacer la première ; " +
+                "vous pouvez voir ou enlever chaque courrier. " +
+                "Le motif des frais affiché est le dernier saisi."
         ),
         Section(
             title = "Sur une année",

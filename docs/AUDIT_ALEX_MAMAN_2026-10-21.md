@@ -1,10 +1,10 @@
 # Audit — maman, Alex, et le brief « dossiers »
 
 Date du premier constat : 2026-10-21.  
-Relecture du code : le même jour, après les lots A et B, pendant un lot C commencé mais **pas clos**.
+Relecture du code : le même jour ; lots A/B/C ensuite clos au journal (**6.32**).
 
-Dernière étape **fermée** dans le journal : **6.31** (`0.1.0-6.31`, `versionCode` 36), schéma annoncé **5**, tests **183/183**.  
-Dans l’arbre de travail, Room est déjà en version **6** (`iban`, `creditorEmail`, `extraReceiptPaths`, `addedFeesCents`, `addedFeesNote`). Le `versionName` n’a pas bougé. Aucun `./gradlew :app:testDebugUnitTest --rerun-tasks` n’est enregistré depuis ce schéma 6. **183/183 ne décrit plus l’arbre d’aujourd’hui.**
+Dernière étape **fermée** dans le journal : **6.32** (`0.1.0-6.32`, `versionCode` 37), schéma **6**, tests **198/198** (`--rerun-tasks`).  
+Lots A/B/C tenus. Ouvert : smoke « Écrire » sur téléphone, lots D/E/F.
 
 Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`RECHERCHE_OUTILS_2026-10-21.md`](RECHERCHE_OUTILS_2026-10-21.md)).  
 Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
@@ -255,9 +255,7 @@ Conséquence : installer cet arbre sur un téléphone en schéma 5 **monte** la 
 
 `docs/AUDIT_STATUS.md` et `docs/AUDIT_PREMIUM.md` parlent encore de 6.28 et de 165 tests. Le journal, lui, est à 6.31 / 183. Ces deux notes décrivent le carnet visuel, pas les dossiers. Leur en-tête est en retard sur le journal, pas sur le schéma 6.
 
-### 7.3 Lot C — commencé, pas fini
-
-Présent dans l’arbre, invisible dans le journal.
+### 7.3 Lot C — clos au journal 6.32
 
 Ce qui est branché :
 
@@ -268,14 +266,12 @@ Ce qui est branché :
 - Sur un accord **déjà** créé : « Ils ont ajouté un montant » + motif. Les centimes s’ajoutent au cumul. Le motif nouveau remplace l’ancien s’il n’est pas vide ; un motif vide garde l’ancien. Ce n’est pas une liste d’événements datés (ce que la recherche décrivait). Deux lettres de frais deviennent une somme et une seule phrase.
 - Si l’accord a déjà une photo et qu’on en prend une autre, le fichier part dans `extraReceiptPaths` au lieu de remplacer la première. La compression ~400 Ko est dans `ReceiptPhotoStore`.
 
-Ce qui ne tient pas encore :
+Clos au **6.32** (UI voir/enlever, aide, suite **198/198**). Reste ouvert hors clôture :
 
-- Aucun bouton pour **voir** les courriers en plus, en enlever un, ou en ajouter un sans remplacer « par accident de logique ». La deuxième photo est rangée et invisible. La personne croira qu’elle a remplacé la première.
-- Tests unitaires **présents** pour le texte du mail (`CreditorMailComposerTest`), la liste de chemins (`ReceiptPathListTest`), et les frais dans le reste (`DossierRemainingTest`). Il manque encore : test d’intégration save→template IBAN/frais, et surtout la **suite complète** `--rerun-tasks` avant de fermer une version.
-- L’ajout n’a pas « Copier l’IBAN » ni « Écrire ». Il faut rouvrir la fiche. Acceptable. À dire dans l’aide quand le lot sera clos, pas avant.
-- `ACTION_SENDTO` + extras (objet, corps) est souvent ignoré par l’app Mail selon le téléphone. Le texte est bon. L’ouverture réelle n’a pas été tenue au doigt.
-- Les frais ne se saisissent pas le jour de la création (le bloc frais n’apparaît que si `isAgreement`). Il faut enregistrer l’accord, revenir, puis ajouter. C’est le bon geste (un plus, pas un chiffre inventé au départ), encore non expliqué dans l’aide.
-- Le champ `agreementCents` proposé par la recherche n’existe pas. Le versement reste `amountCents` du modèle. Une lettre sans plan (montant vide, pas de ligne de mois) n’a pas de place. C’est le lot D, pas un oubli du C.
+- L’ajout n’a pas « Copier l’IBAN » ni « Écrire ». Il faut rouvrir la fiche. Acceptable (dit dans l’aide).
+- `ACTION_SENDTO` + extras : smoke téléphone encore à faire.
+- Frais : seulement sur un accord déjà créé ; motif = dernier saisi (pas une liste datée).
+- Lettre sans plan / `agreementCents` : lot D, pas un oubli du C.
 
 ### 7.4 Trous encore vrais après A et B
 
@@ -288,7 +284,7 @@ Ce qui ne tient pas encore :
 | Résumé à montrer | Pas de texte partageable (revenus, charges, à qui, pour quoi, versement, reste, référence). Pas de faux PDF CPAS — et il ne faut pas en ajouter |
 | Smoke téléphone | Le journal 6.27 laissait ouvert : notification avec plusieurs factures, nom seul sur une échéance trimestrielle. `AUDIT_STATUS.md` les coche ensuite en manuel. Cette relecture **n’a pas** refait le geste, et n’a pas regardé la ligne Accord sur un écran court |
 | Checklist « zéro dossier = zéro mot » | L’accueil tient. Le formulaire d’une dépense a **un** bouton de plus, replié : « C’est un retard ou un accord ? ». L’aide contient la section. C’est l’écart accepté au lot B. Ce n’est pas zéro pixel au sens strict du plan §5 point 2 |
-| Suite de tests | Les 183 tests sont ceux du commit qui a fermé 6.31. L’arbre a bougé (schéma 6, frais dans le calcul, mail, photo extra). Compter les `TEST-*.xml` sans `--rerun-tasks` mentirait |
+| Suite de tests | Clos au 6.32 : **198/198** avec `--rerun-tasks` |
 
 ### 7.5 Réflexions à ne pas perdre
 
@@ -296,7 +292,7 @@ Le produit utile n’est pas « une app de dettes ». C’est le carnet, plus un
 
 Alex a les deux vies : un accord à montant à peu près fixe, et des mois où il verse ce qu’il a. Le modèle « ouverture + frais − FAIT réels » tient les deux, à condition qu’on ne montre pas « mois 4 sur 12 ». Ce compteur a été refusé et il n’est pas dans l’UI. Il ne faut pas le réintroduire au lot D sous prétexte d’une barre. La barre, si elle vient, est « déjà versé / (départ + frais) ». Le nombre de mois n’apparaît qu’avec « si le versement reste de X », et disparaît dès qu’un mois a divergé.
 
-Ils ne mettent même pas 1 € de côté. Une cagnotte à l’écran serait dépensée dans la tête, ou ignorée. L’épargne prévue est une facture de plus, virée vers un autre compte, absente du résumé « dettes ». Pas maintenant. Pas avant que C soit clos proprement : empiler D, E et F sur un schéma 6 non testé, c’est garantir une restauration cassée.
+Ils ne mettent même pas 1 € de côté. Une cagnotte à l’écran serait dépensée dans la tête, ou ignorée. L’épargne prévue est une facture de plus, virée vers un autre compte, absente du résumé « dettes ». Pas maintenant. C est clos (6.32) : D/E/F un à la fois, avec migration + suite tests le même jour.
 
 Le bouton replié sur chaque nouvelle dépense est le seul pixel nouveau que maman voit sans l’avoir demandé. Le garder fermé, sans le mot huissier, est la bonne limite. L’ouvrir par erreur puis quitter sans enregistrer ne doit rien créer : c’est le cas si le reste dû reste vide (`openingRemainingCents` null). Si elle remplit le reste par curiosité, elle crée un dossier. La phrase sous le champ (« Laissez vide si ce n’est pas un accord ») porte cette responsabilité. Elle est facile à rater sur un écran court. À relire au doigt, pas à rallonger avec un second avertissement.
 
@@ -313,7 +309,7 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Carnet du mois | Tenu. C’est le produit de maman |
 | Lot A — mémoire du papier | Tenu dans le code et dans le journal 6.30 |
 | Lot B — accord replié | Tenu dans le code et dans le journal 6.31, avec le trou « modifier le montant après coup ne recrée pas le mois suivant » |
-| Lot C — IBAN, mail, frais, plusieurs photos | Dans l’arbre (schéma 6, commit polish + WIP), journal **honnête** (WIP, versionName encore 6.31), tests partiels OK, **pas** clos : photos en plus invisibles, pas de suite `--rerun-tasks` de clôture, pas de 6.32 |
-| Lots D, E, F | Pas commencés. Ne pas les coder tant que C n’est pas clos ou retiré |
+| Lot C — IBAN, mail, frais, plusieurs photos | Clos **6.32** — schéma 6, UI courriers, **198/198** |
+| Lots D, E, F | Pas commencés |
 
-Prochaine action utile : **un seul** Gradle à la fois (buildDir isolé si 2 agents). Finir le lot C (UI photos extras + aide), `./gradlew :app:testDebugUnitTest --rerun-tasks`, puis seulement 6.32 / charte / README. Pas de pastille « Huissier ». Pas d’écran dossiers avant ça.
+Prochaine action utile : smoke Galaxy « Écrire » ; lot D seulement si besoin « Mes dossiers ». Pas de pastille « Huissier ».

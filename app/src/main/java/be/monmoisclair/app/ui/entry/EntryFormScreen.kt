@@ -63,6 +63,7 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
+import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
 import java.io.File
@@ -312,7 +313,8 @@ fun EditEntryScreen(
             state.feeAddText != b.feeAddText ||
             state.feeNoteText != b.feeNoteText ||
             state.hasPendingPhoto ||
-            state.receiptRelativePath != b.receiptRelativePath
+            state.receiptRelativePath != b.receiptRelativePath ||
+            state.extraReceiptPaths != b.extraReceiptPaths
     } == true
 
     fun requestLeave() {
@@ -388,7 +390,9 @@ fun EditEntryScreen(
         viewModel.attachPreviewBitmap(bmp)
     }
     var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    var showReceiptDialog by remember { mutableStateOf(false) }
+    /** null = fermé ; "" = aperçu en attente / photo principale ; sinon chemin d’un courrier en plus. */
+    var dialogPath by remember { mutableStateOf<String?>(null) }
+    var dialogBitmap by remember { mutableStateOf<Bitmap?>(null) }
     LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto) {
         if (state.hasPendingPhoto) return@LaunchedEffect
         if (state.receiptRelativePath.isBlank()) {
@@ -397,11 +401,22 @@ fun EditEntryScreen(
         }
         receiptBitmap = viewModel.decodeReceiptBitmap()
     }
+    LaunchedEffect(dialogPath, pendingPreview, receiptBitmap) {
+        val path = dialogPath ?: run {
+            dialogBitmap = null
+            return@LaunchedEffect
+        }
+        dialogBitmap = when {
+            path.isEmpty() -> pendingPreview ?: receiptBitmap
+            path == state.receiptRelativePath -> pendingPreview ?: receiptBitmap
+            else -> viewModel.decodeReceiptBitmap(path)
+        }
+    }
 
-    if (showReceiptDialog) {
-        val bmp = pendingPreview ?: receiptBitmap
+    if (dialogPath != null) {
+        val bmp = dialogBitmap
         Dialog(
-            onDismissRequest = { showReceiptDialog = false },
+            onDismissRequest = { dialogPath = null },
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             Surface(
@@ -441,7 +456,7 @@ fun EditEntryScreen(
                     }
                     PrimaryA11yButton(
                         text = "Fermer",
-                        onClick = { showReceiptDialog = false }
+                        onClick = { dialogPath = null }
                     )
                 }
             }
@@ -484,10 +499,15 @@ fun EditEntryScreen(
         onViewReceipt = if (
             state.receiptRelativePath.isNotBlank() || pendingPreview != null
         ) {
-            { showReceiptDialog = true }
+            {
+                dialogPath = if (pendingPreview != null) "" else state.receiptRelativePath
+            }
         } else {
             null
         },
+        extraReceiptPaths = ReceiptPathList.parse(state.extraReceiptPaths),
+        onViewExtraReceipt = { path -> dialogPath = path },
+        onRemoveExtraReceipt = viewModel::removeExtraReceipt,
         onCopyPaymentNote = viewModel::copyPaymentNote,
         showApplyFollowing = state.hasTemplate,
         applyFollowing = state.applyToFollowing,
@@ -594,6 +614,10 @@ private fun EntryFormScaffold(
     onTakePhoto: (() -> Unit)? = null,
     onClearReceipt: (() -> Unit)? = null,
     onViewReceipt: (() -> Unit)? = null,
+    /** Courriers en plus (dossier) — chemins relatifs déjà parsés. */
+    extraReceiptPaths: List<String> = emptyList(),
+    onViewExtraReceipt: ((String) -> Unit)? = null,
+    onRemoveExtraReceipt: ((String) -> Unit)? = null,
     onCopyPaymentNote: (() -> Unit)? = null,
     showApplyFollowing: Boolean,
     applyFollowing: Boolean,
@@ -945,23 +969,41 @@ private fun EntryFormScaffold(
                     SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
                 }
                 if (onTakePhoto != null) {
+                    val appendOnAgreement = isAgreement && hasReceiptPhoto && !hasPendingPhoto
                     SecondaryA11yButton(
-                        text = if (hasPendingPhoto || hasReceiptPhoto) {
-                            "Reprendre la photo de la facture"
-                        } else {
-                            "Photo de la facture papier"
+                        text = when {
+                            hasPendingPhoto -> "Reprendre la photo"
+                            appendOnAgreement -> "Ajouter un courrier (photo)"
+                            hasReceiptPhoto -> "Reprendre la photo de la facture"
+                            else -> "Photo de la facture papier"
                         },
                         onClick = onTakePhoto
                     )
+                    if (appendOnAgreement) {
+                        Text(
+                            text = "La nouvelle photo s’ajoute aux courriers. " +
+                                "La première reste.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted
+                        )
+                    }
                     if (onClearReceipt != null && (hasPendingPhoto || hasReceiptPhoto)) {
                         SecondaryA11yButton(
-                            text = "Enlever la photo",
+                            text = if (isAgreement && hasReceiptPhoto && !hasPendingPhoto) {
+                                "Enlever la photo de ce mois"
+                            } else {
+                                "Enlever la photo"
+                            },
                             onClick = onClearReceipt
                         )
                     }
                     if (hasPendingPhoto) {
                         Text(
-                            text = "Photo prête — enregistrée avec la facture.",
+                            text = if (isAgreement && hasReceiptPhoto) {
+                                "Photo prête — s’ajoute aux courriers (la première reste)."
+                            } else {
+                                "Photo prête — enregistrée avec la facture."
+                            },
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.AccentOk
                         )
@@ -999,6 +1041,28 @@ private fun EntryFormScaffold(
                                     }
                                 )
                         )
+                    }
+                    if (isAgreement && extraReceiptPaths.isNotEmpty()) {
+                        Text(
+                            text = "Autres courriers",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = A11yTokens.InkMuted
+                        )
+                        extraReceiptPaths.forEachIndexed { index, path ->
+                            val n = index + 2
+                            if (onViewExtraReceipt != null) {
+                                SecondaryA11yButton(
+                                    text = "Voir le courrier $n",
+                                    onClick = { onViewExtraReceipt(path) }
+                                )
+                            }
+                            if (onRemoveExtraReceipt != null) {
+                                SecondaryA11yButton(
+                                    text = "Enlever le courrier $n",
+                                    onClick = { onRemoveExtraReceipt(path) }
+                                )
+                            }
+                        }
                     }
                 }
             }

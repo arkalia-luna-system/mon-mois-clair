@@ -57,7 +57,12 @@ class UpdateInstanceUseCase @Inject constructor(
         feeAddCents: Long = 0L,
         feeNote: String = "",
         /** Chemin photo à ajouter aux extras (ne remplace pas la principale). */
-        extraReceiptAppend: String = ""
+        extraReceiptAppend: String = "",
+        /**
+         * Si non null : remplace la liste des courriers en plus (puis [extraReceiptAppend]).
+         * Null = ne pas toucher à la liste existante (sauf append).
+         */
+        extraReceiptPathsReplace: String? = null
     ): UpdateInstanceResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -190,10 +195,11 @@ class UpdateInstanceUseCase @Inject constructor(
                         } else {
                             tpl.addedFeesNote
                         }
+                        val baseExtras = extraReceiptPathsReplace ?: tpl.extraReceiptPaths
                         val extras = if (extraReceiptAppend.isNotBlank()) {
-                            ReceiptPathList.append(tpl.extraReceiptPaths, extraReceiptAppend)
+                            ReceiptPathList.append(baseExtras, extraReceiptAppend)
                         } else {
-                            tpl.extraReceiptPaths
+                            baseExtras
                         }
                         val lotC = tpl.copy(
                             iban = if (syncCreditorDetails) iban.trim() else {

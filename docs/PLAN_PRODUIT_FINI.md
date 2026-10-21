@@ -1,10 +1,9 @@
 # Plan — du carnet fini à un outil qui tient aussi les retards
 
-Date : 2026-10-21, mis à jour le soir après relecture du code.  
-Départ : carnet tenu (journal jusqu’à **6.31**).  
-Lots **A et B** sont clos dans le journal (`0.1.0-6.30`, `0.1.0-6.31`).  
-Lot **C** est commencé dans l’arbre (Room **6**) et **pas clos** : pas de suite `--rerun-tasks` enregistrée, `versionName` encore `0.1.0-6.31`.  
-On n’anticipe **pas** D, E, F dans `versionName`, le README ou les badges. La charte et le journal ne ferment une étape que lorsque le lot est vraiment fini **et** les tests relancés. Le détail des trous : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.
+Date : 2026-10-21, mis à jour après clôture lot **C**.  
+Départ : carnet tenu.  
+Lots **A, B, C** clos dans le journal (`0.1.0-6.30` … `0.1.0-6.32`, schéma Room **6**).  
+On n’anticipe **pas** D, E, F dans `versionName`, le README ou les badges. Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.
 
 Lectures liées :
 
@@ -38,7 +37,7 @@ Le smoke déjà noté au journal (notification avec plusieurs factures, échéan
 4. **Les centimes FAIT font foi.** Pas un compteur « mois 4 sur 12 » qui ment si le montant a changé.
 5. **Les courriers et la référence vivent sur le modèle**, et chaque nouveau mois les reprend.
 6. **Un seul bouton plein** par écran. Le reste en trait.
-7. **Le schéma bouge avec les colonnes**, le même jour : migration, backup, tests de restauration, puis journal. Pas de colonne « en avance » dans le JSON. A a posé le 4, B le 5. Le 6 est déjà dans le code pour C, sans clôture : c’est le problème ouvert, pas un modèle à recopier.
+7. **Le schéma bouge avec les colonnes**, le même jour : migration, backup, tests de restauration, puis journal. Pas de colonne « en avance » dans le JSON. A = 4, B = 5, C = 6 (clos).
 8. **Pas de `if (S25)`.** `DisplayFit` suffit. On vérifie une hauteur courte (S26) et une hauteur confort (Ultra).
 9. **Phrases de la recherche §9.** Pas de menace de saisie. Pas de date de fin sans « si ».
 
@@ -89,11 +88,9 @@ Le comportement ci-dessous est dans le code. Le reste inclut désormais les frai
 
 **Maman.** Elle n’ouvre pas le bloc. Rien ne change.
 
-### Lot C — Fiche anti-confusion — commencé, pas clos
+### Lot C — Fiche anti-confusion — clos au journal 6.32
 
-**Déjà dans l’arbre** (vérifié au code, journal WIP, `versionName` encore 6.31) : schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · édition « Copier l’IBAN » + « Écrire » (`CreditorMailComposer`) · frais cumulés sur accord existant · 2ᵉ photo → `extraReceiptPaths` · compression ~400 Ko · tests unitaires mail / chemins / frais.
-
-**Il reste pour fermer** : UI pour **voir / retirer** les photos en plus · phrase d’aide · smoke « Écrire » sur téléphone · **une** suite `./gradlew :app:testDebugUnitTest --rerun-tasks` · puis seulement `0.1.0-6.32` + badges. Voir audit partie 7.3. Ne pas enchaîner D tant que ce n’est pas fait.
+Schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · « Copier l’IBAN » + « Écrire » · frais cumulés · photos extras **visibles** (voir / enlever) · « Ajouter un courrier » sans remplacer la première · aide · **198/198** `--rerun-tasks`. Smoke téléphone « Écrire » encore ouvert (intent Mail). Motif frais = dernier saisi.
 
 **Problème.** IBAN jeté après le scan. Pas d’e-mail. Une seule photo. Les frais ajoutés n’ont pas de geste propre.
 

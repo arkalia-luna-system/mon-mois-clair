@@ -359,6 +359,38 @@ class UpdateDeleteEntryUseCaseTest {
             .isEqualTo("receipts/modele.webp")
     }
 
+    /** Lot C : remplacer / ajouter des courriers en plus sur le modèle. */
+    @Test
+    fun update_extraReceiptPaths_replaceThenAppend() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-extra",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                active = true,
+                openingRemainingCents = 20_000L,
+                extraReceiptPaths = "receipts/a.webp\nreceipts/b.webp",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-10", "exp:2026-10:tpl-extra", "tpl-extra", 5_000L)
+
+        update(
+            id = "exp:2026-10:tpl-extra",
+            isExpense = true,
+            label = "Étude",
+            amountCents = 5_000L,
+            dayOfMonth = 10,
+            applyToFollowingMonths = false,
+            extraReceiptPathsReplace = "receipts/a.webp",
+            extraReceiptAppend = "receipts/c.webp"
+        )
+        val tpl = db.templateDao().getExpenseById("tpl-extra")!!
+        assertThat(tpl.extraReceiptPaths).isEqualTo("receipts/a.webp\nreceipts/c.webp")
+    }
+
     private suspend fun seedLinkedExpense(
         ledger: String,
         id: String,

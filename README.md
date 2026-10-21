@@ -9,7 +9,7 @@
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-198%2F198-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.31-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.32-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,12 +23,12 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.31` |
-| Dernière étape | **6.31** Lot B — dossier/accord replié (pastille Accord, reste calculé) |
+| Version | `0.1.0-6.32` |
+| Dernière étape | **6.32** Lot C — IBAN, mail, frais, courriers en plus (voir/enlever) |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **198/198** OK (polish + WIP lot C dans l’arbre) |
-| Arbre non clos | Room **6** (IBAN, e-mail, frais, photos en plus) sans `versionName` nouveau — lot C pas encore clôturé. Ne pas installer par-dessus un téléphone en schéma 5 si on compte revenir au 6.31 seul |
+| Tests unitaires | **198/198** OK |
+| Schéma Room | **6** (migration depuis 5) — IBAN, e-mail, frais, `extraReceiptPaths` |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel : [`docs/AUDIT_PREMIUM.md`](docs/AUDIT_PREMIUM.md)
 

@@ -16,6 +16,7 @@ import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.EpcQrParser
+import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.DeleteInstanceResult
 import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
@@ -205,9 +206,22 @@ class EditEntryViewModel @Inject constructor(
             )
         }
     }
+
+    /** Retire un courrier en plus (persisté à l’enregistrement). */
+    fun removeExtraReceipt(path: String) {
+        val target = path.trim()
+        if (target.isEmpty()) return
+        _state.update {
+            it.copy(
+                extraReceiptPaths = ReceiptPathList.remove(it.extraReceiptPaths, target),
+                error = null
+            )
+        }
+    }
+
     suspend fun openReceiptUri() = receiptPhotos.openUri(_state.value.receiptRelativePath)
-    suspend fun decodeReceiptBitmap() =
-        receiptPhotos.decodeBitmap(_state.value.receiptRelativePath)
+    suspend fun decodeReceiptBitmap(relativePath: String = _state.value.receiptRelativePath) =
+        receiptPhotos.decodeBitmap(relativePath)
 
     fun applyEpcRaw(raw: String) {
         val p = EpcQrParser.parse(raw)
@@ -383,7 +397,8 @@ class EditEntryViewModel @Inject constructor(
                     syncCreditorDetails = syncCreditor,
                     feeAddCents = feeAdd ?: 0L,
                     feeNote = s.feeNoteText,
-                    extraReceiptAppend = extraAppend
+                    extraReceiptAppend = extraAppend,
+                    extraReceiptPathsReplace = if (s.isAgreement) s.extraReceiptPaths else null
                 )
             ) {
                 UpdateInstanceResult.Success -> _state.update { it.copy(done = true) }

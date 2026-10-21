@@ -9,15 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.31** (lot B — dossier / accord replié) |
-| Étape en cours | Lot C **WIP** (schéma 6 dans l’arbre, pas de 6.32) — IBAN/mail/frais OK ; photos extras **invisibles** ; suite clôture non faite |
-| Prochaine sous-étape | Finir C : UI voir/retirer photos extras + aide + `--rerun-tasks` → puis 6.32. D/E/F après. Audit §7 |
+| Dernière étape terminée | **6.32** (lot C — IBAN / mail / frais / courriers en plus) |
+| Étape en cours | Lots D / E / F (pas commencés) — voir plan produit |
+| Prochaine sous-étape | Lot D seulement si besoin « Mes dossiers » / lettre sans plan. Sinon smoke Galaxy « Écrire » |
 | Audit premium | Code clos · punch list audit traitée |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.32 Lot C : fiche anti-confusion (IBAN, mail, frais, photos)
+
+**Problème :** IBAN perdu après le QR ; pas d’e-mail prêt ; avenant / 2ᵉ lettre sans place ; photo extra invisible.
+
+**Codé :** schéma Room/backup **6** · IBAN + e-mail sur le modèle · « Copier l’IBAN » / « Écrire » · frais cumulés · 2ᵉ photo → `extraReceiptPaths` · UI **voir / enlever** les courriers · libellé « Ajouter un courrier » · aide à jour. Motif frais = dernier saisi (pas une liste datée).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **198/198** (52 fichiers, 0 échec)  
+**Version :** `0.1.0-6.32` · `versionCode` 37  
+**Ouvert :** smoke réel `ACTION_SENDTO` sur téléphone ; lots D/E/F.
 
 ### 2026-10-21 — Docs alignées (état réel A/B/C)
 
