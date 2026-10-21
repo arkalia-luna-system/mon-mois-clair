@@ -90,8 +90,9 @@ class ConfigureSavingsUseCaseTest {
     fun save_createsMonthlyLine_inRemainingAndStillToPay() = runBlocking {
         seedMonthWithIncomeAndRent()
         // Reste avant épargne : 1000 − 800 = 200
-        val before = configure.projectedRemainingCents(5_000L)
-        assertThat(before).isEqualTo(15_000L)
+        val before = configure.previewAmount(5_000L)
+        assertThat(before.remainingCents).isEqualTo(15_000L)
+        assertThat(before.alreadyTransferredThisMonth).isFalse()
 
         val result = configure.save(amountCents = 5_000L, dayOfMonth = 10)
         assertThat(result).isEqualTo(ConfigureSavingsResult.Saved)
@@ -111,15 +112,15 @@ class ConfigureSavingsUseCaseTest {
         assertThat(savings.status).isEqualTo(ExpenseStatus.TODO)
 
         // 1000 − 800 − 50 = 150 encore à payer tant que pas FAIT
-        val remaining = configure.projectedRemainingCents(5_000L)
-        assertThat(remaining).isEqualTo(15_000L)
+        val remaining = configure.previewAmount(5_000L)
+        assertThat(remaining.remainingCents).isEqualTo(15_000L)
     }
 
     @Test
     fun projected_announcesDeficitWhenTooHigh() = runBlocking {
         seedMonthWithIncomeAndRent()
         // 1000 − 800 = 200 ; 250 → déficit 50
-        assertThat(configure.projectedRemainingCents(25_000L)).isEqualTo(-5_000L)
+        assertThat(configure.previewAmount(25_000L).remainingCents).isEqualTo(-5_000L)
     }
 
     @Test
