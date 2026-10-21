@@ -313,4 +313,4 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Lot D — Mes dossiers | Liste + Menu (N>0) en cours ; courriers sans plan pas faits |
 | Lots E, F | Pas commencés |
 
-Prochaine action utile : fermer D (courriers sans plan) ; smoke « Écrire » au retour téléphone. Pas de pastille « Huissier ».
+Prochaine action utile : fermer D (courriers sans plan) ; smoke « Écrire » dès qu’un accord a un e-mail (6.33 déjà installé sur S938B). Pas de pastille « Huissier ».

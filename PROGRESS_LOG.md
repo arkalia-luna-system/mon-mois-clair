@@ -10,8 +10,8 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Champ | Valeur |
 |-------|--------|
 | Dernière étape terminée | **6.33** (Mes dossiers liste + EuroFormat/mailto/polish) |
-| Étape en cours | Lot D à finir : **courriers sans plan** (schéma 7) · smoke « Écrire » au retour |
-| Prochaine sous-étape | Table `pending_letters` + section Mes dossiers + bandeau accueil · puis E/F |
+| Étape en cours | Lot D à finir : **courriers sans plan** (schéma 7) |
+| Prochaine sous-étape | Table `pending_letters` + section Mes dossiers + bandeau accueil · smoke « Écrire » sur un vrai accord · puis E/F |
 | Audit premium | Code clos · punch list audit traitée |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -62,9 +62,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 **Tests :** suite déjà **198/198** (52 fichiers) au 6.32 — pas de nouveau test métier ici.  
 **Version :** inchangée `0.1.0-6.32`
 
+### 2026-10-21 — Smoke Galaxy retour (6.33 installé)
+
+**Device :** SM-S938B · APK release `0.1.0-6.33` (vCode 38) installé (était encore en 6.30).
+
+| Check | Résultat |
+|-------|----------|
+| Cold start / accueil octobre | ✅ |
+| EuroFormat (espace fine milliers sur Reste / À payer) | ✅ |
+| Menu · Réglages · version **6.33** | ✅ |
+| Menu sans « Mes dossiers » si 0 accord | ✅ (zéro pixel tenu) |
+| FATAL / crash logcat | ✅ aucun |
+| « Écrire » (mailto) | ⏳ pas d’accord avec e-mail sur l’appareil pour le geste |
+| Ligne Accord hauteur courte | ⏳ pas d’accord affiché ce mois |
+
 ### 2026-10-21 — 6.33 Mes dossiers (liste) + EuroFormat / mailto / polish
 
-**Contexte :** pause téléphone — suite code sans smoke device.
+**Contexte :** pause téléphone — suite code sans smoke device (smoke ajouté au retour, entrée ci-dessus).
 
 **Codé :**
 - Lot D **partiel** : Menu « Mes dossiers (N) » si N>0 · écran liste (barre, reste, hero € mois) · `ListDossiersUseCase`

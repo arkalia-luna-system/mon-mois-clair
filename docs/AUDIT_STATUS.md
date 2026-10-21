@@ -12,7 +12,8 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 6.27 sticky / Menu / fréquence / photo fiche | ✅ code + Galaxy |
 | 6.28 Voir la photo (bouton) | ✅ code + Galaxy |
 | Smoke Galaxy | ✅ partiel — table ci-dessous |
-| Lot C « Écrire » (mail) | ⏳ smoke téléphone encore ouvert |
+| Lot C « Écrire » (mail) | ⏳ code OK · geste réel à faire dès qu’un accord a un e-mail |
+| 6.33 install + EuroFormat + Menu | ✅ smoke retour 2026-10-21 |
 
 ## Smoke SM-S938B — 2026-10-21
 
@@ -30,5 +31,9 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 10 | Biométrie | ✅ manuel (humain) |
 | 11 | Sticky Sans les futures / Après courses | ✅ 6.27 |
 | 12 | Voir la photo sur la ligne | ✅ 6.28 |
+| 13 | Install **6.33** + Reste avec espace fine | ✅ retour pause |
+| 14 | Menu sans Mes dossiers si 0 accord | ✅ |
+| 15 | Réglages affiche version 6.33 | ✅ |
+| 16 | « Écrire » ouvre un vrai brouillon Mail | ⏳ (pas d’accord+e-mail sous la main) |
 
 Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.
