@@ -73,8 +73,9 @@ pas rejouer toute la bible à chaque tour.
 
 ## B) Validation VISUELLE device (obligatoire si téléphone branché)
 
-Installer l’APK debug à jour (`assembleDebug` → copier depuis le cache Gradle si besoin →
-`adb install -r`). Puis parcourir **chaque écran touché par le diff** + un coup d’œil Home.
+Téléphone famille : **release** signée (`./gradlew :app:assembleRelease` puis
+`adb install -r dist/MonMoisClair-release.apk`) — pas debug (signature incompatible).
+Dev local OK en debug. Puis matrice persona + écrans du diff.
 
 ### Checklist visuelle (cocher dans le rapport ce que TU as vu)
 
@@ -100,32 +101,37 @@ Preuves
 - Dump UI (`uiautomator`) et/ou screenshot dans `dist/verify/` (xml/json/md commitables ;
   png locaux OK mais souvent gitignorés).
 
-## Campagne 6.9+ (OBLIGATOIRE) + profil du jour
+## Matrice device (OBLIGATOIRE pour le persona) + carnet de base
 
-Exercer vraiment (pas survoler) — noter bug / inutile / sous-travaillé :
+Détail attendu = `CAMPAGNE_PRODUIT_FINI.md`. Au minimum selon persona :
 
-- [ ] Sticky : « Reste » + « À payer » lisibles sans scroll ; marque discrète
-- [ ] Factures **avant** Courses / divers
-- [ ] Barre basse : **Menu** + **+ Ajouter** ; pas Santé/Réglages dans le scroll liste
-- [ ] FAIT ✓ / Remettre → badge **FAIT le JJ/MM** ; « À payer » suit
-- [ ] Menu → calendrier 12 mois + Santé + Réglages
-- [ ] Éditer montant récurrent : défaut **ce mois-ci seul**
-- [ ] Jour = grille 1–31 ; montant = clavier décimal
-- [ ] **Divers + clavier ouvert** : +/− toujours tapables (`imePadding`)
-- [ ] Menu « Alertes » sur le bouton seulement si notifs/alarmes KO
-- [ ] Profil Null / Hostile : mois vide, `,,,`, double FAIT, mois passé
-- [ ] ≥3 frictions (obligation profil) + smoke scan/sauvegarde si device
+**Toujours (carnet)**
+- [ ] Sticky Reste + À payer ; factures avant courses
+- [ ] Menu + Ajouter en barre basse ; FAIT daté ; Remettre
+- [ ] Grille jours ; clavier décimal ; divers + clavier (`imePadding`)
+- [ ] Édition récurrente : défaut ce mois-ci seul
+- [ ] ≥3 frictions profil
 
-## Personas (menu — choisis 2 à 4 selon le diff)
+**Base vide / Maman**
+- [ ] 0 dossier → pas « Mes dossiers » ; pas bandeau courrier
+- [ ] Bloc retard/accord replié ; quitter sans reste = rien créé
 
-A. Première install — seulement si besoin from zero (`pm clear`, `RESET_TESTS_FROM_ZERO.md`)
-B. Usage mensuel (reste-à-vivre, liste, FAIT, nav mois)
-C. Droit à l’erreur (edit / delete confirm / mois suivants)
-D. Samsung (Santé, SAF retour, BackupWorker)
-E. Cas limites (virgule, clamp, clavier, double zone FAIT/édition)
-F. **Feature du diff** (ex. biométrie, Restore JSON, …) — toujours inclus si le diff la touche
-G. **Régression visuelle courte** : Home + un écran formulaire + un dialogue — 2 min
-H. **Fidélité 60 j** (campagne 6.8 ci-dessus) — toujours si release famille
+**Alex / Multi-dossiers**
+- [ ] Accord : pastille, cause, pas € dette sur Home
+- [ ] FAIT partial 30 sur 50 → reste −30
+- [ ] Soldé → plus de mois suivants
+- [ ] Copier comm. → 12 chiffres si valide ; Copier IBAN
+- [ ] Écrire → app Mail ; frais + Voir/Enlever photo
+- [ ] Pending : Ranger sans plan → bandeau → conversion
+
+**Médiateur**
+- [ ] Mettre de côté (alerte déficit) ; résumé 4 colonnes + mis de côté à part
+
+**Installateur**
+- [ ] SAF Documents ; backup/restore ; bio optionnelle sans blocage HW KO
+
+**Hostile / Null en plus**
+- [ ] Double FAIT / Annuler pendant save ; `,,,` ; mois passé ; double tap conversion
 
 ## Où écrire tes notes (obligatoire)
 

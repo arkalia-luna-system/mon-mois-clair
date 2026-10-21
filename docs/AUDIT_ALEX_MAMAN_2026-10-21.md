@@ -4,7 +4,8 @@ Date du premier constat : 2026-10-21.
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
 Dernière étape **fermée** dans le journal : **6.36** (`0.1.0-6.36`, `versionCode` 41), schéma **7**, tests **226/226** (`--rerun-tasks`).  
-Lots A–F tenus. Smokes Ultra (« Écrire », FAIT) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`AUDIT_STATUS.md`).
+Lots A–F tenus **à cette étape**. L’arbre a bougé après : lire la **§8** avant de croire un badge ou une case ✅.  
+Smokes Ultra (« Écrire », FAIT) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`AUDIT_STATUS.md`). Le S26 réel n’y est pas.
 
 Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
 Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
@@ -321,3 +322,76 @@ Corrigé dans le code (puis lot E clos au 6.35 avec suite complète) :
 - Deux boutons par courrier en plus (Voir / Enlever) tiennent sur une ligne quand la largeur le permet.
 - Lot E clos (journal 6.35).
 - Le contrôle IBAN et les correctifs d’après 6.36 sont dans la §8, pas dans les 226 tests.
+
+---
+
+## 8. Audit complet du 21 octobre, fin d’après-midi
+
+Cette section remplace la partie 7 pour décider. Les parties 1 à 6 restent l’historique du matin.
+
+### 8.1 Promesses
+
+| Promesse | Tenu ? |
+|----------|--------|
+| Lots A à F dans le journal jusqu’à 6.36 | Oui, avec la suite **226/226** de cette étape |
+| Badge ou README « 226/226 » = l’arbre d’aujourd’hui | **Non.** 59 fichiers, **229** méthodes `@Test`. Les 3 en plus et les correctifs du journal « après 6.36 » n’ont pas été exécutés |
+| `versionName` `0.1.0-6.36` | Oui, et il doit le rester tant que la suite n’est pas relancée |
+| « En retard » en capitales dans l’app | **Non.** L’écran et l’aide disent « En retard ». Le README a été aligné |
+| `dist/CHECKLIST_S25.md` prouve le 6.36 | **Non.** C’est le 19 octobre, version 5.4.1. Le smoke 6.36 est dans le journal et `AUDIT_STATUS.md` |
+| Rapports `dist/verify/*2026-10-20*` | Figés en **6.26**. Ils ne décrivent pas A–F |
+| « encore environ N mois si le versement reste de X » | **Absent.** Pas une case cochée |
+| Pastille « Facture », « Sans les futures », « fin prévue », « Huissier » | Absents de l’UI. Le libellé sticky actuel est « Hors à payer ». La ligne 11 de `AUDIT_STATUS` parle encore de l’ancien libellé : c’est le smoke du 6.27, pas le texte d’aujourd’hui |
+| Zéro pixel si zéro dossier | Presque. Écart accepté : le bouton replié sur une nouvelle dépense, et la section d’aide |
+
+### 8.2 Sécurité
+
+Pas de permission `INTERNET`. `allowBackup="false"`. Release minifiée. Keystore hors git.
+
+`FLAG_SECURE` seulement si le verrouillage biométrique est activé. Sans ce verrou, l’aperçu multitâche peut montrer le mois. C’est le choix « l’app s’ouvre sans code ».
+
+Les sauvegardes JSON et le ZIP de photos sont **en clair** dans Documents. Décision écrite dans `SECURITY.md`. Le partage (résumé, copie) quitte l’app vers Mail ou WhatsApp : le texte n’est plus sous notre contrôle.
+
+IBAN et communication : presse-papiers marqué sensible (Android 13+) et effacé au bout d’une minute. Un IBAN n’est copié que si la forme et le contrôle international passent.
+
+Composants exportés : l’activité lanceur, et le `BootReceiver` pour les intents système (démarrage, remplacement du paquet, heure). Les autres receivers et le FileProvider ne sont pas exportés.
+
+Pas de tests instrumentés (`androidTest` vide). Le lint CI ne bloque pas le push. Pas de scan CVE en garde.
+
+Le numéro de série de l’Ultra a été retiré de la checklist : il n’a pas à vivre dans le dépôt.
+
+### 8.3 Qualité du code
+
+Le domaine (reste, dossier, récurrence, backup, épargne) a des tests unitaires Robolectric / Room. Les écrans Compose n’en ont presque pas : un double appui ou un libellé se voient en relisant, pas dans la suite.
+
+Trous connus, acceptés et écrits dans l’aide : le motif des frais est le dernier seulement ; le mail est un brouillon, pas une boîte ; « Mettre de côté » est une facture, pas une cagnotte ; le résumé ne la range pas avec les dossiers.
+
+Correctifs dans l’arbre, hors suite verte : garde contre le double appui (fiche, ajout, courrier, conversion, échéance, courses, FAIT, restauration, résumé, copie), photo écrite après la vérification des frais, total « ce mois » des dossiers limité aux lignes vraiment dans le mois, fiche d’épargne déjà FAIT qui ne réécrit pas le montant à venir.
+
+### 8.4 Est-ce premium ?
+
+Pour maman et Alex, le geste premium est déjà le carnet : un gros reste, l’ordre par jour, FAIT, courses à part, pas de graphique, pas de banque, pas de total de dettes sur l’accueil. Ça, c’est tenu.
+
+Ce qui empêche de dire « produit fini premium » :
+
+1. La suite n’a pas été relancée sur le code d’après 6.36.
+2. Le S26 réel n’a pas été tenu. La sim. 360×780 + police 1,3 a vu la pastille Accord et un FAIT de 48 dp.
+3. La phrase « encore environ N mois si… » n’existe pas. Mieux vaut l’absence qu’une date certaine. Si on l’ajoute, elle doit contenir « si ».
+4. Trois lettres de frais : une somme et le dernier motif. Les photos en plus compensent en partie.
+5. La pastille Accord est volontairement discrète (encre sur fond chaud). Lisible sur la sim., pas mesurée au contraste sur le téléphone de maman.
+
+À ne pas ajouter pour « faire plus premium » : enveloppes, courbe, snowball, taux, PDF CPAS, onglet dettes, puce Huissier.
+
+### 8.5 Fichiers
+
+| Fichier | Rôle maintenant |
+|---------|-----------------|
+| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. La charte suit le 6.36. Le journal a une entrée **non close** pour l’après |
+| `docs/PLAN_PRODUIT_FINI.md` | Construction A–F. Le §7 dit ce qui n’est pas livré |
+| `docs/AUDIT_STATUS.md` | Carnet de smoke. Pas un substitut du code |
+| `docs/archive/*` | Figé. Ne pas s’en servir pour l’état |
+| `docs/testeurs/*` | Prompts de campagne. Pas l’état du produit |
+| `dist/verify/*2026-10-20*` | Campagne 6.26. Bandeau en tête |
+| `dist/CHECKLIST_S25.md` | Passage du 19 oct. Bandeau en tête |
+| `SECURITY.md` | Modèle de menace, complété par la §8.2 |
+
+Pas de second audit premium à rouvrir. Pas de doublon de plan à créer.

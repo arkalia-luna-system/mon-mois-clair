@@ -1,8 +1,9 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit : **6.36** (`0.1.0-6.36`, schéma Room **7**, **226/226** tests).  
-Dossiers / accords : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.  
+Journal produit fermé : **6.36** (`0.1.0-6.36`, schéma Room **7**, suite verte **226/226**).  
+Des correctifs sont dans l’arbre **après** cette suite : ils ne sont pas re-smokés. Voir l’audit §8.  
+Dossiers / accords : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
 
 | Vague | État |
