@@ -205,7 +205,7 @@ fun HomeScreen(
             faitUndoActive = true
             try {
                 val result = snackbarHostState.showSnackbar(
-                    message = if (markingDone) "Marqué FAIT" else "Remis à payer",
+                    message = if (markingDone) "Noté FAIT" else "Remis à payer",
                     actionLabel = "Annuler",
                     duration = SnackbarDuration.Long
                 )
@@ -374,17 +374,19 @@ fun HomeScreen(
                         onClick = viewModel::nextMonth
                     )
                 }
+                val remainingTitle = if (state.summary.remainingCents < 0L) {
+                    "Déficit après factures"
+                } else {
+                    "Reste après factures"
+                }
+                val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
                 Text(
-                    text = if (state.summary.remainingCents < 0L) {
-                        "Déficit après factures"
-                    } else {
-                        "Reste après factures"
-                    },
+                    text = remainingTitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted
                 )
                 Text(
-                    text = MoneyFormat.formatCents(state.summary.remainingCents),
+                    text = remainingAmount,
                     style = MaterialTheme.typography.displayLarge.copy(
                         fontSize = fit.remainingAmountSp.sp,
                         lineHeight = (fit.remainingAmountSp + 4f).sp,
@@ -393,6 +395,9 @@ fun HomeScreen(
                     color = when {
                         state.summary.remainingCents < 0L -> A11yTokens.AccentDanger
                         else -> A11yTokens.Ink
+                    },
+                    modifier = Modifier.semantics {
+                        contentDescription = "$remainingTitle : $remainingAmount"
                     }
                 )
                 stickyStillToPayLabel(
