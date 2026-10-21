@@ -185,10 +185,8 @@ fun DossiersScreen(
                         heroShape
                     )
                     .padding(horizontal = 14.dp, vertical = 12.dp)
-                    .semantics {
-                        liveRegion = LiveRegionMode.Polite
-                        contentDescription = heroLabel
-                    }
+                    // liveRegion seul : contentDescription = texte → TalkBack lisait 2×.
+                    .semantics { liveRegion = LiveRegionMode.Polite }
             )
 
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {

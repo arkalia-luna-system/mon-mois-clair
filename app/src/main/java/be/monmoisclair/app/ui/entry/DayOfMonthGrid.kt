@@ -28,7 +28,8 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 /**
- * Jours 1–31 en grosses cibles (≥ 48 dp).
+ * Jours 1–31 en cibles ≥ 48 dp, sans grossir au-delà (sinon la grille
+ * mange Enregistrer / force un demi-rangée coupée sous le pli Ultra).
  * Sur un S26 (~360 dp), 7 colonnes de 48 dp ne tiennent pas : la grille se replie.
  * Les mois courts clampent en silence côté moteur — on le dit sous la grille.
  */
@@ -41,7 +42,8 @@ fun DayOfMonthGrid(
     enabled: Boolean = true
 ) {
     val fit = rememberDisplayFit()
-    val dayGap = if (fit.compactHomeChrome) 6.dp else 8.dp
+    // Écart serré : 31 cases doivent pouvoir défiler sans masquer Enregistrer.
+    val dayGap = if (fit.compactHomeChrome) 4.dp else 6.dp
     val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     Column(modifier = modifier) {
         Text(
@@ -62,7 +64,12 @@ fun DayOfMonthGrid(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                        // Taille fixe 48 dp : le padding interne gonflait à ~64 dp
+                        // et coupait les jours 21–25 sous Enregistrer (campagne device).
+                        .defaultMinSize(
+                            minWidth = A11yTokens.minTouchHeight,
+                            minHeight = A11yTokens.minTouchHeight
+                        )
                         .alpha(if (enabled) 1f else 0.45f)
                         .clip(shape)
                         .background(bg, shape)
@@ -84,7 +91,6 @@ fun DayOfMonthGrid(
                             role = Role.RadioButton,
                             onClick = { onSelect(day) }
                         )
-                        .padding(horizontal = 8.dp, vertical = 8.dp)
                 ) {
                     Text(
                         text = day.toString(),
@@ -94,6 +100,12 @@ fun DayOfMonthGrid(
                 }
             }
         }
+        Text(
+            text = "Faites défiler pour voir tous les jours (1 à 31).",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted,
+            modifier = Modifier.padding(top = 6.dp)
+        )
         if (selectedDay != null && selectedDay > 28) {
             Spacer(Modifier.height(8.dp))
             val tipShape = MaterialTheme.shapes.medium

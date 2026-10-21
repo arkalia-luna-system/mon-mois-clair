@@ -147,6 +147,8 @@ fun AddEntryScreen(
         }
     )
     var showReceiptDialog by remember { mutableStateOf(false) }
+    // Déplier « retard ou accord » sans rien saisir ≠ sale (C6 / Senior :
+    // curiosité puis Annuler ne doit pas ouvrir « quitter sans sauver »).
     val dirty = state.label.isNotBlank() ||
         state.amountText.isNotBlank() ||
         state.paymentNote.isNotBlank() ||
@@ -154,9 +156,10 @@ fun AddEntryScreen(
         pendingPreview != null ||
         state.recurrence != RecurrenceChoice.Once ||
         state.isAutoDebit ||
-        state.dossierExpanded ||
         state.causeLabel.isNotBlank() ||
         state.openingRemainingText.isNotBlank() ||
+        state.iban.isNotBlank() ||
+        state.creditorEmail.isNotBlank() ||
         !state.isExpense ||
         state.dayText != be.monmoisclair.app.domain.AppClock.today().dayOfMonth.toString()
 
@@ -1504,7 +1507,9 @@ private fun EntryFormScaffold(
                         }
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            // Marge basse dans le scroll : le dernier rang de jours / champs
+            // ne reste pas à moitié coupé juste au-dessus d’Enregistrer.
+            Spacer(modifier = Modifier.height(A11yTokens.minTouchHeight))
         }
 
         error?.let {
