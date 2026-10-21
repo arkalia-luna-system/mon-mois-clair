@@ -17,6 +17,8 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | BootReceiver : debounce 2 min sur `TIME_SET` | `BootReceiver.kt` |
 | P2 | Copy biométrie / onboarding / scan a11y / MIME restore | Settings, Permissions, Scan, RestoreBackupScreen |
 | P2 | Messages restore sans jargon technique en UI | `BackupRestorer`, `RestoreBackupViewModel` |
+| P2 | Alertes : ligne santé TalkBack + chemin Samsung | `HealthStatusRow`, `ReminderHealthScreen` |
+| P2 | Verrou : message d’échec en live region assertive | `BiometricLockScreen` |
 
 ## Encore ouvert (plus tard)
 
