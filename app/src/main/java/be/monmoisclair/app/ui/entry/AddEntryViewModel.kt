@@ -91,6 +91,8 @@ class AddEntryViewModel @Inject constructor(
     )
     val state: StateFlow<EntryFormState> = _state.asStateFlow()
     @Volatile private var pendingBitmap: Bitmap? = null
+    /** Évite un 2ᵉ insert si la photo a échoué après un 1ᵉr enregistrement OK. */
+    @Volatile private var createdInstanceId: String? = null
 
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
@@ -121,7 +123,14 @@ class AddEntryViewModel @Inject constructor(
     fun setOpeningRemainingText(v: String) = _state.update {
         it.copy(openingRemainingText = v, error = null)
     }
-    fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
+    fun attachPreviewBitmap(b: Bitmap) {
+        pendingBitmap = b
+        _state.update { it.copy(hasPendingPhoto = true, error = null) }
+    }
+
+    fun setPhotoDecodeError() = _state.update {
+        it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
+    }
 
     fun copyPaymentNote() {
         val prepared = BelgianStructuredCommunication.prepareCopy(_state.value.paymentNote)
@@ -167,6 +176,11 @@ class AddEntryViewModel @Inject constructor(
 
     fun save() {
         viewModelScope.launch {
+            val existingId = createdInstanceId
+            if (existingId != null) {
+                retryPhotoOnly(existingId)
+                return@launch
+            }
             val s = _state.value
             if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
                 _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
@@ -236,46 +250,16 @@ class AddEntryViewModel @Inject constructor(
                 )
             ) {
                 is AddEntryResult.Success -> {
-                    val photoFailed = pendingBitmap?.let { bmp ->
-                        runCatching {
-                            val expense = instanceDao.getExpenseById(result.instanceId)
-                            if (expense != null) {
-                                val instancePath = receiptPhotos.saveBitmap(expense.id, bmp)
-                                val templateId = expense.templateId
-                                val canonical = templateId?.let { receiptPhotos.saveBitmap(it, bmp) }
-                                mutatingRepository.mutate {
-                                    instanceDao.getExpenseById(expense.id)?.let {
-                                        instanceDao.updateExpense(
-                                            it.copy(receiptRelativePath = instancePath)
-                                        )
-                                    }
-                                    if (templateId != null && canonical != null) {
-                                        templateDao.getExpenseById(templateId)?.let { tpl ->
-                                            templateDao.updateExpense(
-                                                tpl.copy(receiptRelativePath = canonical)
-                                            )
-                                        }
-                                    }
-                                }
-                            } else {
-                                val canonical = receiptPhotos.saveBitmap(result.instanceId, bmp)
-                                mutatingRepository.mutate {
-                                    templateDao.getExpenseById(result.instanceId)?.let { tpl ->
-                                        templateDao.updateExpense(
-                                            tpl.copy(receiptRelativePath = canonical)
-                                        )
-                                    }
-                                }
-                            }
-                        }.isFailure
-                    } == true
+                    createdInstanceId = result.instanceId
+                    val photoFailed = !attachPendingPhoto(result.instanceId)
                     pendingBitmap = null
                     _state.update {
                         it.copy(
                             saving = false,
                             saved = !photoFailed,
                             error = if (photoFailed) {
-                                "La facture est notée, mais la photo n’a pas pu être enregistrée."
+                                "Facture enregistrée. La photo n’a pas suivi — " +
+                                    "reprenez-en une, puis Enregistrer."
                             } else {
                                 null
                             }
@@ -286,5 +270,62 @@ class AddEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, error = result.message) }
             }
         }
+    }
+
+    private suspend fun retryPhotoOnly(instanceId: String) {
+        val bmp = pendingBitmap
+        if (bmp == null) {
+            _state.update {
+                it.copy(
+                    error = "Reprenez une photo, puis Enregistrer.",
+                    saving = false
+                )
+            }
+            return
+        }
+        _state.update { it.copy(saving = true, error = null) }
+        val ok = attachPendingPhoto(instanceId)
+        pendingBitmap = null
+        _state.update {
+            it.copy(
+                saving = false,
+                saved = ok,
+                error = if (ok) {
+                    null
+                } else {
+                    "La photo n’a pas pu être enregistrée. Réessayez."
+                }
+            )
+        }
+    }
+
+    /** @return false si une photo était en attente et que l’écriture a échoué. */
+    private suspend fun attachPendingPhoto(instanceId: String): Boolean {
+        val bmp = pendingBitmap ?: return true
+        return runCatching {
+            val expense = instanceDao.getExpenseById(instanceId)
+            if (expense != null) {
+                val instancePath = receiptPhotos.saveBitmap(expense.id, bmp)
+                val templateId = expense.templateId
+                val canonical = templateId?.let { receiptPhotos.saveBitmap(it, bmp) }
+                mutatingRepository.mutate {
+                    instanceDao.getExpenseById(expense.id)?.let {
+                        instanceDao.updateExpense(it.copy(receiptRelativePath = instancePath))
+                    }
+                    if (templateId != null && canonical != null) {
+                        templateDao.getExpenseById(templateId)?.let { tpl ->
+                            templateDao.updateExpense(tpl.copy(receiptRelativePath = canonical))
+                        }
+                    }
+                }
+            } else {
+                val canonical = receiptPhotos.saveBitmap(instanceId, bmp)
+                mutatingRepository.mutate {
+                    templateDao.getExpenseById(instanceId)?.let { tpl ->
+                        templateDao.updateExpense(tpl.copy(receiptRelativePath = canonical))
+                    }
+                }
+            }
+        }.isSuccess
     }
 }

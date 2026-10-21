@@ -1,9 +1,14 @@
 package be.monmoisclair.app.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -18,6 +23,7 @@ import be.monmoisclair.app.ui.home.HomeScreen
 import be.monmoisclair.app.ui.onboarding.PermissionsSetupScreen
 import be.monmoisclair.app.ui.onboarding.SafSetupScreen
 import be.monmoisclair.app.ui.restore.RestoreBackupScreen
+import be.monmoisclair.app.ui.scan.EpcScanHandoff
 import be.monmoisclair.app.ui.scan.ScanEpcScreen
 import be.monmoisclair.app.ui.settings.HowItWorksScreen
 import be.monmoisclair.app.ui.settings.SettingsScreen
@@ -96,15 +102,22 @@ fun AppNavHost(
             route = AppRoute.AddEntry,
             arguments = listOf(navArgument("ym") { type = NavType.StringType })
         ) { entry ->
-            val epcRaw by entry.savedStateHandle
-                .getStateFlow<String?>("epc_raw", null)
-                .collectAsStateWithLifecycle()
+            var epcRaw by remember { mutableStateOf<String?>(null) }
+            DisposableEffect(entry) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        EpcScanHandoff.take()?.let { epcRaw = it }
+                    }
+                }
+                entry.lifecycle.addObserver(observer)
+                onDispose { entry.lifecycle.removeObserver(observer) }
+            }
             AddEntryScreen(
                 onDone = { navController.popBackStack() },
                 onCancel = { navController.popBackStack() },
                 onScanEpc = { navController.navigate(AppRoute.ScanEpc) },
                 epcRawResult = epcRaw,
-                onEpcRawConsumed = { entry.savedStateHandle.remove<String>("epc_raw") }
+                onEpcRawConsumed = { epcRaw = null }
             )
         }
         composable(
@@ -119,7 +132,7 @@ fun AppNavHost(
         composable(AppRoute.ScanEpc) {
             ScanEpcScreen(
                 onResult = { raw ->
-                    navController.previousBackStackEntry?.savedStateHandle?.set("epc_raw", raw)
+                    EpcScanHandoff.offer(raw)
                     navController.popBackStack()
                 },
                 onCancel = { navController.popBackStack() }
@@ -132,15 +145,22 @@ fun AppNavHost(
                 navArgument("isExpense") { type = NavType.StringType }
             )
         ) { entry ->
-            val epcRaw by entry.savedStateHandle
-                .getStateFlow<String?>("epc_raw", null)
-                .collectAsStateWithLifecycle()
+            var epcRaw by remember { mutableStateOf<String?>(null) }
+            DisposableEffect(entry) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
+                        EpcScanHandoff.take()?.let { epcRaw = it }
+                    }
+                }
+                entry.lifecycle.addObserver(observer)
+                onDispose { entry.lifecycle.removeObserver(observer) }
+            }
             EditEntryScreen(
                 onDone = { navController.popBackStack() },
                 onCancel = { navController.popBackStack() },
                 onScanEpc = { navController.navigate(AppRoute.ScanEpc) },
                 epcRawResult = epcRaw,
-                onEpcRawConsumed = { entry.savedStateHandle.remove<String>("epc_raw") }
+                onEpcRawConsumed = { epcRaw = null }
             )
         }
     }

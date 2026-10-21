@@ -35,6 +35,7 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Empty mois + notif undo plus humaines | `HomeScreen`, `PaymentNotificationHelper` |
 | P2 | Statut sauvegarde en live region (Réglages) | `SettingsScreen` |
 | P2 | Boutons secondaire / danger : haptique + bordure FieldLine | `A11yButton` |
+| P1 | Scan QR : handoff mémoire (pas SavedStateHandle) | `EpcScanHandoff`, `AppNavHost` |
 | P2 | Test `DisplayFit` compact ≤ 800 dp | `DisplayFitTest` |
 | P1 | Lot C : voir / enlever courriers en plus + aide | `EntryFormScreen`, `EditEntryViewModel`, `UpdateInstanceUseCase` |
 | P2 | CI : bloc `concurrency` retiré (plus de faux « cancelled ») | `.github/workflows/ci.yml`, `docs/CI.md` |

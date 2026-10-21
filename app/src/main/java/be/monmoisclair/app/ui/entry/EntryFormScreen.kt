@@ -71,7 +71,10 @@ import java.io.File
 
 /** Capture plein cadre (pas la miniature TakePicturePreview). */
 @Composable
-private fun rememberFullPhotoCapture(onBitmap: (Bitmap) -> Unit): () -> Unit {
+private fun rememberFullPhotoCapture(
+    onBitmap: (Bitmap) -> Unit,
+    onDecodeFailed: () -> Unit = {}
+): () -> Unit {
     val context = LocalContext.current
     var pendingFile by remember { mutableStateOf<File?>(null) }
     val launcher = rememberLauncherForActivityResult(
@@ -85,12 +88,9 @@ private fun rememberFullPhotoCapture(onBitmap: (Bitmap) -> Unit): () -> Unit {
             return@rememberLauncherForActivityResult
         }
         if (file == null || !file.exists()) return@rememberLauncherForActivityResult
-        runCatching {
-            file.inputStream().use { stream ->
-                BitmapFactory.decodeStream(stream)?.let(onBitmap)
-            }
-        }
+        val decoded = runCatching { decodeCameraJpegBounded(file) }.getOrNull()
         file.delete()
+        if (decoded != null) onBitmap(decoded) else onDecodeFailed()
     }
     return {
         val cameraDir = File(context.cacheDir, "camera").also { it.mkdirs() }
@@ -105,6 +105,18 @@ private fun rememberFullPhotoCapture(onBitmap: (Bitmap) -> Unit): () -> Unit {
     }
 }
 
+/** Évite OOM sur un JPEG caméra très lourd (borne ~2048 px). */
+private fun decodeCameraJpegBounded(file: File): Bitmap? {
+    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    BitmapFactory.decodeFile(file.absolutePath, bounds)
+    if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+    val longest = maxOf(bounds.outWidth, bounds.outHeight)
+    var sample = 1
+    while (longest / sample > 2048) sample *= 2
+    val opts = BitmapFactory.Options().apply { inSampleSize = sample }
+    return BitmapFactory.decodeFile(file.absolutePath, opts)
+}
+
 @Composable
 fun AddEntryScreen(
     onDone: () -> Unit,
@@ -117,10 +129,15 @@ fun AddEntryScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
     var confirmLeave by remember { mutableStateOf(false) }
-    val takePhoto = rememberFullPhotoCapture { bmp ->
-        pendingPreview = bmp
-        viewModel.attachPreviewBitmap(bmp)
-    }
+    val takePhoto = rememberFullPhotoCapture(
+        onBitmap = { bmp ->
+            pendingPreview = bmp
+            viewModel.attachPreviewBitmap(bmp)
+        },
+        onDecodeFailed = {
+            viewModel.setPhotoDecodeError()
+        }
+    )
     var showReceiptDialog by remember { mutableStateOf(false) }
     val dirty = state.label.isNotBlank() ||
         state.amountText.isNotBlank() ||
@@ -293,8 +310,10 @@ fun EditEntryScreen(
             Intent.ACTION_SENDTO,
             Uri.parse(CreditorMailComposer.mailtoUri(draft))
         )
-        runCatching { context.startActivity(Intent.createChooser(intent, "Écrire")) }
-        viewModel.consumeMailDraft()
+        val launched = runCatching {
+            context.startActivity(Intent.createChooser(intent, "Écrire"))
+        }.isSuccess
+        if (launched) viewModel.consumeMailDraft() else viewModel.mailLaunchFailed()
     }
     val dirty = baseline?.let { b ->
         state.label != b.label ||
@@ -385,10 +404,13 @@ fun EditEntryScreen(
     }
 
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
-    val takePhoto = rememberFullPhotoCapture { bmp ->
-        pendingPreview = bmp
-        viewModel.attachPreviewBitmap(bmp)
-    }
+    val takePhoto = rememberFullPhotoCapture(
+        onBitmap = { bmp ->
+            pendingPreview = bmp
+            viewModel.attachPreviewBitmap(bmp)
+        },
+        onDecodeFailed = { viewModel.setPhotoDecodeError() }
+    )
     var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
     /** null = fermé ; "" = aperçu en attente / photo principale ; sinon chemin d’un courrier en plus. */
     var dialogPath by remember { mutableStateOf<String?>(null) }

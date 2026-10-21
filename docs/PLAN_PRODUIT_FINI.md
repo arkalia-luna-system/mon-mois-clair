@@ -68,7 +68,7 @@ Le comportement ci-dessous est dans le code. Deux précisions apparues en le vé
 
 ### Lot B — Le dossier, replié — clos au journal 6.31
 
-Le comportement ci-dessous est dans le code. Le reste inclut désormais les frais ajoutés (colonne du lot C) : départ + frais − FAIT. Trou restant : modifier le montant du mois **après** que le mois suivant a été retiré ne recrée pas la ligne. « Remettre » ne la recrée que s’il reste un reliquat une fois le montant de ce mois réservé.
+Le comportement ci-dessous est dans le code. Le reste inclut désormais les frais ajoutés (colonne du lot C) : départ + frais − FAIT. Sync futures : `AgreementFuturesSync` recrée/efface aussi après édition montant ou frais (même si la ligne est encore DONE) — trou audit 7.4 fermé.
 
 **Problème.** Un seul nom. Pas de reste. La ligne continue après la fin de la dette.
 

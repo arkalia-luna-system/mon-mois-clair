@@ -19,6 +19,12 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Scan QR : handoff mémoire (plus de SavedStateHandle)
+
+**Codé :** `EpcScanHandoff` branché dans `AppNavHost` (offer au scan, take au ON_RESUME ajout/édition) · IBAN/référence ne persistent plus dans le SavedState · test unitaire offer/take.
+
+**Version :** inchangée `0.1.0-6.32`
+
 ### 2026-10-21 — Polish UI/a11y + EuroFormat + mailto (sécurisé pause)
 
 **Codé (agents) :** TalkBack (onboarding, Alertes, menu mois, grille jours, erreurs, live regions) · pastilles compactes · empty « Rien encore ce mois » · boutons haptique / FieldLine · notif undo humaine · `EuroFormat` + mailto query · garde IBAN sans reste à l’ajout · sync futures déjà poussée (`6fca55a`).
