@@ -37,7 +37,7 @@ Les smokes notés au journal (notification, trimestriel, « Écrire », hauteur 
 4. **Les centimes FAIT font foi.** Pas un compteur « mois 4 sur 12 » qui ment si le montant a changé.
 5. **Les courriers et la référence vivent sur le modèle**, et chaque nouveau mois les reprend.
 6. **Un seul bouton plein** par écran. Le reste en trait.
-7. **Le schéma bouge avec les colonnes**, le même jour : migration, backup, tests de restauration, puis journal. Pas de colonne « en avance » dans le JSON. A = 4, B = 5, C = 6 (clos).
+7. **Le schéma bouge avec les colonnes**, le même jour : migration, backup, tests de restauration, puis journal. Pas de colonne « en avance » dans le JSON. A = 4, B = 5, C = 6, D = 7 (clos au journal). E n’a pas ajouté de colonne : le marqueur est dans `app_meta`.
 8. **Pas de `if (S25)`.** `DisplayFit` suffit. On vérifie une hauteur courte (S26) et une hauteur confort (Ultra).
 9. **Phrases de la recherche §9.** Pas de menace de saisie. Pas de date de fin sans « si ».
 
@@ -203,18 +203,23 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 | Deux restes (colonne + calcul) qui divergent | Une seule source : calcul. Pas de colonne « reste actuel » |
 | La photo modèle + la photo du mois se contredisent | Le mois affiche la sienne s’il en a une, sinon celle du modèle |
 | Archive ZIP > 45 Mo à cause des lettres | Plafond déjà là. Qualité baissée au-dessus de ~400 Ko (`ReceiptPhotoStore`). On ne stocke pas l’original 12 Mpx |
-| Schéma 6 (clos 6.32) | Room ne redescend pas : un téléphone en 6 ne peut plus installer un APK figé en schéma 5 |
+| Schéma 7 (clos 6.34) | Room ne redescend pas : un téléphone en 7 ne rouvre pas un APK figé en 6 |
 | Motif de frais = dernier seulement | Accepté au C (aide). Liste datée = chantier séparé, pas D |
 | Maman active « Mettre de côté » trop haut | Alerte déficit **avant** enregistrement |
 | Le résumé part par WhatsApp (pas chiffré de bout en bout selon les réglages) | Le bouton dit « à envoyer à un créancier ou à un conseiller », pas « partager à tout le monde ». On ne peut pas empêcher le geste. On n’y met pas l’identité |
-| Promesse de date | Phrase avec « si ». Test qui échoue si l’UI contient « fin prévue » sans condition |
+| Promesse de date | La phrase « encore environ N mois si… » **n’est pas à l’écran**. Il n’y a pas non plus de « fin prévue ». Ne pas cocher ce point comme livré |
 
 ---
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F clos** (`0.1.0-6.36`, schéma 7, 226 tests) : plan produit fini côté code.
+**A–F clos** au journal (`0.1.0-6.36`, schéma 7, suite verte **226/226**). Le plan de construction est tenu dans le code de cette étape.
 
-**Prochain geste** : — (A–F + smokes Ultra / hauteur courte §5.10 clos). Polish si le vrai S26 maman diverge.
+**Pas clos, et il ne faut pas l’écrire comme fait :**
+- la phrase « encore environ N mois si le versement reste de X » (prévue au principe 9, absente de l’écran) ;
+- une suite Gradle sur les correctifs d’après 6.36 (journal, entrée non close) ;
+- le S26 de maman en main.
+
+**Prochain geste** : une seule suite `./gradlew :app:testDebugUnitTest --rerun-tasks`. Si elle est verte, le journal peut alors parler d’une nouvelle étape. Pas avant.
 
 Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.

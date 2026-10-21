@@ -224,6 +224,7 @@ fun EditTemplateScreen(
 
     val fit = rememberDisplayFit()
     val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
+    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -248,8 +249,8 @@ fun EditTemplateScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, hintShape)
                     .background(A11yTokens.PaperCard, hintShape)
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                    .padding(tipPad),
+                verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 4.dp else 6.dp)
             ) {
                 Text(
                     text = state.intervalHint,

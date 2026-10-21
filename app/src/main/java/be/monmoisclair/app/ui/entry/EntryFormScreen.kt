@@ -855,9 +855,10 @@ private fun EntryFormScaffold(
 
             if (showRecurring) {
                 @OptIn(ExperimentalLayoutApi::class)
+                val chipGap = if (fit.compactHomeChrome) 6.dp else 8.dp
                 FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(chipGap),
+                    verticalArrangement = Arrangement.spacedBy(chipGap)
                 ) {
                     TypeChip("Dépense (−)", selected = isExpense) { onExpense(true) }
                     TypeChip("Revenu (+)", selected = !isExpense) { onExpense(false) }
@@ -907,7 +908,7 @@ private fun EntryFormScaffold(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, savingsShape)
                         .background(A11yTokens.PaperWarm, savingsShape)
-                        .padding(12.dp),
+                        .padding(tipPad),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
@@ -961,7 +962,7 @@ private fun EntryFormScaffold(
                             .fillMaxWidth()
                             .border(1.dp, A11yTokens.PaperBorder, freqTipShape)
                             .background(A11yTokens.PaperWarm, freqTipShape)
-                            .padding(12.dp)
+                            .padding(tipPad)
                     )
                 }
                 @OptIn(ExperimentalLayoutApi::class)
@@ -1035,7 +1036,7 @@ private fun EntryFormScaffold(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, autoTipShape)
                         .background(A11yTokens.PaperCard, autoTipShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                 )
             }
             if (showDossierSection) {
@@ -1054,7 +1055,7 @@ private fun EntryFormScaffold(
                             .fillMaxWidth()
                             .border(1.dp, A11yTokens.PaperBorder, dossierShape)
                             .background(A11yTokens.PaperCard, dossierShape)
-                            .padding(12.dp),
+                            .padding(tipPad),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                     if (isSettled) {
@@ -1067,7 +1068,7 @@ private fun EntryFormScaffold(
                                 .fillMaxWidth()
                                 .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), settledShape)
                                 .background(A11yTokens.PaperWarm, settledShape)
-                                .padding(12.dp)
+                                .padding(tipPad)
                         )
                     }
                     remainingCents?.let { rem ->
@@ -1260,7 +1261,7 @@ private fun EntryFormScaffold(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, paperShape)
                         .background(A11yTokens.PaperCard, paperShape)
-                        .padding(12.dp),
+                        .padding(tipPad),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                 if (onScanEpc != null) {
@@ -1448,7 +1449,7 @@ private fun EntryFormScaffold(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, followShape)
                         .background(A11yTokens.PaperWarm, followShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                 )
             }
 
@@ -1471,7 +1472,7 @@ private fun EntryFormScaffold(
                             if (warn) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
                             infoShape
                         )
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = it
@@ -1491,7 +1492,7 @@ private fun EntryFormScaffold(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
                     .background(A11yTokens.PaperWarm, errShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
                     .semantics {
                         liveRegion = LiveRegionMode.Assertive
                         contentDescription = it

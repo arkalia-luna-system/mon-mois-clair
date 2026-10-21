@@ -308,7 +308,7 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Lot E — Mettre de côté | Clos **6.35** |
 | Lot F — résumé | Clos **6.36** — **226/226** |
 
-Prochaine action utile : polish au fil de l’eau si un vrai S26 maman diverge. Pas de pastille « Huissier ».
+La suite de cette table est la §8. Pas de pastille « Huissier ».
 
 ### 7.7 Passe du 21 octobre, après-midi
 
@@ -320,3 +320,4 @@ Corrigé dans le code (puis lot E clos au 6.35 avec suite complète) :
 - Copier l’IBAN enlève les espaces et met en majuscules. L’écran garde la saisie.
 - Deux boutons par courrier en plus (Voir / Enlever) tiennent sur une ligne quand la largeur le permet.
 - Lot E clos (journal 6.35).
+- Le contrôle IBAN et les correctifs d’après 6.36 sont dans la §8, pas dans les 226 tests.
