@@ -61,6 +61,8 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Alertes / permissions : busy + Samsung encadrés | Health, Permissions |
 | P2 | Modèle : mois ancre TalkBack radio | `EditTemplateScreen` |
 | P2 | WIP courriers : intros cartes (non commit) | PendingLetterForm, Convert |
+| P2 | Formulaire : info/erreur/suivi mois en cartes | `EntryFormScreen` |
+| P2 | Notifs : copy canal + FAIT ✓ / Remettre | `strings.xml` |
 
 ## Encore ouvert (plus tard)
 

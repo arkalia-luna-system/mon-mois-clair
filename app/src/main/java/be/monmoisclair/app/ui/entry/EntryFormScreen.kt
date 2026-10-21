@@ -1219,41 +1219,61 @@ private fun EntryFormScaffold(
                     label = "Aussi les mois suivants",
                     onChecked = onApplyFollowing
                 )
+                val followShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Laissé décoché : montant et photo de ce mois seulement. " +
                         "La communication suit déjà les mois suivants.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, followShape)
+                        .background(A11yTokens.PaperWarm, followShape)
+                        .padding(12.dp)
                 )
             }
 
             infoMessage?.let {
+                val infoShape = MaterialTheme.shapes.medium
+                val warn = it == BelgianStructuredCommunication.VERIFY_ON_MAIL
                 Text(
                     text = it,
-                    color = if (it == BelgianStructuredCommunication.VERIFY_ON_MAIL) {
-                        A11yTokens.AccentWarn
-                    } else {
-                        A11yTokens.AccentOk
-                    },
+                    color = if (warn) A11yTokens.AccentWarn else A11yTokens.AccentOk,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.semantics {
-                        liveRegion = LiveRegionMode.Polite
-                        contentDescription = it
-                    }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            1.dp,
+                            if (warn) A11yTokens.AccentWarn.copy(alpha = 0.4f)
+                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            infoShape
+                        )
+                        .background(A11yTokens.PaperWarm, infoShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Polite
+                            contentDescription = it
+                        }
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
         }
 
         error?.let {
+            val errShape = MaterialTheme.shapes.medium
             Text(
                 text = it,
                 color = A11yTokens.AccentDanger,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics {
-                    liveRegion = LiveRegionMode.Assertive
-                    contentDescription = it
-                }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                    .background(A11yTokens.PaperWarm, errShape)
+                    .padding(12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Assertive
+                        contentDescription = it
+                    }
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
