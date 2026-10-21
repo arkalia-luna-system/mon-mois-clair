@@ -791,20 +791,29 @@ private fun DayBadge(label: String) {
 private fun StatusChip(
     text: String,
     container: Color,
-    content: Color
+    content: Color,
+    outlined: Boolean = false
 ) {
+    val shape = MaterialTheme.shapes.medium
     Text(
         text = text,
         color = content,
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
-            .background(container, MaterialTheme.shapes.medium)
+            .semantics { contentDescription = "Statut : $text" }
+            .then(
+                if (outlined) Modifier.border(1.dp, A11yTokens.FieldLine, shape)
+                else Modifier
+            )
+            .background(container, shape)
             .padding(horizontal = 8.dp, vertical = 4.dp)
     )
 }
 
 @Composable
 private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
+    val fit = rememberDisplayFit()
+    val rowPad = if (fit.compactHomeChrome) 8.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
     Surface(
         color = A11yTokens.PaperCard,
@@ -818,9 +827,9 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
                 .fillMaxWidth()
                 .heightIn(min = A11yTokens.minTouchHeight)
                 .clickable(onClickLabel = "Modifier", onClick = onClick)
-                .padding(12.dp),
+                .padding(rowPad),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             DayBadge(item.dayLabel)
             Column(modifier = Modifier.weight(1f)) {
@@ -849,6 +858,8 @@ private fun ExpenseRow(
     onCopyNote: () -> Unit,
     onOpenReceipt: () -> Unit
 ) {
+    val fit = rememberDisplayFit()
+    val rowPad = if (fit.compactHomeChrome) 8.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
     val bg = when {
         item.isDone -> A11yTokens.AccentOkSoft
@@ -869,9 +880,9 @@ private fun ExpenseRow(
             .then(borderMod)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(rowPad),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             DayBadge(item.dayLabel)
             Column(
@@ -960,7 +971,8 @@ private fun ExpenseStatusLine(
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         if (showAgreement) {
-            StatusChip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink)
+            // Contour FieldLine : pastille discrète mais lisible sur papier court / texte large.
+            StatusChip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true)
         }
         if (showAuto) {
             StatusChip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.Ink)

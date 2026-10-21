@@ -141,8 +141,9 @@ class SafDocumentBackupTree(
     }
 
     private fun copyThenDelete(from: DocumentFile, toName: String) {
-        val bytes = context.contentResolver.openInputStream(from.uri)?.use { it.readBytes() }
-            ?: throw BackupFailure.Io("Fallback copy: lecture source impossible")
+        val bytes = context.contentResolver.openInputStream(from.uri)?.use {
+            BackupSecurityArchive.readBounded(it, BackupSecurityArchive.MAX_ZIP_BYTES)
+        } ?: throw BackupFailure.Io("Fallback copy: lecture source impossible")
         val created = root.createFile("application/octet-stream", toName)
             ?: throw BackupFailure.Io("Fallback copy: createFile $toName impossible")
         val pfd = context.contentResolver.openFileDescriptor(created.uri, "w")

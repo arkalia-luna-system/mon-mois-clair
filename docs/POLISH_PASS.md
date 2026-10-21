@@ -19,9 +19,14 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Messages restore sans jargon technique en UI | `BackupRestorer`, `RestoreBackupViewModel` |
 | P2 | Alertes : ligne santé TalkBack + chemin Samsung | `HealthStatusRow`, `ReminderHealthScreen` |
 | P2 | Verrou : message d’échec en live region assertive | `BiometricLockScreen` |
+| P2 | Accueil compact : padding cartes + pastille Accord contour | `HomeScreen` |
+| P2 | StatusChip TalkBack « Statut : … » | `HomeScreen` |
+| P1 | SAF copyThenDelete lecture bornée | `SafDocumentBackupTree` |
+| P2 | Test `DisplayFit` compact ≤ 800 dp | `DisplayFitTest` |
 
 ## Encore ouvert (plus tard)
 
+- Lot C : UI photos extras visibles (chantier produit, pas polish seul)
 - Smoke Galaxy (notif multi-factures, trimestriel)
 - Lint soft → findings utiles un par un
 - Detekt (phase 2 suite)
