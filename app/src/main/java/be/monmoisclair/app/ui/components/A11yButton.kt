@@ -67,15 +67,19 @@ fun SecondaryA11yButton(
     /** false = compact (ex. FAIT à droite d’une carte — charte un seul primary). */
     fillMaxWidth: Boolean = true
 ) {
+    val haptics = LocalHapticFeedback.current
     OutlinedButton(
-        onClick = onClick,
+        onClick = {
+            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            onClick()
+        },
         enabled = enabled,
         modifier = modifier
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(1.dp, A11yTokens.InkMuted),
+        border = BorderStroke(1.dp, A11yTokens.FieldLine),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = A11yTokens.Ink),
         contentPadding = if (fillMaxWidth) {
             PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -100,8 +104,12 @@ fun DangerA11yButton(
     enabled: Boolean = true,
     fillMaxWidth: Boolean = true
 ) {
+    val haptics = LocalHapticFeedback.current
     OutlinedButton(
-        onClick = onClick,
+        onClick = {
+            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+            onClick()
+        },
         enabled = enabled,
         modifier = modifier
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)

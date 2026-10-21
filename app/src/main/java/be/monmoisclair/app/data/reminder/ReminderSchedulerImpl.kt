@@ -3,6 +3,7 @@ package be.monmoisclair.app.data.reminder
 import android.util.Log
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
+import be.monmoisclair.app.domain.EuroFormat
 import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.model.ReminderKind
@@ -96,40 +97,33 @@ class ReminderSchedulerImpl @Inject constructor(
     }
 
     private fun bodyFor(expense: ExpenseInstanceEntity, kind: ReminderKind): String {
-        val amount = formatEuro(expense.amountCents)
+        val amount = EuroFormat.formatCents(expense.amountCents)
         val day = expense.dayOfMonth
         val auto = expense.isAutoDebit
+        // Le titre porte déjà le libellé : le corps reste montant + action.
         return when (kind) {
             ReminderKind.J3 ->
                 if (auto) {
-                    "${expense.label} — $amount — échéance le $day. Vérifiez le prélèvement."
+                    "$amount — échéance le $day. Vérifiez le prélèvement."
                 } else {
-                    "${expense.label} — $amount — échéance le $day. Pensez à payer."
+                    "$amount — échéance le $day. Pensez à payer."
                 }
             ReminderKind.JD ->
                 if (auto) {
-                    "${expense.label} — $amount — vérifiez le prélèvement aujourd'hui (le $day)."
+                    "$amount — vérifiez le prélèvement aujourd'hui (le $day)."
                 } else {
-                    "${expense.label} — $amount — à payer aujourd'hui (le $day)."
+                    "$amount — à payer aujourd'hui (le $day)."
                 }
             ReminderKind.OVERDUE ->
                 if (auto) {
-                    "${expense.label} — $amount — prélèvement prévu le $day non confirmé. Vérifiez votre compte."
+                    "$amount — prélèvement prévu le $day non confirmé. Vérifiez votre compte."
                 } else {
-                    "${expense.label} — $amount — échéance le $day dépassée. À régler."
+                    "$amount — échéance le $day dépassée. À régler."
                 }
         }
     }
 
     companion object {
         private const val TAG = "ReminderScheduler"
-    }
-
-    private fun formatEuro(cents: Long): String {
-        val sign = if (cents < 0) "-" else ""
-        val abs = kotlin.math.abs(cents)
-        val euros = abs / 100
-        val rem = (abs % 100).toInt()
-        return if (rem == 0) "$sign$euros €" else "%s%d,%02d €".format(sign, euros, rem)
     }
 }

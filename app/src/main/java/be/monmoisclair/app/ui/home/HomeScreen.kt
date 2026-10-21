@@ -59,8 +59,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -504,7 +506,7 @@ fun HomeScreen(
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 Text(
-                                    text = "Mois vide",
+                                    text = "Rien encore ce mois",
                                     style = MaterialTheme.typography.headlineMedium,
                                     color = A11yTokens.Ink
                                 )
@@ -541,6 +543,7 @@ fun HomeScreen(
                                                         .heightIn(min = A11yTokens.minTouchHeight)
                                                         .clickable(
                                                             role = Role.Button,
+                                                            onClickLabel = "Effacer la recherche",
                                                             onClick = { searchQuery = "" }
                                                         )
                                                         .padding(horizontal = 8.dp)
@@ -697,7 +700,11 @@ fun HomeScreen(
                                     Text(
                                         text = err,
                                         color = A11yTokens.AccentDanger,
-                                        style = MaterialTheme.typography.bodyLarge
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.semantics {
+                                            liveRegion = LiveRegionMode.Assertive
+                                            contentDescription = err
+                                        }
                                     )
                                 }
                             }
@@ -798,9 +805,12 @@ private fun StatusChip(
     text: String,
     container: Color,
     content: Color,
-    outlined: Boolean = false
+    outlined: Boolean = false,
+    compact: Boolean = false
 ) {
     val shape = MaterialTheme.shapes.medium
+    val hPad = if (compact) 6.dp else 8.dp
+    val vPad = if (compact) 2.dp else 4.dp
     Text(
         text = text,
         color = content,
@@ -812,7 +822,7 @@ private fun StatusChip(
                 else Modifier
             )
             .background(container, shape)
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = hPad, vertical = vPad)
     )
 }
 
@@ -966,6 +976,8 @@ private fun ExpenseStatusLine(
     item: TimelineItem.Expense,
     onOpenReceipt: () -> Unit
 ) {
+    val fit = rememberDisplayFit()
+    val compact = fit.compactHomeChrome
     val showAuto = item.isAutoDebit
     val showAgreement = item.isAgreement
     val showDone = item.isDone
@@ -973,21 +985,42 @@ private fun ExpenseStatusLine(
     val showReceipt = item.hasReceipt
     if (!showAuto && !showAgreement && !showDone && !showLate && !showReceipt) return
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)
     ) {
         if (showAgreement) {
             // Contour FieldLine : pastille discrète mais lisible sur papier court / texte large.
-            StatusChip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true)
+            StatusChip(
+                "Accord",
+                A11yTokens.PaperWarm,
+                A11yTokens.Ink,
+                outlined = true,
+                compact = compact
+            )
         }
         if (showAuto) {
-            StatusChip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.Ink)
+            StatusChip(
+                "Prélèvement",
+                A11yTokens.AccentAuto,
+                A11yTokens.Ink,
+                compact = compact
+            )
         }
         if (showDone) {
-            StatusChip(item.doneLabel ?: "FAIT ✓", A11yTokens.AccentOk, A11yTokens.ButtonText)
+            StatusChip(
+                item.doneLabel ?: "FAIT ✓",
+                A11yTokens.AccentOk,
+                A11yTokens.ButtonText,
+                compact = compact
+            )
         }
         if (showLate) {
-            StatusChip("En retard", A11yTokens.AccentDanger, A11yTokens.ButtonText)
+            StatusChip(
+                "En retard",
+                A11yTokens.AccentDanger,
+                A11yTokens.ButtonText,
+                compact = compact
+            )
         }
         if (showReceipt) {
             // Bouton réel (pas pastille Text) : le tap ouvre bien la photo.

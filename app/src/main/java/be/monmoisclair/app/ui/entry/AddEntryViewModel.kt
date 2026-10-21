@@ -148,10 +148,8 @@ class AddEntryViewModel @Inject constructor(
     }
 
     fun applyEpc(payment: EpcPayment) {
-        val amountText = payment.amountCents?.let { c ->
-            val rem = (c % 100).toInt()
-            if (rem == 0) (c / 100).toString() else "%d,%02d".format(c / 100, rem)
-        } ?: _state.value.amountText
+        val amountText = payment.amountCents?.let { MoneyFormat.centsToEditable(it) }
+            ?: _state.value.amountText
         _state.update {
             it.copy(
                 isExpense = true,
@@ -187,6 +185,17 @@ class AddEntryViewModel @Inject constructor(
             }
             if (s.isExpense && s.dossierExpanded && openingRaw.isNotEmpty() && openingCents == null) {
                 _state.update { it.copy(error = "Vérifiez le reste dû (montant).") }
+                return@launch
+            }
+            // IBAN / e-mail (souvent via QR) ne doivent pas disparaître en silence
+            // si le reste dû est encore vide — sinon on croit avoir créé un dossier.
+            val hasCreditorBits = s.iban.isNotBlank() || s.creditorEmail.isNotBlank()
+            if (s.isExpense && s.dossierExpanded && openingCents == null && hasCreditorBits) {
+                _state.update {
+                    it.copy(
+                        error = "Indiquez le reste dû, ou videz l’IBAN et l’e-mail."
+                    )
+                }
                 return@launch
             }
             if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
@@ -227,7 +236,7 @@ class AddEntryViewModel @Inject constructor(
                 )
             ) {
                 is AddEntryResult.Success -> {
-                    pendingBitmap?.let { bmp ->
+                    val photoFailed = pendingBitmap?.let { bmp ->
                         runCatching {
                             val expense = instanceDao.getExpenseById(result.instanceId)
                             if (expense != null) {
@@ -258,10 +267,20 @@ class AddEntryViewModel @Inject constructor(
                                     }
                                 }
                             }
-                        }
-                    }
+                        }.isFailure
+                    } == true
                     pendingBitmap = null
-                    _state.update { it.copy(saving = false, saved = true) }
+                    _state.update {
+                        it.copy(
+                            saving = false,
+                            saved = !photoFailed,
+                            error = if (photoFailed) {
+                                "La facture est notée, mais la photo n’a pas pu être enregistrée."
+                            } else {
+                                null
+                            }
+                        )
+                    }
                 }
                 is AddEntryResult.InvalidInput ->
                     _state.update { it.copy(saving = false, error = result.message) }

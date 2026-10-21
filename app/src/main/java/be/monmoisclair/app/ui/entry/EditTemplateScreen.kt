@@ -28,7 +28,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +41,7 @@ import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
 
@@ -49,6 +54,8 @@ fun EditTemplateScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val keyboardOpen = imeOpen()
+    val labelBring = rememberFocusKeepsVisible()
+    val amountBring = rememberFocusKeepsVisible()
     var confirmArchive by remember { mutableStateOf(false) }
     var confirmLeave by remember { mutableStateOf(false) }
 
@@ -135,6 +142,7 @@ fun EditTemplateScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(A11yTokens.screenPadding)
+                .semantics { contentDescription = "Chargement de l’échéance" }
         ) {
             Text("Chargement…", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
         }
@@ -191,7 +199,8 @@ fun EditTemplateScreen(
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = A11yTokens.minTouchHeight),
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .then(labelBring),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
             OutlinedTextField(
@@ -203,7 +212,8 @@ fun EditTemplateScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = A11yTokens.minTouchHeight),
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .then(amountBring),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
             DayOfMonthGrid(
@@ -248,7 +258,15 @@ fun EditTemplateScreen(
             Spacer(Modifier.height(8.dp))
         }
         state.error?.let {
-            Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = it,
+                color = A11yTokens.AccentDanger,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics {
+                    liveRegion = LiveRegionMode.Assertive
+                    contentDescription = it
+                }
+            )
             Spacer(Modifier.height(8.dp))
         }
         PrimaryA11yButton(

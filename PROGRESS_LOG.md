@@ -19,6 +19,14 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Polish UI/a11y + EuroFormat + mailto (sécurisé pause)
+
+**Codé (agents) :** TalkBack (onboarding, Alertes, menu mois, grille jours, erreurs, live regions) · pastilles compactes · empty « Rien encore ce mois » · boutons haptique / FieldLine · notif undo humaine · `EuroFormat` + mailto query · garde IBAN sans reste à l’ajout · sync futures déjà poussée (`6fca55a`).
+
+**Docs :** `docs/archive/POLISH_PASS.md` à jour.
+
+**Tests :** base **198/198** (6.32) + passes ciblées Euro/mail/Money/dossier (autres agents). Pas de bump `versionName` (toujours `0.1.0-6.32`).
+
 ### 2026-10-21 — CI : plus de concurrency (vrai fix des « cancelled »)
 
 **Problème :** « Canceling since a higher priority waiting request… » = `concurrency` GitHub (true comme false). Affiché comme « 1 erreur » sans échec de test.
@@ -35,6 +43,18 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Tests :** suite déjà **198/198** (52 fichiers) au 6.32 — pas de nouveau test métier ici.  
 **Version :** inchangée `0.1.0-6.32`
+
+### 2026-10-21 — Pause : push sécurité polish + EuroFormat + mailto
+
+**Contexte :** téléphone indisponible un moment — on sécurise l’arbre puis on continue.
+
+**Codé (multi-agents) :**
+- `EuroFormat` (milliers `\u202F`) → MoneyFormat / mail / notifs
+- `CreditorMailComposer.mailtoUri` (subject/body dans l’URI, plus d’extras SENDTO)
+- Garde ajout : IBAN/e-mail sans reste dû → message clair
+- A11y / copy : empty mois, pastilles compactes, live regions, haptique boutons, menu mois, grille jours, onboarding, aide
+
+**Tests :** à recompter après suite `--rerun-tasks` (pas de smoke Galaxy pendant la pause).
 
 ### 2026-10-21 — Fix sync futures accord (édition montant / frais)
 

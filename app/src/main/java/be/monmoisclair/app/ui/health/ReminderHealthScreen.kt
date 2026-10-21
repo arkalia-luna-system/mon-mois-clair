@@ -9,6 +9,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -55,7 +59,10 @@ fun ReminderHealthScreen(
             Text(
                 text = "Vérification…",
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.semantics {
+                    contentDescription = "Vérification des alertes"
+                }
             )
         } else {
             HealthStatusRow("Notifications", r.notificationsGranted)
@@ -79,7 +86,11 @@ fun ReminderHealthScreen(
                 Text(
                     text = "Tout est prêt pour les alertes.",
                     color = A11yTokens.AccentOk,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription = "Tout est prêt pour les alertes."
+                    }
                 )
             }
         }

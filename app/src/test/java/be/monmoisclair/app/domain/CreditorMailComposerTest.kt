@@ -21,4 +21,32 @@ class CreditorMailComposerTest {
         assertThat(draft.body).contains("50 €")
         assertThat(draft.body).doesNotContain("receipts/")
     }
+
+    @Test
+    fun build_usesThinSpaceThousands() {
+        val draft = CreditorMailComposer.build(
+            email = "a@b.be",
+            who = "X",
+            what = "",
+            monthAmountCents = 123_400L,
+            paymentNote = ""
+        )
+        assertThat(draft.body).contains("1\u202F234 €")
+    }
+
+    @Test
+    fun mailtoUri_putsSubjectAndBodyInQuery_notExtras() {
+        val draft = CreditorMailComposer.Draft(
+            to = "etude@example.be",
+            subject = "Réf 12",
+            body = "Bonjour,\nligne 2"
+        )
+        val uri = CreditorMailComposer.mailtoUri(draft)
+        assertThat(uri).startsWith("mailto:etude@example.be?")
+        assertThat(uri).contains("subject=")
+        assertThat(uri).contains("body=")
+        assertThat(uri).contains("R%C3%A9f") // encodage UTF-8
+        assertThat(uri).contains("%0A") // saut de ligne dans le corps
+        assertThat(uri).doesNotContain(" ")
+    }
 }

@@ -67,12 +67,7 @@ class EditTemplateViewModel @Inject constructor(
             _state.update { it.copy(loading = false, missing = true) }
             return
         }
-        val rem = (tpl.amountCents % 100).toInt()
-        val amountText = if (rem == 0) {
-            (tpl.amountCents / 100).toString()
-        } else {
-            "%d,%02d".format(tpl.amountCents / 100, rem)
-        }
+        val amountText = MoneyFormat.centsToEditable(tpl.amountCents)
         val anchor = runCatching { YearMonth.parse(tpl.anchorYearMonth) }.getOrNull()
             ?: AppClock.currentYearMonth()
         val hint = when (tpl.intervalMonths) {

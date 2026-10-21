@@ -256,6 +256,10 @@ fun SettingsScreen(
                     A11yTokens.AccentOk
                 } else {
                     A11yTokens.AccentDanger
+                },
+                modifier = Modifier.semantics {
+                    liveRegion = LiveRegionMode.Polite
+                    contentDescription = BackupHealthCopy.statusLine(state.backupHealth)
                 }
             )
             SecondaryA11yButton(

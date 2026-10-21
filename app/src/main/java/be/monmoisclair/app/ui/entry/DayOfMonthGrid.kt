@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 
@@ -45,6 +47,13 @@ fun DayOfMonthGrid(
                     .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .background(bg)
+                    .semantics {
+                        contentDescription = if (selected) {
+                            "Jour $day, sélectionné"
+                        } else {
+                            "Jour $day"
+                        }
+                    }
                     .selectable(
                         selected = selected,
                         role = Role.RadioButton,

@@ -16,6 +16,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -86,7 +90,15 @@ fun PermissionsSetupScreen(
         }
 
         state.errorMessage?.let { msg ->
-            Text(text = msg, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = msg,
+                color = A11yTokens.AccentDanger,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics {
+                    liveRegion = LiveRegionMode.Assertive
+                    contentDescription = msg
+                }
+            )
         }
 
         // Corrections = secondaires ; une seule primaire = Continuer (épinglé).

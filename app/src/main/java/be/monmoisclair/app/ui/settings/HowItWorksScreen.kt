@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
+import be.monmoisclair.app.ui.theme.A11yTokens
 
 @Composable
 fun HowItWorksScreen(onBack: () -> Unit) {
@@ -18,13 +19,16 @@ fun HowItWorksScreen(onBack: () -> Unit) {
         Text(text = HowItWorksCopy.TITLE, style = MaterialTheme.typography.headlineMedium)
         Text(
             text = "Guide court pour utiliser Mon Mois Clair sans stress.",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
         )
+        Spacer(modifier = Modifier.height(8.dp))
         HowItWorksCopy.sections.forEach { section ->
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(text = section.title, style = MaterialTheme.typography.titleLarge)
                 Text(text = section.body, style = MaterialTheme.typography.bodyLarge)
             }
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }

@@ -1,20 +1,14 @@
 package be.monmoisclair.app.ui.format
 
+import be.monmoisclair.app.domain.EuroFormat
+
 object MoneyFormat {
 
     /**
      * Format belge premium : espace fines pour milliers, virgule décimale, € après.
      * Ex. `1 234,50 €` — jamais le symbole avant le montant.
      */
-    fun formatCents(cents: Long): String {
-        val negative = cents < 0
-        val abs = kotlin.math.abs(cents)
-        val euros = abs / 100
-        val rem = (abs % 100).toInt()
-        val intPart = formatThousands(euros)
-        val body = if (rem == 0) "$intPart €" else "%s,%02d €".format(intPart, rem)
-        return if (negative) "\u2212 $body" else body
-    }
+    fun formatCents(cents: Long): String = EuroFormat.formatCents(cents)
 
     fun formatSignedCents(cents: Long, isExpense: Boolean): String {
         val abs = kotlin.math.abs(cents)
@@ -22,18 +16,14 @@ object MoneyFormat {
         return if (isExpense) "\u2212 $body" else "+ $body"
     }
 
-    private fun formatThousands(value: Long): String {
-        val raw = value.toString()
-        if (raw.length <= 3) return raw
-        val sb = StringBuilder()
-        var i = raw.length
-        while (i > 0) {
-            val start = (i - 3).coerceAtLeast(0)
-            if (sb.isNotEmpty()) sb.insert(0, '\u202F') // espace fine insécable
-            sb.insert(0, raw.substring(start, i))
-            i = start
-        }
-        return sb.toString()
+    /**
+     * Texte éditable dans un champ (virgule belge, sans € ni espaces milliers).
+     * Ex. 47050 → `"470,50"` ; 47000 → `"470"`.
+     */
+    fun centsToEditable(cents: Long): String {
+        val abs = kotlin.math.abs(cents)
+        val rem = (abs % 100).toInt()
+        return if (rem == 0) (abs / 100).toString() else "%d,%02d".format(abs / 100, rem)
     }
 
     /**

@@ -26,13 +26,22 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Cibles tactile cartes hors-mois (Réglages) | `SettingsScreen` |
 | P2 | TalkBack chargement app / mois / photo | `MainActivity`, `HomeScreen` |
 | P2 | Live regions messages Réglages / Restaurer | `SettingsScreen`, `RestoreBackupScreen` |
+| P2 | Live regions onboarding SAF / permissions + Alertes OK | `SafSetupScreen`, `PermissionsSetupScreen`, `ReminderHealthScreen` |
+| P2 | Pastilles Accueil plus compactes (écran court) | `HomeScreen` StatusChip |
+| P2 | Menu mois TalkBack (sélection / aller à) | `HomeMenuSheet` |
+| P2 | Aide : aération + sous-titre muted | `HowItWorksScreen` |
+| P2 | Édition modèle : chargement + erreur live region | `EditTemplateScreen` |
+| P2 | Grille jours : contentDescription sélection | `DayOfMonthGrid` |
+| P2 | Empty mois + notif undo plus humaines | `HomeScreen`, `PaymentNotificationHelper` |
+| P2 | Statut sauvegarde en live region (Réglages) | `SettingsScreen` |
+| P2 | Boutons secondaire / danger : haptique + bordure FieldLine | `A11yButton` |
 | P2 | Test `DisplayFit` compact ≤ 800 dp | `DisplayFitTest` |
 | P1 | Lot C : voir / enlever courriers en plus + aide | `EntryFormScreen`, `EditEntryViewModel`, `UpdateInstanceUseCase` |
-| P2 | CI : `cancel-in-progress: true` (plus de faux « cancelled » en file) | `.github/workflows/ci.yml`, `docs/CI.md` |
+| P2 | CI : bloc `concurrency` retiré (plus de faux « cancelled ») | `.github/workflows/ci.yml`, `docs/CI.md` |
 
 ## Encore ouvert (plus tard)
 
-- Smoke Galaxy (notif multi-factures, trimestriel, « Écrire »)
+- Smoke Galaxy (notif multi-factures, trimestriel, « Écrire ») — téléphone absente un moment
 - Lint soft → findings utiles un par un
 - Detekt (phase 2 suite)
 - Lots D / E / F si besoin (plan produit)

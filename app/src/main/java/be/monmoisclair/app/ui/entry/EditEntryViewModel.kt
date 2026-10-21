@@ -96,11 +96,10 @@ class EditEntryViewModel @Inject constructor(
             val e = instanceDao.getIncomeById(entryId) ?: run {
                 _state.update { it.copy(loading = false, error = "Introuvable.") }; return
             }
-            val rem = (e.amountCents % 100).toInt()
             _state.update {
                 it.copy(
                     loading = false, label = e.label,
-                    amountText = if (rem == 0) (e.amountCents / 100).toString() else "%d,%02d".format(e.amountCents / 100, rem),
+                    amountText = MoneyFormat.centsToEditable(e.amountCents),
                     dayText = e.dayOfMonth.toString(),
                     recurrenceInfo = if (e.templateId != null) RecurrenceLabel.forIntervalMonths(1) else RecurrenceLabel.oneOff(),
                     recurrence = if (e.templateId != null) RecurrenceChoice.Monthly else RecurrenceChoice.Once,
@@ -112,7 +111,6 @@ class EditEntryViewModel @Inject constructor(
         val e = instanceDao.getExpenseById(entryId) ?: run {
             _state.update { it.copy(loading = false, error = "Introuvable.") }; return
         }
-        val rem = (e.amountCents % 100).toInt()
         val interval = e.templateId?.let { tid ->
             templateDao.getExpenseById(tid)?.intervalMonths
         }
@@ -134,7 +132,7 @@ class EditEntryViewModel @Inject constructor(
         _state.update {
             it.copy(
                 loading = false, label = e.label,
-                amountText = if (rem == 0) (e.amountCents / 100).toString() else "%d,%02d".format(e.amountCents / 100, rem),
+                amountText = MoneyFormat.centsToEditable(e.amountCents),
                 dayText = e.dayOfMonth.toString(), isAutoDebit = e.isAutoDebit,
                 paymentNote = e.paymentNote, receiptRelativePath = e.receiptRelativePath,
                 recurrenceInfo = recurrenceInfo, recurrence = choice,
@@ -233,10 +231,8 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun applyEpc(payment: EpcPayment) {
-        val amountText = payment.amountCents?.let { c ->
-            val rem = (c % 100).toInt()
-            if (rem == 0) (c / 100).toString() else "%d,%02d".format(c / 100, rem)
-        } ?: _state.value.amountText
+        val amountText = payment.amountCents?.let { MoneyFormat.centsToEditable(it) }
+            ?: _state.value.amountText
         _state.update {
             it.copy(
                 label = payment.beneficiaryName.ifBlank { it.label },
@@ -284,6 +280,13 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun consumeMailDraft() = _state.update { it.copy(mailDraft = null) }
+
+    fun mailLaunchFailed() = _state.update {
+        it.copy(
+            mailDraft = null,
+            error = "Aucune application Mail trouvée sur cet appareil."
+        )
+    }
 
     fun copyPaymentNote() {
         val prepared = BelgianStructuredCommunication.prepareCopy(_state.value.paymentNote)

@@ -1,5 +1,8 @@
 package be.monmoisclair.app.domain
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
 /**
  * Lot C — texte pour l’app Mail (aucun fil stocké dans Mon Mois Clair).
  */
@@ -25,7 +28,7 @@ object CreditorMailComposer {
             add("")
             if (who.isNotBlank()) add("Concernant : $who")
             if (what.isNotBlank()) add("Pour : $what")
-            add("Montant de ce mois : ${formatEuros(monthAmountCents)}")
+            add("Montant de ce mois : ${EuroFormat.formatCents(monthAmountCents)}")
             if (paymentNote.isNotBlank()) add("Référence : ${paymentNote.trim()}")
             add("")
             add("Cordialement")
@@ -33,9 +36,15 @@ object CreditorMailComposer {
         return Draft(to = to, subject = subject, body = lines.joinToString("\n"))
     }
 
-    private fun formatEuros(cents: Long): String {
-        val euros = cents / 100
-        val rem = (cents % 100).toInt()
-        return if (rem == 0) "$euros €" else "%d,%02d €".format(euros, rem)
+    /**
+     * URI `mailto:` complète (destinataire + subject + body).
+     * Ne pas passer par [android.net.Uri.Builder] sur un mailto opaque :
+     * Gmail et d’autres clients ignorent souvent les extras SENDTO.
+     */
+    fun mailtoUri(draft: Draft): String {
+        fun q(value: String): String =
+            URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20")
+        val to = draft.to.trim()
+        return "mailto:$to?subject=${q(draft.subject)}&body=${q(draft.body)}"
     }
 }

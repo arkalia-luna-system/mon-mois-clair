@@ -63,6 +63,7 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
+import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
@@ -287,12 +288,11 @@ fun EditEntryScreen(
     val context = LocalContext.current
     LaunchedEffect(state.mailDraft) {
         val draft = state.mailDraft ?: return@LaunchedEffect
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(draft.to))
-            putExtra(Intent.EXTRA_SUBJECT, draft.subject)
-            putExtra(Intent.EXTRA_TEXT, draft.body)
-        }
+        // Gmail ignore souvent EXTRA_* sur SENDTO : tout va dans l’URI mailto.
+        val intent = Intent(
+            Intent.ACTION_SENDTO,
+            Uri.parse(CreditorMailComposer.mailtoUri(draft))
+        )
         runCatching { context.startActivity(Intent.createChooser(intent, "Écrire")) }
         viewModel.consumeMailDraft()
     }

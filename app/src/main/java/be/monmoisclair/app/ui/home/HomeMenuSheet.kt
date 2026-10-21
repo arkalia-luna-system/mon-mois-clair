@@ -22,6 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -96,17 +100,30 @@ fun HomeMenuSheet(
                 ) {
                     yearMonths.forEach { ym ->
                         val selected = ym == selectedYearMonth
+                        val chipLabel = DayLabelFormat.monthChipShort(ym)
                         Surface(
                             color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
                             shape = MaterialTheme.shapes.medium,
-                            modifier = Modifier.heightIn(min = A11yTokens.minTouchHeight)
+                            modifier = Modifier
+                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .semantics(mergeDescendants = true) {
+                                    contentDescription = if (selected) {
+                                        "Mois affiché : $chipLabel"
+                                    } else {
+                                        "Aller à $chipLabel"
+                                    }
+                                    this.selected = selected
+                                }
                         ) {
                             Text(
-                                text = DayLabelFormat.monthChipShort(ym),
+                                text = chipLabel,
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
                                 modifier = Modifier
-                                    .clickable {
+                                    .clickable(
+                                        role = Role.Button,
+                                        onClickLabel = "Afficher $chipLabel"
+                                    ) {
                                         onSelectMonth(ym)
                                         onDismiss()
                                     }
