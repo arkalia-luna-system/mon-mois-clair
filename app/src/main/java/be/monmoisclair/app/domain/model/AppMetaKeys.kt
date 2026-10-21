@@ -11,5 +11,5 @@ object AppMetaKeys {
     /** Lot E — id du modèle « Mettre de côté ». Vide = pas activé. */
     const val SAVINGS_TEMPLATE_ID = "savingsTemplateId"
 
-    const val CURRENT_SCHEMA_VERSION = "7"
+    const val CURRENT_SCHEMA_VERSION = "8"
 }

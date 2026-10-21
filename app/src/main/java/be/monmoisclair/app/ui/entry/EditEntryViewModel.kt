@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.AppMetaDao
+import be.monmoisclair.app.data.db.dao.ExpenseFeeEventDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
@@ -25,6 +26,7 @@ import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
 import be.monmoisclair.app.domain.usecase.UpdateInstanceResult
 import be.monmoisclair.app.domain.usecase.UpdateInstanceUseCase
 import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
+import be.monmoisclair.app.ui.format.FeeEventDateFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -34,6 +36,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+/** Ligne d’historique frais pour la fiche (pas d’Android dans le domaine). */
+data class FeeEventRow(
+    val id: String,
+    val amountCents: Long,
+    val note: String,
+    val dateLabel: String
+)
 
 data class EditEntryState(
     val id: String = "",
@@ -71,6 +81,8 @@ data class EditEntryState(
     val creditorEmail: String = "",
     val addedFeesCents: Long = 0L,
     val addedFeesNote: String = "",
+    /** Historique daté (schéma 8), plus récent en premier. */
+    val feeEvents: List<FeeEventRow> = emptyList(),
     val feeAddText: String = "",
     val feeNoteText: String = "",
     val extraReceiptPaths: String = "",
@@ -95,6 +107,7 @@ class EditEntryViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val instanceDao: InstanceDao,
     private val templateDao: TemplateDao,
+    private val feeEventDao: ExpenseFeeEventDao,
     private val updateInstance: UpdateInstanceUseCase,
     private val deleteInstance: DeleteInstanceUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
@@ -154,6 +167,16 @@ class EditEntryViewModel @Inject constructor(
         val fees = tpl?.addedFeesCents ?: 0L
         val remaining = DossierRemaining.remainingCents(opening, paid, fees)
         val instances = e.templateId?.let { instanceDao.expensesByTemplate(it) }.orEmpty()
+        val feeRows = e.templateId?.let { tid ->
+            feeEventDao.listByTemplate(tid).map { ev ->
+                FeeEventRow(
+                    id = ev.id,
+                    amountCents = ev.amountCents,
+                    note = ev.note,
+                    dateLabel = FeeEventDateFormat.label(ev.createdAtEpochMs)
+                )
+            }
+        }.orEmpty()
         val savingsId = appMetaDao.get(AppMetaKeys.SAVINGS_TEMPLATE_ID)?.value?.trim().orEmpty()
         val isSavings = tpl != null && tpl.active && tpl.id == savingsId
         val pace = if (isSavings || tpl == null || remaining == null || remaining <= 0L) {
@@ -189,6 +212,7 @@ class EditEntryViewModel @Inject constructor(
                 creditorEmail = tpl?.creditorEmail.orEmpty(),
                 addedFeesCents = fees,
                 addedFeesNote = tpl?.addedFeesNote.orEmpty(),
+                feeEvents = feeRows,
                 extraReceiptPaths = tpl?.extraReceiptPaths.orEmpty(),
                 isSavingsLine = isSavings,
                 savingsTransferredCents = transferred,

@@ -1,6 +1,6 @@
 # Campagne produit fini — tests poussés sur téléphone
 
-Version cible : **`0.1.0-6.37`** (schéma Room **7**, lots A–F + phrase rythme).  
+Version cible : **`0.1.0-6.38`** (schéma Room **8**, lots A–F + frais datés).  
 **Règle d’or :** pas de « OK » sans geste **sur le téléphone branché** + preuve (`uiautomator` / screenshot dans `dist/verify/`).  
 Lire le code ne remplace **pas** le doigt. Survoler la matrice = échec de campagne.
 

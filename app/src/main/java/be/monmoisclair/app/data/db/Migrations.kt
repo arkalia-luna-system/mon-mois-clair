@@ -97,4 +97,31 @@ object Migrations {
             )
         }
     }
+
+    /** Liste datée des frais (lettres successives) ; backfill depuis le cumul lot C. */
+    val MIGRATION_7_8 = object : Migration(7, 8) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `expense_fee_events` (" +
+                    "`id` TEXT NOT NULL, " +
+                    "`templateId` TEXT NOT NULL, " +
+                    "`amountCents` INTEGER NOT NULL, " +
+                    "`note` TEXT NOT NULL, " +
+                    "`createdAtEpochMs` INTEGER NOT NULL, " +
+                    "PRIMARY KEY(`id`), " +
+                    "FOREIGN KEY(`templateId`) REFERENCES `expense_templates`(`id`) " +
+                    "ON UPDATE NO ACTION ON DELETE CASCADE)"
+            )
+            db.execSQL(
+                "CREATE INDEX IF NOT EXISTS `index_expense_fee_events_templateId` " +
+                    "ON `expense_fee_events` (`templateId`)"
+            )
+            db.execSQL(
+                "INSERT INTO `expense_fee_events` " +
+                    "(`id`, `templateId`, `amountCents`, `note`, `createdAtEpochMs`) " +
+                    "SELECT 'fee-migrated-' || `id`, `id`, `addedFeesCents`, `addedFeesNote`, " +
+                    "`createdAtEpochMs` FROM `expense_templates` WHERE `addedFeesCents` > 0"
+            )
+        }
+    }
 }

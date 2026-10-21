@@ -7,6 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.Migrations
 import be.monmoisclair.app.data.db.dao.AppMetaDao
+import be.monmoisclair.app.data.db.dao.ExpenseFeeEventDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.data.db.dao.PendingLetterDao
@@ -38,7 +39,8 @@ object DatabaseModule {
                 Migrations.MIGRATION_3_4,
                 Migrations.MIGRATION_4_5,
                 Migrations.MIGRATION_5_6,
-                Migrations.MIGRATION_6_7
+                Migrations.MIGRATION_6_7,
+                Migrations.MIGRATION_7_8
             )
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
@@ -70,4 +72,7 @@ object DatabaseModule {
 
     @Provides
     fun providePendingLetterDao(db: AppDatabase): PendingLetterDao = db.pendingLetterDao()
+
+    @Provides
+    fun provideExpenseFeeEventDao(db: AppDatabase): ExpenseFeeEventDao = db.expenseFeeEventDao()
 }

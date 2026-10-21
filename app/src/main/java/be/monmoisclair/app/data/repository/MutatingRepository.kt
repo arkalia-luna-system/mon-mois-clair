@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import be.monmoisclair.app.data.backup.BackupScheduler
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.dao.AppMetaDao
+import be.monmoisclair.app.data.db.dao.ExpenseFeeEventDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.data.db.dao.PendingLetterDao
@@ -42,7 +43,8 @@ class MutatingRepository @Inject constructor(
                 templateDao = db.templateDao(),
                 instanceDao = db.instanceDao(),
                 appMetaDao = db.appMetaDao(),
-                pendingLetterDao = db.pendingLetterDao()
+                pendingLetterDao = db.pendingLetterDao(),
+                feeEventDao = db.expenseFeeEventDao()
             )
             context.block()
         }
@@ -60,6 +62,7 @@ class MutatingRepository @Inject constructor(
         val templateDao: TemplateDao,
         val instanceDao: InstanceDao,
         val appMetaDao: AppMetaDao,
-        val pendingLetterDao: PendingLetterDao
+        val pendingLetterDao: PendingLetterDao,
+        val feeEventDao: ExpenseFeeEventDao
     )
 }

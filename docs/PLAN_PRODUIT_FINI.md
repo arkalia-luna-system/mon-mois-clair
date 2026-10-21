@@ -2,7 +2,7 @@
 
 Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A à F** + phrase rythme **6.37** clos dans le journal (`0.1.0-6.37`, schéma Room **7**, **233/233**).  
+Lots **A à F** + 6.37 + **6.38** (frais datés) clos (`0.1.0-6.38`, schéma Room **8**, **235/235**).  
 Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -204,7 +204,7 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 | La photo modèle + la photo du mois se contredisent | Le mois affiche la sienne. Un mois sans photo n’emprunte pas celle du modèle : « enlever ce mois » reste vrai |
 | Archive ZIP > 45 Mo à cause des lettres | Plafond déjà là. Qualité baissée au-dessus de ~400 Ko (`ReceiptPhotoStore`). On ne stocke pas l’original 12 Mpx |
 | Schéma 7 (clos 6.34) | Room ne redescend pas : un téléphone en 7 ne rouvre pas un APK figé en 6 |
-| Motif de frais = dernier seulement | Accepté au C (aide). Liste datée = chantier séparé, pas D |
+| Motif de frais = dernier seulement | **Clos 6.38** — liste datée `expense_fee_events` |
 | Maman active « Mettre de côté » trop haut | Alerte déficit **avant** enregistrement |
 | Le résumé part par WhatsApp (pas chiffré de bout en bout selon les réglages) | Le bouton dit « à envoyer à un créancier ou à un conseiller », pas « partager à tout le monde ». On ne peut pas empêcher le geste. On n’y met pas l’identité |
 | Promesse de date | Phrase **6.37** : **« si »**, jamais « fin prévue ». Masquée si un **FAIT** ≠ forfait. Cadence annuelle/trimestrielle = « versements » |
@@ -213,12 +213,12 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F clos** + phrase rythme **6.37** (`0.1.0-6.37`, schéma 7, **233/233**). Le plan de construction est tenu.
+**A–F + 6.37 + 6.38** clos (`0.1.0-6.38`, schéma **8**, **235/235**). Liste de frais datée livrée.
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;
 - tests d’écran instrumentés.
 
-**Prochain geste** : campagne personae [`testeurs/CAMPAGNE_PRODUIT_FINI.md`](testeurs/CAMPAGNE_PRODUIT_FINI.md).
+**Prochain geste** : campagne personae [`testeurs/CAMPAGNE_PRODUIT_FINI.md`](testeurs/CAMPAGNE_PRODUIT_FINI.md) · S26.
 
-Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.
+Risques C : photos extras = voir / enlever ; frais = historique daté (6.38).

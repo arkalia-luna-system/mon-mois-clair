@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.room.withTransaction
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
+import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.BackupHealth
@@ -168,6 +169,7 @@ class BackupRestorer @Inject constructor(
 
     private suspend fun clearAllTables() {
         // Enfants d'abord (FK), puis parents, puis meta.
+        db.expenseFeeEventDao().clearAll()
         db.instanceDao().clearAllExpenses()
         db.instanceDao().clearAllIncomes()
         db.monthLedgerDao().clearAll()
@@ -195,6 +197,23 @@ class BackupRestorer @Inject constructor(
         }
         if (payload.pendingLetters.isNotEmpty()) {
             db.pendingLetterDao().upsertAll(payload.pendingLetters)
+        }
+        val feeEvents = if (payload.feeEvents.isNotEmpty()) {
+            payload.feeEvents
+        } else {
+            // Sauvegardes ≤7 : un événement synthétique par cumul lot C.
+            payload.expenseTemplates.filter { it.addedFeesCents > 0L }.map { tpl ->
+                ExpenseFeeEventEntity(
+                    id = "fee-restored-${tpl.id}",
+                    templateId = tpl.id,
+                    amountCents = tpl.addedFeesCents,
+                    note = tpl.addedFeesNote,
+                    createdAtEpochMs = tpl.createdAtEpochMs
+                )
+            }
+        }
+        if (feeEvents.isNotEmpty()) {
+            db.expenseFeeEventDao().upsertAll(feeEvents)
         }
         if (payload.appMeta.isNotEmpty()) {
             db.appMetaDao().upsertAll(payload.appMeta)

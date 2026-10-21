@@ -9,15 +9,28 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.37** (phrase rythme dossier) |
+| Dernière étape terminée | **6.38** (historique daté des frais) |
 | Étape en cours | — |
-| Prochaine sous-étape | — (campagne device clôturée côté P0/P1) · S26 maman optionnel |
-| Audit premium | Smokes + campagne Ultra · sticky « Après les FAIT » · **233/233** |
+| Prochaine sous-étape | — S26 maman optionnel · campagne personae |
+| Audit premium | Smokes Ultra · frais datés 6.38 · **235/235** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.38 Historique daté des frais
+
+**Problème :** trois lettres de frais = une somme + un seul motif (le dernier disparaissait).
+
+**Codé :**
+- Table `expense_fee_events` (schéma Room/backup **8**) + migration 7→8 (backfill cumul lot C)
+- Ajout frais → événement daté + cumul `addedFeesCents` (reste dû inchangé)
+- Fiche accord : liste date · montant · motif ; aide à jour
+- Backup/restore : `feeEvents` ; sauvegardes ≤7 synthétisent un événement
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **235/235** (60 fichiers)  
+**Version :** `0.1.0-6.38` · `versionCode` 43
 
 ### 2026-10-21 — Audit §8 : rien d’ouvert à coder
 

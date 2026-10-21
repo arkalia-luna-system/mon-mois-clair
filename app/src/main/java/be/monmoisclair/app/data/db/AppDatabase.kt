@@ -4,11 +4,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import be.monmoisclair.app.data.db.dao.AppMetaDao
+import be.monmoisclair.app.data.db.dao.ExpenseFeeEventDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
+import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
@@ -24,9 +26,10 @@ import be.monmoisclair.app.data.db.entity.PendingLetterEntity
         IncomeInstanceEntity::class,
         ExpenseInstanceEntity::class,
         AppMetaEntity::class,
-        PendingLetterEntity::class
+        PendingLetterEntity::class,
+        ExpenseFeeEventEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -36,4 +39,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun instanceDao(): InstanceDao
     abstract fun appMetaDao(): AppMetaDao
     abstract fun pendingLetterDao(): PendingLetterDao
+    abstract fun expenseFeeEventDao(): ExpenseFeeEventDao
 }

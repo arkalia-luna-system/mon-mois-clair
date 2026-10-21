@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.37** — phrase rythme dossier ; lots A–F + estimation honnête).
+Mise à jour : 2026-10-21 (lot **6.38** — historique daté des frais ; lots A–F + 6.37 tenus).
 
 ## 1. Vision
 
@@ -58,7 +58,7 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 ## 3. Données
 
-Room / backup schéma **7** (étape 6.34) : mémoire papier (4) + dossier (5) + IBAN / e-mail / frais / extras (6) + `pending_letters` (courriers sans plan). Reste dû = départ + frais − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros ; bandeau « courrier sans plan · Voir » seulement s’il y en a. Sur la fiche d’un accord : Copier l’IBAN, Écrire (brouillon mail), ajouter/voir/enlever des courriers.
+Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expense_fee_events` (frais datés). Reste dû = départ + cumul frais − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros ; bandeau « courrier sans plan · Voir » seulement s’il y en a. Sur la fiche d’un accord : Copier l’IBAN, Écrire (brouillon mail), ajouter/voir/enlever des courriers, **liste datée des frais**.
 
 ## 4. Plan
 
@@ -85,6 +85,7 @@ Room / backup schéma **7** (étape 6.34) : mémoire papier (4) + dossier (5) + 
 | **6.35** | Mettre de côté (Réglages, facture mensuelle, alerte déficit) | ✅ lot E |
 | **6.36** | Résumé texte (Mes dossiers / Réglages si déficit ou dossier) | ✅ lot F |
 | **6.37** | Phrase rythme (« encore environ N… si… ») fiche / Mes dossiers | ✅ |
+| **6.38** | Historique daté des frais (`expense_fee_events`, schéma 8) | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

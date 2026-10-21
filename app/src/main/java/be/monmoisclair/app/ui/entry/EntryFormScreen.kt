@@ -698,7 +698,7 @@ fun EditEntryScreen(
         feeNoteText = state.feeNoteText,
         onFeeNoteText = viewModel::setFeeNoteText,
         addedFeesCents = state.addedFeesCents,
-        addedFeesNote = state.addedFeesNote,
+        feeEvents = state.feeEvents,
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
@@ -821,7 +821,7 @@ private fun EntryFormScaffold(
     feeNoteText: String = "",
     onFeeNoteText: (String) -> Unit = {},
     addedFeesCents: Long = 0L,
-    addedFeesNote: String = "",
+    feeEvents: List<FeeEventRow> = emptyList(),
     infoMessage: String? = null,
     error: String?,
     primaryLabel: String,
@@ -1240,19 +1240,38 @@ private fun EntryFormScaffold(
                         )
                     }
                     if (isAgreement) {
-                        if (addedFeesCents > 0L) {
+                        if (feeEvents.isNotEmpty() || addedFeesCents > 0L) {
                             val feesShape = MaterialTheme.shapes.medium
-                            Text(
-                                text = "Frais déjà notés : ${MoneyFormat.formatCents(addedFeesCents)}" +
-                                    if (addedFeesNote.isNotBlank()) " ($addedFeesNote)" else "",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .border(1.dp, A11yTokens.PaperBorder, feesShape)
                                     .background(A11yTokens.PaperWarm, feesShape)
-                                    .padding(10.dp)
-                            )
+                                    .padding(10.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = "Frais notés : ${MoneyFormat.formatCents(addedFeesCents)}",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = A11yTokens.Ink
+                                )
+                                feeEvents.forEach { ev ->
+                                    val line = buildString {
+                                        append(ev.dateLabel)
+                                        append(" · ")
+                                        append(MoneyFormat.formatCents(ev.amountCents))
+                                        if (ev.note.isNotBlank()) {
+                                            append(" — ")
+                                            append(ev.note)
+                                        }
+                                    }
+                                    Text(
+                                        text = line,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = A11yTokens.InkMuted
+                                    )
+                                }
+                            }
                         }
                         OutlinedTextField(
                             value = feeAddText,
@@ -1271,7 +1290,7 @@ private fun EntryFormScaffold(
                             onValueChange = onFeeNoteText,
                             label = { Text("Motif (ex. frais de rappel)") },
                             supportingText = {
-                                Text("Le nouveau motif remplace l’ancien — pas une liste datée.")
+                                Text("Chaque montant s’ajoute à la liste avec la date du jour.")
                             },
                             modifier = Modifier
                                 .fillMaxWidth()

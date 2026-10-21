@@ -1,6 +1,7 @@
 package be.monmoisclair.app.data.backup
 
 import be.monmoisclair.app.data.db.dao.AppMetaDao
+import be.monmoisclair.app.data.db.dao.ExpenseFeeEventDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.data.db.dao.PendingLetterDao
@@ -14,7 +15,8 @@ class BackupSnapshotReader @Inject constructor(
     private val templateDao: TemplateDao,
     private val instanceDao: InstanceDao,
     private val appMetaDao: AppMetaDao,
-    private val pendingLetterDao: PendingLetterDao
+    private val pendingLetterDao: PendingLetterDao,
+    private val feeEventDao: ExpenseFeeEventDao
 ) {
     suspend fun readPayload(): BackupPayload {
         return BackupPayload(
@@ -24,7 +26,8 @@ class BackupSnapshotReader @Inject constructor(
             incomeInstances = instanceDao.getAllIncomes(),
             expenseInstances = instanceDao.getAllExpenses(),
             appMeta = appMetaDao.getAll(),
-            pendingLetters = pendingLetterDao.getAll()
+            pendingLetters = pendingLetterDao.getAll(),
+            feeEvents = feeEventDao.getAll()
         )
     }
 }

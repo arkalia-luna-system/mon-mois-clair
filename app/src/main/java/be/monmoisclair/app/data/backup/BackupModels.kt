@@ -1,6 +1,7 @@
 package be.monmoisclair.app.data.backup
 
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
+import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
@@ -16,7 +17,9 @@ data class BackupPayload(
     val expenseInstances: List<ExpenseInstanceEntity>,
     val appMeta: List<AppMetaEntity>,
     /** Schéma 7+ ; vide pour les sauvegardes 1–6. */
-    val pendingLetters: List<PendingLetterEntity> = emptyList()
+    val pendingLetters: List<PendingLetterEntity> = emptyList(),
+    /** Schéma 8+ ; vide pour les sauvegardes 1–7. */
+    val feeEvents: List<ExpenseFeeEventEntity> = emptyList()
 )
 
 data class BackupDocument(

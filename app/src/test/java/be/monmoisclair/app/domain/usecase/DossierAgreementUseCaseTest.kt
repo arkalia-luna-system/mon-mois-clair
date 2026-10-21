@@ -608,9 +608,82 @@ class DossierAgreementUseCaseTest {
         ).isEqualTo(UpdateInstanceResult.Success)
 
         assertThat(db.templateDao().getExpenseById("tpl-fee")!!.addedFeesCents).isEqualTo(2_000L)
+        val events = db.expenseFeeEventDao().listByTemplate("tpl-fee")
+        assertThat(events).hasSize(1)
+        assertThat(events[0].amountCents).isEqualTo(2_000L)
+        assertThat(events[0].note).isEqualTo("rappel")
         val nov = db.instanceDao().getExpenseById("exp:2026-11:tpl-fee")
         assertThat(nov).isNotNull()
         assertThat(nov!!.amountCents).isEqualTo(2_000L)
+    }
+
+    @Test
+    fun update_twoFeeLetters_keepsDatedHistory() = runBlocking {
+        freezeAt("2026-10-05T12:00:00+02:00")
+        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-fees2",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                active = true,
+                anchorYearMonth = "2026-10",
+                openingRemainingCents = 60_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-10:tpl-fees2",
+                ledgerId = "2026-10",
+                templateId = "tpl-fees2",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        assertThat(
+            update(
+                id = "exp:2026-10:tpl-fees2",
+                isExpense = true,
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                applyToFollowingMonths = true,
+                feeAddCents = 1_500L,
+                feeNote = "rappel 1"
+            )
+        ).isEqualTo(UpdateInstanceResult.Success)
+        freezeAt("2026-11-02T12:00:00+01:00")
+        assertThat(
+            update(
+                id = "exp:2026-10:tpl-fees2",
+                isExpense = true,
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                applyToFollowingMonths = true,
+                feeAddCents = 2_500L,
+                feeNote = "rappel 2"
+            )
+        ).isEqualTo(UpdateInstanceResult.Success)
+        val tpl = db.templateDao().getExpenseById("tpl-fees2")!!
+        assertThat(tpl.addedFeesCents).isEqualTo(4_000L)
+        assertThat(tpl.addedFeesNote).isEqualTo("rappel 2")
+        val events = db.expenseFeeEventDao().listByTemplate("tpl-fees2")
+        assertThat(events).hasSize(2)
+        assertThat(events.map { it.note }).containsExactly("rappel 2", "rappel 1").inOrder()
+        assertThat(events.map { it.amountCents }).containsExactly(2_500L, 1_500L).inOrder()
     }
 
     private fun freezeAt(isoOffsetDateTime: String) {

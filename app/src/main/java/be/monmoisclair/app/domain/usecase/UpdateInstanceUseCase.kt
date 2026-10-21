@@ -1,6 +1,7 @@
 package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
@@ -197,12 +198,24 @@ class UpdateInstanceUseCase @Inject constructor(
                             setOpeningRemaining -> openingRemainingCents
                             else -> null
                         }
-                        val fees = tpl.addedFeesCents + feeAddCents.coerceAtLeast(0L)
-                        val feesNote = if (feeAddCents > 0L) {
+                        val addCents = feeAddCents.coerceAtLeast(0L)
+                        val feesNote = if (addCents > 0L) {
                             feeNote.trim().ifBlank { tpl.addedFeesNote }
                         } else {
                             tpl.addedFeesNote
                         }
+                        if (addCents > 0L) {
+                            feeEventDao.upsert(
+                                ExpenseFeeEventEntity(
+                                    id = "fee-${UUID.randomUUID()}",
+                                    templateId = templateId,
+                                    amountCents = addCents,
+                                    note = feeNote.trim(),
+                                    createdAtEpochMs = AppClock.nowEpochMs()
+                                )
+                            )
+                        }
+                        val fees = tpl.addedFeesCents + addCents
                         val baseExtras = extraReceiptPathsReplace ?: tpl.extraReceiptPaths
                         val extras = if (extraReceiptAppend.isNotBlank()) {
                             ReceiptPathList.append(baseExtras, extraReceiptAppend)

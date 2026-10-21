@@ -1,6 +1,7 @@
 package be.monmoisclair.app.data.backup
 
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
+import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
@@ -55,7 +56,7 @@ class BackupJsonCodec {
         val root = JSONObject(json)
         val schemaVersion = root.getInt("schemaVersion")
         // v1 = historique ; v2 = diversSpent + isAutoDebit (CURRENT).
-        if (schemaVersion !in 1..7) {
+        if (schemaVersion !in 1..8) {
             throw BackupFailure.UnsupportedSchema(schemaVersion)
         }
         val payload = jsonToPayload(root.getJSONObject("payload"))
@@ -100,6 +101,11 @@ class BackupJsonCodec {
                 payload.pendingLetters.sortedBy { it.id }.map { pendingLetterToJson(it) }
             )
         }
+        if (payload.feeEvents.isNotEmpty()) {
+            map["feeEvents"] = JSONArray(
+                payload.feeEvents.sortedBy { it.id }.map { feeEventToJson(it) }
+            )
+        }
         putSorted(obj, map)
         return obj
     }
@@ -114,6 +120,9 @@ class BackupJsonCodec {
             appMeta = obj.getJSONArray("appMeta").mapObjects { metaFromJson(it) },
             pendingLetters = obj.optJSONArray("pendingLetters")
                 ?.mapObjects { pendingLetterFromJson(it) }
+                .orEmpty(),
+            feeEvents = obj.optJSONArray("feeEvents")
+                ?.mapObjects { feeEventFromJson(it) }
                 .orEmpty()
         )
     }
@@ -291,6 +300,23 @@ class BackupJsonCodec {
         paymentNote = o.optString("paymentNote", ""),
         iban = o.optString("iban", ""),
         creditorEmail = o.optString("creditorEmail", ""),
+        createdAtEpochMs = o.getLong("createdAtEpochMs")
+    )
+
+    private fun feeEventToJson(e: ExpenseFeeEventEntity): JSONObject =
+        sortedJson(
+            "amountCents" to e.amountCents,
+            "createdAtEpochMs" to e.createdAtEpochMs,
+            "id" to e.id,
+            "note" to e.note,
+            "templateId" to e.templateId
+        )
+
+    private fun feeEventFromJson(o: JSONObject) = ExpenseFeeEventEntity(
+        id = o.getString("id"),
+        templateId = o.getString("templateId"),
+        amountCents = o.getLong("amountCents"),
+        note = o.optString("note", ""),
         createdAtEpochMs = o.getLong("createdAtEpochMs")
     )
 

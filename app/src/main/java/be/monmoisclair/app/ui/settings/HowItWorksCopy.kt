@@ -74,7 +74,7 @@ object HowItWorksCopy {
                 "frais (« Ils ont ajouté un montant »). " +
                 "Une nouvelle photo s’ajoute aux courriers sans remplacer la première ; " +
                 "vous pouvez voir ou enlever chaque courrier. " +
-                "Le motif des frais affiché est le dernier saisi. " +
+                "Chaque lettre de frais garde sa date et son motif dans la fiche. " +
                 "S’il y a au moins un accord : Menu → « Mes dossiers » " +
                 "(reste dû, barre, et « encore environ N mois si le versement reste de X » " +
                 "sur la fiche et Mes dossiers — seulement si chaque versement déjà FAIT " +

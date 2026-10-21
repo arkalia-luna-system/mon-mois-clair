@@ -3,7 +3,7 @@
 Date du premier constat : 2026-10-21.  
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
-Dernière étape **fermée** dans le journal : **6.37** (`0.1.0-6.37`, `versionCode` 42), schéma **7**, suite **233/233**.  
+Dernière étape **fermée** dans le journal : **6.38** (`0.1.0-6.38`, `versionCode` 43), schéma **8**, suite **235/235**.  
 Phrase rythme : fiche + Mes dossiers + résumé ; jamais l’accueil ; masquée si un **FAIT** a divergé.  
 
 Lots A–F + 6.37 tenus. Lire la **§8** avant de croire un badge ou une case ✅.  
@@ -335,9 +335,9 @@ Cette section remplace la partie 7 pour décider. Les parties 1 à 6 restent l�
 
 | Promesse | Tenu ? |
 |----------|--------|
-| Lots A à F + phrase rythme | Oui jusqu’à **6.37** (**233/233**) |
-| Badge ou README = l’arbre d’aujourd’hui | Badge **233/233** · version `0.1.0-6.37` |
-| `versionName` `0.1.0-6.37` | Oui (`versionCode` 42) |
+| Lots A à F + phrase rythme + frais datés | Oui jusqu’à **6.38** (**235/235**) |
+| Badge ou README = l’arbre d’aujourd’hui | Badge **235/235** · version `0.1.0-6.38` |
+| `versionName` `0.1.0-6.38` | Oui (`versionCode` 43) |
 | « En retard » en capitales dans l’app | **Non.** L’écran et l’aide disent « En retard ». Le README a été aligné |
 | Checklist S25 prouve le 6.37 | **Non.** Archivée (`docs/archive/CHECKLIST_S25_2026-10-19.md`, v5.4.1). Smoke actuel : journal + `AUDIT_STATUS.md` |
 | Rapports `dist/verify/*2026-10-20*` | Figés en **6.26**. Ils ne décrivent pas A–F |
@@ -376,10 +376,10 @@ Pour maman et Alex, le geste premium est déjà le carnet : un gros reste, l’o
 Ce qui empêche de dire « produit fini premium » :
 
 1. Le S26 réel n’a pas été tenu. La sim. 360×780 + police 1,3 a vu la pastille Accord et un FAIT de 48 dp. La suite unitaire ne remplace pas ce téléphone.
-2. Trois lettres de frais : une somme et le dernier motif (**accepté** — aide + hint sous le champ motif). Liste datée = chantier séparé, pas rouvert ici. Les photos en plus compensent en partie.
+2. Trois lettres de frais : **clos 6.38** — historique daté (`expense_fee_events`). Les photos en plus compensent encore.
 3. La pastille Accord est volontairement discrète (encre sur fond chaud). Lisible sur la sim., pas mesurée au contraste sur le téléphone de maman.
 
-**Décisions produit §8 pour le code : toutes tranchées.** Reste hors code : S26 en main, tests instrumentés, liste de frais datée (si un jour).
+**Décisions produit §8 pour le code : toutes tranchées** (liste frais livrée en 6.38). Reste hors code : S26 en main, tests instrumentés.
 
 À ne pas ajouter pour « faire plus premium » : enveloppes, courbe, snowball, taux, PDF CPAS, onglet dettes, puce Huissier.
 
