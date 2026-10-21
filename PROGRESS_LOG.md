@@ -9,14 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.26** (stable gelée sur `main`) |
+| Dernière étape terminée | **6.27** (sticky Sans les futures · Menu court · photo + fréquence) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke Galaxy restant (notif, trimestriel) |
-| Audit premium | Code clos (`AUDIT_PREMIUM.md`) · smoke partiel (`AUDIT_STATUS.md`) |
+| Prochaine sous-étape | Smoke notif / trimestriel (déjà OK en manuel) |
+| Audit premium | Code clos · smoke partiel |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.27 Retours manuels maman (photo, fréquence, menu, sticky)
+
+**Confirmé OK (manuel) :** notifications · biométrie.
+
+**Problèmes :** pastille « Facture » ouvrait l’édition au lieu de la photo · fréquence non modifiable sans supprimer · Menu doublonnait Alertes / Aide avec Réglages · sticky peu clair (reste vs futures vs courses) · aide Courses trop bas.
+
+**Codé :** pastille photo hors zone Modifier · décode photo unifié · fréquence Once↔mensuel/3 mois/an sur fiche · Menu = Réglages + mois · sticky « Sans les futures » · Courses en 2ᵉ section d’aide · charte §1/7/8 à jour.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **165/165** (47 fichiers, 0 échec)  
+**Version :** `0.1.0-6.27` · `versionCode` 32
 
 ### 2026-10-20 — Fin de journée : rangement + gel `main` = `develop` (6.26)
 

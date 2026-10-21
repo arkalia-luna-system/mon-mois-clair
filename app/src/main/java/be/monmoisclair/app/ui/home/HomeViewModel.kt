@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
@@ -339,16 +338,9 @@ class HomeViewModel @Inject constructor(
         _userMessages.tryEmit("Copié — collez dans votre application bancaire.")
     }
 
-    /**
-     * Décode la photo **dans l’app** (S01) — pas via `ACTION_VIEW` externe
-     * (Samsung refuse souvent la lecture SAF hors process).
-     */
-    suspend fun loadReceiptBitmap(relativePath: String): Bitmap? {
-        val uri = receiptPhotos.openUri(relativePath) ?: return null
-        return runCatching {
-            appContext.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
-        }.getOrNull()
-    }
+    /** Décode la photo **dans l’app** (S01) — pas via `ACTION_VIEW` externe. */
+    suspend fun loadReceiptBitmap(relativePath: String): Bitmap? =
+        receiptPhotos.decodeBitmap(relativePath)
 
     fun refreshCurrentMonth() {
         viewModelScope.launch {

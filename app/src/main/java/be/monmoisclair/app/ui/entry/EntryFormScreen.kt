@@ -116,6 +116,7 @@ fun AddEntryScreen(
         pendingPreview = bmp
         viewModel.attachPreviewBitmap(bmp)
     }
+    var showReceiptDialog by remember { mutableStateOf(false) }
     val dirty = state.label.isNotBlank() ||
         state.amountText.isNotBlank() ||
         state.paymentNote.isNotBlank() ||
@@ -148,6 +149,46 @@ fun AddEntryScreen(
         onEpcRawConsumed()
     }
 
+    if (showReceiptDialog && pendingPreview != null) {
+        Dialog(
+            onDismissRequest = { showReceiptDialog = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Surface(
+                color = A11yTokens.PaperCream,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(A11yTokens.screenPadding)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = state.label.trim().ifBlank { "Facture" },
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Image(
+                        bitmap = pendingPreview!!.asImageBitmap(),
+                        contentDescription = "Photo de la facture",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 280.dp, max = 520.dp)
+                            .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                    )
+                    PrimaryA11yButton(
+                        text = "Fermer",
+                        onClick = { showReceiptDialog = false }
+                    )
+                }
+            }
+        }
+    }
+
     EntryFormScaffold(
         title = state.formTitle,
         label = state.label,
@@ -171,6 +212,11 @@ fun AddEntryScreen(
         receiptPreview = pendingPreview,
         onScanEpc = onScanEpc,
         onTakePhoto = takePhoto,
+        onViewReceipt = if (pendingPreview != null) {
+            { showReceiptDialog = true }
+        } else {
+            null
+        },
         onCopyPaymentNote = viewModel::copyPaymentNote,
         showApplyFollowing = false,
         applyFollowing = false,
@@ -292,7 +338,6 @@ fun EditEntryScreen(
         pendingPreview = bmp
         viewModel.attachPreviewBitmap(bmp)
     }
-    val context = LocalContext.current
     var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var showReceiptDialog by remember { mutableStateOf(false) }
     LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto) {
@@ -301,10 +346,7 @@ fun EditEntryScreen(
             receiptBitmap = null
             return@LaunchedEffect
         }
-        val uri = viewModel.openReceiptUri() ?: return@LaunchedEffect
-        receiptBitmap = context.contentResolver.openInputStream(uri)?.use {
-            BitmapFactory.decodeStream(it)
-        }
+        receiptBitmap = viewModel.decodeReceiptBitmap()
     }
 
     if (showReceiptDialog) {
@@ -367,7 +409,7 @@ fun EditEntryScreen(
         isExpense = state.isExpense,
         recurring = state.recurrence != RecurrenceChoice.Once,
         showRecurring = false,
-        showFrequencyEdit = state.isExpense && state.hasTemplate,
+        showFrequencyEdit = state.isExpense,
         recurrence = state.recurrence,
         onRecurrence = viewModel::setRecurrence,
         recurrenceInfo = state.recurrenceInfo,
@@ -574,7 +616,9 @@ private fun EntryFormScaffold(
                 Text("Fréquence", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                 if (showFrequencyEdit) {
                     Text(
-                        text = "Le changement s’applique au modèle (cochez « Aussi les mois suivants »).",
+                        text = "Vous pouvez corriger une erreur (mensuel, 3 mois, annuel, une fois) " +
+                            "sans supprimer la ligne. Pour les mois déjà créés : cochez " +
+                            "« Aussi les mois suivants ».",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted
                     )
@@ -584,10 +628,8 @@ private fun EntryFormScaffold(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    if (!showFrequencyEdit) {
-                        TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
-                            onRecurrence(RecurrenceChoice.Once)
-                        }
+                    TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
+                        onRecurrence(RecurrenceChoice.Once)
                     }
                     TypeChip(RecurrenceLabel.chipMonthly(), selected = recurrence == RecurrenceChoice.Monthly) {
                         onRecurrence(RecurrenceChoice.Monthly)
@@ -682,6 +724,12 @@ private fun EntryFormScaffold(
                             text = "Photo prête — enregistrée avec la facture.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.AccentOk
+                        )
+                    }
+                    if (hasReceiptPhoto && receiptPreview == null && onViewReceipt != null) {
+                        SecondaryA11yButton(
+                            text = "Voir la photo de la facture",
+                            onClick = onViewReceipt
                         )
                     }
                     receiptPreview?.let { bmp ->

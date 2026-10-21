@@ -30,8 +30,8 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import java.time.YearMonth
 
 /**
- * Hub hors ledger — outils visibles d’abord, puis calendrier des mois.
- * Contenu scrollable : 24 mois ne doivent plus cacher les boutons.
+ * Hub hors ledger — un seul outil (Réglages), puis calendrier des mois.
+ * Alertes / aide / restore : dans Réglages (pas de doublon).
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -41,9 +41,6 @@ fun HomeMenuSheet(
     onDismiss: () -> Unit,
     onSelectMonth: (YearMonth) -> Unit,
     onGoToCurrentMonth: () -> Unit,
-    onOpenHealth: () -> Unit,
-    onOpenHowItWorks: () -> Unit,
-    onOpenRestore: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -66,41 +63,12 @@ fun HomeMenuSheet(
         ) {
             Text(text = "Menu", style = MaterialTheme.typography.headlineMedium)
             Text(
-                text = "Un outil, ou un mois.",
+                text = "Réglages, ou un autre mois.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Outils", style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(8.dp))
-            SecondaryA11yButton(
-                text = "Alertes",
-                onClick = {
-                    onDismiss()
-                    onOpenHealth()
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            SecondaryA11yButton(
-                text = "Comment ça marche",
-                onClick = {
-                    onDismiss()
-                    onOpenHowItWorks()
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            SecondaryA11yButton(
-                text = "Restaurer une sauvegarde",
-                onClick = {
-                    onDismiss()
-                    onOpenRestore()
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
             SecondaryA11yButton(
                 text = "Réglages",
                 onClick = {
@@ -112,7 +80,6 @@ fun HomeMenuSheet(
 
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Mois", style = MaterialTheme.typography.titleLarge)
-            // Une année par groupe : Déc 2025 sous « 2025 », pas sous « 2026 ».
             val byYear = months.groupBy { it.year }
             HomeMonthChoices.yearsInOrder(months).forEach { year ->
                 val yearMonths = byYear[year] ?: return@forEach

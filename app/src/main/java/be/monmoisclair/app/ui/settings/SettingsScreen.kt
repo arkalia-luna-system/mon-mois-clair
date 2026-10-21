@@ -176,7 +176,7 @@ fun SettingsScreen(
                 color = A11yTokens.InkMuted
             )
             SecondaryA11yButton(
-                text = "Alertes",
+                text = "Vérifier les alertes",
                 onClick = onOpenHealth,
                 enabled = !state.busy
             )

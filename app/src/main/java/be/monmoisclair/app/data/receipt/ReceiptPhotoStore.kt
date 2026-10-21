@@ -36,6 +36,14 @@ class ReceiptPhotoStore @Inject constructor(
     suspend fun openUri(relativePath: String): Uri? =
         if (relativePath.isBlank()) null else safBackupStore.uriForRelative(relativePath)
 
+    /** Décode dans l’app (Samsung refuse souvent ACTION_VIEW hors process). */
+    suspend fun decodeBitmap(relativePath: String): Bitmap? {
+        val uri = openUri(relativePath) ?: return null
+        return runCatching {
+            context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
+        }.getOrNull()
+    }
+
     companion object {
         /** Plein cadre lisible (IBAN / communication) — pas la miniature système. */
         const val MAX_SIDE_PX = 2048

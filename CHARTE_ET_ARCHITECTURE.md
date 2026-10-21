@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-20 (lot **6.13** — marque : M ivoire sur teal, rappel blanc, ouverture papier).
+Mise à jour : 2026-10-21 (lot **6.27** — sticky lisible maman, menu court, photo + fréquence éditables).
 
 ## 1. Vision
 
@@ -26,16 +26,27 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
 | Mois ‹ › puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
-| Une ligne « à payer » | FAIT / Remettre à droite | Calendrier + Santé + Réglages dans Menu |
-| Alerte en 2 lignes maximum | Liste d’abord, divers ensuite | **Masquée** tant que le clavier est ouvert |
+| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite | Menu = **Réglages** + calendrier des mois |
+| Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | **Masquée** tant que le clavier est ouvert |
 
-L’en-tête n’est **pas** une bannière. Pas de plaque colorée, pas de nom d’app, pas de titre en plus du chiffre.  
-Le « ~30 % » du haut est un **plafond** de zone de lecture, pas une surface à remplir.
+**Sticky (verrouillé 6.27) — maman lit sans calculer :**
 
-**Interdit** : empiler Santé / Réglages / aide dans le scroll ; boutons critiques collés tout en haut.  
+| Ligne | Sens | Quand |
+|-------|------|--------|
+| Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
+| **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 |
+| **Sans les futures** | Revenus − factures **déjà FAIT** (= Reste + À payer) | Seulement s’il reste à payer (> 0) |
+| **Après courses** | Reste − courses / divers du mois | Seulement si courses > 0 |
+
+Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Sans les futures = brun `#8A5A1E` ; Après courses = muted.  
+Pas de plaque colorée, pas de nom d’app dans l’en-tête.
+
+**Interdit** : empiler Alertes / aide / restore dans le Menu (ils vivent dans **Réglages**) ; boutons critiques collés tout en haut.  
 **Marque** : absente de l’accueil. Légende discrète au verrouillage et à l’installation.  
-**Futures fonctions** : Menu ou écran dédié — **jamais** un nouveau bloc sur l’en-tête.  
-**Clavier** : le champ en cours reste visible. Une seule action épinglée (`Enregistrer`). Annuler et Supprimer reviennent quand le clavier se ferme.
+**Futures fonctions** : Réglages ou écran dédié — **jamais** un nouveau bloc sur l’en-tête.  
+**Clavier** : le champ en cours reste visible. Une seule action épinglée (`Enregistrer`). Annuler et Supprimer reviennent quand le clavier se ferme.  
+**Photo facture** : revoir / reprendre depuis la fiche **et** pastille « Facture » sur la ligne (hors zone « Modifier »).  
+**Fréquence** : mensuel / 3 mois / annuel / une fois — **modifiable** sur la fiche, sans supprimer pour recommencer.
 
 ### Stack
 
@@ -63,6 +74,8 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | **6.11** | Rythme visuel : serif au chiffre, mois en toutes lettres, écrans allégés | ✅ |
 | **6.12** | Parcours fini : Continuer épinglé, un seul bouton plein, cartes échéances | ✅ |
 | **6.13** | Marque : icône M, rappel blanc, ouverture papier | ✅ |
+| **6.14–6.26** | Audit premium, archive photos, menu années, mois vide, CI | ✅ |
+| **6.27** | Sticky Sans les futures · Menu = Réglages · photo + fréquence éditables | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -136,9 +149,10 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `HomeMenuShee
 | Loyer, salaire, courses | Home mois courant | OK (liste + reste + divers) |
 | Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
 | Feuilleter 12 mois passés | Menu → calendrier + ‹ › | **Revenir au mois en cours** (Menu) |
-| Rappels qui ne sonnent pas | Menu affiche « Alertes », puis Santé | Un seul hub |
+| Rappels qui ne sonnent pas | Réglages → Alertes | Un seul hub (plus de doublon Menu / Réglages) |
+| Aide / restore | Réglages | Menu ne liste plus Comment ça marche ni Restaurer |
 
-Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages dans le scroll Home.
+Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages / aide dans le scroll Home ; dupliquer Alertes ou Aide dans le Menu.
 
 ## 8. Fidélité outil quotidien — étude 2026 relue (verrouillé)
 
@@ -154,7 +168,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 
 | Idée étude | Décision MMC |
 |------------|--------------|
-| Safe-to-Spend | Sticky **Reste après factures** + **À payer**. Le montant reste plus grand que les 28–32 sp cités (36 sp compact / 42 sp confort) : c’est le signal n°1 |
+| Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Sans les futures** (si besoin) + **Après courses** (si besoin). Gros chiffre = signal n°1 (36 sp compact / 42 sp confort) |
 | Check-off | Bouton d’**action** « FAIT ✓ » à droite (≥ 96 dp). « À payer » baisse tout de suite. Le bouton ne s’appelle pas « À PAYER » : un bouton dit l’action |
 | Preuve | Pastille **« FAIT le JJ/MM »** (`doneAtEpochMs`) |
 | Liste > graphiques | Jamais camembert / courbes |
@@ -162,7 +176,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 | Jour d’échéance | Grille **1–31**, cibles ≥ 48 dp, qui se replie (7 colonnes de 48 dp ne tiennent pas sur le S26) |
 | Montant | Clavier décimal. Édition **ce mois-ci seul** par défaut |
 | Mois indépendants | Pas de report auto. Un revenu ponctuel « Reste du mois passé » si elle le veut |
-| Alertes | **Menu** devient « Menu / Alertes » seulement si notifications ou alarmes exactes sont refusées. Pas de pastille permanente pour la batterie Samsung |
+| Alertes | Hub dans **Réglages → Alertes**. Le libellé bas « Menu » peut devenir « Menu / Alertes » seulement si notifs ou alarmes exactes refusées. Pas de pastille permanente pour la batterie Samsung |
 | Local-first | Zéro banque, zéro cloud, zéro pub |
 
 ### Refuser

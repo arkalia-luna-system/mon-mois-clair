@@ -128,6 +128,8 @@ class EditEntryViewModel @Inject constructor(
     }
     fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
     suspend fun openReceiptUri() = receiptPhotos.openUri(_state.value.receiptRelativePath)
+    suspend fun decodeReceiptBitmap() =
+        receiptPhotos.decodeBitmap(_state.value.receiptRelativePath)
 
     fun copyPaymentNote() {
         val note = _state.value.paymentNote.trim()
@@ -162,23 +164,16 @@ class EditEntryViewModel @Inject constructor(
             }
             var path = s.receiptRelativePath
             pendingBitmap?.let { path = receiptPhotos.saveBitmap(s.id, it); pendingBitmap = null }
-            val interval = when {
-                !s.isExpense || !s.hasTemplate -> null
-                else -> when (s.recurrence) {
-                    RecurrenceChoice.Once -> null
+            // null = inchangé ; -1 = une fois ; 1/3/12 = intervalle (crée le modèle si besoin).
+            val interval: Int? = if (!s.isExpense) {
+                null
+            } else {
+                when (s.recurrence) {
+                    RecurrenceChoice.Once -> if (s.hasTemplate) -1 else null
                     RecurrenceChoice.Monthly -> 1
                     RecurrenceChoice.Every3Months -> 3
                     RecurrenceChoice.Yearly -> 12
                 }
-            }
-            if (s.isExpense && s.hasTemplate && s.recurrence == RecurrenceChoice.Once) {
-                _state.update {
-                    it.copy(
-                        error = "Pour passer en « une seule fois », supprimez l’entrée " +
-                            "et recréez-la (le modèle mensuel resterait sinon)."
-                    )
-                }
-                return@launch
             }
             when (
                 val result = updateInstance(

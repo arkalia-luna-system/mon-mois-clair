@@ -91,9 +91,6 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onAdd: (YearMonth) -> Unit,
     onEdit: (id: String, isExpense: Boolean) -> Unit,
-    onOpenHealth: () -> Unit,
-    onOpenHowItWorks: () -> Unit,
-    onOpenRestore: () -> Unit,
     onOpenSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -315,9 +312,6 @@ fun HomeScreen(
             onDismiss = { menuOpen = false },
             onSelectMonth = viewModel::goToMonth,
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
-            onOpenHealth = onOpenHealth,
-            onOpenHowItWorks = onOpenHowItWorks,
-            onOpenRestore = onOpenRestore,
             onOpenSettings = onOpenSettings
         )
     }
@@ -399,6 +393,18 @@ fun HomeScreen(
                             state.summary.stillToPayCents == 0L -> A11yTokens.AccentOk
                             else -> A11yTokens.InkMuted
                         },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                stickyWithoutUnpaidLabel(
+                    remainingCents = state.summary.remainingCents,
+                    stillToPayCents = state.summary.stillToPayCents
+                )?.let { label ->
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.AccentWarn,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -860,49 +866,55 @@ private fun ExpenseRow(
         ) {
             DayBadge(item.dayLabel)
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable(onClickLabel = "Modifier", onClick = onClick),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    text = item.label,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = item.amountLabel,
-                    color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
-                    style = MaterialTheme.typography.titleLarge
-                )
-                AnimatedVisibility(
-                    visible = item.paymentNote.isNotBlank(),
-                    enter = fadeIn(),
-                    exit = fadeOut()
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClickLabel = "Modifier", onClick = onClick),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                text = item.paymentNote,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f)
-                            )
-                            SecondaryA11yButton(
-                                text = "Copier",
-                                onClick = onCopyNote,
-                                fillMaxWidth = false,
-                                modifier = Modifier.widthIn(min = 96.dp)
-                            )
+                    Text(
+                        text = item.label,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = item.amountLabel,
+                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    AnimatedVisibility(
+                        visible = item.paymentNote.isNotBlank(),
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = item.paymentNote,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = A11yTokens.InkMuted,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                SecondaryA11yButton(
+                                    text = "Copier",
+                                    onClick = onCopyNote,
+                                    fillMaxWidth = false,
+                                    modifier = Modifier.widthIn(min = 96.dp)
+                                )
+                            }
                         }
                     }
                 }
+                // Hors zone « Modifier » : sinon le tap ouvre l’édition au lieu de la photo.
                 ExpenseStatusLine(item = item, onOpenReceipt = onOpenReceipt)
             }
             SecondaryA11yButton(

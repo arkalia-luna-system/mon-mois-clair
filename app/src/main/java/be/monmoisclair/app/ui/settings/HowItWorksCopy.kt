@@ -2,7 +2,7 @@ package be.monmoisclair.app.ui.settings
 
 /**
  * Aide « Comment ça marche » — textes figés, testables, ton familial.
- * Affiché depuis Réglages (Home freeze : pas de nouveau bouton sur l’accueil).
+ * Affiché depuis Réglages (Menu = Réglages + mois seulement).
  */
 object HowItWorksCopy {
     const val TITLE = "Comment ça marche"
@@ -12,11 +12,20 @@ object HowItWorksCopy {
     val sections: List<Section> = listOf(
         Section(
             title = "Le chiffre en haut",
-            body = "Le gros chiffre, c’est le « Reste après factures » : vos revenus du mois moins toutes les factures. " +
-                "La ligne en dessous dit ce qu’il reste à payer. " +
+            body = "Le gros chiffre, c’est le « Reste après factures » : vos revenus du mois moins toutes les factures " +
+                "(payées ou non). " +
+                "« À payer » dit ce qui reste à régler. " +
+                "« Sans les futures » (en brun) montre ce qu’il resterait si on ne comptait que les factures déjà FAIT. " +
                 "Ce n’est pas le solde de votre compte en banque. " +
                 "Chaque mois est une page neuve : l’app ne reporte pas toute seule ce qui restait. " +
                 "Pour le noter, ajoutez un revenu « Reste du mois passé », une seule fois."
+        ),
+        Section(
+            title = "Courses",
+            body = "Pour les petites dépenses sans facture fixe (courses, pharmacie…). " +
+                "Tapez un montant puis « Ajouter » ou « Retirer ». " +
+                "Le gros chiffre « Reste après factures » ne change pas. " +
+                "Une ligne « Après courses » montre ce qu’il resterait, à titre indicatif."
         ),
         Section(
             title = "Marquer FAIT",
@@ -33,17 +42,10 @@ object HowItWorksCopy {
                 "L’app vous rappelle chaque jour à 10 h jusqu’à ce que ce soit FAIT."
         ),
         Section(
-            title = "Courses",
-            body = "Pour les petites dépenses sans facture fixe (courses, pharmacie…). " +
-                "Tapez un montant puis « Ajouter » ou « Retirer ». " +
-                "Le gros chiffre « Reste après factures » ne change pas. " +
-                "Une ligne « Après courses » montre ce qu’il resterait, à titre indicatif."
-        ),
-        Section(
             title = "Alertes",
             body = "Pour chaque facture : 3 jours avant à 10 h, le jour même à 9 h, " +
                 "puis chaque matin à 10 h tant que ce n’est pas payé. " +
-                "Vérifiez Menu → Alertes si rien ne sonne. " +
+                "Vérifiez Réglages → Alertes si rien ne sonne. " +
                 "Dans Samsung, retirez Mon Mois Clair de la mise en veille."
         ),
         Section(
@@ -51,7 +53,8 @@ object HowItWorksCopy {
             body = "À l’ajout : « Scanner une facture » lit le QR de la facture belge et préremplit nom, montant " +
                 "et communication. Sur le mois, touchez « Copier ». Dans la fiche, « Copier la communication ». " +
                 "Collez ensuite dans votre app bancaire. " +
-                "Vous pouvez aussi prendre une photo de la facture. Elle se revoit en ouvrant la ligne. " +
+                "Vous pouvez aussi prendre une photo : pastille « Facture » sur la ligne, ou touchez la vignette " +
+                "dans la fiche pour l’agrandir. Vous pouvez reprendre la photo sans tout recréer. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."
         ),
         Section(
@@ -59,11 +62,11 @@ object HowItWorksCopy {
             body = "Les factures mensuelles restent sur l’accueil. " +
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
                 "Elles réapparaissent le bon mois ; les autres mois, regardez Réglages → « Échéances hors ce mois ». " +
+                "Si vous vous êtes trompée de fréquence, ouvrez la ligne et changez-la : pas besoin de supprimer. " +
                 "Pour feuilleter l’historique : Menu (barre du bas) → calendrier des mois, " +
                 "ou les flèches à côté du mois. " +
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
-                "Si Menu affiche « Alertes », les rappels ne peuvent pas sonner : " +
-                "ouvrez Menu → Alertes pour régler notifications, réveil à l’heure et batterie."
+                "Aide, alertes et restauration : tout est dans Réglages."
         ),
         Section(
             title = "Sauvegarde",

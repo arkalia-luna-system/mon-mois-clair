@@ -170,6 +170,76 @@ class UpdateDeleteEntryUseCaseTest {
     }
 
     @Test
+    fun update_once_to_monthly_creates_template() = runBlocking {
+        if (db.monthLedgerDao().getById("2026-10") == null) {
+            db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        }
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp-once",
+                ledgerId = "2026-10",
+                templateId = null,
+                label = "Taxe",
+                amountCents = 10_000L,
+                dayOfMonth = 15,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val result = update(
+            id = "exp-once",
+            isExpense = true,
+            label = "Taxe",
+            amountCents = 10_000L,
+            dayOfMonth = 15,
+            applyToFollowingMonths = false,
+            intervalMonths = 3
+        )
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        val updated = db.instanceDao().getExpenseById("exp-once")!!
+        assertThat(updated.templateId).isNotNull()
+        assertThat(db.templateDao().getExpenseById(updated.templateId!!)!!.intervalMonths)
+            .isEqualTo(3)
+    }
+
+    @Test
+    fun update_demote_to_once_archives_template_and_clears_link() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-demote",
+                label = "Gaz",
+                amountCents = 8_000L,
+                dayOfMonth = 2,
+                active = true,
+                intervalMonths = 1,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-10", "exp:2026-10:tpl-demote", "tpl-demote", 8_000L)
+        seedLinkedExpense("2026-11", "exp:2026-11:tpl-demote", "tpl-demote", 8_000L)
+
+        val result = update(
+            id = "exp:2026-10:tpl-demote",
+            isExpense = true,
+            label = "Gaz",
+            amountCents = 8_000L,
+            dayOfMonth = 2,
+            applyToFollowingMonths = false,
+            intervalMonths = -1
+        )
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-10:tpl-demote")!!.templateId).isNull()
+        assertThat(db.templateDao().getExpenseById("tpl-demote")!!.active).isFalse()
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-demote")).isNull()
+    }
+
+    @Test
     fun update_expense_togglesAutoDebit_andPropagatesToTemplate() = runBlocking {
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(

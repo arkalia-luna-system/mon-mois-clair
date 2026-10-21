@@ -1,10 +1,13 @@
 package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
+import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.MonthDayClamp
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.YearMonth
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +23,12 @@ class UpdateInstanceUseCase @Inject constructor(
     private val mutatingRepository: MutatingRepository
 ) {
 
+    /**
+     * @param intervalMonths
+     *   null = ne pas changer la récurrence ;
+     *   -1 = passer en « une seule fois » (détache + archive le modèle) ;
+     *   1..24 = intervalle (crée le modèle si la ligne était ponctuelle).
+     */
     suspend operator fun invoke(
         id: String,
         isExpense: Boolean,
@@ -30,7 +39,6 @@ class UpdateInstanceUseCase @Inject constructor(
         isAutoDebit: Boolean = false,
         paymentNote: String = "",
         receiptRelativePath: String = "",
-        /** null = ne pas toucher à l’intervalle du modèle. */
         intervalMonths: Int? = null
     ): UpdateInstanceResult {
         val trimmed = label.trim()
@@ -42,6 +50,9 @@ class UpdateInstanceUseCase @Inject constructor(
         }
         if (dayOfMonth !in 1..31) {
             return UpdateInstanceResult.InvalidInput("Le jour doit être entre 1 et 31.")
+        }
+        if (intervalMonths != null && intervalMonths != -1 && intervalMonths !in 1..24) {
+            return UpdateInstanceResult.InvalidInput("Fréquence invalide.")
         }
 
         val exists = if (isExpense) {
@@ -55,11 +66,68 @@ class UpdateInstanceUseCase @Inject constructor(
             sideEffectsWhen = { it is UpdateInstanceResult.Success }
         ) {
             if (isExpense) {
-                val current = instanceDao.getExpenseById(id)
+                var current = instanceDao.getExpenseById(id)
                     ?: return@mutate UpdateInstanceResult.NotFound
                 val ym = YearMonth.parse(current.ledgerId)
                 val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
                 val auto = isAutoDebit
+                val receipt = receiptRelativePath.trim()
+                    .ifEmpty { current.receiptRelativePath }
+
+                when {
+                    intervalMonths == -1 && current.templateId != null -> {
+                        val tid = current.templateId!!
+                        templateDao.getExpenseById(tid)?.let { tpl ->
+                            if (tpl.active) {
+                                templateDao.updateExpense(
+                                    tpl.copy(
+                                        active = false,
+                                        archivedAtEpochMs = AppClock.nowEpochMs()
+                                    )
+                                )
+                            }
+                        }
+                        val futureTodos = instanceDao.expensesFromTemplateFromLedger(
+                            tid,
+                            current.ledgerId
+                        ).filter { it.id != current.id && it.status == ExpenseStatus.TODO }
+                        for (item in futureTodos) {
+                            instanceDao.deleteExpense(item)
+                        }
+                        current = current.copy(templateId = null)
+                    }
+                    intervalMonths != null && intervalMonths > 0 -> {
+                        val interval = intervalMonths.coerceIn(1, 24)
+                        if (current.templateId == null) {
+                            val tid = "tpl-exp-${UUID.randomUUID()}"
+                            val now = AppClock.nowEpochMs()
+                            templateDao.insertExpense(
+                                ExpenseTemplateEntity(
+                                    id = tid,
+                                    label = trimmed,
+                                    amountCents = amountCents,
+                                    dayOfMonth = dayOfMonth,
+                                    active = true,
+                                    remindJ3 = true,
+                                    remindJd = true,
+                                    isAutoDebit = auto,
+                                    intervalMonths = interval,
+                                    anchorYearMonth = current.ledgerId,
+                                    createdAtEpochMs = now,
+                                    archivedAtEpochMs = null
+                                )
+                            )
+                            current = current.copy(templateId = tid)
+                        } else {
+                            templateDao.getExpenseById(current.templateId)?.let { tpl ->
+                                templateDao.updateExpense(
+                                    tpl.copy(intervalMonths = interval)
+                                )
+                            }
+                        }
+                    }
+                }
+
                 instanceDao.updateExpense(
                     current.copy(
                         label = trimmed,
@@ -67,17 +135,10 @@ class UpdateInstanceUseCase @Inject constructor(
                         dayOfMonth = clamped,
                         isAutoDebit = auto,
                         paymentNote = paymentNote.trim(),
-                        receiptRelativePath = receiptRelativePath.trim()
-                            .ifEmpty { current.receiptRelativePath }
+                        receiptRelativePath = receipt
                     )
                 )
-                if (current.templateId != null && intervalMonths != null) {
-                    templateDao.getExpenseById(current.templateId)?.let { tpl ->
-                        templateDao.updateExpense(
-                            tpl.copy(intervalMonths = intervalMonths.coerceIn(1, 24))
-                        )
-                    }
-                }
+
                 if (applyToFollowingMonths && current.templateId != null) {
                     val templateId = current.templateId
                     templateDao.getExpenseById(templateId)?.let { tpl ->
@@ -87,7 +148,11 @@ class UpdateInstanceUseCase @Inject constructor(
                                 amountCents = amountCents,
                                 dayOfMonth = dayOfMonth,
                                 isAutoDebit = auto,
-                                intervalMonths = intervalMonths?.coerceIn(1, 24) ?: tpl.intervalMonths
+                                intervalMonths = when {
+                                    intervalMonths != null && intervalMonths > 0 ->
+                                        intervalMonths.coerceIn(1, 24)
+                                    else -> tpl.intervalMonths
+                                }
                             )
                         )
                     }
