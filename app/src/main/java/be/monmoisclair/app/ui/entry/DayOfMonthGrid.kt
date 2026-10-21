@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.entry
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,14 +44,19 @@ fun DayOfMonthGrid(
         ) {
             for (day in 1..31) {
                 val selected = selectedDay == day
+                val shape = MaterialTheme.shapes.medium
                 val bg = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm
                 val fg = if (selected) A11yTokens.ButtonText else A11yTokens.Ink
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .background(bg)
+                        .clip(shape)
+                        .background(bg, shape)
+                        .then(
+                            if (selected) Modifier
+                            else Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+                        )
                         .semantics {
                             contentDescription = if (selected) {
                                 "Jour $day, sélectionné"

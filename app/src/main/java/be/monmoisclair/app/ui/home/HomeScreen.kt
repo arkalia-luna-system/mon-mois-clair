@@ -770,6 +770,7 @@ fun HomeScreen(
         ) { data ->
             Snackbar(
                 snackbarData = data,
+                shape = MaterialTheme.shapes.medium,
                 containerColor = A11yTokens.Ink,
                 contentColor = A11yTokens.ButtonText,
                 actionColor = A11yTokens.ButtonText

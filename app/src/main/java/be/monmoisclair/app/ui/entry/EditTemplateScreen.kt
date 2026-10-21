@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.entry
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -236,19 +237,26 @@ fun EditTemplateScreen(
             ) {
                 for (m in 1..12) {
                     val selected = state.anchorMonth == m
+                    val shape = MaterialTheme.shapes.medium
+                    val label = RecurrenceAnchor.frenchMonthLabel(m)
                     Surface(
                         color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
-                        shape = MaterialTheme.shapes.medium,
-                        modifier = Modifier.heightIn(min = A11yTokens.minTouchHeight)
+                        shape = shape,
+                        modifier = Modifier
+                            .heightIn(min = A11yTokens.minTouchHeight)
+                            .then(
+                                if (selected) Modifier
+                                else Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+                            )
                     ) {
                         Text(
-                            text = RecurrenceAnchor.frenchMonthLabel(m),
+                            text = label,
                             style = MaterialTheme.typography.bodyLarge,
                             color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
                             modifier = Modifier
                                 .clickable(
                                     role = Role.Button,
-                                    onClickLabel = RecurrenceAnchor.frenchMonthLabel(m)
+                                    onClickLabel = label
                                 ) { viewModel.setAnchorMonth(m) }
                                 .padding(horizontal = 12.dp, vertical = 12.dp)
                         )
