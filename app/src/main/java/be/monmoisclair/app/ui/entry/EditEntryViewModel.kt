@@ -191,7 +191,11 @@ class EditEntryViewModel @Inject constructor(
     }
     fun attachPreviewBitmap(b: Bitmap) {
         pendingBitmap = b
-        _state.update { it.copy(hasPendingPhoto = true, receiptCleared = false) }
+        _state.update { it.copy(hasPendingPhoto = true, receiptCleared = false, error = null) }
+    }
+
+    fun setPhotoDecodeError() = _state.update {
+        it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
     }
     fun clearReceiptPhoto() {
         pendingBitmap = null
