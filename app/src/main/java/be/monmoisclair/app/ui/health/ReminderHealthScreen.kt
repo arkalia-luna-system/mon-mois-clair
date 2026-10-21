@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.settings.DeviceCareCopy
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
@@ -134,8 +135,7 @@ fun ReminderHealthScreen(
             }
             if (r.samsungDeviceCareHintNeeded) {
                 Text(
-                    text = "Sur Samsung : Paramètres → Batterie → Limites d’utilisation " +
-                        "en arrière-plan → retirez Mon Mois Clair de la mise en veille.",
+                    text = DeviceCareCopy.HINT,
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.AccentWarn,
                     modifier = Modifier

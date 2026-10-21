@@ -38,6 +38,7 @@ import be.monmoisclair.app.data.reminder.ReminderHealthReport
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.settings.DeviceCareCopy
 import be.monmoisclair.app.ui.health.HealthStatusRow
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -176,8 +177,7 @@ fun PermissionsSetupScreen(
         if (report?.samsungDeviceCareHintNeeded == true) {
             val warnShape = MaterialTheme.shapes.medium
             Text(
-                text = "Dans Samsung, retirez Mon Mois Clair de la mise en veille " +
-                    "(Paramètres → Batterie → Limites d’utilisation en arrière-plan).",
+                text = DeviceCareCopy.HINT,
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.AccentWarn,
                 modifier = Modifier

@@ -12,7 +12,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Dernière étape terminée | **6.37** (phrase rythme dossier) |
 | Étape en cours | — |
 | Prochaine sous-étape | — (campagne device clôturée côté P0/P1) · S26 maman optionnel |
-| Audit premium | Smokes + campagne Ultra · sticky « Après les FAIT » · **232/232** |
+| Audit premium | Smokes + campagne Ultra · sticky « Après les FAIT » · **233/233** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
@@ -23,7 +23,8 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Fait :** caches locaux (`.gradle` jetable, `~/.cache/mon-mois-clair`, Gradle **8.9** obsolète) · dumps `suite_pe` · 3 `@string` jamais référencés retirés (`onboarding_*_title`, `health_title` — textes déjà en dur UI).  
 **Audit dossiers :** `data/`, `domain/`, `ui/`, `res/`, `docs/`, `dist/`, `gradle/` vs `.gradle/` — pas de code produit mort à fusionner.  
-**Tests :** **232/232** (`--rerun-tasks`, 59 fichiers). Version inchangée `0.1.0-6.37`.
+**Suite :** `DeviceCareCopy` (orphelin) rebranché via `HINT` (santé alertes + onboarding + aide) — plus de textes Samsung en triple.  
+**Tests :** **233/233** (`--rerun-tasks`, 59 fichiers). Version inchangée `0.1.0-6.37`.
 
 ### 2026-10-21 — APK release allégée (ABI ARM only)
 

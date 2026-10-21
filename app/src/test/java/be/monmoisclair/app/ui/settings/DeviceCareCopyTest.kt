@@ -13,4 +13,11 @@ class DeviceCareCopyTest {
         assertThat(DeviceCareCopy.BODY).doesNotContain("Device Care")
         assertThat(DeviceCareCopy.BODY).doesNotContain("Mise en veille profonde")
     }
+
+    @Test
+    fun hint_used_on_health_and_onboarding_is_jargon_free() {
+        assertThat(DeviceCareCopy.HINT).contains("mise en veille")
+        assertThat(DeviceCareCopy.HINT).contains("Batterie")
+        assertThat(DeviceCareCopy.HINT).doesNotContain("Device Care")
+    }
 }

@@ -46,7 +46,7 @@ object HowItWorksCopy {
             body = "Pour chaque facture : 3 jours avant à 10 h, le jour même à 9 h, " +
                 "puis chaque matin à 10 h tant que ce n’est pas payé. " +
                 "Vérifiez Réglages → Alertes si rien ne sonne. " +
-                "Dans Samsung, retirez Mon Mois Clair de la mise en veille."
+                DeviceCareCopy.HINT
         ),
         Section(
             title = "Facture papier",
