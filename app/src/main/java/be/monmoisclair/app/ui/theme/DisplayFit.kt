@@ -46,9 +46,10 @@ data class DisplayFit(
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
                 // Sticky léger : le montant « Reste » domine ; la marque est une légende.
-                stickyPaddingVertical = if (compact) 8.dp else 12.dp,
+                // Court (~S26) : encore un cran pour laisser la liste + FAIT lisibles.
+                stickyPaddingVertical = if (compact) 6.dp else 12.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
-                bannerPadding = if (compact) 8.dp else 10.dp,
+                bannerPadding = if (compact) 6.dp else 10.dp,
                 sectionGap = if (compact) 2.dp else 4.dp,
                 remainingAmountSp = if (compact) 32f else 36f
             )

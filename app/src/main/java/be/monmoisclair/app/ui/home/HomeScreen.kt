@@ -398,7 +398,7 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = fit.stickyPaddingHorizontal)
-                    .padding(top = 4.dp, bottom = 8.dp)
+                    .padding(vertical = fit.stickyPaddingVertical)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -543,7 +543,10 @@ fun HomeScreen(
                                 onClickLabel = "Voir les échéances hors ce mois"
                             ) { onOpenSettings() }
                             .padding(horizontal = 12.dp, vertical = 10.dp)
-                            .semantics { contentDescription = warning }
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = warning
+                            }
                     )
                 }
                 if (state.pendingLetterCount > 0) {
@@ -585,9 +588,10 @@ fun HomeScreen(
                 contentPadding = PaddingValues(
                     start = fit.screenPadding,
                     end = fit.screenPadding,
-                    top = 12.dp,
-                    bottom = 12.dp
+                    top = if (fit.compactHomeChrome) 8.dp else 12.dp,
+                    bottom = if (fit.compactHomeChrome) 8.dp else 12.dp
                 ),
+                // Écart cartes : 12 dp (charte) même en compact — faux clics.
                 verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)
             ) {
                 when {
@@ -610,7 +614,7 @@ fun HomeScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .border(1.dp, A11yTokens.PaperBorder, loadShape)
-                                        .background(A11yTokens.PaperWarm, loadShape)
+                                        .background(A11yTokens.PaperCard, loadShape)
                                         .padding(14.dp)
                                 ) {
                                     CircularProgressIndicator(
@@ -695,7 +699,7 @@ fun HomeScreen(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .border(1.dp, A11yTokens.PaperBorder, searchTipShape)
-                                                .background(A11yTokens.PaperWarm, searchTipShape)
+                                                .background(A11yTokens.PaperCard, searchTipShape)
                                                 .padding(10.dp)
                                         )
                                     }
@@ -771,13 +775,16 @@ fun HomeScreen(
                 if (showDivers) {
                     item(key = "divers-controls") {
                         val diversShape = MaterialTheme.shapes.medium
+                        val diversPad = if (fit.compactHomeChrome) 8.dp else 12.dp
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(1.dp, A11yTokens.PaperBorder, diversShape)
                                 .background(A11yTokens.PaperCard, diversShape)
-                                .padding(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                                .padding(diversPad),
+                            verticalArrangement = Arrangement.spacedBy(
+                                if (fit.compactHomeChrome) 2.dp else 4.dp
+                            )
                         ) {
                             Row(
                                 modifier = Modifier
@@ -895,7 +902,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .padding(
                                 horizontal = A11yTokens.screenPadding,
-                                vertical = 8.dp
+                                vertical = if (fit.compactHomeChrome) 6.dp else 8.dp
                             ),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -963,7 +970,7 @@ private fun MonthStep(
 }
 
 @Composable
-private fun DayBadge(label: String) {
+private fun DayBadge(label: String, compact: Boolean = false) {
     val shape = MaterialTheme.shapes.medium
     Text(
         text = label,
@@ -971,10 +978,13 @@ private fun DayBadge(label: String) {
         color = A11yTokens.InkMuted,
         textAlign = TextAlign.Center,
         modifier = Modifier
-            .widthIn(min = 56.dp)
+            .widthIn(min = if (compact) 48.dp else 56.dp)
             .background(A11yTokens.PaperWarm, shape)
             .border(1.dp, A11yTokens.PaperBorder, shape)
-            .padding(horizontal = 6.dp, vertical = 4.dp)
+            .padding(
+                horizontal = if (compact) 4.dp else 6.dp,
+                vertical = if (compact) 2.dp else 4.dp
+            )
             .semantics { contentDescription = "Échéance $label" }
     )
 }
@@ -1010,7 +1020,7 @@ private fun StatusChip(
 private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
-    val rowPad = if (compact) 8.dp else 12.dp
+    val rowPad = if (compact) 6.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
     Surface(
         color = A11yTokens.PaperCard,
@@ -1026,9 +1036,9 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
                 .clickable(onClickLabel = "Modifier", onClick = onClick)
                 .padding(rowPad),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 10.dp)
         ) {
-            DayBadge(item.dayLabel)
+            DayBadge(item.dayLabel, compact = compact)
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 4.dp)
@@ -1059,7 +1069,8 @@ private fun ExpenseRow(
     onOpenReceipt: () -> Unit
 ) {
     val fit = rememberDisplayFit()
-    val rowPad = if (fit.compactHomeChrome) 8.dp else 12.dp
+    val compact = fit.compactHomeChrome
+    val rowPad = if (compact) 6.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
     val bg = when {
         item.isDone -> A11yTokens.AccentOkSoft
@@ -1073,7 +1084,6 @@ private fun ExpenseRow(
             Modifier.border(2.dp, A11yTokens.AccentDanger, shape)
         else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
     }
-    val compact = fit.compactHomeChrome
     val lineGap = if (compact) 2.dp else 4.dp
     Surface(
         color = bg,
@@ -1085,9 +1095,9 @@ private fun ExpenseRow(
         Row(
             modifier = Modifier.padding(rowPad),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 10.dp)
         ) {
-            DayBadge(item.dayLabel)
+            DayBadge(item.dayLabel, compact = compact)
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(lineGap)

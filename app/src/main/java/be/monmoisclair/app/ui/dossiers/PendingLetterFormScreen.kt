@@ -206,7 +206,11 @@ fun PendingLetterFormScreen(
                 onClick = viewModel::save,
                 enabled = !state.saving
             )
-            SecondaryA11yButton(text = "Annuler", onClick = onBack)
+            SecondaryA11yButton(
+                text = "Annuler",
+                onClick = onBack,
+                enabled = !state.saving
+            )
         }
     }
 }

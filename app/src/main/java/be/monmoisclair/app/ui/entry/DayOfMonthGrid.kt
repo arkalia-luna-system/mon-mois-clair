@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -58,6 +59,7 @@ fun DayOfMonthGrid(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                        .alpha(if (enabled) 1f else 0.45f)
                         .clip(shape)
                         .background(bg, shape)
                         .border(
@@ -66,10 +68,10 @@ fun DayOfMonthGrid(
                             shape
                         )
                         .semantics {
-                            contentDescription = if (selected) {
-                                "Jour $day, sélectionné"
-                            } else {
-                                "Jour $day"
+                            contentDescription = when {
+                                !enabled -> "Jour $day, indisponible"
+                                selected -> "Jour $day, sélectionné"
+                                else -> "Jour $day"
                             }
                         }
                         .selectable(

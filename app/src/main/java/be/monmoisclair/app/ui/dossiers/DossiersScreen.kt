@@ -168,8 +168,16 @@ fun DossiersScreen(
                 color = if (heroCount == 0) A11yTokens.AccentOk else A11yTokens.Ink,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, heroShape)
-                    .background(A11yTokens.PaperCard, heroShape)
+                    .border(
+                        1.dp,
+                        if (heroCount == 0) A11yTokens.AccentOk.copy(alpha = 0.35f)
+                        else A11yTokens.PaperBorder,
+                        heroShape
+                    )
+                    .background(
+                        if (heroCount == 0) A11yTokens.AccentOkSoft else A11yTokens.PaperCard,
+                        heroShape
+                    )
                     .padding(horizontal = 14.dp, vertical = 12.dp)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
@@ -221,7 +229,7 @@ fun DossiersScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, emptyPendingShape)
-                    .background(A11yTokens.PaperWarm, emptyPendingShape)
+                    .background(A11yTokens.PaperCard, emptyPendingShape)
                     .padding(horizontal = 14.dp, vertical = 12.dp)
             )
         } else {
@@ -267,7 +275,7 @@ fun DossiersScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                        .background(A11yTokens.PaperWarm, busyShape)
+                        .background(A11yTokens.PaperCard, busyShape)
                         .padding(12.dp)
                         .semantics {
                             contentDescription = "Préparation du résumé"
@@ -342,7 +350,7 @@ private fun DossierRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), soldShape)
-                    .background(A11yTokens.PaperWarm, soldShape)
+                    .background(A11yTokens.AccentOkSoft, soldShape)
                     .padding(horizontal = 10.dp, vertical = 8.dp)
             )
         } else {

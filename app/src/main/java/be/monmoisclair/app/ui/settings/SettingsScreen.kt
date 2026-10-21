@@ -474,7 +474,7 @@ fun SettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                        .background(A11yTokens.PaperWarm, tipShape)
+                        .background(A11yTokens.PaperCard, tipShape)
                         .padding(12.dp)
                 )
                 if (state.summaryBusy) {

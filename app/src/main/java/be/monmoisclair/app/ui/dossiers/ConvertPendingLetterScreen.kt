@@ -201,7 +201,11 @@ fun ConvertPendingLetterScreen(
                 onClick = viewModel::convert,
                 enabled = !state.saving && !state.loading
             )
-            SecondaryA11yButton(text = "Annuler", onClick = onBack)
+            SecondaryA11yButton(
+                text = "Annuler",
+                onClick = onBack,
+                enabled = !state.saving
+            )
         }
     }
 }

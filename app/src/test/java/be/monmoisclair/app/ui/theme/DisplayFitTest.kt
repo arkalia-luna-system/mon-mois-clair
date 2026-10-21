@@ -18,4 +18,14 @@ class DisplayFitTest {
         val tall = DisplayFit.from(412, 900)
         assertThat(compact.remainingAmountSp).isLessThan(tall.remainingAmountSp)
     }
+
+    @Test
+    fun stickyPadding_tighterOnCompact() {
+        val compact = DisplayFit.from(360, 780)
+        val tall = DisplayFit.from(412, 900)
+        assertThat(compact.stickyPaddingVertical.value)
+            .isLessThan(tall.stickyPaddingVertical.value)
+        assertThat(compact.bannerPadding.value)
+            .isLessThan(tall.bannerPadding.value)
+    }
 }
