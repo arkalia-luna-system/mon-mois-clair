@@ -149,7 +149,7 @@ fun ReminderHealthScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.4f), okShape)
-                        .background(A11yTokens.PaperWarm, okShape)
+                        .background(A11yTokens.AccentOkSoft, okShape)
                         .padding(12.dp)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite

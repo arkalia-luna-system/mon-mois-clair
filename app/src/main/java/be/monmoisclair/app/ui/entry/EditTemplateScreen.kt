@@ -382,7 +382,11 @@ fun EditTemplateScreen(
                 enabled = !state.saving
             )
             Spacer(Modifier.height(8.dp))
-            SecondaryA11yButton(text = "Annuler", onClick = { requestLeave() })
+            SecondaryA11yButton(
+                text = "Annuler",
+                onClick = { requestLeave() },
+                enabled = !state.saving
+            )
         }
     }
 }

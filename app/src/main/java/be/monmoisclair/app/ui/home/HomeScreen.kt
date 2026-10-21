@@ -240,6 +240,7 @@ fun HomeScreen(
                     Text(
                         text = receiptTitle,
                         style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.Ink,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )

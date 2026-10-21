@@ -824,6 +824,8 @@ private fun EntryFormScaffold(
     } else {
         "Nom (ex. Loyer)"
     }
+    val fit = rememberDisplayFit()
+    val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
         modifier = Modifier
@@ -837,7 +839,7 @@ private fun EntryFormScaffold(
                 .weight(1f)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(formGap)
         ) {
             Text(
                 text = title,
@@ -1343,7 +1345,7 @@ private fun EntryFormScaffold(
                                     A11yTokens.AccentOk.copy(alpha = 0.35f),
                                     photoOkShape
                                 )
-                                .background(A11yTokens.PaperWarm, photoOkShape)
+                                .background(A11yTokens.AccentOkSoft, photoOkShape)
                                 .padding(10.dp)
                                 .semantics {
                                     liveRegion = LiveRegionMode.Polite
@@ -1459,7 +1461,10 @@ private fun EntryFormScaffold(
                             else A11yTokens.AccentOk.copy(alpha = 0.35f),
                             infoShape
                         )
-                        .background(A11yTokens.PaperWarm, infoShape)
+                        .background(
+                            if (warn) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            infoShape
+                        )
                         .padding(12.dp)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
@@ -1491,7 +1496,11 @@ private fun EntryFormScaffold(
         PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
         if (!keyboardOpen) {
             Spacer(modifier = Modifier.height(8.dp))
-            SecondaryA11yButton(text = "Annuler", onClick = onCancel)
+            SecondaryA11yButton(
+                text = "Annuler",
+                onClick = onCancel,
+                enabled = primaryEnabled
+            )
             if (onDelete != null) {
                 Spacer(modifier = Modifier.height(8.dp))
                 DangerA11yButton(

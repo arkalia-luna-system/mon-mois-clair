@@ -253,7 +253,10 @@ fun SettingsScreen(
                             else A11yTokens.AccentOk.copy(alpha = 0.35f),
                             msgShape
                         )
-                        .background(A11yTokens.PaperWarm, msgShape)
+                        .background(
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            msgShape
+                        )
                         .padding(12.dp)
                         .semantics {
                             liveRegion = if (err) {
@@ -367,7 +370,10 @@ fun SettingsScreen(
                             else A11yTokens.AccentOk.copy(alpha = 0.35f),
                             msgShape
                         )
-                        .background(A11yTokens.PaperWarm, msgShape)
+                        .background(
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            msgShape
+                        )
                         .padding(12.dp)
                         .semantics {
                             liveRegion = if (err) {
@@ -531,7 +537,10 @@ fun SettingsScreen(
                             else A11yTokens.AccentDanger.copy(alpha = 0.4f),
                             healthShape
                         )
-                        .background(A11yTokens.PaperWarm, healthShape)
+                        .background(
+                            if (healthOk) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
+                            healthShape
+                        )
                         .padding(12.dp)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
