@@ -45,10 +45,18 @@ fun HowItWorksScreen(onBack: () -> Unit) {
             ) {
                 Column(
                     modifier = Modifier.padding(14.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = section.title, style = MaterialTheme.typography.titleLarge)
-                    Text(text = section.body, style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = section.title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.Ink
+                    )
+                    Text(
+                        text = section.body,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.Ink
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))

@@ -53,9 +53,10 @@ fun DayOfMonthGrid(
                         .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
                         .clip(shape)
                         .background(bg, shape)
-                        .then(
-                            if (selected) Modifier
-                            else Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+                        .border(
+                            1.dp,
+                            if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
+                            shape
                         )
                         .semantics {
                             contentDescription = if (selected) {
