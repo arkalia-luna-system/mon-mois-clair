@@ -888,6 +888,15 @@ private fun EntryFormScaffold(
                     onClick = { onDossierExpanded(!dossierExpanded) }
                 )
                 if (dossierExpanded) {
+                    val dossierShape = MaterialTheme.shapes.medium
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.PaperBorder, dossierShape)
+                            .background(A11yTokens.PaperCard, dossierShape)
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
                     if (isSettled) {
                         Text(
                             text = "Soldé",
@@ -1000,6 +1009,7 @@ private fun EntryFormScaffold(
                             shape = MaterialTheme.shapes.medium
                         )
                     }
+                    } // fin carte dossier
                 }
             }
             if (showPaymentAssist) {

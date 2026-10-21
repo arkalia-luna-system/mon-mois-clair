@@ -292,8 +292,13 @@ fun HomeScreen(
             title = { Text("Mois passé", style = MaterialTheme.typography.titleLarge) },
             text = {
                 Text(
-                    "Vous êtes sur un mois passé (${state.monthLabel}). " +
-                        "Voulez-vous vraiment modifier ce paiement ?",
+                    if (pastMarkingDone) {
+                        "Vous êtes sur un mois passé (${state.monthLabel}). " +
+                            "Marquer cette ligne FAIT ?"
+                    } else {
+                        "Vous êtes sur un mois passé (${state.monthLabel}). " +
+                            "Remettre cette ligne à payer ?"
+                    },
                     style = MaterialTheme.typography.bodyLarge
                 )
             },
@@ -302,7 +307,29 @@ fun HomeScreen(
                     text = if (pastMarkingDone) "Marquer FAIT" else "Remettre à payer",
                     onClick = {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        val id = state.pendingPastToggleId
                         viewModel.confirmPastToggle()
+                        if (id != null) {
+                            scope.launch {
+                                faitUndoActive = true
+                                try {
+                                    val result = snackbarHostState.showSnackbar(
+                                        message = if (pastMarkingDone) {
+                                            "Noté FAIT"
+                                        } else {
+                                            "Remis à payer"
+                                        },
+                                        actionLabel = "Annuler",
+                                        duration = SnackbarDuration.Long
+                                    )
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        viewModel.undoToggleDone(id)
+                                    }
+                                } finally {
+                                    faitUndoActive = false
+                                }
+                            }
+                        }
                     },
                     fillMaxWidth = false,
                     modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
@@ -804,12 +831,17 @@ private fun MonthStep(
 
 @Composable
 private fun DayBadge(label: String) {
+    val shape = MaterialTheme.shapes.medium
     Text(
         text = label,
         style = MaterialTheme.typography.bodyMedium,
         color = A11yTokens.InkMuted,
         textAlign = TextAlign.Center,
-        modifier = Modifier.widthIn(min = 56.dp)
+        modifier = Modifier
+            .widthIn(min = 56.dp)
+            .background(A11yTokens.PaperWarm, shape)
+            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .padding(horizontal = 6.dp, vertical = 4.dp)
     )
 }
 
