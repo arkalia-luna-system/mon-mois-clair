@@ -142,7 +142,7 @@ fun PendingLetterFormScreen(
             pendingPreview?.let { bmp ->
                 val okShape = MaterialTheme.shapes.medium
                 Text(
-                    text = "Photo prête.",
+                    text = "Photo prête. Touchez Ranger pour la garder.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.AccentOk,
                     modifier = Modifier
@@ -152,7 +152,7 @@ fun PendingLetterFormScreen(
                         .padding(12.dp)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
-                            contentDescription = "Photo prête"
+                            contentDescription = "Photo prête. Touchez Ranger pour la garder."
                         }
                 )
                 Image(
