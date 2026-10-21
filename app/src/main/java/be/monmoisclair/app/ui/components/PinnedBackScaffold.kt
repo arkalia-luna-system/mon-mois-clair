@@ -27,6 +27,8 @@ fun PinnedBackScaffold(
     onBack: () -> Unit,
     backEnabled: Boolean = true,
     backLabel: String = "Retour",
+    /** Actions collées au-dessus de Retour (ex. Activer sous le clavier). */
+    pinnedAboveBack: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val fit = rememberDisplayFit()
@@ -47,6 +49,14 @@ fun PinnedBackScaffold(
             verticalArrangement = Arrangement.spacedBy(contentGap),
             content = content
         )
+        if (pinnedAboveBack != null) {
+            Spacer(modifier = Modifier.height(pinGap))
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp),
+                content = pinnedAboveBack
+            )
+        }
         Spacer(modifier = Modifier.height(pinGap))
         SecondaryA11yButton(
             text = backLabel,

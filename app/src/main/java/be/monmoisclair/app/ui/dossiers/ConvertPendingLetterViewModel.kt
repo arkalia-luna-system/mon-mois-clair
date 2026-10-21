@@ -92,6 +92,18 @@ class ConvertPendingLetterViewModel @Inject constructor(
                 }
                 return@launch
             }
+            if (MoneyFormat.isOverOpeningMax(opening)) {
+                _state.update {
+                    it.copy(saving = false, error = MoneyFormat.OPENING_MAX_HINT)
+                }
+                return@launch
+            }
+            if (MoneyFormat.isOverLineMax(monthly)) {
+                _state.update {
+                    it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT)
+                }
+                return@launch
+            }
             when (
                 val result = convert(
                     letterId = letterId,

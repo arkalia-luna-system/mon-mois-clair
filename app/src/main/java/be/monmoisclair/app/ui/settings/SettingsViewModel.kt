@@ -178,6 +178,15 @@ class SettingsViewModel @Inject constructor(
             }
             return
         }
+        if (MoneyFormat.isOverLineMax(cents)) {
+            _uiState.update {
+                it.copy(
+                    savingsMessage = MoneyFormat.LINE_MAX_HINT,
+                    savingsMessageError = true
+                )
+            }
+            return
+        }
         _uiState.update {
             it.copy(savingsBusy = true, savingsMessage = null, savingsMessageError = false)
         }

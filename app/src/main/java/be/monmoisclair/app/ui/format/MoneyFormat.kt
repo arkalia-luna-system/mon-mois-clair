@@ -73,5 +73,26 @@ object MoneyFormat {
         return cleaned.substringAfter(sep).length > 2
     }
 
+    /**
+     * Plafond d’une ligne du mois (facture, courses, mettre de côté, versement).
+     * Au-delà = faute de frappe / doigt coincé (ex. 99999), pas un loyer réel.
+     */
+    const val MAX_LINE_EUROS = 50_000L
+    const val MAX_LINE_CENTS = MAX_LINE_EUROS * 100
+
+    /** Reste dû d’un accord : plus haut, mais borné (anti-saisie absurde). */
+    const val MAX_OPENING_EUROS = 2_000_000L
+    const val MAX_OPENING_CENTS = MAX_OPENING_EUROS * 100
+
+    fun isOverLineMax(cents: Long): Boolean = cents > MAX_LINE_CENTS
+
+    fun isOverOpeningMax(cents: Long): Boolean = cents > MAX_OPENING_CENTS
+
     const val FRACTION_HINT = "Écrivez le montant avec une virgule, comme 12,50"
+
+    const val LINE_MAX_HINT =
+        "Montant trop élevé (max 50 000 €). Vérifiez le chiffre."
+
+    const val OPENING_MAX_HINT =
+        "Reste dû trop élevé (max 2 000 000 €). Vérifiez le chiffre."
 }

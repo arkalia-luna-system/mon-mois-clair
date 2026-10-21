@@ -47,6 +47,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import kotlinx.coroutines.flow.collectLatest
 
@@ -115,7 +116,46 @@ fun SettingsScreen(
     val fit = rememberDisplayFit()
     val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     val tipPadLg = if (fit.compactHomeChrome) 12.dp else 14.dp
-    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
+    val keyboardOpen = imeOpen()
+    val pinSavingsAction = keyboardOpen && state.savingsAmountText.isNotBlank()
+    PinnedBackScaffold(
+        onBack = onBack,
+        backEnabled = !state.busy,
+        pinnedAboveBack = if (pinSavingsAction) {
+            {
+                state.savingsDeficit?.let { deficit ->
+                    val deficitShape = MaterialTheme.shapes.medium
+                    Text(
+                        text = deficit,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.AccentWarn,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), deficitShape)
+                            .background(A11yTokens.PaperWarm, deficitShape)
+                            .padding(tipPad)
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = deficit
+                            }
+                    )
+                }
+                SecondaryA11yButton(
+                    text = if (state.savingsBusy) {
+                        "Enregistrement…"
+                    } else if (state.savingsActive) {
+                        "Mettre à jour"
+                    } else {
+                        "Activer"
+                    },
+                    onClick = viewModel::saveSavings,
+                    enabled = !state.busy && !state.savingsBusy
+                )
+            }
+        } else {
+            null
+        }
+    ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         Text(
             text = "Réglages",
@@ -189,8 +229,13 @@ fun SettingsScreen(
                 ),
                 enabled = !state.busy && !state.savingsBusy
             )
-            // Alerte + Activer avant la grille : au clavier, les 31 jours
-            // mangeaient l’action (campagne E / SM-S938B).
+            // Jour puis Activer : la grille sous Activer disparaissait sous « Retour ».
+            DayOfMonthGrid(
+                selectedDay = state.savingsDay,
+                onSelect = { day ->
+                    if (!state.savingsBusy && !state.busy) viewModel.setSavingsDay(day)
+                }
+            )
             state.savingsDeficit?.let { deficit ->
                 val deficitShape = MaterialTheme.shapes.medium
                 Text(
@@ -273,12 +318,6 @@ fun SettingsScreen(
                         }
                 )
             }
-            DayOfMonthGrid(
-                selectedDay = state.savingsDay,
-                onSelect = { day ->
-                    if (!state.savingsBusy && !state.busy) viewModel.setSavingsDay(day)
-                }
-            )
         }
 
         SettingsCard(title = "Confidentialité") {

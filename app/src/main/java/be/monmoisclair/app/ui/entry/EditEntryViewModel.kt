@@ -406,6 +406,10 @@ class EditEntryViewModel @Inject constructor(
                 }
                 return@launch
             }
+            if (MoneyFormat.isOverLineMax(cents)) {
+                _state.update { it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT) }
+                return@launch
+            }
             var path = s.receiptRelativePath
             var extraAppend = ""
             var documentsHint: String? = null
@@ -431,6 +435,10 @@ class EditEntryViewModel @Inject constructor(
                 _state.update { it.copy(saving = false, error = "Vérifiez le reste dû (montant).") }
                 return@launch
             }
+            if (openingCents != null && MoneyFormat.isOverOpeningMax(openingCents)) {
+                _state.update { it.copy(saving = false, error = MoneyFormat.OPENING_MAX_HINT) }
+                return@launch
+            }
             if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
                 _state.update {
                     it.copy(
@@ -448,6 +456,10 @@ class EditEntryViewModel @Inject constructor(
             }
             if (s.isAgreement && feeRaw.isNotEmpty() && (feeAdd == null || feeAdd <= 0L)) {
                 _state.update { it.copy(saving = false, error = "Vérifiez le montant des frais.") }
+                return@launch
+            }
+            if (feeAdd != null && feeAdd > 0L && MoneyFormat.isOverLineMax(feeAdd)) {
+                _state.update { it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT) }
                 return@launch
             }
             if (s.isAgreement && feeRaw.isEmpty() && s.feeNoteText.isNotBlank()) {

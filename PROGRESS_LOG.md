@@ -12,20 +12,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Dernière étape terminée | **6.38** (historique daté des frais) |
 | Étape en cours | — |
 | Prochaine sous-étape | — S26 maman optionnel · campagne personae |
-| Audit premium | Smokes Ultra · frais datés 6.38 · **235/235** |
+| Audit premium | Smokes Ultra · frais datés 6.38 · garde-fou montants · **236/236** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
 
+### 2026-10-21 — Garde-fou montants + Mettre de côté (clavier)
+
+**Vu :** saisie absurde (ex. 99999) possible ; tests adb avaient tapé sur le tel (fantôme). Plus d’automation input.  
+**Codé :** plafond ligne **50 000 €** / reste dû **2 000 000 €** (`MoneyFormat`) sur ajout/édition/épargne/courses/conversion ; Réglages : jour puis Activer, **Activer épinglé** si clavier ouvert.  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **236/236** (60 fichiers). Version inchangée `0.1.0-6.38`.
+
 ### 2026-10-21 — Fin de journée : main = develop + APK 6.38
 
-**Vérif :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **235/235** (60 fichiers, 0 échec).  
-**Fix E* :** Réglages « Mettre de côté » — alerte + Activer **avant** la grille 1–31 (clavier ne mange plus l’action).  
-**Git :** `main` = `develop` (même tip).  
-**Device :** release `0.1.0-6.38` (`versionCode` 43) réinstallée sur SM-S938B.  
-**Reporté :** re-smoke doigt complet · S26 maman · `androidTest`.
+**Vérif :** **235/235**. Fix E* partiel. `main` = `develop`. APK 6.38 sur SM-S938B.  
+**Reporté :** S26 maman · `androidTest` · pas de re-smoke adb (doigt humain seulement).
 
 ### 2026-10-21 — Campagne suite_pe : P2 / D2 / D11
 

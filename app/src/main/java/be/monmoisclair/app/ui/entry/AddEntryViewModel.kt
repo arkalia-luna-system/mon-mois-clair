@@ -258,6 +258,10 @@ class AddEntryViewModel @Inject constructor(
                 }
                 return@launch
             }
+            if (MoneyFormat.isOverLineMax(cents)) {
+                _state.update { it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT) }
+                return@launch
+            }
             val openingRaw = s.openingRemainingText.trim()
             val openingCents = when {
                 !s.isExpense || !s.dossierExpanded || openingRaw.isEmpty() -> null
@@ -267,6 +271,10 @@ class AddEntryViewModel @Inject constructor(
                 _state.update {
                     it.copy(saving = false, error = "Vérifiez le reste dû (montant).")
                 }
+                return@launch
+            }
+            if (openingCents != null && MoneyFormat.isOverOpeningMax(openingCents)) {
+                _state.update { it.copy(saving = false, error = MoneyFormat.OPENING_MAX_HINT) }
                 return@launch
             }
             // IBAN / e-mail (souvent via QR) ne doivent pas disparaître en silence

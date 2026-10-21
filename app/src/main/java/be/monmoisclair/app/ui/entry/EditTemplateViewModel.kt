@@ -113,6 +113,10 @@ class EditTemplateViewModel @Inject constructor(
                 }
                 return@launch
             }
+            if (MoneyFormat.isOverLineMax(cents)) {
+                _state.update { it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT) }
+                return@launch
+            }
             val anchor = RecurrenceAnchor.resolveTemplateAnchor(
                 selectedMonth = s.anchorMonth,
                 existingAnchor = s.existingAnchor

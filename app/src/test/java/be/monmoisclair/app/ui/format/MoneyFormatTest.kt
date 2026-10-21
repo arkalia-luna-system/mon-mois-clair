@@ -45,4 +45,13 @@ class MoneyFormatTest {
         assertThat(MoneyFormat.centsToEditable(47_050L)).isEqualTo("470,50")
         assertThat(MoneyFormat.centsToEditable(123_400L)).isEqualTo("1234")
     }
+
+    @Test
+    fun lineAndOpeningMax_rejectAbsurdAmounts() {
+        assertThat(MoneyFormat.isOverLineMax(50_000L * 100)).isFalse()
+        assertThat(MoneyFormat.isOverLineMax(50_000L * 100 + 1)).isTrue()
+        assertThat(MoneyFormat.isOverLineMax(9_999_900L)).isTrue() // 99999 €
+        assertThat(MoneyFormat.isOverOpeningMax(2_000_000L * 100)).isFalse()
+        assertThat(MoneyFormat.isOverOpeningMax(2_000_000L * 100 + 1)).isTrue()
+    }
 }

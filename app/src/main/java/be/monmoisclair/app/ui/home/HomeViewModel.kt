@@ -351,6 +351,10 @@ class HomeViewModel @Inject constructor(
                     _diversError.value = "Indiquez un montant valide (ex. 12,50)."
                     return@launch
                 }
+                if (MoneyFormat.isOverLineMax(cents)) {
+                    _diversError.value = MoneyFormat.LINE_MAX_HINT
+                    return@launch
+                }
                 val delta = if (add) cents else -cents
                 val ledgerId = AppClock.ledgerId(selectedMonth.value)
                 when (val result = adjustDivers(ledgerId, delta)) {
