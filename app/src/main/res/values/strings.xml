@@ -5,7 +5,4 @@
     <string name="notification_channel_payments_desc">3 jours avant, le jour même, puis chaque matin tant que ce n’est pas payé</string>
     <string name="notification_action_done">FAIT ✓</string>
     <string name="notification_action_undo">Remettre</string>
-    <string name="onboarding_saf_title">Dossier de sauvegarde</string>
-    <string name="onboarding_permissions_title">Alertes fiables</string>
-    <string name="health_title">Alertes</string>
 </resources>

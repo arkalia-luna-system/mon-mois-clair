@@ -19,6 +19,12 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Nettoyage caches / strings mortes
+
+**Fait :** caches locaux (`.gradle` jetable, `~/.cache/mon-mois-clair`, Gradle **8.9** obsolète) · dumps `suite_pe` · 3 `@string` jamais référencés retirés (`onboarding_*_title`, `health_title` — textes déjà en dur UI).  
+**Audit dossiers :** `data/`, `domain/`, `ui/`, `res/`, `docs/`, `dist/`, `gradle/` vs `.gradle/` — pas de code produit mort à fusionner.  
+**Tests :** **232/232** (`--rerun-tasks`, 59 fichiers). Version inchangée `0.1.0-6.37`.
+
 ### 2026-10-21 — APK release allégée (ABI ARM only)
 
 **Problème :** l’APK sideload emmenait les libs **x86/x86_64** (émulateur), surtout ML Kit barcode (~12 Mo inutiles sur téléphone).
