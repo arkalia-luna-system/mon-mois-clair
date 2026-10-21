@@ -180,7 +180,7 @@ fun PendingLetterFormScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
                         .background(A11yTokens.PaperWarm, errShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Assertive
                             contentDescription = err
@@ -197,7 +197,7 @@ fun PendingLetterFormScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, busyShape)
                         .background(A11yTokens.PaperCard, busyShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = "Enregistrement du courrier"
