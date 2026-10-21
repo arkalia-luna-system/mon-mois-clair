@@ -16,11 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 fun HowItWorksScreen(onBack: () -> Unit) {
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val sectionGap = if (fit.compactHomeChrome) 8.dp else 10.dp
     PinnedBackScaffold(onBack = onBack) {
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         Text(
             text = HowItWorksCopy.TITLE,
             style = MaterialTheme.typography.headlineMedium,
@@ -35,9 +39,9 @@ fun HowItWorksScreen(onBack: () -> Unit) {
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, introShape)
                 .background(A11yTokens.PaperCard, introShape)
-                .padding(14.dp)
+                .padding(tipPad)
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         HowItWorksCopy.sections.forEach { section ->
             val shape = MaterialTheme.shapes.medium
             Surface(
@@ -48,8 +52,10 @@ fun HowItWorksScreen(onBack: () -> Unit) {
                     .border(1.dp, A11yTokens.PaperBorder, shape)
             ) {
                 Column(
-                    modifier = Modifier.padding(14.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.padding(tipPad),
+                    verticalArrangement = Arrangement.spacedBy(
+                        if (fit.compactHomeChrome) 6.dp else 8.dp
+                    )
                 ) {
                     Text(
                         text = section.title,
@@ -63,7 +69,7 @@ fun HowItWorksScreen(onBack: () -> Unit) {
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(sectionGap))
         }
     }
 }

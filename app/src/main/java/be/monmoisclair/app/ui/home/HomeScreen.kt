@@ -102,6 +102,7 @@ fun HomeScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val diversError by viewModel.diversError.collectAsStateWithLifecycle()
+    val diversBusy by viewModel.diversBusy.collectAsStateWithLifecycle()
     val remindersBlocked by viewModel.remindersBlocked.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val context = LocalContext.current
@@ -835,11 +836,13 @@ fun HomeScreen(
                                         SecondaryA11yButton(
                                             text = "Retirer",
                                             onClick = { viewModel.removeDivers(diversInput) },
+                                            enabled = !diversBusy,
                                             modifier = Modifier.weight(1f)
                                         )
                                         SecondaryA11yButton(
                                             text = "Ajouter",
                                             onClick = { viewModel.addDivers(diversInput) },
+                                            enabled = !diversBusy,
                                             modifier = Modifier.weight(1f)
                                         )
                                     }

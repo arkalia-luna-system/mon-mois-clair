@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 fun ReminderHealthScreen(
@@ -41,6 +42,8 @@ fun ReminderHealthScreen(
     val report by viewModel.report.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -51,7 +54,7 @@ fun ReminderHealthScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         Text(
             text = "Alertes",
             style = MaterialTheme.typography.headlineMedium,
@@ -66,7 +69,7 @@ fun ReminderHealthScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, introShape)
                 .background(A11yTokens.PaperCard, introShape)
-                .padding(14.dp)
+                .padding(tipPad)
         )
         val scheduleShape = MaterialTheme.shapes.medium
         Text(
@@ -78,7 +81,7 @@ fun ReminderHealthScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, scheduleShape)
                 .background(A11yTokens.PaperCard, scheduleShape)
-                .padding(12.dp)
+                .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
         )
 
         val r = report

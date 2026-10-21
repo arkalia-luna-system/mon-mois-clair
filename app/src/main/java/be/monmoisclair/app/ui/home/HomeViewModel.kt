@@ -90,6 +90,8 @@ class HomeViewModel @Inject constructor(
     val diversError: StateFlow<String?> = _diversError.asStateFlow()
     private val _remindersBlocked = MutableStateFlow(false)
     val remindersBlocked: StateFlow<Boolean> = _remindersBlocked.asStateFlow()
+    private val _diversBusy = MutableStateFlow(false)
+    val diversBusy: StateFlow<Boolean> = _diversBusy.asStateFlow()
     private val _diversFieldCleared = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val diversFieldCleared: SharedFlow<Unit> = _diversFieldCleared.asSharedFlow()
     private val _userMessages = MutableSharedFlow<String>(extraBufferCapacity = 1)
@@ -284,12 +286,28 @@ class HomeViewModel @Inject constructor(
 
     /** Annuler après FAIT/Remettre — sans redemander le dialogue « mois passé ». */
     fun undoToggleDone(expenseId: String) {
-        performToggle(expenseId)
+        performToggle(expenseId, fromUndo = true)
     }
 
-    private fun performToggle(expenseId: String) {
+    private val toggleInFlight = mutableSetOf<String>()
+    private val toggleUndoQueued = mutableSetOf<String>()
+
+    private fun performToggle(expenseId: String, fromUndo: Boolean = false) {
+        if (expenseId in toggleInFlight) {
+            if (fromUndo) toggleUndoQueued.add(expenseId)
+            return
+        }
+        toggleInFlight.add(expenseId)
         viewModelScope.launch {
-            toggleDone.invoke(expenseId)
+            try {
+                toggleDone.invoke(expenseId)
+                if (toggleUndoQueued.remove(expenseId)) {
+                    toggleDone.invoke(expenseId)
+                }
+            } finally {
+                toggleInFlight.remove(expenseId)
+                toggleUndoQueued.remove(expenseId)
+            }
         }
     }
 
@@ -320,32 +338,38 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun adjustDiversBy(eurosText: String, add: Boolean) {
+        if (_diversBusy.value) return
+        _diversBusy.value = true
         viewModelScope.launch {
-            if (MoneyFormat.tooManyFractionDigits(eurosText)) {
-                _diversError.value = MoneyFormat.FRACTION_HINT
-                return@launch
-            }
-            val cents = MoneyFormat.parseToCents(eurosText)
-            if (cents == null || cents <= 0L) {
-                _diversError.value = "Indiquez un montant valide (ex. 12,50)."
-                return@launch
-            }
-            val delta = if (add) cents else -cents
-            val ledgerId = AppClock.ledgerId(selectedMonth.value)
-            when (val result = adjustDivers(ledgerId, delta)) {
-                is AdjustDiversResult.Success -> {
-                    _diversError.value = null
-                    _diversFieldCleared.tryEmit(Unit)
+            try {
+                if (MoneyFormat.tooManyFractionDigits(eurosText)) {
+                    _diversError.value = MoneyFormat.FRACTION_HINT
+                    return@launch
                 }
-                is AdjustDiversResult.ReducedToZero -> {
-                    _diversError.value = if (result.previousCents <= 0L) {
-                        "Il n’y a pas de courses notées."
-                    } else {
-                        "Il n’y a que ${MoneyFormat.formatCents(result.previousCents)} en courses. Tout a été retiré."
+                val cents = MoneyFormat.parseToCents(eurosText)
+                if (cents == null || cents <= 0L) {
+                    _diversError.value = "Indiquez un montant valide (ex. 12,50)."
+                    return@launch
+                }
+                val delta = if (add) cents else -cents
+                val ledgerId = AppClock.ledgerId(selectedMonth.value)
+                when (val result = adjustDivers(ledgerId, delta)) {
+                    is AdjustDiversResult.Success -> {
+                        _diversError.value = null
+                        _diversFieldCleared.tryEmit(Unit)
                     }
-                    _diversFieldCleared.tryEmit(Unit)
+                    is AdjustDiversResult.ReducedToZero -> {
+                        _diversError.value = if (result.previousCents <= 0L) {
+                            "Il n’y a pas de courses notées."
+                        } else {
+                            "Il n’y a que ${MoneyFormat.formatCents(result.previousCents)} en courses. Tout a été retiré."
+                        }
+                        _diversFieldCleared.tryEmit(Unit)
+                    }
+                    is AdjustDiversResult.Failed -> _diversError.value = result.message
                 }
-                is AdjustDiversResult.Failed -> _diversError.value = result.message
+            } finally {
+                _diversBusy.value = false
             }
         }
     }
