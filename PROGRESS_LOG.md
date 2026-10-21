@@ -19,6 +19,13 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Fin de journée : main = develop + APK 6.38
+
+**Vérif :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **235/235** (60 fichiers, 0 échec). Pas de grosse erreur ouverte.  
+**Git :** `main` fast-forward → `6626f16` (même tip que `develop` / `origin`).  
+**Device :** release `0.1.0-6.38` (`versionCode` 43) réinstallée sur SM-S938B. Dumps `smoke_638` purgés.  
+**Reporté :** re-smoke doigt P2/D2/D11 + E*/S* · S26 maman · `androidTest`.
+
 ### 2026-10-21 — Campagne suite_pe : P2 / D2 / D11
 
 **Vu :** conversion courrier — grille mangeait « Créer l’accord » · reste/cadence trop bas sous les 31 jours.  
