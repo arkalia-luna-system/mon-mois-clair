@@ -142,7 +142,11 @@ fun RestoreBackupScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = "Restaurer une sauvegarde", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Restaurer une sauvegarde",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val tipShape = MaterialTheme.shapes.medium
         Column(
             modifier = Modifier

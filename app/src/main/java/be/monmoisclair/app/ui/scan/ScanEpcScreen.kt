@@ -213,7 +213,11 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             .background(A11yTokens.PaperCream)
             .padding(A11yTokens.screenPadding)
     ) {
-        Text("Scanner une facture", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            "Scanner une facture",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Cadrez le QR belge de la facture. La lampe aide dans le noir.",

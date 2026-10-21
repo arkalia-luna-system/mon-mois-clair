@@ -46,7 +46,9 @@ fun PrimaryA11yButton(
         shape = MaterialTheme.shapes.medium,
         colors = ButtonDefaults.buttonColors(
             containerColor = A11yTokens.ButtonFill,
-            contentColor = A11yTokens.ButtonText
+            contentColor = A11yTokens.ButtonText,
+            disabledContainerColor = A11yTokens.ButtonFill.copy(alpha = 0.45f),
+            disabledContentColor = A11yTokens.ButtonText.copy(alpha = 0.85f)
         )
     ) {
         Text(
@@ -80,7 +82,10 @@ fun SecondaryA11yButton(
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, A11yTokens.FieldLine),
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = A11yTokens.Ink),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = A11yTokens.Ink,
+            disabledContentColor = A11yTokens.InkMuted.copy(alpha = 0.55f)
+        ),
         contentPadding = if (fillMaxWidth) {
             PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         } else {
