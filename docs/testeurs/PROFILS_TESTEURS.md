@@ -1,45 +1,31 @@
-# Profils de testeurs — Mon Mois Clair
+# Profils — tempéraments + personae
 
-Objectif : **plusieurs regards qui se contredisent** pour ne rien laisser passer.  
-Campagne complète (scénarios A–F) : [`CAMPAGNE_PRODUIT_FINI.md`](CAMPAGNE_PRODUIT_FINI.md).
+Campagne device : [`CAMPAGNE_PRODUIT_FINI.md`](CAMPAGNE_PRODUIT_FINI.md).  
+Un chat = **1** tempérament + **1** persona. Rapport : les deux en tête + ≥ **8** frictions.
 
-Chaque agent choisit **un tempérament** + **un persona produit**, et reste fidèle à ce regard.
+## Tempéraments
 
-## Tempéraments (comment chercher)
+| Profil | Cherche | Refuse de conclure si… |
+|--------|---------|------------------------|
+| **Chiant** | 47 dp, contraste, wrap, claim faux | Un pixel « presque OK » |
+| **Null** | Vide, 0 €, `,,,`, bio OFF, restore sans fichier | Message absurde / crash |
+| **Perf** | Cold start, scroll 30 lignes, double-tap, caméra | Jank ou double écriture |
+| **Hostile-doux** | Annuler pendant save, mois passé, jour 31, spam taps | État bizarre non documenté |
+| **Fidélité 60 j** | Charge saisie, fourre-tout, oubli | « Je n’ouvre plus dans 1 semaine » |
+| **Senior One UI** | Peur, jargon, zone système | « J’appelle mon fils » |
 
-| Profil | Tempérament | Cherche surtout… | Verdict typique |
-|--------|-------------|------------------|-----------------|
-| **Chiant** | Pointilleux, zero-excuse | Libellé ambigu, contraste limite, bouton 47 dp, claim wrap | « Refusé tant que X n’est pas propre » |
-| **Null** | Données vides / extrêmes | Liste vide, 0 €, mois sans entrée, restore sans fichier, bio OFF, `,,,` | « Planté / message absurde dès qu’il n’y a rien » |
-| **Perf** | Impatient, fluidité | Cold start, scroll 30 lignes, Menu / Ajouter / caméra, double-tap | « Trop lent / jank / double action » |
-| **Hostile-doux** | Casse sans être méchant | Double FAIT, mois passé, jour 31, Annuler partout, conversion pending 2× | « État bizarre / double écriture » |
-| **Fidélité 60 j** | Abandon après 2 semaines | Charge saisie vs soulagement, fourre-tout, oubli possible | « Je n’ouvrirais plus » |
-| **Senior One UI** | 65–80 ans, Galaxy | Peurs, jargon, zone système, Device Care | « J’appelle mon fils » |
+## Personae produit
 
-## Personae produit (qui utilise l’app)
+| Persona | Matrice prioritaire | Échec immédiat si… |
+|---------|---------------------|-------------------|
+| **Maman** | C*, S4–S6, V* | Huissier / Mes dossiers à 0 / € dette Home |
+| **Alex** | D* (dont rythme 6.37), P* | « fin prévue » / « 3 sur 12 » |
+| **Installateur** | S1–S3, onboarding | Download conseillé / jargon |
+| **Médiateur** | E*, F*, D3–D4 | Résumé qui mélange tirelire et dette |
+| **Base vide** | C1–C6 | Menu fantôme dossiers |
+| **Multi-dossiers** | P*, D1, Mes dossiers | Pending dans À payer |
 
-| Persona | Écran mental | Doit réussir… | Échec si… |
-|---------|--------------|---------------|-----------|
-| **Maman** | Carnet du mois | FAIT, Reste, courses, Menu sans dossiers | Mot huissier / dette € / onglet nouveau sans dossier |
-| **Alex** | Même UI + retards | Accord, IBAN, Écrire, reste réel, soldé | « 3 sur 12 », total dettes en hero |
-| **Installateur** | Sideload famille | SAF Documents, backup, bio OFF claire | Jargon, Download comme conseil |
-| **Médiateur** | Mois impossible | Résumé partageable, mis de côté à part | PDF CPAS, promesse de date |
-| **Base vide** | 1ʳᵉ ouverture | Home vide → Ajouter ; zéro pixel dossier | Entrées Menu fantômes |
-| **Multi-dossiers** | ≥2 accords + pending | Bandeau, Mes dossiers, conversion | Courrier compté dans À payer |
-
-## Règles d’usage
-
-1. Un chat = **un** expert (correcteur / visuel / produit / senior / validation) **+ un** tempérament **+ un** persona.
-2. Le rapport commence par :
-   ```text
-   Profil : Chiant | Null | …
-   Persona : Maman | Alex | …
-   ```
-3. Interdit de « voir tout en rose » : **≥ 3 frictions** (même mineures) ou expliquer pourquoi impossible.
-4. Exercer la **matrice** de `CAMPAGNE_PRODUIT_FINI.md` pour le persona choisi (pas seulement le dernier diff).
-5. Les prompts `PROMPT_*.md` restent la mission ; profil + persona **colorent** la chasse.
-
-## Campagne recommandée (passe famille)
+## Campagne 4 jours
 
 | Jour | Expert | Profil | Persona |
 |------|--------|--------|---------|
@@ -50,4 +36,4 @@ Chaque agent choisit **un tempérament** + **un persona produit**, et reste fid�
 | 3 | Produit | Fidélité 60 j | Maman |
 | 3 | Produit | Fidélité 60 j | Médiateur |
 | 4 | Senior | Senior One UI | Maman |
-| fin | Validation | — | claims + Gradle |
+| fin | Validation | — | — |

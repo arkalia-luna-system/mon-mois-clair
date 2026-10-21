@@ -11,7 +11,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 |-------|--------|
 | Dernière étape terminée | **6.37** (phrase rythme dossier) |
 | Étape en cours | — |
-| Prochaine sous-étape | Campagne testeurs [`docs/testeurs/CAMPAGNE_PRODUIT_FINI.md`](docs/testeurs/CAMPAGNE_PRODUIT_FINI.md) · S26 maman en main |
+| Prochaine sous-étape | Lancer campagne device [`docs/testeurs/`](docs/testeurs/) (prompts renforcés 6.37) · S26 maman en main |
 | Audit premium | Smokes 6.36 clos · phrase rythme **6.37** · **231/231** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
