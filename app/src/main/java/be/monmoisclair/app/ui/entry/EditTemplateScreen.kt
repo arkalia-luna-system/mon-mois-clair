@@ -269,16 +269,26 @@ fun EditTemplateScreen(
                 selectedDay = state.dayText.toIntOrNull(),
                 onSelect = { viewModel.setDay(it.toString()) }
             )
-            Text(
-                "Mois de la prochaine échéance",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
-            )
-            Text(
-                text = state.anchorYearLabel,
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
-            )
+            val anchorShape = MaterialTheme.shapes.medium
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, anchorShape)
+                    .background(A11yTokens.PaperCard, anchorShape)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    "Mois de la prochaine échéance",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
+                Text(
+                    text = state.anchorYearLabel,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
+                )
+            }
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
