@@ -387,7 +387,7 @@ Ce qui empêche de dire « produit fini premium » :
 
 | Fichier | Rôle maintenant |
 |---------|-----------------|
-| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. Version **6.37**, suite **233/233** |
+| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. Version **6.38**, suite **235/235** |
 | `docs/PLAN_PRODUIT_FINI.md` | Construction A–F. Le §7 dit ce qui n’est pas livré |
 | `docs/AUDIT_STATUS.md` | Carnet de smoke. Pas un substitut du code |
 | `docs/archive/*` | Figé. Ne pas s’en servir pour l’état |
