@@ -113,6 +113,12 @@ class UpdateInstanceUseCase @Inject constructor(
                                     isAutoDebit = auto,
                                     intervalMonths = interval,
                                     anchorYearMonth = current.ledgerId,
+                                    paymentNote = paymentNote.trim(),
+                                    receiptRelativePath = if (applyToFollowingMonths) {
+                                        receipt
+                                    } else {
+                                        ""
+                                    },
                                     createdAtEpochMs = now,
                                     archivedAtEpochMs = null
                                 )
@@ -128,48 +134,61 @@ class UpdateInstanceUseCase @Inject constructor(
                     }
                 }
 
+                val note = paymentNote.trim()
                 instanceDao.updateExpense(
                     current.copy(
                         label = trimmed,
                         amountCents = amountCents,
                         dayOfMonth = clamped,
                         isAutoDebit = auto,
-                        paymentNote = paymentNote.trim(),
+                        paymentNote = note,
                         receiptRelativePath = receipt
                     )
                 )
 
-                if (applyToFollowingMonths && current.templateId != null) {
+                // Lot A : la communication suit toujours le modèle (même sans « mois suivants »).
+                // La photo modèle seulement si « Aussi les mois suivants ».
+                if (current.templateId != null) {
                     val templateId = current.templateId
                     templateDao.getExpenseById(templateId)?.let { tpl ->
                         templateDao.updateExpense(
-                            tpl.copy(
-                                label = trimmed,
-                                amountCents = amountCents,
-                                dayOfMonth = dayOfMonth,
-                                isAutoDebit = auto,
-                                intervalMonths = when {
-                                    intervalMonths != null && intervalMonths > 0 ->
-                                        intervalMonths.coerceIn(1, 24)
-                                    else -> tpl.intervalMonths
-                                }
-                            )
+                            if (applyToFollowingMonths) {
+                                tpl.copy(
+                                    label = trimmed,
+                                    amountCents = amountCents,
+                                    dayOfMonth = dayOfMonth,
+                                    isAutoDebit = auto,
+                                    intervalMonths = when {
+                                        intervalMonths != null && intervalMonths > 0 ->
+                                            intervalMonths.coerceIn(1, 24)
+                                        else -> tpl.intervalMonths
+                                    },
+                                    paymentNote = note,
+                                    receiptRelativePath = receipt
+                                )
+                            } else {
+                                tpl.copy(paymentNote = note)
+                            }
                         )
                     }
-                    val others = instanceDao.expensesFromTemplateFromLedger(
-                        templateId,
-                        current.ledgerId
-                    ).filter { it.id != current.id && it.status == ExpenseStatus.TODO }
-                    for (item in others) {
-                        val itemYm = YearMonth.parse(item.ledgerId)
-                        instanceDao.updateExpense(
-                            item.copy(
-                                label = trimmed,
-                                amountCents = amountCents,
-                                dayOfMonth = MonthDayClamp.clamp(dayOfMonth, itemYm),
-                                isAutoDebit = auto
+                    if (applyToFollowingMonths) {
+                        val others = instanceDao.expensesFromTemplateFromLedger(
+                            templateId,
+                            current.ledgerId
+                        ).filter { it.id != current.id && it.status == ExpenseStatus.TODO }
+                        for (item in others) {
+                            val itemYm = YearMonth.parse(item.ledgerId)
+                            instanceDao.updateExpense(
+                                item.copy(
+                                    label = trimmed,
+                                    amountCents = amountCents,
+                                    dayOfMonth = MonthDayClamp.clamp(dayOfMonth, itemYm),
+                                    isAutoDebit = auto,
+                                    paymentNote = note,
+                                    receiptRelativePath = receipt
+                                )
                             )
-                        )
+                        }
                     }
                 }
             } else {

@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.27** — sticky lisible maman, menu court, photo + fréquence éditables).
+Mise à jour : 2026-10-21 (lot **6.30** — mémoire papier sur le modèle, Copier modulo 97).
 
 ## 1. Vision
 
@@ -58,7 +58,7 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 ## 3. Données
 
-Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_instances`.
+Room / backup schema **4** : `paymentNote`, `receiptRelativePath` sur `expense_instances` **et** `expense_templates` (mémoire papier : communication + photo canonique reprises à la matérialisation).
 
 ## 4. Plan
 
@@ -76,6 +76,8 @@ Room / backup schema **3** : `paymentNote`, `receiptRelativePath` sur `expense_i
 | **6.13** | Marque : icône M, rappel blanc, ouverture papier | ✅ |
 | **6.14–6.26** | Audit premium, archive photos, menu années, mois vide, CI | ✅ |
 | **6.27** | Sticky Sans les futures · Menu = Réglages · photo + fréquence éditables | ✅ |
+| **6.28–6.29** | Punch list premium (photo au doigt, Copier hors Modifier, Alertes) | ✅ |
+| **6.30** | Lot A : note/photo sur modèle · matérialisation · Copier 12 chiffres (mod 97) | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

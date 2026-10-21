@@ -186,6 +186,29 @@ class MonthCycleEngineTest {
         assertThat(db.monthLedgerDao().getById("2026-06")).isNotNull()
     }
 
+    /** Lot A : communication + photo du modèle suivent le mois nouveau. */
+    @Test
+    fun ensureMonth_copiesPaymentNoteAndReceiptFromTemplate() = runBlocking {
+        freezeAt("2026-02-01T10:00:00+01:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-paper",
+                label = "Assurance",
+                amountCents = 12_000L,
+                dayOfMonth = 5,
+                active = true,
+                paymentNote = "+++000/0000/00097+++",
+                receiptRelativePath = "receipts/tpl-paper.webp",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        engine.ensureMonthExists(YearMonth.of(2026, 2))
+        val exp = db.instanceDao().observeExpenses("2026-02").first().single()
+        assertThat(exp.paymentNote).isEqualTo("+++000/0000/00097+++")
+        assertThat(exp.receiptRelativePath).isEqualTo("receipts/tpl-paper.webp")
+    }
+
     private fun freezeAt(isoOffsetDateTime: String) {
         val instant = java.time.OffsetDateTime.parse(isoOffsetDateTime).toInstant()
         AppClock.clock = Clock.fixed(instant, brussels)

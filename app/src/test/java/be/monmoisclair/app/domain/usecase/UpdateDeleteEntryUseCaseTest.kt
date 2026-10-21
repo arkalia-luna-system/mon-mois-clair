@@ -271,6 +271,57 @@ class UpdateDeleteEntryUseCaseTest {
         assertThat(db.templateDao().getExpenseById("tpl-auto")!!.isAutoDebit).isTrue()
     }
 
+    /** Lot A : note → modèle même sans « mois suivants » ; photo seulement avec. */
+    @Test
+    fun update_paymentNote_alwaysSyncsTemplate_photoOnlyWhenApplyFollowing() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-note",
+                label = "Gaz",
+                amountCents = 8_000L,
+                dayOfMonth = 3,
+                active = true,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-10", "exp:2026-10:tpl-note", "tpl-note", 8_000L)
+        seedLinkedExpense("2026-11", "exp:2026-11:tpl-note", "tpl-note", 8_000L)
+
+        update(
+            id = "exp:2026-10:tpl-note",
+            isExpense = true,
+            label = "Gaz",
+            amountCents = 8_000L,
+            dayOfMonth = 3,
+            applyToFollowingMonths = false,
+            paymentNote = "+++000/0000/00097+++",
+            receiptRelativePath = "receipts/oct.webp"
+        )
+        val tplAfterNote = db.templateDao().getExpenseById("tpl-note")!!
+        assertThat(tplAfterNote.paymentNote).isEqualTo("+++000/0000/00097+++")
+        assertThat(tplAfterNote.receiptRelativePath).isEqualTo("")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.paymentNote)
+            .isEqualTo("")
+
+        update(
+            id = "exp:2026-10:tpl-note",
+            isExpense = true,
+            label = "Gaz",
+            amountCents = 8_000L,
+            dayOfMonth = 3,
+            applyToFollowingMonths = true,
+            paymentNote = "+++000/0000/00097+++",
+            receiptRelativePath = "receipts/canon.webp"
+        )
+        val tpl = db.templateDao().getExpenseById("tpl-note")!!
+        assertThat(tpl.receiptRelativePath).isEqualTo("receipts/canon.webp")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.paymentNote)
+            .isEqualTo("+++000/0000/00097+++")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.receiptRelativePath)
+            .isEqualTo("receipts/canon.webp")
+    }
+
     private suspend fun seedLinkedExpense(
         ledger: String,
         id: String,

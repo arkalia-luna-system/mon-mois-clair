@@ -189,6 +189,45 @@ class BackupRestorerTest {
     }
 
     @Test
+    fun restore_acceptsLegacySchema3_andBumpsMetaToCurrent() = runBlocking {
+        seedCurrentPhoneState(ledgerId = "2026-08", expenseId = "old-schema3", safUri = null)
+
+        val payload = BackupPayload(
+            ledgers = listOf(MonthLedgerEntity("2026-11", "2026-11", createdAtEpochMs = 4L)),
+            incomeTemplates = emptyList(),
+            expenseTemplates = emptyList(),
+            incomeInstances = emptyList(),
+            expenseInstances = listOf(
+                ExpenseInstanceEntity(
+                    id = "legacy-s3",
+                    ledgerId = "2026-11",
+                    templateId = null,
+                    label = "Gaz",
+                    amountCents = 5_000L,
+                    dayOfMonth = 8,
+                    status = ExpenseStatus.TODO,
+                    doneAtEpochMs = null,
+                    remindJ3 = true,
+                    remindJd = true,
+                    paymentNote = "note-s3",
+                    receiptRelativePath = "receipts/s3.webp",
+                    alarmJ3RequestCode = null,
+                    alarmJdRequestCode = null,
+                    createdAtEpochMs = 4L
+                )
+            ),
+            appMeta = listOf(AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, "3"))
+        )
+        val document = codec.buildDocument(3, 4L, "Europe/Brussels", payload)
+
+        val result = restorer.restoreFromDocument(document)
+        assertThat(result).isInstanceOf(RestoreResult.Success::class.java)
+        assertThat(db.instanceDao().getExpenseById("legacy-s3")?.paymentNote).isEqualTo("note-s3")
+        assertThat(db.appMetaDao().get(AppMetaKeys.SCHEMA_VERSION)?.value)
+            .isEqualTo(AppMetaKeys.CURRENT_SCHEMA_VERSION)
+    }
+
+    @Test
     fun restore_acceptsLegacySchema2_andBumpsMetaToCurrent() = runBlocking {
         seedCurrentPhoneState(ledgerId = "2026-07", expenseId = "old-schema2", safUri = null)
 

@@ -18,6 +18,13 @@ data class ExpenseTemplateEntity(
     val intervalMonths: Int = 1,
     /** Premier mois d’application (`yyyy-MM`). Vide = traité comme mois de création à la volée. */
     val anchorYearMonth: String = "",
+    /**
+     * Communication / référence canonique (lot A) — reprise à chaque nouveau mois.
+     * L’instance peut surcharger pour un mois.
+     */
+    val paymentNote: String = "",
+    /** Photo canonique `receipts/….webp` — reprise si l’instance n’en a pas. */
+    val receiptRelativePath: String = "",
     val createdAtEpochMs: Long,
     val archivedAtEpochMs: Long?
 )

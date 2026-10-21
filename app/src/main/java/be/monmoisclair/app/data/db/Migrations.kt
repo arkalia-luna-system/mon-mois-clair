@@ -34,4 +34,16 @@ object Migrations {
             )
         }
     }
+
+    /** Lot A : mémoire papier sur le modèle (communication + photo). */
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN paymentNote TEXT NOT NULL DEFAULT ''"
+            )
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN receiptRelativePath TEXT NOT NULL DEFAULT ''"
+            )
+        }
+    }
 }

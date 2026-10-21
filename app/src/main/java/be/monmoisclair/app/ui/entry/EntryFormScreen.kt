@@ -793,7 +793,8 @@ private fun EntryFormScaffold(
                     onChecked = onApplyFollowing
                 )
                 Text(
-                    text = "Laissé décoché : seul ce mois change (eau, téléphone, régularisation).",
+                    text = "Laissé décoché : montant et photo de ce mois seulement. " +
+                        "La communication suit déjà les mois suivants.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted
                 )

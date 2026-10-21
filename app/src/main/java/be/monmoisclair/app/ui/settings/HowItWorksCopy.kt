@@ -52,7 +52,10 @@ object HowItWorksCopy {
             title = "Facture papier",
             body = "À l’ajout : « Scanner une facture » lit le QR de la facture belge et préremplit nom, montant " +
                 "et communication. Sur le mois, touchez « Copier ». Dans la fiche, « Copier la communication ». " +
-                "Collez ensuite dans votre app bancaire. " +
+                "Si c’est une communication structurée valide, le presse-papiers reçoit les 12 chiffres " +
+                "(l’écran garde le +++). Collez ensuite dans votre app bancaire. " +
+                "Sur une facture répétée, la communication suit les mois suivants. " +
+                "La photo aussi si vous cochez « Aussi les mois suivants ». " +
                 "Vous pouvez aussi prendre une photo : pastille « Facture » sur la ligne, ou touchez la vignette " +
                 "dans la fiche pour l’agrandir. Vous pouvez reprendre la photo sans tout recréer. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."

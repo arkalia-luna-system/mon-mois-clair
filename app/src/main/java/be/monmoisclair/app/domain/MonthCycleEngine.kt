@@ -89,6 +89,8 @@ class MonthCycleEngine @Inject constructor(
                     remindJ3 = template.remindJ3,
                     remindJd = template.remindJd,
                     isAutoDebit = template.isAutoDebit,
+                    paymentNote = template.paymentNote,
+                    receiptRelativePath = template.receiptRelativePath,
                     alarmJ3RequestCode = null,
                     alarmJdRequestCode = null,
                     createdAtEpochMs = now

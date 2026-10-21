@@ -9,14 +9,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.29** (punch list premium P01–P12 hors Dépense↔Revenu) |
+| Dernière étape terminée | **6.30** (lot A — mémoire papier + Copier mod 97) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Transformer Dépense↔Revenu sans supprimer (P03) si besoin |
+| Prochaine sous-étape | Lot B du plan produit (dossier retard, replié) |
 | Audit premium | Code clos · punch list audit traitée |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.30 Lot A : mémoire du papier (invisible)
+
+**Problème :** communication et photo collées à l’instance du mois ; le mois suivant était recréé sans elles. Copier collait le `+++…+++` alors que la banque veut souvent les 12 chiffres.
+
+**Codé :** schéma Room/backup **4** (`paymentNote` + `receiptRelativePath` sur `expense_templates`) · migration 3→4 · `MonthCycleEngine` reprend note/photo · enregistrement : note → modèle toujours ; photo → modèle si « Aussi les mois suivants » · `BelgianStructuredCommunication` (mod 97) · aide + phrase sous la case. Aucun libellé nouveau sur l’accueil.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **173/173** (48 fichiers, 0 échec)  
+**Version :** `0.1.0-6.30` · `versionCode` 35
 
 ### 2026-10-21 — 6.29 Suite audit premium (Copier, Alertes, scan, libellés)
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
+import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.usecase.DeleteInstanceResult
@@ -164,20 +165,17 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun copyPaymentNote() {
-        val note = _state.value.paymentNote.trim()
-        if (note.isEmpty()) {
+        val prepared = BelgianStructuredCommunication.prepareCopy(_state.value.paymentNote)
+        if (prepared.clipboardText.isEmpty()) {
             _state.update {
-                it.copy(error = "Aucune communication à copier.", copyMessage = null)
+                it.copy(error = prepared.userMessage, copyMessage = null)
             }
             return
         }
         (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-            .setPrimaryClip(ClipData.newPlainText("communication", note))
+            .setPrimaryClip(ClipData.newPlainText("communication", prepared.clipboardText))
         _state.update {
-            it.copy(
-                copyMessage = "Copié — collez dans votre application bancaire.",
-                error = null
-            )
+            it.copy(copyMessage = prepared.userMessage, error = null)
         }
     }
 

@@ -24,6 +24,8 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Après courses")
         assertThat(all).contains("Sans les futures")
         assertThat(all).contains("« Copier »")
+        assertThat(all).contains("12 chiffres")
+        assertThat(all).contains("Aussi les mois suivants")
         assertThat(all).contains("Réglages → Alertes")
         assertThat(all).doesNotContain("ancre")
         assertThat(all).doesNotContain("EN RETARD")

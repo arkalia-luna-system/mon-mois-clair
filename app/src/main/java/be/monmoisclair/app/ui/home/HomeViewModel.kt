@@ -11,6 +11,7 @@ import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.MonthNavigation
@@ -329,14 +330,14 @@ class HomeViewModel @Inject constructor(
     }
 
     fun copyPaymentNote(note: String) {
-        val trimmed = note.trim()
-        if (trimmed.isEmpty()) {
-            _userMessages.tryEmit("Aucune communication à copier.")
+        val prepared = BelgianStructuredCommunication.prepareCopy(note)
+        if (prepared.clipboardText.isEmpty()) {
+            _userMessages.tryEmit(prepared.userMessage)
             return
         }
         (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-            .setPrimaryClip(ClipData.newPlainText("communication", trimmed))
-        _userMessages.tryEmit("Copié — collez dans votre application bancaire.")
+            .setPrimaryClip(ClipData.newPlainText("communication", prepared.clipboardText))
+        _userMessages.tryEmit(prepared.userMessage)
     }
 
     /** Décode la photo **dans l’app** (S01) — pas via `ACTION_VIEW` externe. */

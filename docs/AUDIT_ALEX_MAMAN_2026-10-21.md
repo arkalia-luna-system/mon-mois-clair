@@ -129,7 +129,7 @@ Règle déjà écrite, à ne pas négocier : **aucune nouvelle fonction à 0 usa
 
 | Fonction | Quand elle est invisible | Où elle apparaît quand elle existe |
 |----------|--------------------------|-------------------------------------|
-| Dossier | 0 dossier | Pas un onglet. Une ligne dans le **Menu** : « Mes dossiers (4) ». L’accueil reste le mois |
+| Dossier | 0 dossier | Pas un onglet. Tant qu’il n’y a qu’une fiche : on l’ouvre depuis la ligne du mois. Dès que l’écran liste existe : une ligne dans le **Menu** : « Mes dossiers (4) ». L’accueil reste le mois |
 | Champs huissier sur « + Ajouter » | Tant qu’on n’ouvre pas le bloc | En bas de la fiche, une ligne repliée : « C’est un retard ou un accord ? ». Les 4 fréquences actuelles ne bougent pas |
 | Lettre sans plan | 0 lettre en attente | Dans « Mes dossiers », section du bas. Sur l’accueil, **une** ligne du même genre que « À prévoir », seulement s’il y en a : « 1 courrier sans plan · Voir ». Pas de montant, donc **pas** dans le Reste |
 | Badge Accord | La ligne n’est pas un dossier | Sous le nom, une pastille. Le jour de la liste ne change pas |

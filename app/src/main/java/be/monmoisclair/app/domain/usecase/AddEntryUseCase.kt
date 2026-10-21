@@ -88,6 +88,8 @@ class AddEntryUseCase @Inject constructor(
                             isAutoDebit = isAutoDebit,
                             intervalMonths = interval,
                             anchorYearMonth = anchor,
+                            paymentNote = paymentNote.trim(),
+                            receiptRelativePath = receiptRelativePath.trim(),
                             createdAtEpochMs = now,
                             archivedAtEpochMs = null
                         )
