@@ -194,13 +194,18 @@ fun AddEntryScreen(
                     .fillMaxWidth()
                     .padding(A11yTokens.screenPadding)
             ) {
+                val dlgFit = rememberDisplayFit()
+                val dlgPad = if (dlgFit.compactHomeChrome) 12.dp else 16.dp
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.padding(dlgPad),
+                    verticalArrangement = Arrangement.spacedBy(
+                        if (dlgFit.compactHomeChrome) 8.dp else 12.dp
+                    )
                 ) {
                     Text(
                         text = state.label.trim().ifBlank { "Facture" },
                         style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.Ink,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -210,7 +215,10 @@ fun AddEntryScreen(
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 280.dp, max = 520.dp)
+                            .heightIn(
+                                min = if (dlgFit.compactHomeChrome) 220.dp else 280.dp,
+                                max = if (dlgFit.compactHomeChrome) 420.dp else 520.dp
+                            )
                             .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
                     )
                     PrimaryA11yButton(
@@ -534,13 +542,18 @@ fun EditEntryScreen(
                     .fillMaxWidth()
                     .padding(A11yTokens.screenPadding)
             ) {
+                val dlgFit = rememberDisplayFit()
+                val dlgPad = if (dlgFit.compactHomeChrome) 12.dp else 16.dp
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.padding(dlgPad),
+                    verticalArrangement = Arrangement.spacedBy(
+                        if (dlgFit.compactHomeChrome) 8.dp else 12.dp
+                    )
                 ) {
                     Text(
                         text = state.label.trim().ifBlank { "Facture" },
                         style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.Ink,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -567,7 +580,10 @@ fun EditEntryScreen(
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(min = 280.dp, max = 520.dp)
+                                    .heightIn(
+                                        min = if (dlgFit.compactHomeChrome) 220.dp else 280.dp,
+                                        max = if (dlgFit.compactHomeChrome) 420.dp else 520.dp
+                                    )
                                     .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
                             )
                         }

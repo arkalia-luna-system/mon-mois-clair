@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 /**
  * Jours 1–31 en grosses cibles (≥ 48 dp).
@@ -39,16 +40,19 @@ fun DayOfMonthGrid(
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
+    val fit = rememberDisplayFit()
+    val dayGap = if (fit.compactHomeChrome) 6.dp else 8.dp
+    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     Column(modifier = modifier) {
         Text(
             text = "Jour du mois",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(if (fit.compactHomeChrome) 4.dp else 6.dp))
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(dayGap),
+            verticalArrangement = Arrangement.spacedBy(dayGap)
         ) {
             for (day in 1..31) {
                 val selected = selectedDay == day
@@ -101,7 +105,7 @@ fun DayOfMonthGrid(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, tipShape)
                     .background(A11yTokens.PaperCard, tipShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
             )
         }
     }

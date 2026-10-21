@@ -235,8 +235,10 @@ fun HomeScreen(
                     .padding(A11yTokens.screenPadding)
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier.padding(if (fit.compactHomeChrome) 12.dp else 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(
+                        if (fit.compactHomeChrome) 8.dp else 12.dp
+                    )
                 ) {
                     Text(
                         text = receiptTitle,
@@ -268,7 +270,10 @@ fun HomeScreen(
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(min = 280.dp, max = 520.dp)
+                                    .heightIn(
+                                        min = if (fit.compactHomeChrome) 220.dp else 280.dp,
+                                        max = if (fit.compactHomeChrome) 420.dp else 520.dp
+                                    )
                                     .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
                             )
                         }
@@ -728,7 +733,7 @@ fun HomeScreen(
                                         .padding(vertical = 12.dp)
                                         .border(1.dp, A11yTokens.PaperBorder, searchEmptyShape)
                                         .background(A11yTokens.PaperCard, searchEmptyShape)
-                                        .padding(14.dp)
+                                        .padding(if (fit.compactHomeChrome) 12.dp else 14.dp)
                                         .semantics {
                                             liveRegion = LiveRegionMode.Polite
                                             contentDescription = emptySearch
