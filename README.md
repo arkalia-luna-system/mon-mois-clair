@@ -7,7 +7,7 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-183%2F183-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-198%2F198-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
 [![Version](https://img.shields.io/badge/version-0.1.0--6.31-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -27,9 +27,10 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 | Dernière étape | **6.31** Lot B — dossier/accord replié (pastille Accord, reste calculé) |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **183/183** OK |
+| Tests unitaires | **198/198** OK (polish + WIP lot C dans l’arbre) |
+| Arbre non clos | Room **6** (IBAN, e-mail, frais, photos en plus) sans `versionName` nouveau — lot C pas encore clôturé. Ne pas installer par-dessus un téléphone en schéma 5 si on compte revenir au 6.31 seul |
 
-Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Audit : [`docs/AUDIT_PREMIUM.md`](docs/AUDIT_PREMIUM.md)
+Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel : [`docs/AUDIT_PREMIUM.md`](docs/AUDIT_PREMIUM.md)
 
 ---
 

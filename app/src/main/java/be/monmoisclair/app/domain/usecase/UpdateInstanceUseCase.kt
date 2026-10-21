@@ -5,6 +5,7 @@ import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.MonthDayClamp
+import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.YearMonth
 import java.util.UUID
@@ -46,7 +47,17 @@ class UpdateInstanceUseCase @Inject constructor(
         /** true = tenter d’écrire [openingRemainingCents] (création / conversion dossier). */
         setOpeningRemaining: Boolean = false,
         /** true = effacer la photo de cette ligne (un chemin vide seul ne l’efface pas). */
-        clearReceipt: Boolean = false
+        clearReceipt: Boolean = false,
+        /** Lot C — IBAN / e-mail / frais (modèle seulement). */
+        iban: String = "",
+        creditorEmail: String = "",
+        /** true = écrire iban/e-mail même vides (fiche dossier). */
+        syncCreditorDetails: Boolean = false,
+        /** Centimes à **ajouter** aux frais (0 = inchangé). */
+        feeAddCents: Long = 0L,
+        feeNote: String = "",
+        /** Chemin photo à ajouter aux extras (ne remplace pas la principale). */
+        extraReceiptAppend: String = ""
     ): UpdateInstanceResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -173,9 +184,31 @@ class UpdateInstanceUseCase @Inject constructor(
                             setOpeningRemaining -> openingRemainingCents
                             else -> null
                         }
+                        val fees = tpl.addedFeesCents + feeAddCents.coerceAtLeast(0L)
+                        val feesNote = if (feeAddCents > 0L) {
+                            feeNote.trim().ifBlank { tpl.addedFeesNote }
+                        } else {
+                            tpl.addedFeesNote
+                        }
+                        val extras = if (extraReceiptAppend.isNotBlank()) {
+                            ReceiptPathList.append(tpl.extraReceiptPaths, extraReceiptAppend)
+                        } else {
+                            tpl.extraReceiptPaths
+                        }
+                        val lotC = tpl.copy(
+                            iban = if (syncCreditorDetails) iban.trim() else {
+                                iban.trim().ifBlank { tpl.iban }
+                            },
+                            creditorEmail = if (syncCreditorDetails) creditorEmail.trim() else {
+                                creditorEmail.trim().ifBlank { tpl.creditorEmail }
+                            },
+                            addedFeesCents = fees,
+                            addedFeesNote = feesNote,
+                            extraReceiptPaths = extras
+                        )
                         templateDao.updateExpense(
                             if (applyToFollowingMonths) {
-                                tpl.copy(
+                                lotC.copy(
                                     label = trimmed,
                                     amountCents = amountCents,
                                     dayOfMonth = dayOfMonth,
@@ -191,7 +224,7 @@ class UpdateInstanceUseCase @Inject constructor(
                                     openingRemainingCents = opening
                                 )
                             } else {
-                                tpl.copy(
+                                lotC.copy(
                                     paymentNote = note,
                                     causeLabel = cause,
                                     openingRemainingCents = opening

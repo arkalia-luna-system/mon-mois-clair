@@ -10,13 +10,24 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Champ | Valeur |
 |-------|--------|
 | Dernière étape terminée | **6.31** (lot B — dossier / accord replié) |
-| Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Lot C du plan produit (IBAN, e-mail, multi-photos) |
+| Étape en cours | Lot C **dans l’arbre, pas clos** — Room déjà en 6, `versionName` encore 6.31, suite complète non relancée |
+| Prochaine sous-étape | Finir le lot C (photos en plus visibles, tests, journal) avant D. Voir `docs/AUDIT_ALEX_MAMAN_2026-10-21.md` §7 |
 | Audit premium | Code clos · punch list audit traitée |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — Polish premium (sécurité / restore / a11y) + WIP lot C
+
+**Problème :** zip-bomb / lectures illimitées ; FileProvider trop large ; verrou bio asynchrone ; copy Samsung ; messages restore techniques ; lot C (schéma 6) déjà dans l’arbre sans clôture.
+
+**Codé (polish) :** lectures bornées · restore photos locales · FileProvider `share/`+`camera/` · sweep JPEG · `SCHEDULE_EXACT_ALARM` · debounce `TIME_SET` · bio lock sync · scan/onboarding/settings copy · `docs/POLISH_PASS.md`.
+
+**Arbre lot C (non clos)** : Room 6 (IBAN, e-mail, multi-photos, frais) — `versionName` reste 6.31 jusqu’à clôture C.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **198/198** (52 fichiers, 0 échec)  
+**Version :** inchangée `0.1.0-6.31`
 
 ### 2026-10-21 — 6.31 Lot B : dossier / accord (replié)
 

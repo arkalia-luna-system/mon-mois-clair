@@ -1,8 +1,10 @@
 package be.monmoisclair.app.data.backup
 
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
@@ -88,14 +90,10 @@ object BackupSecurityArchive {
             while (entry != null) {
                 if (!entry.isDirectory) {
                     val name = entry.name.trimStart('/')
-                    val data = zip.readBytes()
+                    // Lecture bornée : une entrée compressée petite ne doit pas
+                    // exploser en mémoire une fois décompressée (zip bomb).
+                    val data = readBounded(zip, MAX_ZIP_BYTES - running)
                     running += data.size.toLong()
-                    if (running > MAX_ZIP_BYTES) {
-                        throw BackupFailure.Io(
-                            "Archive trop lourde une fois ouverte. " +
-                                "Copiez le dossier Documents plutôt."
-                        )
-                    }
                     when {
                         name == BackupFileNames.V1 ||
                             (name.endsWith(".json") && !name.contains('/')) -> {
@@ -131,5 +129,32 @@ object BackupSecurityArchive {
         if (parts.size != 2) return null
         if (parts.any { it.isEmpty() || it == "." || it == ".." }) return null
         return "receipts/${parts[1]}"
+    }
+
+    /**
+     * Lit au plus [maxBytes] octets. Dépassement → [BackupFailure.Io]
+     * (évite `readBytes()` illimité sur URI / entrée ZIP).
+     */
+    fun readBounded(input: InputStream, maxBytes: Long): ByteArray {
+        if (maxBytes <= 0L) {
+            throw BackupFailure.Io(
+                "Archive trop lourde une fois ouverte. Copiez le dossier Documents plutôt."
+            )
+        }
+        val out = ByteArrayOutputStream()
+        val chunk = ByteArray(8 * 1024)
+        var total = 0L
+        while (true) {
+            val n = input.read(chunk)
+            if (n < 0) break
+            total += n.toLong()
+            if (total > maxBytes) {
+                throw BackupFailure.Io(
+                    "Archive trop lourde une fois ouverte. Copiez le dossier Documents plutôt."
+                )
+            }
+            out.write(chunk, 0, n)
+        }
+        return out.toByteArray()
     }
 }

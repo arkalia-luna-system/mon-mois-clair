@@ -78,16 +78,28 @@ class MonthCycleEngine @Inject constructor(
                 if (!RecurrenceRules.shouldMaterialize(anchor, template.intervalMonths, yearMonth)) {
                     return@mapNotNull null
                 }
-                // Lot B : accord soldé → plus de ligne. Dernier mois = le reste, pas la mensualité pleine.
-                var amountCents = template.amountCents
-                if (DossierRemaining.isDossier(template.openingRemainingCents)) {
+                // Lot B : accord soldé → plus de ligne ; sinon plafond au reste dû.
+                val amountCents = if (DossierRemaining.isDossier(template.openingRemainingCents)) {
                     val paid = instanceDao.sumAmountCentsByTemplateAndStatus(
                         template.id,
                         ExpenseStatus.DONE
                     )
-                    val rem = DossierRemaining.remainingCents(template.openingRemainingCents, paid)
-                    if (rem == null || rem <= 0L) return@mapNotNull null
-                    if (rem < amountCents) amountCents = rem
+                    if (DossierRemaining.isSettled(
+                            template.openingRemainingCents,
+                            paid,
+                            template.addedFeesCents
+                        )
+                    ) {
+                        return@mapNotNull null
+                    }
+                    DossierRemaining.installmentCents(
+                        template.amountCents,
+                        template.openingRemainingCents,
+                        paid,
+                        template.addedFeesCents
+                    )
+                } else {
+                    template.amountCents
                 }
                 ExpenseInstanceEntity(
                     id = InstanceIds.expenseFromTemplate(ledgerId, template.id),

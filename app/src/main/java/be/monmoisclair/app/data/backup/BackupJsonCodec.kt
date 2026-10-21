@@ -54,7 +54,7 @@ class BackupJsonCodec {
         val root = JSONObject(json)
         val schemaVersion = root.getInt("schemaVersion")
         // v1 = historique ; v2 = diversSpent + isAutoDebit (CURRENT).
-        if (schemaVersion !in 1..5) {
+        if (schemaVersion !in 1..6) {
             throw BackupFailure.UnsupportedSchema(schemaVersion)
         }
         val payload = jsonToPayload(root.getJSONObject("payload"))
@@ -149,12 +149,17 @@ class BackupJsonCodec {
     private fun expenseTemplateToJson(e: ExpenseTemplateEntity): JSONObject =
         sortedJson(
             "active" to e.active,
+            "addedFeesCents" to e.addedFeesCents,
+            "addedFeesNote" to e.addedFeesNote,
             "amountCents" to e.amountCents,
             "anchorYearMonth" to e.anchorYearMonth,
             "archivedAtEpochMs" to e.archivedAtEpochMs,
             "causeLabel" to e.causeLabel,
             "createdAtEpochMs" to e.createdAtEpochMs,
+            "creditorEmail" to e.creditorEmail,
             "dayOfMonth" to e.dayOfMonth,
+            "extraReceiptPaths" to e.extraReceiptPaths,
+            "iban" to e.iban,
             "id" to e.id,
             "intervalMonths" to e.intervalMonths,
             "isAutoDebit" to e.isAutoDebit,
@@ -181,6 +186,11 @@ class BackupJsonCodec {
         receiptRelativePath = o.optString("receiptRelativePath", ""),
         causeLabel = o.optString("causeLabel", ""),
         openingRemainingCents = o.nullableLong("openingRemainingCents"),
+        iban = o.optString("iban", ""),
+        creditorEmail = o.optString("creditorEmail", ""),
+        extraReceiptPaths = o.optString("extraReceiptPaths", ""),
+        addedFeesCents = o.optLong("addedFeesCents", 0L),
+        addedFeesNote = o.optString("addedFeesNote", ""),
         createdAtEpochMs = o.getLong("createdAtEpochMs"),
         archivedAtEpochMs = o.nullableLong("archivedAtEpochMs")
     )

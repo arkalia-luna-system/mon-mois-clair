@@ -70,8 +70,8 @@ fun PermissionsSetupScreen(
         )
         Text(text = "Alertes fiables", style = MaterialTheme.typography.headlineMedium)
         Text(
-            text = "Sur Samsung, il faut autoriser les notifications, le réveil à l’heure " +
-                "et laisser la batterie non limitée pour cette application.",
+            text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +
+                "le réveil à l’heure, et laissez la batterie non limitée pour cette application.",
             style = MaterialTheme.typography.bodyLarge
         )
 

@@ -58,7 +58,9 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 ## 3. Données
 
-Room / backup schema **5** : mémoire papier (schéma 4) + dossier (`causeLabel`, `openingRemainingCents` nullable sur `expense_templates`). Reste dû = départ − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros.
+Journal clos : Room / backup schéma **5** (étape 6.31) — mémoire papier (schéma 4) + dossier (`causeLabel`, `openingRemainingCents` nullable sur `expense_templates`). Reste dû = départ + frais ajoutés − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros.
+
+Arbre de travail, **pas clos** : `AppDatabase` version **6** (`iban`, `creditorEmail`, `extraReceiptPaths`, `addedFeesCents`, `addedFeesNote`). `versionName` encore `0.1.0-6.31`. Ne pas traiter le 6 comme une étape livrée tant que le journal et une suite `--rerun-tasks` ne le disent pas. Détail : `docs/AUDIT_ALEX_MAMAN_2026-10-21.md` partie 7.
 
 ## 4. Plan
 

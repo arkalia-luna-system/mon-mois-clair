@@ -2,6 +2,7 @@ package be.monmoisclair.app.data.backup
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.room.withTransaction
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
@@ -9,6 +10,7 @@ import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.BackupHealth
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -72,15 +74,25 @@ class BackupRestorer @Inject constructor(
         }
     }
 
-    /** @return nombre de photos réellement écrites. */
+    /** @return nombre de photos réellement écrites (local et/ou Documents). */
     private suspend fun restoreReceiptsCounted(receipts: Map<String, ByteArray>): Int {
-        if (!safBackupStore.hasPersistedTree()) return 0
+        // Évite d’afficher une ancienne facture locale après restore.
+        File(context.filesDir, "receipts").deleteRecursively()
+        val hasSaf = safBackupStore.hasPersistedTree()
         var written = 0
         for ((relative, data) in receipts) {
-            val ok = runCatching {
-                safBackupStore.writeBinaryRelative(relative, data)
+            val safe = BackupSecurityArchive.sanitizeReceiptPath(relative) ?: continue
+            val localOk = runCatching {
+                val file = File(context.filesDir, safe)
+                file.parentFile?.mkdirs()
+                file.writeBytes(data)
             }.isSuccess
-            if (ok) written++
+            val safOk = if (hasSaf) {
+                runCatching { safBackupStore.writeBinaryRelative(safe, data) }.isSuccess
+            } else {
+                false
+            }
+            if (localOk || safOk) written++
         }
         return written
     }
@@ -143,8 +155,9 @@ class BackupRestorer @Inject constructor(
             }
         } catch (e: Exception) {
             healthStore.markBroken()
+            Log.e("BackupRestorer", "Transaction restore", e)
             return RestoreResult.IoError(
-                "Transaction restore échouée: ${e.message ?: e.javaClass.simpleName}"
+                "Impossible d’enregistrer la restauration. Le mois en cours n’a pas été modifié."
             )
         }
 
@@ -188,15 +201,19 @@ class BackupRestorer @Inject constructor(
         try {
             context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
                 val size = pfd.statSize
-                if (size > BackupSecurityArchive.MAX_ZIP_BYTES) {
+                if (size > 0L && size > BackupSecurityArchive.MAX_ZIP_BYTES) {
                     throw BackupFailure.Io(
                         "Fichier trop lourd (${size / (1024 * 1024)} Mo). " +
                             "Copiez le dossier Documents plutôt."
                     )
                 }
             }
+            // Même si statSize est inconnu (-1), on borne la lecture.
             context.contentResolver.openInputStream(uri)?.use { input ->
-                return input.readBytes()
+                return BackupSecurityArchive.readBounded(
+                    input,
+                    BackupSecurityArchive.MAX_ZIP_BYTES
+                )
             } ?: throw BackupFailure.Io("openInputStream null pour $uri")
         } catch (e: BackupFailure) {
             throw e

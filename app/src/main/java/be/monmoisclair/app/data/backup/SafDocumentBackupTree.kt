@@ -130,15 +130,11 @@ class SafDocumentBackupTree(
             val name = child.name ?: continue
             if (!child.isFile || !name.endsWith(".webp", ignoreCase = true)) continue
             if (name.contains("..") || name.contains('/')) continue
-            val bytes = context.contentResolver.openInputStream(child.uri)?.use { it.readBytes() }
-                ?: continue
+            val remaining = BackupSecurityArchive.MAX_ZIP_BYTES - running
+            val bytes = context.contentResolver.openInputStream(child.uri)?.use {
+                BackupSecurityArchive.readBounded(it, remaining)
+            } ?: continue
             running += bytes.size.toLong()
-            if (running > BackupSecurityArchive.MAX_ZIP_BYTES) {
-                throw BackupFailure.Io(
-                    "Trop de photos pour un envoi (${running / (1024 * 1024)} Mo). " +
-                        "Copiez le dossier Documents plutôt."
-                )
-            }
             out["receipts/$name"] = bytes
         }
         return out

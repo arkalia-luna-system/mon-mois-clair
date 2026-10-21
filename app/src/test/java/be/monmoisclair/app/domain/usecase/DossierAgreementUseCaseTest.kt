@@ -32,6 +32,7 @@ class DossierAgreementUseCaseTest {
     private lateinit var db: AppDatabase
     private lateinit var add: AddEntryUseCase
     private lateinit var engine: MonthCycleEngine
+    private lateinit var repo: MutatingRepository
     private val brussels: ZoneId = ZoneId.of("Europe/Brussels")
 
     @Before
@@ -40,7 +41,7 @@ class DossierAgreementUseCaseTest {
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        val repo = MutatingRepository(
+        repo = MutatingRepository(
             db = db,
             backupScheduler = BackupScheduler {},
             reminderScheduler = object : ReminderScheduler {
@@ -51,6 +52,8 @@ class DossierAgreementUseCaseTest {
         engine = MonthCycleEngine(db.monthLedgerDao(), repo)
         add = AddEntryUseCase(engine, repo)
     }
+
+    private fun mutatingRepo(): MutatingRepository = repo
 
     @After
     fun tearDown() {
@@ -114,6 +117,188 @@ class DossierAgreementUseCaseTest {
         )
         assertThat(paid).isEqualTo(3_000L)
         assertThat(DossierRemaining.remainingCents(60_000L, paid)).isEqualTo(57_000L)
+    }
+
+    @Test
+    fun toggle_settled_deletesFutureTodos() = runBlocking {
+        freezeAt("2026-01-15T10:00:00+01:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-sync",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 1,
+                active = true,
+                openingRemainingCents = 5_000L,
+                anchorYearMonth = "2026-01",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        for (lid in listOf("2026-01", "2026-02", "2026-03")) {
+            db.monthLedgerDao().insert(MonthLedgerEntity(lid, lid, createdAtEpochMs = 1L))
+            db.instanceDao().insertExpense(
+                ExpenseInstanceEntity(
+                    id = "exp:$lid:tpl-sync",
+                    ledgerId = lid,
+                    templateId = "tpl-sync",
+                    label = "Étude",
+                    amountCents = 5_000L,
+                    dayOfMonth = 1,
+                    status = ExpenseStatus.TODO,
+                    doneAtEpochMs = null,
+                    remindJ3 = true,
+                    remindJd = true,
+                    alarmJ3RequestCode = null,
+                    alarmJdRequestCode = null,
+                    createdAtEpochMs = 1L
+                )
+            )
+        }
+        val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), mutatingRepo())
+        toggle("exp:2026-01:tpl-sync")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-01:tpl-sync")!!.status)
+            .isEqualTo(ExpenseStatus.DONE)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-02:tpl-sync")).isNull()
+        assertThat(db.instanceDao().getExpenseById("exp:2026-03:tpl-sync")).isNull()
+    }
+
+    @Test
+    fun toggle_remettre_lastPayment_doesNotRecreateWhenCurrentTodoCoversRemaining() =
+        runBlocking {
+            freezeAt("2026-01-15T10:00:00+01:00")
+            db.templateDao().insertExpense(
+                ExpenseTemplateEntity(
+                    id = "tpl-rem",
+                    label = "Étude",
+                    amountCents = 5_000L,
+                    dayOfMonth = 1,
+                    active = true,
+                    openingRemainingCents = 5_000L,
+                    anchorYearMonth = "2026-01",
+                    createdAtEpochMs = 1L,
+                    archivedAtEpochMs = null
+                )
+            )
+            for (lid in listOf("2026-01", "2026-02")) {
+                db.monthLedgerDao().insert(MonthLedgerEntity(lid, lid, createdAtEpochMs = 1L))
+            }
+            db.instanceDao().insertExpense(
+                ExpenseInstanceEntity(
+                    id = "exp:2026-01:tpl-rem",
+                    ledgerId = "2026-01",
+                    templateId = "tpl-rem",
+                    label = "Étude",
+                    amountCents = 5_000L,
+                    dayOfMonth = 1,
+                    status = ExpenseStatus.DONE,
+                    doneAtEpochMs = 2L,
+                    remindJ3 = true,
+                    remindJd = true,
+                    alarmJ3RequestCode = null,
+                    alarmJdRequestCode = null,
+                    createdAtEpochMs = 1L
+                )
+            )
+            val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), mutatingRepo())
+            // Remettre le dernier paiement : janvier TODO couvre déjà tout → pas de février.
+            toggle("exp:2026-01:tpl-rem")
+            assertThat(db.instanceDao().getExpenseById("exp:2026-02:tpl-rem")).isNull()
+        }
+
+    @Test
+    fun toggle_remettre_splitsRemainingChronologicallyAcrossOpenMonths() = runBlocking {
+        freezeAt("2026-01-15T10:00:00+01:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-split",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 1,
+                active = true,
+                openingRemainingCents = 12_000L,
+                anchorYearMonth = "2026-01",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        for (lid in listOf("2026-01", "2026-02", "2026-03", "2026-04")) {
+            db.monthLedgerDao().insert(MonthLedgerEntity(lid, lid, createdAtEpochMs = 1L))
+        }
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-01:tpl-split",
+                ledgerId = "2026-01",
+                templateId = "tpl-split",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 1,
+                status = ExpenseStatus.DONE,
+                doneAtEpochMs = 2L,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), mutatingRepo())
+        // Remettre janv. : reste 12 000 − 5 000 (janv. TODO) = 7 000
+        // → fév. 5 000, mars 2 000, avril rien.
+        toggle("exp:2026-01:tpl-split")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-02:tpl-split")!!.amountCents)
+            .isEqualTo(5_000L)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-03:tpl-split")!!.amountCents)
+            .isEqualTo(2_000L)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-04:tpl-split")).isNull()
+    }
+
+    @Test
+    fun update_clearsCauseLabel_whenEmptyStringSent() = runBlocking {
+        freezeAt("2026-10-05T12:00:00+02:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-cause",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 5,
+                active = true,
+                causeLabel = "Hôpital",
+                openingRemainingCents = 20_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-10:tpl-cause",
+                ledgerId = "2026-10",
+                templateId = "tpl-cause",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 5,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        val result = update(
+            id = "exp:2026-10:tpl-cause",
+            isExpense = true,
+            label = "Étude",
+            amountCents = 5_000L,
+            dayOfMonth = 5,
+            applyToFollowingMonths = false,
+            causeLabel = ""
+        )
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        assertThat(db.templateDao().getExpenseById("tpl-cause")!!.causeLabel).isEmpty()
     }
 
     @Test
@@ -208,7 +393,7 @@ class DossierAgreementUseCaseTest {
     }
 
     @Test
-    fun openedNextMonth_dropsWhenSettled_andReturnsOnUndo() = runBlocking {
+    fun openedNextMonth_dropsWhenThisPaymentFinishesTheDebt() = runBlocking {
         freezeAt("2026-10-05T12:00:00+02:00")
         val repo = MutatingRepository(
             db = db,
@@ -270,6 +455,7 @@ class DossierAgreementUseCaseTest {
         )
         toggle("exp:2026-10:tpl-stop")
         assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-stop")).isNull()
+        // Remettre le dernier paiement : octobre TODO couvre le reste → pas de novembre.
         toggle("exp:2026-10:tpl-stop")
         assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-stop")).isNull()
     }

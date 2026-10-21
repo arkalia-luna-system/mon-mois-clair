@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- USE_EXACT_ALARM : réveils exacts sans demande (calendrier / rappels). -->
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- SCHEDULE_EXACT_ALARM : aligne l’écran système ouvert par Santé → Alertes. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />

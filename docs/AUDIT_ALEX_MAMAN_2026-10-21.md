@@ -1,11 +1,15 @@
 # Audit — maman, Alex, et le brief « dossiers »
 
-Date : 2026-10-21.  
-Code lu : étape **6.27** (`0.1.0-6.27`), schéma Room / backup **3**, tests annoncés au journal **165/165**.  
-Cette note ne relance pas Gradle et ne change pas l’app. Elle dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`RECHERCHE_OUTILS_2026-10-21.md`](RECHERCHE_OUTILS_2026-10-21.md)).  
-Le plan qui en sort : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
+Date du premier constat : 2026-10-21.  
+Relecture du code : le même jour, après les lots A et B, pendant un lot C commencé mais **pas clos**.
 
-Deux passages sont dans ce fichier. La partie 1 est le constat brut. La partie 5 est la relecture : ce qu’il ne faut **pas** coder même si le brief le demande.
+Dernière étape **fermée** dans le journal : **6.31** (`0.1.0-6.31`, `versionCode` 36), schéma annoncé **5**, tests **183/183**.  
+Dans l’arbre de travail, Room est déjà en version **6** (`iban`, `creditorEmail`, `extraReceiptPaths`, `addedFeesCents`, `addedFeesNote`). Le `versionName` n’a pas bougé. Aucun `./gradlew :app:testDebugUnitTest --rerun-tasks` n’est enregistré depuis ce schéma 6. **183/183 ne décrit plus l’arbre d’aujourd’hui.**
+
+Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`RECHERCHE_OUTILS_2026-10-21.md`](RECHERCHE_OUTILS_2026-10-21.md)).  
+Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
+
+La partie 1 est le constat du matin (schéma 3). Elle reste pour comprendre pourquoi les lots existent. **L’état actuel est la partie 7.** La partie 5 dit ce qu’il ne faut pas coder même si le brief le demande.
 
 ---
 
@@ -26,7 +30,9 @@ Les deux téléphones sont des phones portrait **Compact** (largeur &lt; 600 dp)
 
 ---
 
-## 1. Constat du code (premier passage)
+## 1. Constat du code (premier passage — matin, schéma 3)
+
+Figé. Ne pas s’en servir pour décider du prochain correctif : la partie 7 le remplace.
 
 ### 1.1 Ce qui est déjà le bon outil
 
@@ -201,22 +207,113 @@ Si les revenus du mois sont inférieurs au loyer + factures + accords, le Reste 
 
 ---
 
-## 6. Preuves code (pour ne pas re-auditer à l’aveugle)
+## 6. Preuves code du matin (schéma 3)
 
-- Modèles : `ExpenseTemplateEntity`, `ExpenseInstanceEntity`, `MonthLedgerEntity`. Schéma `AppDatabase` version 3. Migrations 1→2 et 2→3 seulement.
-- Calcul : `MonthSummaryCalculator` — courses **hors** du reste.
-- Mois suivant : `MonthCycleEngine` vers la ligne `ExpenseInstanceEntity(` — pas de note, pas de photo.
-- QR : `EpcPayment` a `iban` et `remittance`. `AddEntryViewModel.applyEpc` enregistre le nom, le montant, la communication. Pas l’IBAN.
-- Photo : `ReceiptPhotoStore.relativePathFor` → `receipts/{expenseId}.webp`, max 2048 px, qualité 90.
-- Fréquences UI : `RecurrenceChoice` = Once, Monthly, Every3Months, Yearly. Pas de cinquième.
-- Backup : `CURRENT_SCHEMA_VERSION = "3"`. Un schéma 4 non lu = restauration refusée (comportement voulu).
+Figées, pour l’historique. L’arbre n’est plus celui-là. Voir la partie 7.
+
+- Modèles : `ExpenseTemplateEntity`, `ExpenseInstanceEntity`, `MonthLedgerEntity`. À ce moment-là, `AppDatabase` version 3. Migrations 1→2 et 2→3 seulement.
+- Calcul : `MonthSummaryCalculator` — courses **hors** du reste. Toujours vrai.
+- Mois suivant : `MonthCycleEngine` ne recopiait ni la note ni la photo. **Corrigé au lot A.**
+- QR : `EpcPayment` a `iban` et `remittance`. Le matin, `applyEpc` jetait l’IBAN. **Le chantier C le garde dans l’état du formulaire.**
+- Photo : `receipts/{id}.webp`, max 2048 px, qualité 90, et maintenant une baisse de qualité au-dessus d’environ 400 Ko.
+- Fréquences UI : `RecurrenceChoice` = Once, Monthly, Every3Months, Yearly. Pas de cinquième. Toujours vrai.
+- Backup : le matin `CURRENT_SCHEMA_VERSION = "3"`. Aujourd’hui `"6"`, codec accepte 1 à 6.
 
 ---
 
-## 7. Verdict
+## 7. État réel — relecture du soir
 
-Le produit **carnet** est déjà fini pour maman : mois, reste, FAIT, rappels, papier, sauvegarde. Le smoke notif / trimestriel du journal reste un trou de **vérification téléphone**, pas un trou de conception.
+### 7.1 Ce qui tient (lots A et B, journal 6.30 et 6.31)
 
-Le produit n’est pas fini pour **un retard payé par virement**. Il manque une couche dossier, invisible à zéro, plus une ligne d’épargne optionnelle. Cette couche ne doit pas réécrire l’accueil.
+Le carnet de maman est toujours l’accueil : mois, gros reste, FAIT, courses, menu = Réglages + mois. Pas d’onglet. Pas de « Mes dossiers ». Pas d’euros de dette sur la ligne.
 
-Prochaine écriture utile : le plan. Pas une pastille « Huissier » sur l’écran de maman.
+| Besoin | Dans le code | Limite honnête |
+|--------|----------------|----------------|
+| La communication suit les mois suivants | Oui. À l’enregistrement elle va sur le modèle **et** sur les instances à venir encore à payer, même sans cocher « Aussi les mois suivants » | Une note libre du type « loyer 000000000097 » n’est pas réduite à 12 chiffres. Seule une chaîne purement structurée et valide (mod 97) l’est. Sinon le texte part tel quel et l’écran dit « Vérifiez sur le courrier. » |
+| La photo suit | À la **création** d’une facture qui revient, le fichier est écrit sur l’instance et sur le modèle. À l’**édition**, la photo ne suit que si « Aussi les mois suivants » est coché. Effacer la photo de ce mois ne vide pas le modèle | Le dossier des photos reste `receipts/`, pas un dossier `pieces/`. Qualité : 2048 px, départ à 90, descente par pas de 5 jusqu’à 55 si le fichier dépasse ~400 Ko. On ne vise pas 80 Ko |
+| Copier pour la banque | 12 chiffres seulement si le contrôle passe | L’écran garde les `+++` |
+| Un accord a un « pour quoi » et un reste | `causeLabel`, `openingRemainingCents` null = pas un dossier. Reste = départ + frais − somme des montants **FAIT** (centimes réels, pas le forfait) | Le reste n’est pas une colonne. On ne le réécrit pas à la main |
+| Dernier mois partiel | Le versement affiché et créé est le minimum du forfait et du reste | Un FAIT de 30 € sur un plan de 50 € baisse le reste de 30 € |
+| Soldé | Plus de nouvelle ligne. Les lignes à venir déjà créées et encore à payer sont retirées au moment du FAIT qui finit la dette. L’historique déjà FAIT reste | « Remettre » ne recrée le mois suivant que s’il reste quelque chose **après** avoir réservé le montant de ce mois. Si octobre à 50 € couvre toute la dette, novembre ne revient pas |
+| Accueil | Deuxième ligne = pour quoi. Pastille **Accord** (fond chaud, texte encre). Jamais « 3 sur 12 », jamais le total dû | Le contraste de la pastille est discret. C’est voulu. Pas revu au doigt sur le S26 dans cette relecture |
+| Fiche | Bloc replié « C’est un retard ou un accord ? ». Ouvert : à qui, pour quoi, « Combien reste-t-il aujourd’hui ? ». Accord déjà créé : « Encore X € à rembourser. » ou « Soldé ». Refermer le bloc ne vide pas la cause d’un accord existant | Un accord doit revenir (mensuel, 3 mois, annuel). Une fois seule est refusée |
+| Aide | Section « Retard ou accord » dans Comment ça marche, après « Facture papier » | Les mots sont dans l’aide même avec zéro dossier. Ils ne sont pas sur l’accueil |
+
+Tests ciblés relancés pendant la correction du lot B (moteur, bascule FAIT, hors-mois, communication, aide, mise à jour d’instance, dossiers) : verts. Ce n’est **pas** la suite complète.
+
+### 7.2 Le trou de journal (erreur, pas un détail)
+
+Le code a migré. Les documents de version, non.
+
+| Endroit | Ce qu’il dit | Ce que le code fait |
+|---------|----------------|---------------------|
+| `PROGRESS_LOG.md`, README, `versionName` | 6.31 clos, schéma 5, 183 tests | `versionName` est encore `0.1.0-6.31` |
+| `AppDatabase`, `AppMetaKeys`, `Migrations.MIGRATION_5_6`, `DatabaseModule` | — | Schéma **6** déjà enregistré |
+| `CHARTE_ET_ARCHITECTURE.md` §3 (avant cette relecture) | Schéma 5, reste = départ − FAIT | Le calcul ajoute déjà `addedFeesCents` |
+
+Conséquence : installer cet arbre sur un téléphone en schéma 5 **monte** la base en 6. Revenir au commit 6.31 ensuite casse l’ouverture (Room ne redescend pas). On ne ferme pas une version 6.32 dans le journal tant que la suite complète n’a pas été relancée et que le lot C n’est pas réellement fini. On ne laisse pas non plus la charte affirmer « schéma 5 » pendant que la base est en 6.
+
+`docs/AUDIT_STATUS.md` et `docs/AUDIT_PREMIUM.md` parlent encore de 6.28 et de 165 tests. Le journal, lui, est à 6.31 / 183. Ces deux notes décrivent le carnet visuel, pas les dossiers. Leur en-tête est en retard sur le journal, pas sur le schéma 6.
+
+### 7.3 Lot C — commencé, pas fini
+
+Présent dans l’arbre, invisible dans le journal.
+
+Ce qui est branché :
+
+- Colonnes et migration 5→6. Backup JSON lit et écrit les champs. Schémas 1 à 6 acceptés.
+- Le scan QR remplit l’IBAN dans l’état d’ajout et d’édition (`applyEpc`).
+- Dans le bloc dossier ouvert : champ IBAN, champ e-mail. En **édition** : « Copier l’IBAN » et « Écrire ». « Écrire » construit un brouillon (`CreditorMailComposer` : bonjour, qui, pour quoi, montant du mois, référence) et lance `ACTION_SENDTO` vers `mailto:`. Aucun fil n’est stocké.
+- À la création, IBAN et e-mail ne sont enregistrés que si un reste dû est saisi. Bloc ouvert mais reste vide : ces deux champs partent vides. C’est cohérent avec « pas de dossier sans chiffre », et ça surprend si on a tapé l’IBAN avant le montant.
+- Sur un accord **déjà** créé : « Ils ont ajouté un montant » + motif. Les centimes s’ajoutent au cumul. Le motif nouveau remplace l’ancien s’il n’est pas vide ; un motif vide garde l’ancien. Ce n’est pas une liste d’événements datés (ce que la recherche décrivait). Deux lettres de frais deviennent une somme et une seule phrase.
+- Si l’accord a déjà une photo et qu’on en prend une autre, le fichier part dans `extraReceiptPaths` au lieu de remplacer la première. La compression ~400 Ko est dans `ReceiptPhotoStore`.
+
+Ce qui ne tient pas encore :
+
+- Aucun bouton pour **voir** les courriers en plus, en enlever un, ou en ajouter un sans remplacer « par accident de logique ». La deuxième photo est rangée et invisible. La personne croira qu’elle a remplacé la première.
+- Pas de test unitaire trouvé pour le texte du mail, les frais, ni la liste de chemins.
+- L’ajout n’a pas « Copier l’IBAN » ni « Écrire ». Il faut rouvrir la fiche. Acceptable. À dire dans l’aide quand le lot sera clos, pas avant.
+- `ACTION_SENDTO` + extras (objet, corps) est souvent ignoré par l’app Mail selon le téléphone. Le texte est bon. L’ouverture réelle n’a pas été tenue au doigt.
+- Les frais ne se saisissent pas le jour de la création (le bloc frais n’apparaît que si `isAgreement`). Il faut enregistrer l’accord, revenir, puis ajouter. C’est le bon geste (un plus, pas un chiffre inventé au départ), encore non expliqué dans l’aide.
+- Le champ `agreementCents` proposé par la recherche n’existe pas. Le versement reste `amountCents` du modèle. Une lettre sans plan (montant vide, pas de ligne de mois) n’a pas de place. C’est le lot D, pas un oubli du C.
+
+### 7.4 Trous encore vrais après A et B
+
+| Trou | Pourquoi ce n’est pas « juste du polish » |
+|------|-----------------------------------------------|
+| Baisser le montant de ce mois **après** que le mois suivant a été effacé (dette finie) | `UpdateInstanceUseCase` ne relance pas la même synchro que la bascule FAIT. Le mois suivant ne revient pas tout seul. Il revient seulement via « Remettre », et seulement s’il reste un reliquat après ce mois |
+| Écran « Mes dossiers » | Quatre accords ne se comparent qu’en ouvrant chaque mois. Pas d’entrée de menu. Voulu jusqu’au lot D |
+| Courrier sans plan | Une lettre reçue sans versement fixé n’a pas de tiroir. Si on met un montant pour « ne pas l’oublier », elle entre dans le Reste. C’est le piège que le lot D doit fermer |
+| Mettre de côté | Pas de ligne dans Réglages, pas de facture épargne, pas de phrase « déjà viré, pas disponible ici ». La charte refuse toujours les enveloppes multiples ; l’exception « une facture » n’est pas écrite |
+| Résumé à montrer | Pas de texte partageable (revenus, charges, à qui, pour quoi, versement, reste, référence). Pas de faux PDF CPAS — et il ne faut pas en ajouter |
+| Smoke téléphone | Le journal 6.27 laissait ouvert : notification avec plusieurs factures, nom seul sur une échéance trimestrielle. `AUDIT_STATUS.md` les coche ensuite en manuel. Cette relecture **n’a pas** refait le geste, et n’a pas regardé la ligne Accord sur un écran court |
+| Checklist « zéro dossier = zéro mot » | L’accueil tient. Le formulaire d’une dépense a **un** bouton de plus, replié : « C’est un retard ou un accord ? ». L’aide contient la section. C’est l’écart accepté au lot B. Ce n’est pas zéro pixel au sens strict du plan §5 point 2 |
+| Suite de tests | Les 183 tests sont ceux du commit qui a fermé 6.31. L’arbre a bougé (schéma 6, frais dans le calcul, mail, photo extra). Compter les `TEST-*.xml` sans `--rerun-tasks` mentirait |
+
+### 7.5 Réflexions à ne pas perdre
+
+Le produit utile n’est pas « une app de dettes ». C’est le carnet, plus une mémoire de papier, plus un reste qui baisse du vrai virement. Maman paie ses retards par mail puis par virement, comme Alex. Elle n’a pas besoin d’un autre écran. Elle a besoin que la référence et la photo reviennent le mois d’après, et que le gros chiffre du 1er ait déjà réservé le versement. Ça, A et B le font.
+
+Alex a les deux vies : un accord à montant à peu près fixe, et des mois où il verse ce qu’il a. Le modèle « ouverture + frais − FAIT réels » tient les deux, à condition qu’on ne montre pas « mois 4 sur 12 ». Ce compteur a été refusé et il n’est pas dans l’UI. Il ne faut pas le réintroduire au lot D sous prétexte d’une barre. La barre, si elle vient, est « déjà versé / (départ + frais) ». Le nombre de mois n’apparaît qu’avec « si le versement reste de X », et disparaît dès qu’un mois a divergé.
+
+Ils ne mettent même pas 1 € de côté. Une cagnotte à l’écran serait dépensée dans la tête, ou ignorée. L’épargne prévue est une facture de plus, virée vers un autre compte, absente du résumé « dettes ». Pas maintenant. Pas avant que C soit clos proprement : empiler D, E et F sur un schéma 6 non testé, c’est garantir une restauration cassée.
+
+Le bouton replié sur chaque nouvelle dépense est le seul pixel nouveau que maman voit sans l’avoir demandé. Le garder fermé, sans le mot huissier, est la bonne limite. L’ouvrir par erreur puis quitter sans enregistrer ne doit rien créer : c’est le cas si le reste dû reste vide (`openingRemainingCents` null). Si elle remplit le reste par curiosité, elle crée un dossier. La phrase sous le champ (« Laissez vide si ce n’est pas un accord ») porte cette responsabilité. Elle est facile à rater sur un écran court. À relire au doigt, pas à rallonger avec un second avertissement.
+
+La pastille « Accord » sur fond chaud est lisible parce que le texte est encre, pas parce que le fond crie. Sur le S26, avec le texte large, la deuxième ligne (« pour quoi ») plus la pastille peut pousser le montant. Personne ne l’a mesuré dans cette passe. Le plan le demande encore (sortie, point 3).
+
+Les frais en une somme et un motif unique suffisent pour une lettre. Ils ne suffisent pas pour trois lettres. Quand la troisième arrivera, le motif de la première aura disparu. Soit on accepte ça et on l’écrit dans l’aide (« le motif affiché est le dernier »), soit le lot C se termine avec une vraie liste. Je penche pour la liste courte seulement si l’affichage des photos multiples est fait en même temps : les deux sont « la lettre d’après ». Sinon on ferme le lot avec la somme, une phrase d’aide, et les photos visibles. Pas les deux chantiers à moitié.
+
+Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le bon niveau. S’il n’arrive pas dans Gmail à cause de `ACTION_SENDTO`, le correctif est l’intent, pas un client mail dans l’app.
+
+### 7.6 Verdict
+
+| Couche | État |
+|--------|------|
+| Carnet du mois | Tenu. C’est le produit de maman |
+| Lot A — mémoire du papier | Tenu dans le code et dans le journal 6.30 |
+| Lot B — accord replié | Tenu dans le code et dans le journal 6.31, avec le trou « modifier le montant après coup ne recrée pas le mois suivant » |
+| Lot C — IBAN, mail, frais, plusieurs photos | À moitié dans l’arbre, schéma 6 déjà migré, **pas** dans le journal, **pas** revu par la suite complète, photos en plus invisibles |
+| Lots D, E, F | Pas commencés. Ne pas les coder tant que C n’est pas clos ou retiré |
+
+Prochaine action utile : finir ou retirer le lot C, relancer `./gradlew :app:testDebugUnitTest --rerun-tasks`, puis seulement aligner charte, journal, README et `versionName` sur le nombre de tests obtenu. Pas de pastille « Huissier ». Pas d’écran dossiers avant ça.

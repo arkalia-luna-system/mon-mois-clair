@@ -45,6 +45,9 @@ data class EntryFormState(
     val dossierExpanded: Boolean = false,
     val causeLabel: String = "",
     val openingRemainingText: String = "",
+    /** Lot C — IBAN du QR / saisie (dossier). */
+    val iban: String = "",
+    val creditorEmail: String = "",
     val copyMessage: String? = null,
     val error: String? = null,
     val saved: Boolean = false,
@@ -101,7 +104,19 @@ class AddEntryViewModel @Inject constructor(
     fun setPaymentNote(v: String) = _state.update {
         it.copy(paymentNote = v, error = null, copyMessage = null)
     }
-    fun setDossierExpanded(v: Boolean) = _state.update { it.copy(dossierExpanded = v, error = null) }
+    /** Collapse = annuler : on efface cause / reste pour ne pas créer un dossier par erreur. */
+    fun setDossierExpanded(v: Boolean) = _state.update {
+        if (!v) {
+            it.copy(
+                dossierExpanded = false,
+                causeLabel = "",
+                openingRemainingText = "",
+                error = null
+            )
+        } else {
+            it.copy(dossierExpanded = true, error = null)
+        }
+    }
     fun setCauseLabel(v: String) = _state.update { it.copy(causeLabel = v, error = null) }
     fun setOpeningRemainingText(v: String) = _state.update {
         it.copy(openingRemainingText = v, error = null)
@@ -143,10 +158,14 @@ class AddEntryViewModel @Inject constructor(
                 label = payment.beneficiaryName.ifBlank { it.label },
                 amountText = amountText,
                 paymentNote = payment.remittance.ifBlank { it.paymentNote },
+                iban = payment.iban.ifBlank { it.iban },
                 error = null
             )
         }
     }
+
+    fun setIban(v: String) = _state.update { it.copy(iban = v, error = null) }
+    fun setCreditorEmail(v: String) = _state.update { it.copy(creditorEmail = v, error = null) }
 
     fun save() {
         viewModelScope.launch {
@@ -202,7 +221,9 @@ class AddEntryViewModel @Inject constructor(
                     isAutoDebit = s.isExpense && s.isAutoDebit,
                     paymentNote = s.paymentNote,
                     causeLabel = if (s.isExpense && s.dossierExpanded) s.causeLabel else "",
-                    openingRemainingCents = openingCents
+                    openingRemainingCents = openingCents,
+                    iban = if (openingCents != null) s.iban else "",
+                    creditorEmail = if (openingCents != null) s.creditorEmail else ""
                 )
             ) {
                 is AddEntryResult.Success -> {

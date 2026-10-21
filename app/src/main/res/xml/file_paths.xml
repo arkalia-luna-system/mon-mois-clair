@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Pas tout le cache : seulement partage ZIP + photos caméra temporaires. -->
 <paths>
-    <cache-path name="share_cache" path="." />
+    <cache-path name="share" path="share/" />
+    <cache-path name="camera" path="camera/" />
 </paths>

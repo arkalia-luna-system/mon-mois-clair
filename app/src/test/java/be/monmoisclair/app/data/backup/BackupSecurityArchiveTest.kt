@@ -5,9 +5,10 @@ import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import java.io.ByteArrayInputStream
+import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-import java.io.FileOutputStream
 
 class BackupSecurityArchiveTest {
 
@@ -58,4 +59,23 @@ class BackupSecurityArchiveTest {
         assertThat(BackupSecurityArchive.sanitizeReceiptPath("receipts/ok.webp"))
             .isEqualTo("receipts/ok.webp")
     }
+
+    @Test
+    fun readBounded_rejects_over_limit() {
+        val input = ByteArrayInputStream(ByteArray(100) { 1 })
+        assertThrows(BackupFailure.Io::class.java) {
+            BackupSecurityArchive.readBounded(input, maxBytes = 50)
+        }
+    }
+
+    @Test
+    fun readBounded_accepts_under_limit() {
+        val payload = byteArrayOf(1, 2, 3, 4, 5)
+        val read = BackupSecurityArchive.readBounded(
+            ByteArrayInputStream(payload),
+            maxBytes = 50
+        )
+        assertThat(read).isEqualTo(payload)
+    }
+
 }

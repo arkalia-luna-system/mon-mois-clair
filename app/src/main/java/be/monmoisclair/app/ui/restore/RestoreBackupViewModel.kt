@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.restore
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.backup.BackupRestorer
@@ -59,7 +60,10 @@ class RestoreBackupViewModel @Inject constructor(
             val result = try {
                 block()
             } catch (e: Exception) {
-                RestoreResult.IoError(e.message ?: e.javaClass.simpleName)
+                Log.e("RestoreBackup", "restore", e)
+                RestoreResult.IoError(
+                    "Impossible de lire cette sauvegarde. Le mois en cours n’a pas été modifié."
+                )
             }
             val ok = result is RestoreResult.Success
             if (ok) {

@@ -58,4 +58,25 @@ object Migrations {
             )
         }
     }
+
+    /** Lot C : IBAN, e-mail, photos en plus, frais. */
+    val MIGRATION_5_6 = object : Migration(5, 6) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN iban TEXT NOT NULL DEFAULT ''"
+            )
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN creditorEmail TEXT NOT NULL DEFAULT ''"
+            )
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN extraReceiptPaths TEXT NOT NULL DEFAULT ''"
+            )
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN addedFeesCents INTEGER NOT NULL DEFAULT 0"
+            )
+            db.execSQL(
+                "ALTER TABLE expense_templates ADD COLUMN addedFeesNote TEXT NOT NULL DEFAULT ''"
+            )
+        }
+    }
 }

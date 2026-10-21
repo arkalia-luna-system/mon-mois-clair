@@ -85,7 +85,7 @@ fun SettingsScreen(
             BiometricAvailability.NoneEnrolled -> {
                 viewModel.onEnableAuthResult(
                     BiometricAuthResult.Failed(
-                        "Ajoutez d’abord une empreinte ou un code d’écran dans les réglages Samsung."
+                        "Ajoutez d’abord une empreinte ou un code d’écran dans les réglages du téléphone."
                     )
                 )
             }
@@ -151,7 +151,7 @@ fun SettingsScreen(
                     BiometricAvailability.Ready ->
                         "Disponible sur ce téléphone (empreinte, visage ou code)."
                     BiometricAvailability.NoneEnrolled ->
-                        "Aucune empreinte / code d’écran enregistré. Configurez-les dans Samsung."
+                        "Aucune empreinte / code d’écran enregistré. Configurez-les dans les réglages du téléphone."
                     BiometricAvailability.HardwareUnavailable ->
                         "Capteur indisponible pour le moment."
                     BiometricAvailability.Unsupported ->

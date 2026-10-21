@@ -102,8 +102,7 @@ fun RestoreBackupScreen(
                                 arrayOf(
                                     "application/zip",
                                     "application/json",
-                                    "text/*",
-                                    "*/*"
+                                    "application/octet-stream"
                                 )
                             )
                             null -> Unit

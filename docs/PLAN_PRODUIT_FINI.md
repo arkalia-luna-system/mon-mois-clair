@@ -1,8 +1,10 @@
 # Plan — du carnet fini à un outil qui tient aussi les retards
 
-Date : 2026-10-21.  
-On part de l’étape **6.27** (carnet du mois tenu).  
-On n’anticipe **pas** ces lots dans `versionName`, le README ou les badges : la charte et le journal ne bougent qu’au moment où le lot est codé **et** les tests relancés.
+Date : 2026-10-21, mis à jour le soir après relecture du code.  
+Départ : carnet tenu (journal jusqu’à **6.31**).  
+Lots **A et B** sont clos dans le journal (`0.1.0-6.30`, `0.1.0-6.31`).  
+Lot **C** est commencé dans l’arbre (Room **6**) et **pas clos** : pas de suite `--rerun-tasks` enregistrée, `versionName` encore `0.1.0-6.31`.  
+On n’anticipe **pas** D, E, F dans `versionName`, le README ou les badges. La charte et le journal ne ferment une étape que lorsque le lot est vraiment fini **et** les tests relancés. Le détail des trous : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.
 
 Lectures liées :
 
@@ -36,7 +38,7 @@ Le smoke déjà noté au journal (notification avec plusieurs factures, échéan
 4. **Les centimes FAIT font foi.** Pas un compteur « mois 4 sur 12 » qui ment si le montant a changé.
 5. **Les courriers et la référence vivent sur le modèle**, et chaque nouveau mois les reprend.
 6. **Un seul bouton plein** par écran. Le reste en trait.
-7. **Schéma 4** le jour où les colonnes existent, migration + backup + tests de restauration. Pas de colonne « en avance » dans le JSON.
+7. **Le schéma bouge avec les colonnes**, le même jour : migration, backup, tests de restauration, puis journal. Pas de colonne « en avance » dans le JSON. A a posé le 4, B le 5. Le 6 est déjà dans le code pour C, sans clôture : c’est le problème ouvert, pas un modèle à recopier.
 8. **Pas de `if (S25)`.** `DisplayFit` suffit. On vérifie une hauteur courte (S26) et une hauteur confort (Ultra).
 9. **Phrases de la recherche §9.** Pas de menace de saisie. Pas de date de fin sans « si ».
 
@@ -46,7 +48,9 @@ Le smoke déjà noté au journal (notification avec plusieurs factures, échéan
 
 Chaque lot est livrable seul. On peut s’arrêter après le A : maman y gagne déjà (la communication et la photo suivent le trimestre). Alex n’y gagne le dossier qu’à partir du B.
 
-### Lot A — La mémoire du papier (invisible)
+### Lot A — La mémoire du papier (invisible) — clos au journal 6.30
+
+Le comportement ci-dessous est dans le code. Deux précisions apparues en le vérifiant : à la création, la photo d’une facture qui revient est écrite tout de suite sur le modèle (il n’y a pas encore la case « ce mois seulement ») ; à l’édition, elle ne suit que si la case est cochée. La note, elle, suit toujours.
 
 **Problème.** Aujourd’hui la communication et la photo sont sur l’instance du mois. Le mois suivant est recréé sans elles (`MonthCycleEngine`).
 
@@ -63,7 +67,9 @@ Chaque lot est livrable seul. On peut s’arrêter après le A : maman y gagne d
 
 **Maman.** Aucun libellé nouveau si elle n’utilise pas Copier. Si elle copie déjà une communication, le collage banque devient plus sûr.
 
-### Lot B — Le dossier, replié
+### Lot B — Le dossier, replié — clos au journal 6.31
+
+Le comportement ci-dessous est dans le code. Le reste inclut désormais les frais ajoutés (colonne du lot C) : départ + frais − FAIT. Trou restant : modifier le montant du mois **après** que le mois suivant a été retiré ne recrée pas la ligne. « Remettre » ne la recrée que s’il reste un reliquat une fois le montant de ce mois réservé.
 
 **Problème.** Un seul nom. Pas de reste. La ligne continue après la fin de la dette.
 
@@ -83,7 +89,9 @@ Chaque lot est livrable seul. On peut s’arrêter après le A : maman y gagne d
 
 **Maman.** Elle n’ouvre pas le bloc. Rien ne change.
 
-### Lot C — Fiche anti-confusion
+### Lot C — Fiche anti-confusion — commencé, pas clos
+
+Le schéma 6, la migration, le backup, les champs IBAN / e-mail dans le bloc dossier, « Copier l’IBAN » et « Écrire » en édition, le cumul de frais sur un accord déjà créé, et le rangement d’une deuxième photo dans `extraReceiptPaths` sont dans l’arbre. Ça ne suffit pas à fermer le lot. Voir l’audit, partie 7.3. Il reste : voir et retirer les photos en plus, tests (texte du mail, frais, chemins), suite Gradle complète, geste réel « Écrire » sur le téléphone, phrase d’aide, puis seulement le journal et la version. Ne pas enchaîner D tant que ce n’est pas fait — ou tant que le schéma 6 n’est pas retiré si on abandonne le lot.
 
 **Problème.** IBAN jeté après le scan. Pas d’e-mail. Une seule photo. Les frais ajoutés n’ont pas de geste propre.
 
@@ -99,7 +107,7 @@ Chaque lot est livrable seul. On peut s’arrêter après le A : maman y gagne d
 
 **Maman.** Ces boutons ne sont pas sur une facture normale. Le scan continue de remplir nom, montant, communication.
 
-### Lot D — Mes dossiers, et le tiroir
+### Lot D — Mes dossiers, et le tiroir — pas commencé
 
 **Problème.** Quatre accords ne se voient bien que si on quitte le mois **volontairement**. Une lettre reçue sans plan ne doit pas inventer un montant.
 
@@ -116,7 +124,7 @@ Chaque lot est livrable seul. On peut s’arrêter après le A : maman y gagne d
 
 **Maman.** 0 dossier et 0 courrier : pas de ligne, pas d’écran.
 
-### Lot E — Mettre de côté
+### Lot E — Mettre de côté — pas commencé
 
 **Problème.** Ils ne réservent rien pour eux. Une enveloppe de plus les perdrait.
 
@@ -133,7 +141,7 @@ Chaque lot est livrable seul. On peut s’arrêter après le A : maman y gagne d
 
 **Charte.** Au moment du code, une phrase en §8 : les enveloppes multiples restent refusées ; une facture « Mettre de côté » est admise.
 
-### Lot F — Texte à montrer ou à envoyer
+### Lot F — Texte à montrer ou à envoyer — pas commencé
 
 **Problème.** Un mois négatif ou un rendez-vous médiation demande une liste propre. Le formulaire CPAS de Liège demande créancier, nature, solde, arrangement, plus les revenus et les charges.
 
@@ -174,13 +182,13 @@ Chaque lot est livrable seul. On peut s’arrêter après le A : maman y gagne d
 Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 1. `./gradlew :app:testDebugUnitTest --rerun-tasks` est vert, et le journal dit le **nombre réel** de tests.
-2. Une base **sans** dossier, rejouée sur les textes d’aide et le menu, ne montre pas les mots Accord, dossier, huissier, reste dû.
+2. Une base **sans** dossier : l’accueil et le menu ne montrent pas Accord, dossier, huissier, reste dû. Écart déjà accepté : le bouton replié sur la fiche dépense, et la section d’aide « Retard ou accord ».
 3. Le parcours Alex tient sur une hauteur ~800 dp (chrome compact) : la ligne à deux textes ne pousse pas FAIT hors de la carte ; les cibles restent ≥ 48 dp.
 4. Copier une vraie communication structurée, coller dans un champ texte : 12 chiffres, rien d’autre.
 5. Photo d’octobre visible en novembre sans reprendre la photo.
 6. Mois à 30 € au lieu de 50 € : le reste baisse de 30 €.
 7. Reste à 0 : décembre n’a plus la ligne ; novembre FAIT est encore dans l’historique.
-8. Restauration d’un backup **schéma 3** (téléphone actuel) réussit. Restauration schéma 4 ramène notes, photos, dossiers.
+8. Restauration d’un backup **schéma 3** réussit encore. Le schéma annoncé par le journal (5 au 6.31, puis 6 quand C sera clos) ramène notes, photos et dossiers. Un schéma dans Room sans ligne de journal n’est pas une restauration prouvée.
 9. `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `README.md` décrivent le lot **après** les tests, pas avant.
 10. Smoke au doigt sur le S25 Ultra, et un coup d’œil texte large sur une largeur S26 (ou émulateur 360 dp × hauteur courte) : menu, fiche repliée, ligne Accord.
 
@@ -193,13 +201,26 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 | Le bloc « retard ou accord » s’ouvre par erreur et fait peur | Fermé par défaut. Aucun champ huissier tant qu’il est fermé. On peut le refermer sans enregistrer (déjà : quitter sans enregistrer) |
 | Deux restes (colonne + calcul) qui divergent | Une seule source : calcul. Pas de colonne « reste actuel » |
 | La photo modèle + la photo du mois se contredisent | Le mois affiche la sienne s’il en a une, sinon celle du modèle |
-| Archive ZIP > 45 Mo à cause des lettres | Plafond déjà là. Qualité baissée au-dessus de ~400 Ko. On ne stocke pas l’original 12 Mpx |
+| Archive ZIP > 45 Mo à cause des lettres | Plafond déjà là. Qualité baissée au-dessus de ~400 Ko (`ReceiptPhotoStore`). On ne stocke pas l’original 12 Mpx |
+| Schéma 6 posé avant la fin du lot C | Finir C ou retirer la migration avant d’installer sur un téléphone déjà en 5. Room ne redescend pas |
+| Deuxième photo rangée et invisible | Le lot C n’est pas clos tant qu’on ne peut pas la revoir |
+| Motif de frais écrasé par le suivant | Une phrase d’aide, ou une liste. Pas un cumul silencieux de motifs |
 | Maman active « Mettre de côté » trop haut | Alerte déficit **avant** enregistrement |
 | Le résumé part par WhatsApp (pas chiffré de bout en bout selon les réglages) | Le bouton dit « à envoyer à un créancier ou à un conseiller », pas « partager à tout le monde ». On ne peut pas empêcher le geste. On n’y met pas l’identité |
 | Promesse de date | Phrase avec « si ». Test qui échoue si l’UI contient « fin prévue » sans condition |
 
 ---
 
-## 7. Premier pas quand on codera
+## 7. Où on en est, et le prochain geste
 
-Lot **A** seul. Il répare un trou déjà vrai pour les factures répétées de maman, il ne montre rien de neuf, et il pose le schéma 4 dont B, C et D ont besoin. Pas de pastille Accord dans ce premier pas.
+A et B sont le produit qui aide déjà : la référence et la photo reviennent, le versement est réservé dans le Reste, le reste dû baisse du montant coché, la ligne s’arrête quand c’est soldé, l’accueil de maman n’a pas gagné de menu.
+
+Le prochain geste est de **finir le lot C** (ou de le retirer proprement), pas d’ouvrir Mes dossiers.
+
+Ordre concret :
+
+1. Rendre les photos supplémentaires visibles, et permettre d’en enlever une sans effacer la première.
+2. Décider du motif de frais : une seule phrase (« le motif affiché est le dernier ») **ou** une courte liste. Pas les deux à moitié. La somme des centimes, elle, est déjà le bon modèle.
+3. Tests du texte de mail, du reste après frais, d’un chemin de photo en plus. Puis `./gradlew :app:testDebugUnitTest --rerun-tasks`, compter les `TEST-*.xml`, et seulement alors écrire le journal, la charte, le README et `versionName`.
+4. Au doigt : Écrire ouvre un vrai brouillon ; la ligne Accord sur une hauteur courte ne pousse pas FAIT hors de la carte ; quitter le bloc dossier sans reste dû ne crée rien.
+5. Ensuite seulement le lot D. E et F après. L’épargne et le résumé n’aident pas si la deuxième lettre est déjà perdue.

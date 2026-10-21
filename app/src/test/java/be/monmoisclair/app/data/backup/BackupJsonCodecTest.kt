@@ -2,7 +2,9 @@ package be.monmoisclair.app.data.backup
 
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
+import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
+import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows
@@ -89,6 +91,48 @@ class BackupJsonCodecTest {
         assertThrows(BackupFailure.UnsupportedSchema::class.java) {
             codec.decodeAndVerify(json)
         }
+    }
+
+    @Test
+    fun expenseTemplate_openingRemainingCents_roundTrip() {
+        val tpl = ExpenseTemplateEntity(
+            id = "tpl-acc",
+            label = "Étude",
+            amountCents = 5_000L,
+            dayOfMonth = 12,
+            active = true,
+            causeLabel = "Hôpital",
+            openingRemainingCents = 60_000L,
+            createdAtEpochMs = 1L,
+            archivedAtEpochMs = null
+        )
+        val payload = samplePayload().copy(expenseTemplates = listOf(tpl))
+        val schema = AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt()
+        val doc = codec.buildDocument(schema, 1L, "Europe/Brussels", payload)
+        val decoded = codec.decodeAndVerify(codec.encodeDocument(doc))
+        val out = decoded.payload.expenseTemplates.single()
+        assertThat(out.openingRemainingCents).isEqualTo(60_000L)
+        assertThat(out.causeLabel).isEqualTo("Hôpital")
+        assertThat(codec.encodeDocument(doc)).contains("\"openingRemainingCents\":60000")
+    }
+
+    @Test
+    fun expenseTemplate_nullOpening_roundTrip_staysNull() {
+        val tpl = ExpenseTemplateEntity(
+            id = "tpl-plain",
+            label = "Loyer",
+            amountCents = 47_000L,
+            dayOfMonth = 5,
+            active = true,
+            openingRemainingCents = null,
+            createdAtEpochMs = 1L,
+            archivedAtEpochMs = null
+        )
+        val payload = samplePayload().copy(expenseTemplates = listOf(tpl))
+        val schema = AppMetaKeys.CURRENT_SCHEMA_VERSION.toInt()
+        val doc = codec.buildDocument(schema, 1L, "Europe/Brussels", payload)
+        val decoded = codec.decodeAndVerify(codec.encodeDocument(doc))
+        assertThat(decoded.payload.expenseTemplates.single().openingRemainingCents).isNull()
     }
 
     @Test

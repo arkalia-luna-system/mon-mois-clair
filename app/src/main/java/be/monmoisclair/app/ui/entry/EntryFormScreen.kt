@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.entry
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -90,7 +91,8 @@ private fun rememberFullPhotoCapture(onBitmap: (Bitmap) -> Unit): () -> Unit {
         file.delete()
     }
     return {
-        val file = File(context.cacheDir, "receipt_${System.currentTimeMillis()}.jpg")
+        val cameraDir = File(context.cacheDir, "camera").also { it.mkdirs() }
+        val file = File(cameraDir, "receipt_${System.currentTimeMillis()}.jpg")
         val uri = FileProvider.getUriForFile(
             context,
             "${context.packageName}.fileprovider",
@@ -235,6 +237,10 @@ fun AddEntryScreen(
         isAgreement = false,
         remainingCents = null,
         isSettled = false,
+        iban = state.iban,
+        onIban = viewModel::setIban,
+        creditorEmail = state.creditorEmail,
+        onCreditorEmail = viewModel::setCreditorEmail,
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
@@ -277,6 +283,18 @@ fun EditEntryScreen(
         viewModel.applyEpcRaw(raw)
         onEpcRawConsumed()
     }
+    val context = LocalContext.current
+    LaunchedEffect(state.mailDraft) {
+        val draft = state.mailDraft ?: return@LaunchedEffect
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(draft.to))
+            putExtra(Intent.EXTRA_SUBJECT, draft.subject)
+            putExtra(Intent.EXTRA_TEXT, draft.body)
+        }
+        runCatching { context.startActivity(Intent.createChooser(intent, "Écrire")) }
+        viewModel.consumeMailDraft()
+    }
     val dirty = baseline?.let { b ->
         state.label != b.label ||
             state.amountText != b.amountText ||
@@ -285,9 +303,14 @@ fun EditEntryScreen(
             state.isAutoDebit != b.isAutoDebit ||
             state.recurrence != b.recurrence ||
             state.applyToFollowing != b.applyToFollowing ||
-            state.dossierExpanded != b.dossierExpanded ||
+            // Collapse d’un accord existant ≠ modification (pas de wipe).
+            (!b.isAgreement && state.dossierExpanded != b.dossierExpanded) ||
             state.causeLabel != b.causeLabel ||
             state.openingRemainingText != b.openingRemainingText ||
+            state.iban != b.iban ||
+            state.creditorEmail != b.creditorEmail ||
+            state.feeAddText != b.feeAddText ||
+            state.feeNoteText != b.feeNoteText ||
             state.hasPendingPhoto ||
             state.receiptRelativePath != b.receiptRelativePath
     } == true
@@ -479,6 +502,18 @@ fun EditEntryScreen(
         isAgreement = state.isAgreement,
         remainingCents = state.remainingCents,
         isSettled = state.isSettled,
+        iban = state.iban,
+        onIban = viewModel::setIban,
+        onCopyIban = viewModel::copyIban,
+        creditorEmail = state.creditorEmail,
+        onCreditorEmail = viewModel::setCreditorEmail,
+        onWriteMail = viewModel::prepareMail,
+        feeAddText = state.feeAddText,
+        onFeeAddText = viewModel::setFeeAddText,
+        feeNoteText = state.feeNoteText,
+        onFeeNoteText = viewModel::setFeeNoteText,
+        addedFeesCents = state.addedFeesCents,
+        addedFeesNote = state.addedFeesNote,
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = "Enregistrer",
@@ -573,6 +608,18 @@ private fun EntryFormScaffold(
     isAgreement: Boolean = false,
     remainingCents: Long? = null,
     isSettled: Boolean = false,
+    iban: String = "",
+    onIban: (String) -> Unit = {},
+    onCopyIban: (() -> Unit)? = null,
+    creditorEmail: String = "",
+    onCreditorEmail: (String) -> Unit = {},
+    onWriteMail: (() -> Unit)? = null,
+    feeAddText: String = "",
+    onFeeAddText: (String) -> Unit = {},
+    feeNoteText: String = "",
+    onFeeNoteText: (String) -> Unit = {},
+    addedFeesCents: Long = 0L,
+    addedFeesNote: String = "",
     infoMessage: String? = null,
     error: String?,
     primaryLabel: String,
@@ -768,8 +815,7 @@ private fun EntryFormScaffold(
                     remainingCents?.let { rem ->
                         if (!isSettled) {
                             Text(
-                                text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser. " +
-                                    "Chaque FAIT baisse ce chiffre.",
+                                text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = A11yTokens.InkMuted
                             )
@@ -806,6 +852,69 @@ private fun EntryFormScaffold(
                                 "Laissez vide si ce n’est pas un accord.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted
+                        )
+                    }
+                    // Lot C — IBAN / e-mail / frais (dossier seulement).
+                    OutlinedTextField(
+                        value = iban,
+                        onValueChange = onIban,
+                        label = { Text("IBAN") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight),
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        singleLine = true,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    if (onCopyIban != null && iban.isNotBlank()) {
+                        SecondaryA11yButton(text = "Copier l’IBAN", onClick = onCopyIban)
+                    }
+                    OutlinedTextField(
+                        value = creditorEmail,
+                        onValueChange = onCreditorEmail,
+                        label = { Text("E-mail du créancier") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight),
+                        textStyle = MaterialTheme.typography.bodyLarge,
+                        singleLine = true,
+                        shape = MaterialTheme.shapes.medium,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    )
+                    if (onWriteMail != null) {
+                        SecondaryA11yButton(text = "Écrire", onClick = onWriteMail)
+                    }
+                    if (isAgreement) {
+                        if (addedFeesCents > 0L) {
+                            Text(
+                                text = "Frais déjà notés : ${MoneyFormat.formatCents(addedFeesCents)}" +
+                                    if (addedFeesNote.isNotBlank()) " ($addedFeesNote)" else "",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                        }
+                        OutlinedTextField(
+                            value = feeAddText,
+                            onValueChange = onFeeAddText,
+                            label = { Text("Ils ont ajouté un montant (€)") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = A11yTokens.minTouchHeight),
+                            textStyle = MaterialTheme.typography.bodyLarge,
+                            singleLine = true,
+                            shape = MaterialTheme.shapes.medium,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                        )
+                        OutlinedTextField(
+                            value = feeNoteText,
+                            onValueChange = onFeeNoteText,
+                            label = { Text("Motif (ex. frais de rappel)") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = A11yTokens.minTouchHeight),
+                            textStyle = MaterialTheme.typography.bodyLarge,
+                            singleLine = true,
+                            shape = MaterialTheme.shapes.medium
                         )
                     }
                 }

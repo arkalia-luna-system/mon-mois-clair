@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "15baa9000300c9fc01ecbbd1c21c504a",
+    "identityHash": "a2b6c55ff6204066439bb7604fa39148",
     "entities": [
       {
         "tableName": "month_ledgers",
@@ -100,7 +100,7 @@
       },
       {
         "tableName": "expense_templates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `label` TEXT NOT NULL, `amountCents` INTEGER NOT NULL, `dayOfMonth` INTEGER NOT NULL, `active` INTEGER NOT NULL, `remindJ3` INTEGER NOT NULL, `remindJd` INTEGER NOT NULL, `isAutoDebit` INTEGER NOT NULL, `intervalMonths` INTEGER NOT NULL, `anchorYearMonth` TEXT NOT NULL, `paymentNote` TEXT NOT NULL, `receiptRelativePath` TEXT NOT NULL, `causeLabel` TEXT NOT NULL, `openingRemainingCents` INTEGER, `createdAtEpochMs` INTEGER NOT NULL, `archivedAtEpochMs` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `label` TEXT NOT NULL, `amountCents` INTEGER NOT NULL, `dayOfMonth` INTEGER NOT NULL, `active` INTEGER NOT NULL, `remindJ3` INTEGER NOT NULL, `remindJd` INTEGER NOT NULL, `isAutoDebit` INTEGER NOT NULL, `intervalMonths` INTEGER NOT NULL, `anchorYearMonth` TEXT NOT NULL, `paymentNote` TEXT NOT NULL, `receiptRelativePath` TEXT NOT NULL, `causeLabel` TEXT NOT NULL, `openingRemainingCents` INTEGER, `iban` TEXT NOT NULL, `creditorEmail` TEXT NOT NULL, `extraReceiptPaths` TEXT NOT NULL, `addedFeesCents` INTEGER NOT NULL, `addedFeesNote` TEXT NOT NULL, `createdAtEpochMs` INTEGER NOT NULL, `archivedAtEpochMs` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -185,6 +185,36 @@
             "columnName": "openingRemainingCents",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "iban",
+            "columnName": "iban",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "creditorEmail",
+            "columnName": "creditorEmail",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extraReceiptPaths",
+            "columnName": "extraReceiptPaths",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "addedFeesCents",
+            "columnName": "addedFeesCents",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "addedFeesNote",
+            "columnName": "addedFeesNote",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "createdAtEpochMs",
@@ -475,7 +505,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '15baa9000300c9fc01ecbbd1c21c504a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a2b6c55ff6204066439bb7604fa39148')"
     ]
   }
 }

@@ -47,7 +47,8 @@ class ShareBackupUseCase @Inject constructor(
             }
             val json = safBackupStore.readLatestValidBackupUtf8()
             val receipts = safBackupStore.listReceiptBinaries()
-            val out = File(context.cacheDir, BackupSecurityArchive.SHARE_ZIP_NAME)
+            val shareDir = File(context.cacheDir, "share").also { it.mkdirs() }
+            val out = File(shareDir, BackupSecurityArchive.SHARE_ZIP_NAME)
             val packed = BackupSecurityArchive.packToFile(out, json, receipts)
             val uri = FileProvider.getUriForFile(
                 context,

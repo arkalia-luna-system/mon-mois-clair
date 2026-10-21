@@ -46,6 +46,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
@@ -205,7 +209,14 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
     ) {
         Text("Scanner une facture", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(8.dp))
-        Text(status, style = MaterialTheme.typography.bodyLarge)
+        Text(
+            status,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.semantics {
+                liveRegion = LiveRegionMode.Polite
+                contentDescription = status
+            }
+        )
         Spacer(Modifier.height(12.dp))
         if (hasCamera) {
             Box(
@@ -214,6 +225,9 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     .weight(1f)
                     .clip(MaterialTheme.shapes.medium)
                     .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
+                    .semantics {
+                        contentDescription = "Zone caméra : placez le QR de la facture dans le cadre."
+                    }
             ) {
                 AndroidView(
                     factory = { previewView },

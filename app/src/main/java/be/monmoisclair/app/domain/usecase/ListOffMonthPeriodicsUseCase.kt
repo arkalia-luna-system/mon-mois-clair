@@ -22,6 +22,7 @@ data class OffMonthPeriodic(
 
 /**
  * T6 : templates actifs (intervalle > 1) qui ne tombent pas sur le mois courant.
+ * Les accords soldés n’apparaissent plus (même trimestriels / annuels).
  */
 @Singleton
 class ListOffMonthPeriodicsUseCase @Inject constructor(
@@ -34,21 +35,28 @@ class ListOffMonthPeriodicsUseCase @Inject constructor(
         return db.templateDao().activeExpenseTemplates()
             .filter { it.intervalMonths > 1 }
             .mapNotNull { t ->
+                val paid = if (DossierRemaining.isDossier(t.openingRemainingCents)) {
+                    db.instanceDao().sumAmountCentsByTemplateAndStatus(
+                        t.id,
+                        ExpenseStatus.DONE
+                    )
+                } else {
+                    0L
+                }
+                if (DossierRemaining.isSettled(t.openingRemainingCents, paid, t.addedFeesCents)) {
+                    return@mapNotNull null
+                }
                 val anchor = RecurrenceRules.parseAnchorOrNull(t.anchorYearMonth) ?: return@mapNotNull null
                 if (RecurrenceRules.shouldMaterialize(anchor, t.intervalMonths, current)) {
                     return@mapNotNull null
                 }
                 val next = nextOccurrence(anchor, t.intervalMonths, current)
-                var amount = t.amountCents
-                if (DossierRemaining.isDossier(t.openingRemainingCents)) {
-                    val paid = db.instanceDao().sumAmountCentsByTemplateAndStatus(
-                        t.id,
-                        ExpenseStatus.DONE
-                    )
-                    val rem = DossierRemaining.remainingCents(t.openingRemainingCents, paid)
-                    if (rem == null || rem <= 0L) return@mapNotNull null
-                    if (rem < amount) amount = rem
-                }
+                val amount = DossierRemaining.installmentCents(
+                    t.amountCents,
+                    t.openingRemainingCents,
+                    paid,
+                    t.addedFeesCents
+                )
                 OffMonthPeriodic(
                     templateId = t.id,
                     label = t.label,

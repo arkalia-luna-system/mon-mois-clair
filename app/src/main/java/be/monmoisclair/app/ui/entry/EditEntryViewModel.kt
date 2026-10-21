@@ -10,7 +10,9 @@ import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
+import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
+import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.EpcQrParser
@@ -55,9 +57,19 @@ data class EditEntryState(
     /** Reste calculé (null = pas un dossier). */
     val remainingCents: Long? = null,
     val isSettled: Boolean = false,
+    /** Lot C — visibles seulement sur un dossier. */
+    val iban: String = "",
+    val creditorEmail: String = "",
+    val addedFeesCents: Long = 0L,
+    val addedFeesNote: String = "",
+    val feeAddText: String = "",
+    val feeNoteText: String = "",
+    val extraReceiptPaths: String = "",
     val error: String? = null,
     val done: Boolean = false,
-    val loading: Boolean = true
+    val loading: Boolean = true,
+    /** Intent mail à lancer une fois (consommé par l’UI). */
+    val mailDraft: CreditorMailComposer.Draft? = null
 )
 
 @HiltViewModel
@@ -116,7 +128,8 @@ class EditEntryViewModel @Inject constructor(
         val paid = e.templateId?.let {
             instanceDao.sumAmountCentsByTemplateAndStatus(it, ExpenseStatus.DONE)
         } ?: 0L
-        val remaining = DossierRemaining.remainingCents(opening, paid)
+        val fees = tpl?.addedFeesCents ?: 0L
+        val remaining = DossierRemaining.remainingCents(opening, paid, fees)
         _state.update {
             it.copy(
                 loading = false, label = e.label,
@@ -128,8 +141,13 @@ class EditEntryViewModel @Inject constructor(
                 causeLabel = tpl?.causeLabel.orEmpty(),
                 isAgreement = DossierRemaining.isDossier(opening),
                 remainingCents = remaining,
-                isSettled = DossierRemaining.isSettled(opening, paid),
-                dossierExpanded = DossierRemaining.isDossier(opening)
+                isSettled = DossierRemaining.isSettled(opening, paid, fees),
+                dossierExpanded = DossierRemaining.isDossier(opening),
+                iban = tpl?.iban.orEmpty(),
+                creditorEmail = tpl?.creditorEmail.orEmpty(),
+                addedFeesCents = fees,
+                addedFeesNote = tpl?.addedFeesNote.orEmpty(),
+                extraReceiptPaths = tpl?.extraReceiptPaths.orEmpty()
             )
         }
     }
@@ -140,7 +158,21 @@ class EditEntryViewModel @Inject constructor(
     fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v) }
     fun setPaymentNote(v: String) = _state.update { it.copy(paymentNote = v) }
     fun setApplyToFollowing(v: Boolean) = _state.update { it.copy(applyToFollowing = v) }
-    fun setDossierExpanded(v: Boolean) = _state.update { it.copy(dossierExpanded = v, error = null) }
+    /**
+     * Collapse sur une conversion (pas encore dossier) = annuler : wipe cause / reste.
+     * Sur un accord existant : on replie seulement (pas d’effacement → pas de sauvegarde vide).
+     */
+    fun setDossierExpanded(v: Boolean) = _state.update {
+        when {
+            !v && !it.isAgreement -> it.copy(
+                dossierExpanded = false,
+                causeLabel = "",
+                openingRemainingText = "",
+                error = null
+            )
+            else -> it.copy(dossierExpanded = v, error = null)
+        }
+    }
     fun setCauseLabel(v: String) = _state.update { it.copy(causeLabel = v, error = null) }
     fun setOpeningRemainingText(v: String) = _state.update {
         it.copy(openingRemainingText = v, error = null)
@@ -196,10 +228,48 @@ class EditEntryViewModel @Inject constructor(
                 label = payment.beneficiaryName.ifBlank { it.label },
                 amountText = amountText,
                 paymentNote = payment.remittance.ifBlank { it.paymentNote },
+                iban = payment.iban.ifBlank { it.iban },
                 error = null
             )
         }
     }
+
+    fun setIban(v: String) = _state.update { it.copy(iban = v, error = null) }
+    fun setCreditorEmail(v: String) = _state.update { it.copy(creditorEmail = v, error = null) }
+    fun setFeeAddText(v: String) = _state.update { it.copy(feeAddText = v, error = null) }
+    fun setFeeNoteText(v: String) = _state.update { it.copy(feeNoteText = v, error = null) }
+
+    fun copyIban() {
+        val iban = _state.value.iban.trim()
+        if (iban.isEmpty()) {
+            _state.update { it.copy(error = "Aucun IBAN à copier.", copyMessage = null) }
+            return
+        }
+        (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+            .setPrimaryClip(ClipData.newPlainText("iban", iban))
+        _state.update {
+            it.copy(copyMessage = "IBAN copié — collez dans votre application bancaire.", error = null)
+        }
+    }
+
+    fun prepareMail() {
+        val s = _state.value
+        val cents = MoneyFormat.parseToCents(s.amountText) ?: 0L
+        val draft = CreditorMailComposer.build(
+            email = s.creditorEmail,
+            who = s.label,
+            what = s.causeLabel,
+            monthAmountCents = cents,
+            paymentNote = s.paymentNote
+        )
+        if (draft.to.isBlank()) {
+            _state.update { it.copy(error = "Indiquez d’abord l’e-mail du créancier.") }
+            return
+        }
+        _state.update { it.copy(mailDraft = draft, error = null) }
+    }
+
+    fun consumeMailDraft() = _state.update { it.copy(mailDraft = null) }
 
     fun copyPaymentNote() {
         val prepared = BelgianStructuredCommunication.prepareCopy(_state.value.paymentNote)
@@ -230,6 +300,7 @@ class EditEntryViewModel @Inject constructor(
                 return@launch
             }
             var path = s.receiptRelativePath
+            var extraAppend = ""
             val cleared = s.receiptCleared && pendingBitmap == null
             pendingBitmap?.let { bmp ->
                 val owner = if (s.applyToFollowing) {
@@ -237,7 +308,14 @@ class EditEntryViewModel @Inject constructor(
                 } else {
                     s.id
                 }
-                path = receiptPhotos.saveBitmap(owner, bmp)
+                if (s.isAgreement && path.isNotBlank() && !cleared) {
+                    extraAppend = receiptPhotos.saveBitmap(
+                        "$owner-extra-${AppClock.nowEpochMs()}",
+                        bmp
+                    )
+                } else {
+                    path = receiptPhotos.saveBitmap(owner, bmp)
+                }
                 pendingBitmap = null
             }
             // null = inchangé ; -1 = une fois ; 1/3/12 = intervalle (crée le modèle si besoin).
@@ -270,6 +348,16 @@ class EditEntryViewModel @Inject constructor(
                 }
                 return@launch
             }
+            val feeRaw = s.feeAddText.trim()
+            val feeAdd = when {
+                !s.isAgreement || feeRaw.isEmpty() -> 0L
+                else -> MoneyFormat.parseToCents(feeRaw)
+            }
+            if (s.isAgreement && feeRaw.isNotEmpty() && feeAdd == null) {
+                _state.update { it.copy(error = "Vérifiez le montant des frais.") }
+                return@launch
+            }
+            val syncCreditor = s.isExpense && (s.isAgreement || s.dossierExpanded)
             when (
                 val result = updateInstance(
                     id = s.id,
@@ -289,7 +377,13 @@ class EditEntryViewModel @Inject constructor(
                         else -> ""
                     },
                     openingRemainingCents = openingCents,
-                    setOpeningRemaining = openingCents != null
+                    setOpeningRemaining = openingCents != null,
+                    iban = if (syncCreditor) s.iban else "",
+                    creditorEmail = if (syncCreditor) s.creditorEmail else "",
+                    syncCreditorDetails = syncCreditor,
+                    feeAddCents = feeAdd ?: 0L,
+                    feeNote = s.feeNoteText,
+                    extraReceiptAppend = extraAppend
                 )
             ) {
                 UpdateInstanceResult.Success -> _state.update { it.copy(done = true) }

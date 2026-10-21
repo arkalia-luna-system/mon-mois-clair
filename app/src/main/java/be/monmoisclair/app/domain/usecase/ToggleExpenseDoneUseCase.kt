@@ -2,7 +2,6 @@ package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
-import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.DossierRemaining
@@ -34,6 +33,11 @@ sealed class ToggleExpenseDoneResult {
  *
  * Passe par [MutatingRepository] → backup SAF + reconcile rappels
  * uniquement si une mutation réelle a lieu.
+ *
+ * Lot B — accords :
+ * - FAIT qui solde → efface les TODO des mois suivants déjà ouverts ;
+ * - Remettre → recrée les lignes manquantes sur les mois ouverts, en
+ *   répartissant le reste chronologiquement (sans réécrire les montants existants).
  */
 @Singleton
 class ToggleExpenseDoneUseCase @Inject constructor(
@@ -55,7 +59,7 @@ class ToggleExpenseDoneUseCase @Inject constructor(
 
             val updated = flip(existing)
             instanceDao.updateExpense(updated)
-            syncAgreementAfterToggle(updated)
+            syncAgreementFutures(updated)
 
             ToggleExpenseDoneResult.Toggled(
                 expenseId = updated.id,
@@ -83,85 +87,6 @@ class ToggleExpenseDoneUseCase @Inject constructor(
         return invoke(expenseId)
     }
 
-    /**
-     * Accord soldé : retire les lignes encore « à payer » des mois d’après
-     * (même si le mois a déjà été ouvert).
-     * « Remettre » : ces lignes reviennent, sans dépasser le reste.
-     */
-    private suspend fun MutatingRepository.MutationContext.syncAgreementAfterToggle(
-        updated: ExpenseInstanceEntity
-    ) {
-        val templateId = updated.templateId ?: return
-        val template = templateDao.getExpenseById(templateId) ?: return
-        val opening = template.openingRemainingCents ?: return
-        val paid = instanceDao.sumAmountCentsByTemplateAndStatus(templateId, ExpenseStatus.DONE)
-        if (DossierRemaining.isSettled(opening, paid)) {
-            val futures = instanceDao.expensesFromTemplateFromLedger(templateId, updated.ledgerId)
-                .filter { it.ledgerId > updated.ledgerId && it.status == ExpenseStatus.TODO }
-            for (item in futures) {
-                instanceDao.deleteExpense(item)
-            }
-            return
-        }
-        if (updated.status != ExpenseStatus.TODO) return
-        val anchor = RecurrenceRules.parseAnchorOrNull(template.anchorYearMonth)
-            ?: YearMonth.from(
-                Instant.ofEpochMilli(template.createdAtEpochMs)
-                    .atZone(AppClock.zone)
-                    .toLocalDate()
-            )
-        var pocket = (DossierRemaining.remainingCents(opening, paid) ?: return) - updated.amountCents
-        if (pocket < 0L) pocket = 0L
-        val futureLedgers = monthLedgerDao.getAll()
-            .map { it.id }
-            .filter { it > updated.ledgerId }
-            .sorted()
-        for (ledgerId in futureLedgers) {
-            val ym = runCatching { YearMonth.parse(ledgerId) }.getOrNull() ?: continue
-            if (!RecurrenceRules.shouldMaterialize(anchor, template.intervalMonths, ym)) continue
-            val id = InstanceIds.expenseFromTemplate(ledgerId, templateId)
-            val existing = instanceDao.getExpenseById(id)
-            if (existing != null) {
-                if (existing.status == ExpenseStatus.TODO) pocket -= existing.amountCents
-                if (pocket < 0L) pocket = 0L
-                continue
-            }
-            if (pocket <= 0L) continue
-            val amount = minOf(template.amountCents, pocket)
-            insertAgreementInstance(template, ledgerId, ym, id, amount)
-            pocket -= amount
-        }
-    }
-
-    private suspend fun MutatingRepository.MutationContext.insertAgreementInstance(
-        template: ExpenseTemplateEntity,
-        ledgerId: String,
-        yearMonth: YearMonth,
-        id: String,
-        amountCents: Long
-    ) {
-        instanceDao.insertExpense(
-            ExpenseInstanceEntity(
-                id = id,
-                ledgerId = ledgerId,
-                templateId = template.id,
-                label = template.label,
-                amountCents = amountCents,
-                dayOfMonth = MonthDayClamp.clamp(template.dayOfMonth, yearMonth),
-                status = ExpenseStatus.TODO,
-                doneAtEpochMs = null,
-                remindJ3 = template.remindJ3,
-                remindJd = template.remindJd,
-                isAutoDebit = template.isAutoDebit,
-                paymentNote = template.paymentNote,
-                receiptRelativePath = template.receiptRelativePath,
-                alarmJ3RequestCode = null,
-                alarmJdRequestCode = null,
-                createdAtEpochMs = AppClock.nowEpochMs()
-            )
-        )
-    }
-
     private fun flip(expense: ExpenseInstanceEntity): ExpenseInstanceEntity {
         return when (expense.status) {
             ExpenseStatus.TODO -> expense.copy(
@@ -171,6 +96,106 @@ class ToggleExpenseDoneUseCase @Inject constructor(
             ExpenseStatus.DONE -> expense.copy(
                 status = ExpenseStatus.TODO,
                 doneAtEpochMs = null
+            )
+        }
+    }
+
+    /**
+     * Après bascule :
+     * - soldé (somme FAIT ≥ départ) → efface les TODO futures déjà créées ;
+     * - Remettre (TODO) → recrée les absentes en répartissant le reste dû
+     *   mois par mois (forfait ou reste partiel sur la première, rien après) ;
+     * - FAIT intermédiaire (pas soldé) → ne touche pas aux futures.
+     *
+     * Les montants des lignes déjà présentes ne sont jamais réécrits.
+     * Le mois courant TODO est déduit du reste avant répartition (un Remettre
+     * du dernier paiement ne recrée donc rien si ce mois couvre déjà tout).
+     */
+    private suspend fun MutatingRepository.MutationContext.syncAgreementFutures(
+        expense: ExpenseInstanceEntity
+    ) {
+        val templateId = expense.templateId ?: return
+        val tpl = templateDao.getExpenseById(templateId) ?: return
+        if (!DossierRemaining.isDossier(tpl.openingRemainingCents)) return
+
+        val paid = instanceDao.sumAmountCentsByTemplateAndStatus(
+            templateId,
+            ExpenseStatus.DONE
+        )
+        val currentYm = YearMonth.parse(expense.ledgerId)
+
+        if (DossierRemaining.isSettled(tpl.openingRemainingCents, paid, tpl.addedFeesCents)) {
+            val futures = instanceDao.expensesFromTemplateFromLedger(
+                templateId,
+                expense.ledgerId
+            ).filter {
+                it.id != expense.id &&
+                    it.status == ExpenseStatus.TODO &&
+                    it.ledgerId > expense.ledgerId
+            }
+            for (item in futures) {
+                instanceDao.deleteExpense(item)
+            }
+            return
+        }
+
+        // Recréation seulement après Remettre (ligne redevenue TODO).
+        if (expense.status != ExpenseStatus.TODO) return
+
+        val remaining = DossierRemaining.remainingCents(
+            tpl.openingRemainingCents,
+            paid,
+            tpl.addedFeesCents
+        ) ?: return
+
+        // Ce mois redevient à payer : on le réserve avant les mois d’après.
+        var pocket = remaining - expense.amountCents
+        if (pocket < 0L) pocket = 0L
+        if (pocket <= 0L) return
+
+        val anchor = RecurrenceRules.parseAnchorOrNull(tpl.anchorYearMonth)
+            ?: YearMonth.from(
+                Instant.ofEpochMilli(tpl.createdAtEpochMs)
+                    .atZone(AppClock.zone)
+                    .toLocalDate()
+            )
+        val now = AppClock.nowEpochMs()
+        for (ledger in monthLedgerDao.getAll().sortedBy { it.id }) {
+            val ym = runCatching { YearMonth.parse(ledger.id) }.getOrNull() ?: continue
+            if (!ym.isAfter(currentYm)) continue
+            if (!RecurrenceRules.shouldMaterialize(anchor, tpl.intervalMonths, ym)) continue
+            val id = InstanceIds.expenseFromTemplate(ledger.id, templateId)
+            val existing = instanceDao.getExpenseById(id)
+            if (existing != null) {
+                // Ne jamais réécrire ; compter les TODO déjà là dans la répartition.
+                if (existing.status == ExpenseStatus.TODO) {
+                    pocket -= existing.amountCents
+                    if (pocket < 0L) pocket = 0L
+                }
+                continue
+            }
+            if (pocket <= 0L) break
+            val amount = minOf(tpl.amountCents, pocket)
+            pocket -= amount
+            instanceDao.insertExpense(
+                ExpenseInstanceEntity(
+                    id = id,
+                    ledgerId = ledger.id,
+                    templateId = templateId,
+                    label = tpl.label,
+                    amountCents = amount,
+                    dayOfMonth = MonthDayClamp.clamp(tpl.dayOfMonth, ym),
+                    status = ExpenseStatus.TODO,
+                    doneAtEpochMs = null,
+                    remindJ3 = tpl.remindJ3,
+                    remindJd = tpl.remindJd,
+                    isAutoDebit = tpl.isAutoDebit,
+                    paymentNote = tpl.paymentNote,
+                    receiptRelativePath = tpl.receiptRelativePath,
+                    alarmJ3RequestCode = null,
+                    alarmJdRequestCode = null,
+                    createdAtEpochMs = now
+                )
             )
         }
     }

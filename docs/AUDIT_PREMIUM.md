@@ -1,8 +1,8 @@
 # Audit premium — points encore ouverts
 
-Date : 2026-10-20.  
-Code : étape **6.28** (`0.1.0-6.28`).  
-Mesure tests : **165/165** (47 fichiers, `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
+Date : 2026-10-20. Note **figée**. Le journal a clos le carnet jusqu’à **6.31** depuis. Ne pas y lire l’état des dossiers : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.  
+Code au moment de l’écriture : étape **6.28** (`0.1.0-6.28`).  
+Mesure tests alors : **165/165** (47 fichiers, `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
 
 But : ce qu’il reste à corriger pour que l’app se lise comme un objet fini, pas comme un chantier.  
 Hors sujet (charte, ne pas les ajouter) : banque, cloud, pub, graphiques, report automatique du solde, troisième bouton sur l’accueil.

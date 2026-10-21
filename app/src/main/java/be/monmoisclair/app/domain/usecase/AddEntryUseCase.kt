@@ -48,7 +48,10 @@ class AddEntryUseCase @Inject constructor(
         receiptRelativePath: String = "",
         /** Lot B — null = pas un dossier. */
         causeLabel: String = "",
-        openingRemainingCents: Long? = null
+        openingRemainingCents: Long? = null,
+        /** Lot C — IBAN / e-mail (dossier). */
+        iban: String = "",
+        creditorEmail: String = ""
     ): AddEntryResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -106,6 +109,12 @@ class AddEntryUseCase @Inject constructor(
                             receiptRelativePath = receiptRelativePath.trim(),
                             causeLabel = cause,
                             openingRemainingCents = openingRemainingCents,
+                            iban = if (openingRemainingCents != null) iban.trim() else "",
+                            creditorEmail = if (openingRemainingCents != null) {
+                                creditorEmail.trim()
+                            } else {
+                                ""
+                            },
                             createdAtEpochMs = now,
                             archivedAtEpochMs = null
                         )

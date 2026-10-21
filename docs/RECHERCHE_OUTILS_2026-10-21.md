@@ -135,7 +135,9 @@ Pour un écran de **6,3″** (maman) et le même layout sur **6,9″** (Alex / A
 
 ---
 
-## 8. Modèle de données suggéré par la recherche (pas encore codé)
+## 8. Modèle de données suggéré par la recherche
+
+Proposition du matin. Une partie est codée depuis (cause, ouverture, IBAN, e-mail, frais en somme, photo canonique recopiée). Ce qui suit n’est pas l’état du code : le statut est dans [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7. En particulier, `agreementCents` n’existe pas (le versement reste le montant du modèle) et les frais ne sont pas une liste d’événements datés.
 
 À poser sur le **modèle** de dépense (il survit aux mois), pas sur une table parallèle « dettes » qui doublerait les factures.
 
@@ -155,11 +157,11 @@ Si ce reste ≤ 0 : le modèle passe archivé / soldé, `MonthCycleEngine` ne cr
 
 Photos : plusieurs chemins `receipts/…webp` liés au **modèle**, plus la photo éventuelle déjà liée à une instance (on ne migre pas en cassant les factures actuelles).
 
-Communication : reste `paymentNote`, mais elle doit être **recopiée sur chaque nouvelle instance** (ou lue depuis le modèle à l’affichage). Aujourd’hui elle ne l’est pas. C’est un correctif utile même sans dossier.
+Communication : reste `paymentNote`, recopiée sur chaque nouvelle instance. C’était le trou du matin. Le lot A (journal 6.30) le ferme.
 
 Épargne : un booléen `isSavings` sur le modèle, ou simplement un libellé + le comportement facture. Le booléen évite de la compter comme une dette dans le résumé médiation. Pas de table « pots ».
 
-Schéma Room et backup passent à **4** le jour du code, avec migration. Pas avant.
+Le matin, le schéma prévu était le **4**, le jour du code. Le journal a depuis clos le 4 (lot A) et le 5 (lot B). Le 6 est dans l’arbre sans clôture.
 
 ---
 

@@ -15,6 +15,7 @@ class HowItWorksCopyTest {
         assertThat(titles).contains("En retard")
         assertThat(titles).contains("Facture papier")
         assertThat(titles).contains("Sur une année")
+        assertThat(titles).contains("Retard ou accord")
         assertThat(titles.indexOf("Courses")).isLessThan(titles.indexOf("Marquer FAIT"))
         val all = HowItWorksCopy.sections.joinToString("\n") { "${it.title}\n${it.body}" }
         assertThat(all).contains("Reste du mois passé")

@@ -21,8 +21,10 @@ class ReceiptPhotoStore @Inject constructor(
     fun relativePathFor(expenseId: String) = "receipts/$expenseId.webp"
 
     suspend fun saveFromUri(expenseId: String, source: Uri): String {
-        val bytes = context.contentResolver.openInputStream(source)?.use { it.readBytes() }
-            ?: throw BackupFailure.Io("Impossible de lire la photo")
+        val bytes = context.contentResolver.openInputStream(source)?.use {
+            // Plafond photo unique (~12 Mo) — évite OOM sur un JPEG très lourd.
+            BackupSecurityArchive.readBounded(it, 12L * 1024L * 1024L)
+        } ?: throw BackupFailure.Io("Impossible de lire la photo")
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
             ?: throw BackupFailure.Io("Image illisible")
         return saveBitmap(expenseId, bitmap)
@@ -79,8 +81,22 @@ class ReceiptPhotoStore @Inject constructor(
         const val MAX_SIDE_PX = 2048
         const val WEBP_QUALITY = 90
 
+        /** Au-dessus de ~400 Ko : baisser la qualité, sans viser 80 Ko. */
+        const val SOFT_MAX_BYTES = 400 * 1024
+
         fun compressWebp(source: Bitmap, maxSide: Int = MAX_SIDE_PX, quality: Int = WEBP_QUALITY): ByteArray {
             val scaled = scaleMax(source, maxSide)
+            var q = quality.coerceIn(50, 100)
+            var bytes = encodeWebp(scaled, q)
+            while (bytes.size > SOFT_MAX_BYTES && q > 55) {
+                q -= 5
+                bytes = encodeWebp(scaled, q)
+            }
+            if (scaled !== source) scaled.recycle()
+            return bytes
+        }
+
+        private fun encodeWebp(scaled: Bitmap, quality: Int): ByteArray {
             val out = ByteArrayOutputStream()
             val ok = if (android.os.Build.VERSION.SDK_INT >= 30) {
                 scaled.compress(Bitmap.CompressFormat.WEBP_LOSSY, quality, out)
@@ -88,7 +104,6 @@ class ReceiptPhotoStore @Inject constructor(
                 @Suppress("DEPRECATION")
                 scaled.compress(Bitmap.CompressFormat.WEBP, quality, out)
             }
-            if (scaled !== source) scaled.recycle()
             if (!ok) throw BackupFailure.Io("Compression WebP échouée")
             return out.toByteArray()
         }

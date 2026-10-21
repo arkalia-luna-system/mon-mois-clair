@@ -186,6 +186,61 @@ class MonthCycleEngineTest {
         assertThat(db.monthLedgerDao().getById("2026-06")).isNotNull()
     }
 
+    /** Lot B : dernier mois = reste dû (partiel), pas le forfait plein. */
+    @Test
+    fun ensureMonth_capsLastInstallmentToRemaining() = runBlocking {
+        freezeAt("2026-02-01T10:00:00+01:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-partial",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                active = true,
+                openingRemainingCents = 12_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(
+            be.monmoisclair.app.data.db.entity.MonthLedgerEntity(
+                id = "2026-01",
+                yearMonth = "2026-01",
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity(
+                id = "exp:2026-01:tpl-partial",
+                ledgerId = "2026-01",
+                templateId = "tpl-partial",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.DONE,
+                doneAtEpochMs = 2L,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        // Payé 5 000 ; reste 7 000 → février à 5 000 (forfait).
+        // On marque encore 5 000 FAIT puis mars doit être 2 000.
+        engine.ensureMonthExists(YearMonth.of(2026, 2))
+        val feb = db.instanceDao().observeExpenses("2026-02").first().single()
+        assertThat(feb.amountCents).isEqualTo(5_000L)
+        db.instanceDao().updateExpense(
+            feb.copy(status = ExpenseStatus.DONE, doneAtEpochMs = 3L)
+        )
+
+        freezeAt("2026-03-01T10:00:00+01:00")
+        engine.ensureMonthExists(YearMonth.of(2026, 3))
+        val mar = db.instanceDao().observeExpenses("2026-03").first().single()
+        assertThat(mar.amountCents).isEqualTo(2_000L)
+    }
+
     /** Lot B : accord soldé → plus de ligne le mois suivant. */
     @Test
     fun ensureMonth_skipsSettledDossier() = runBlocking {

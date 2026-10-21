@@ -66,7 +66,7 @@ object HowItWorksCopy {
                 "Ouvrez-le seulement pour un plan : à qui, pour quoi, et combien il reste aujourd’hui. " +
                 "Le mois montre le versement et une pastille « Accord », pas le total de la dette. " +
                 "Chaque FAIT baisse le reste du montant réellement payé. " +
-                "Quand il ne reste plus rien, les mois suivants ne créent plus de ligne. " +
+                "Quand c’est soldé, la ligne ne revient plus le mois suivant. " +
                 "La fiche dit « Soldé ». Les mois déjà payés restent."
         ),
         Section(

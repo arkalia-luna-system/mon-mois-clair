@@ -88,8 +88,19 @@ class MainViewModel @Inject constructor(
 
     /**
      * Re-verrouille quand l’activité quitte l’avant-plan (pas lors d’une rotation).
+     * Verrouille d’abord de façon synchrone (état déjà connu) pour ne pas laisser
+     * une fenêtre de contenu pendant le refresh prefs / disponibilité.
      */
     fun onAppBackgrounded() {
+        _uiState.update { state ->
+            if (state.biometricEnabled &&
+                state.biometricAvailability == BiometricAvailability.Ready
+            ) {
+                state.copy(unlocked = false, lockMessage = null)
+            } else {
+                state
+            }
+        }
         viewModelScope.launch {
             val enabled = biometricPreference.isEnabled()
             val availability = biometricAuth.availability()
@@ -98,7 +109,7 @@ class MainViewModel @Inject constructor(
                 it.copy(
                     biometricEnabled = enabled,
                     biometricAvailability = availability,
-                    unlocked = if (mustLock) false else true,
+                    unlocked = !mustLock,
                     lockMessage = null
                 )
             }

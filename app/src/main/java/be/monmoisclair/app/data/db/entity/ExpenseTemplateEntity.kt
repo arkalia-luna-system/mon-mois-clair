@@ -29,9 +29,22 @@ data class ExpenseTemplateEntity(
     val causeLabel: String = "",
     /**
      * Lot B — reste de départ en centimes. `null` = pas un dossier.
-     * Le reste actuel se calcule (départ − FAIT), il n’est pas stocké.
+     * Le reste actuel se calcule (départ + frais − FAIT), il n’est pas stocké.
      */
     val openingRemainingCents: Long? = null,
+    /** Lot C — IBAN du créancier (QR / saisie), gardé sur le modèle. */
+    val iban: String = "",
+    /** Lot C — e-mail pour le bouton Écrire. */
+    val creditorEmail: String = "",
+    /**
+     * Lot C — photos supplémentaires (`receipts/….webp`), une par ligne.
+     * [receiptRelativePath] reste la photo principale (pastille accueil).
+     */
+    val extraReceiptPaths: String = "",
+    /** Lot C — frais ajoutés par le créancier (centimes), augmente le reste. */
+    val addedFeesCents: Long = 0L,
+    /** Motif court des frais (ex. « frais de rappel »). */
+    val addedFeesNote: String = "",
     val createdAtEpochMs: Long,
     val archivedAtEpochMs: Long?
 )
