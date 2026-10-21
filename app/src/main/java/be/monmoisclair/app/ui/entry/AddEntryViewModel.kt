@@ -44,7 +44,7 @@ data class EntryFormState(
     val error: String? = null,
     val saved: Boolean = false,
     val saving: Boolean = false,
-    val formTitle: String = "Nouvelle entrée",
+    val formTitle: String = "Nouvelle facture ou revenu",
     val targetYearMonth: YearMonth = AppClock.currentYearMonth()
 ) {
     val needsNextDueMonth: Boolean
@@ -74,9 +74,9 @@ class AddEntryViewModel @Inject constructor(
         EntryFormState(
             targetYearMonth = targetYm,
             formTitle = if (targetYm == AppClock.currentYearMonth()) {
-                "Nouvelle entrée"
+                "Nouvelle facture ou revenu"
             } else {
-                "Nouvelle entrée · ${DayLabelFormat.monthTitle(targetYm)}"
+                "Nouvelle facture ou revenu · ${DayLabelFormat.monthTitle(targetYm)}"
             },
             nextDueMonth = targetYm.monthValue
         )

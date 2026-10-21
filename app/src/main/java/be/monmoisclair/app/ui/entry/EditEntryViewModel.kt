@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
+import be.monmoisclair.app.domain.EpcPayment
+import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.usecase.DeleteInstanceResult
 import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
 import be.monmoisclair.app.domain.usecase.UpdateInstanceResult
@@ -65,7 +67,7 @@ class EditEntryViewModel @Inject constructor(
     private suspend fun load() {
         if (!isExpenseArg) {
             val e = instanceDao.getIncomeById(entryId) ?: run {
-                _state.update { it.copy(loading = false, error = "Entrée introuvable.") }; return
+                _state.update { it.copy(loading = false, error = "Introuvable.") }; return
             }
             val rem = (e.amountCents % 100).toInt()
             _state.update {
@@ -81,7 +83,7 @@ class EditEntryViewModel @Inject constructor(
             return
         }
         val e = instanceDao.getExpenseById(entryId) ?: run {
-            _state.update { it.copy(loading = false, error = "Entrée introuvable.") }; return
+            _state.update { it.copy(loading = false, error = "Introuvable.") }; return
         }
         val rem = (e.amountCents % 100).toInt()
         val interval = e.templateId?.let { tid ->
@@ -127,9 +129,39 @@ class EditEntryViewModel @Inject constructor(
         )
     }
     fun attachPreviewBitmap(b: Bitmap) { pendingBitmap = b; _state.update { it.copy(hasPendingPhoto = true) } }
+    fun clearReceiptPhoto() {
+        pendingBitmap = null
+        _state.update {
+            it.copy(hasPendingPhoto = false, receiptRelativePath = "", error = null)
+        }
+    }
     suspend fun openReceiptUri() = receiptPhotos.openUri(_state.value.receiptRelativePath)
     suspend fun decodeReceiptBitmap() =
         receiptPhotos.decodeBitmap(_state.value.receiptRelativePath)
+
+    fun applyEpcRaw(raw: String) {
+        val p = EpcQrParser.parse(raw)
+        if (p == null) {
+            _state.update { it.copy(error = "Ce QR n’est pas une facture belge.") }
+            return
+        }
+        applyEpc(p)
+    }
+
+    fun applyEpc(payment: EpcPayment) {
+        val amountText = payment.amountCents?.let { c ->
+            val rem = (c % 100).toInt()
+            if (rem == 0) (c / 100).toString() else "%d,%02d".format(c / 100, rem)
+        } ?: _state.value.amountText
+        _state.update {
+            it.copy(
+                label = payment.beneficiaryName.ifBlank { it.label },
+                amountText = amountText,
+                paymentNote = payment.remittance.ifBlank { it.paymentNote },
+                error = null
+            )
+        }
+    }
 
     fun copyPaymentNote() {
         val note = _state.value.paymentNote.trim()
@@ -182,7 +214,7 @@ class EditEntryViewModel @Inject constructor(
                 )
             ) {
                 UpdateInstanceResult.Success -> _state.update { it.copy(done = true) }
-                UpdateInstanceResult.NotFound -> _state.update { it.copy(error = "Entrée introuvable.") }
+                UpdateInstanceResult.NotFound -> _state.update { it.copy(error = "Introuvable.") }
                 is UpdateInstanceResult.InvalidInput -> _state.update { it.copy(error = result.message) }
             }
         }
@@ -192,7 +224,7 @@ class EditEntryViewModel @Inject constructor(
         viewModelScope.launch {
             when (deleteInstance(_state.value.id, _state.value.isExpense, _state.value.applyToFollowing)) {
                 DeleteInstanceResult.Success -> _state.update { it.copy(done = true) }
-                DeleteInstanceResult.NotFound -> _state.update { it.copy(error = "Entrée introuvable.") }
+                DeleteInstanceResult.NotFound -> _state.update { it.copy(error = "Introuvable.") }
             }
         }
     }

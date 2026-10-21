@@ -66,7 +66,8 @@ fun AppNavHost(
                 onEdit = { id, isExpense ->
                     navController.navigate(AppRoute.editEntry(id, isExpense))
                 },
-                onOpenSettings = { navController.navigate(AppRoute.Settings) }
+                onOpenSettings = { navController.navigate(AppRoute.Settings) },
+                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) }
             )
         }
         composable(AppRoute.Settings) {
@@ -130,10 +131,16 @@ fun AppNavHost(
                 navArgument("id") { type = NavType.StringType },
                 navArgument("isExpense") { type = NavType.StringType }
             )
-        ) {
+        ) { entry ->
+            val epcRaw by entry.savedStateHandle
+                .getStateFlow<String?>("epc_raw", null)
+                .collectAsStateWithLifecycle()
             EditEntryScreen(
                 onDone = { navController.popBackStack() },
-                onCancel = { navController.popBackStack() }
+                onCancel = { navController.popBackStack() },
+                onScanEpc = { navController.navigate(AppRoute.ScanEpc) },
+                epcRawResult = epcRaw,
+                onEpcRawConsumed = { entry.savedStateHandle.remove<String>("epc_raw") }
             )
         }
     }

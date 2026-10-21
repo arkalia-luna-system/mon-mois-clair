@@ -192,7 +192,8 @@ class HomeViewModel @Inject constructor(
                 items.size == 1 -> {
                     val f = items.first()
                     "À prévoir le mois prochain : ${f.label} (" +
-                        "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth}). Voir"
+                        "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth}). " +
+                        "Voir dans Réglages"
                 }
                 else -> {
                     val f = items.first()
@@ -200,7 +201,7 @@ class HomeViewModel @Inject constructor(
                     val otherWord = if (others == 1) "autre" else "autres"
                     "À prévoir le mois prochain : ${f.label} (" +
                         "${MoneyFormat.formatCents(f.amountCents)} le ${f.dayOfMonth}) " +
-                        "et $others $otherWord. Voir"
+                        "et $others $otherWord. Voir dans Réglages"
                 }
             }
         }

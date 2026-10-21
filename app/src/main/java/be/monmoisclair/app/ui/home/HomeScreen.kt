@@ -92,6 +92,7 @@ fun HomeScreen(
     onAdd: (YearMonth) -> Unit,
     onEdit: (id: String, isExpense: Boolean) -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenHealth: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -640,7 +641,7 @@ fun HomeScreen(
                         }
                         Text(
                             text = if (state.diversSpentCents > 0L) {
-                                "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}"
+                                "Noté ${MoneyFormat.formatCents(state.diversSpentCents)}"
                             } else {
                                 "Aucune course notée."
                             },
@@ -717,7 +718,9 @@ fun HomeScreen(
                         Box(modifier = Modifier.weight(1f)) {
                             SecondaryA11yButton(
                                 text = if (remindersBlocked) "Menu · Alertes" else "Menu",
-                                onClick = { menuOpen = true },
+                                onClick = {
+                                    if (remindersBlocked) onOpenHealth() else menuOpen = true
+                                },
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -891,35 +894,33 @@ private fun ExpenseRow(
                         color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
                         style = MaterialTheme.typography.titleLarge
                     )
-                    AnimatedVisibility(
-                        visible = item.paymentNote.isNotBlank(),
-                        enter = fadeIn(),
-                        exit = fadeOut()
+                }
+                // Hors zone « Modifier » : Copier / photo ne doivent pas ouvrir l’édition.
+                AnimatedVisibility(
+                    visible = item.paymentNote.isNotBlank(),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(
-                                    text = item.paymentNote,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = A11yTokens.InkMuted,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                SecondaryA11yButton(
-                                    text = "Copier",
-                                    onClick = onCopyNote,
-                                    fillMaxWidth = false,
-                                    modifier = Modifier.widthIn(min = 96.dp)
-                                )
-                            }
-                        }
+                        Text(
+                            text = item.paymentNote,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        SecondaryA11yButton(
+                            text = "Copier",
+                            onClick = onCopyNote,
+                            fillMaxWidth = false,
+                            modifier = Modifier.widthIn(min = 96.dp)
+                        )
                     }
                 }
-                // Hors zone « Modifier » : sinon le tap ouvre l’édition au lieu de la photo.
                 ExpenseStatusLine(item = item, onOpenReceipt = onOpenReceipt)
             }
             SecondaryA11yButton(

@@ -9,7 +9,7 @@
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-165%2F165-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.28-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.29-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,8 +23,8 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.28` |
-| Dernière étape | **6.28** Voir la photo fiable · Menu · Alertes |
+| Version | `0.1.0-6.29` |
+| Dernière étape | **6.29** Punch list premium (Copier, Alertes, scan, libellés) |
 | Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
 | Tests unitaires | **165/165** OK |

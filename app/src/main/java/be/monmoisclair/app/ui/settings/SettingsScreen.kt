@@ -251,7 +251,7 @@ fun SettingsScreen(
                 enabled = !state.busy
             )
             SecondaryA11yButton(
-                text = "Envoyer une copie de sécurité",
+                text = "Envoyer une copie",
                 onClick = viewModel::shareSecurityCopy,
                 enabled = !state.busy
             )

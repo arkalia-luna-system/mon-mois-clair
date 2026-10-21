@@ -28,7 +28,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -245,6 +244,9 @@ fun AddEntryScreen(
 fun EditEntryScreen(
     onDone: () -> Unit,
     onCancel: () -> Unit,
+    onScanEpc: () -> Unit = {},
+    epcRawResult: String? = null,
+    onEpcRawConsumed: () -> Unit = {},
     viewModel: EditEntryViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -255,6 +257,11 @@ fun EditEntryScreen(
     LaunchedEffect(state.loading) {
         if (!state.loading && baseline == null) baseline = state
     }
+    LaunchedEffect(epcRawResult) {
+        val raw = epcRawResult ?: return@LaunchedEffect
+        viewModel.applyEpcRaw(raw)
+        onEpcRawConsumed()
+    }
     val dirty = baseline?.let { b ->
         state.label != b.label ||
             state.amountText != b.amountText ||
@@ -263,7 +270,8 @@ fun EditEntryScreen(
             state.isAutoDebit != b.isAutoDebit ||
             state.recurrence != b.recurrence ||
             state.applyToFollowing != b.applyToFollowing ||
-            state.hasPendingPhoto
+            state.hasPendingPhoto ||
+            state.receiptRelativePath != b.receiptRelativePath
     } == true
 
     fun requestLeave() {
@@ -383,14 +391,12 @@ fun EditEntryScreen(
                                 .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
                         )
                     } else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(color = A11yTokens.ButtonFill)
-                        }
+                        Text(
+                            text = "Photo introuvable dans Documents. " +
+                                "Reprenez-en une avec le bouton ci-dessous.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = A11yTokens.AccentDanger
+                        )
                     }
                     PrimaryA11yButton(
                         text = "Fermer",
@@ -402,14 +408,14 @@ fun EditEntryScreen(
     }
 
     EntryFormScaffold(
-        title = "Modifier l’entrée",
+        title = "Modifier",
         label = state.label,
         amountText = state.amountText,
         dayText = state.dayText,
         isExpense = state.isExpense,
         recurring = state.recurrence != RecurrenceChoice.Once,
         showRecurring = false,
-        showFrequencyEdit = state.isExpense,
+        showFrequencyEdit = state.hasTemplate || state.isExpense,
         recurrence = state.recurrence,
         onRecurrence = viewModel::setRecurrence,
         recurrenceInfo = state.recurrenceInfo,
@@ -422,7 +428,18 @@ fun EditEntryScreen(
         hasPendingPhoto = state.hasPendingPhoto,
         hasReceiptPhoto = state.receiptRelativePath.isNotBlank(),
         receiptPreview = pendingPreview ?: receiptBitmap,
+        onScanEpc = onScanEpc,
         onTakePhoto = takePhoto,
+        onClearReceipt = if (
+            state.receiptRelativePath.isNotBlank() || state.hasPendingPhoto
+        ) {
+            {
+                pendingPreview = null
+                viewModel.clearReceiptPhoto()
+            }
+        } else {
+            null
+        },
         onViewReceipt = if (
             state.receiptRelativePath.isNotBlank() || pendingPreview != null
         ) {
@@ -512,6 +529,7 @@ private fun EntryFormScaffold(
     hasReceiptPhoto: Boolean = false,
     onScanEpc: (() -> Unit)? = null,
     onTakePhoto: (() -> Unit)? = null,
+    onClearReceipt: (() -> Unit)? = null,
     onViewReceipt: (() -> Unit)? = null,
     onCopyPaymentNote: (() -> Unit)? = null,
     showApplyFollowing: Boolean,
@@ -719,6 +737,12 @@ private fun EntryFormScaffold(
                         },
                         onClick = onTakePhoto
                     )
+                    if (onClearReceipt != null && (hasPendingPhoto || hasReceiptPhoto)) {
+                        SecondaryA11yButton(
+                            text = "Enlever la photo",
+                            onClick = onClearReceipt
+                        )
+                    }
                     if (hasPendingPhoto) {
                         Text(
                             text = "Photo prête — enregistrée avec la facture.",

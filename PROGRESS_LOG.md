@@ -9,14 +9,25 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.28** (Voir la photo fiable · Menu · Alertes une ligne) |
+| Dernière étape terminée | **6.29** (punch list premium P01–P12 hors Dépense↔Revenu) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | *(aucune bloquante)* |
-| Audit premium | Code clos · smoke partiel (notif/trimestriel OK manuel) |
+| Prochaine sous-étape | Transformer Dépense↔Revenu sans supprimer (P03) si besoin |
+| Audit premium | Code clos · punch list audit traitée |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.29 Suite audit premium (Copier, Alertes, scan, libellés)
+
+**Problème (audit code post-6.27) :** Copier encore dans la zone Modifier · Menu·Alertes n’ouvrait pas Alertes · dialogue photo édition en spinner · pas de rescan QR en édition · doublon « Après courses » · « Voir » orphelin · titres « entrée ».
+
+**Codé :** Copier hors zone Modifier · Menu·Alertes → hub Alertes · message photo en édition · scan QR en édition · Enlever la photo · Noté X € sous Courses · Voir dans Réglages · titres clarifiés · Envoyer une copie.
+
+**Différé :** changer Dépense↔Revenu sans supprimer (migration plus lourde).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **165/165** (47 fichiers, 0 échec)  
+**Version :** `0.1.0-6.29` · `versionCode` 34
 
 ### 2026-10-21 — 6.28 Premium : photo au doigt + libellé Menu
 
