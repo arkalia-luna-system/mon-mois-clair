@@ -209,33 +209,35 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
             } else {
-                state.offMonthPeriodics.forEach { item ->
-                    Surface(
-                        color = A11yTokens.PaperCream,
-                        shape = MaterialTheme.shapes.medium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
-                            .clickable(
-                                role = Role.Button,
-                                onClickLabel = "Modifier ${item.label}"
-                            ) { onEditTemplate(item.templateId) }
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(14.dp),
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
+                    state.offMonthPeriodics.forEach { item ->
+                        Surface(
+                            color = A11yTokens.PaperCream,
+                            shape = MaterialTheme.shapes.medium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
+                                .clickable(
+                                    role = Role.Button,
+                                    onClickLabel = "Modifier ${item.label}"
+                                ) { onEditTemplate(item.templateId) }
                         ) {
-                            Text(text = item.label, style = MaterialTheme.typography.titleLarge)
-                            Text(
-                                text = viewModel.formatPeriodicAmountLine(item),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Text(
-                                text = "Prochaine : ${item.nextDueLabel}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.AccentWarn
-                            )
+                            Column(
+                                modifier = Modifier.padding(14.dp),
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(text = item.label, style = MaterialTheme.typography.titleLarge)
+                                Text(
+                                    text = viewModel.formatPeriodicAmountLine(item),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Text(
+                                    text = "Prochaine : ${item.nextDueLabel}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = A11yTokens.AccentWarn
+                                )
+                            }
                         }
                     }
                 }

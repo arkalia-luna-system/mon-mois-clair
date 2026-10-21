@@ -19,6 +19,12 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Polish Mes dossiers + jargon backup
+
+**Codé :** cartes dossiers type papier (bordure, gap) · sous-titre Menu si N>0 · hors-mois espacées · messages `BackupFailure` sans « SAF » / schemaVersion brut.
+
+**Version :** inchangée `0.1.0-6.33` · pas de Gradle ici (agent smoke/tests ailleurs).
+
 ### 2026-10-21 — Scan QR : handoff mémoire (plus de SavedStateHandle)
 
 **Codé :** `EpcScanHandoff` branché dans `AppNavHost` (offer au scan, take au ON_RESUME ajout/édition) · IBAN/référence ne persistent plus dans le SavedState · test unitaire offer/take.

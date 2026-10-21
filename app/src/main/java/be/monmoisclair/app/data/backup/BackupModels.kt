@@ -37,10 +37,11 @@ sealed class BackupFailure(
     message: String,
     cause: Throwable? = null
 ) : Exception(message, cause) {
-    class NotConfigured : BackupFailure("Dossier SAF non configuré")
+    class NotConfigured : BackupFailure("Aucun dossier Documents choisi.")
     class Io(message: String, cause: Throwable? = null) : BackupFailure(message, cause)
     class Integrity(message: String) : BackupFailure(message)
-    class UnsupportedSchema(val version: Int) : BackupFailure("schemaVersion non supporté: $version")
+    class UnsupportedSchema(val version: Int) :
+        BackupFailure("Cette copie ne peut pas être lue (version $version).")
 }
 
 sealed class RestoreResult {

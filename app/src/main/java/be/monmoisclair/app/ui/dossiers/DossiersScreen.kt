@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.dossiers
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -105,15 +106,17 @@ fun DossiersScreen(
             color = A11yTokens.InkMuted
         )
 
-        snap.items.forEach { item ->
-            DossierRow(
-                item = item,
-                onClick = {
-                    val id = item.openInstanceId
-                    if (id != null) onOpenInstance(id)
-                    else onOpenTemplate(item.templateId)
-                }
-            )
+        Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
+            snap.items.forEach { item ->
+                DossierRow(
+                    item = item,
+                    onClick = {
+                        val id = item.openInstanceId
+                        if (id != null) onOpenInstance(id)
+                        else onOpenTemplate(item.templateId)
+                    }
+                )
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
@@ -124,6 +127,7 @@ private fun DossierRow(
     item: DossierListItem,
     onClick: () -> Unit
 ) {
+    val shape = MaterialTheme.shapes.medium
     val progress = if (item.totalDueCents > 0L) {
         (item.paidCents.toFloat() / item.totalDueCents.toFloat()).coerceIn(0f, 1f)
     } else {
@@ -139,12 +143,13 @@ private fun DossierRow(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .clip(MaterialTheme.shapes.medium)
-            .background(A11yTokens.PaperWarm)
+            .clip(shape)
+            .background(A11yTokens.PaperCard)
+            .border(1.dp, A11yTokens.PaperBorder, shape)
             .clickable(role = Role.Button, onClickLabel = "Ouvrir le dossier", onClick = onClick)
             .semantics { contentDescription = a11y }
             .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(item.who, style = MaterialTheme.typography.titleLarge, color = A11yTokens.Ink)
         if (item.what.isNotBlank()) {
@@ -169,7 +174,7 @@ private fun DossierRow(
                                 "sur ${MoneyFormat.formatCents(item.totalDueCents)}"
                     },
                 color = A11yTokens.ButtonFill,
-                trackColor = A11yTokens.PaperCream
+                trackColor = A11yTokens.PaperWarm
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),

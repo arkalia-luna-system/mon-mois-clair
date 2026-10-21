@@ -70,7 +70,11 @@ fun HomeMenuSheet(
         ) {
             Text(text = "Menu", style = MaterialTheme.typography.headlineMedium)
             Text(
-                text = "Réglages, ou un autre mois.",
+                text = if (dossierCount > 0) {
+                    "Réglages, dossiers, ou un autre mois."
+                } else {
+                    "Réglages, ou un autre mois."
+                },
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )
