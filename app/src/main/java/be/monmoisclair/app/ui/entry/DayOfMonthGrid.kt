@@ -35,7 +35,8 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 fun DayOfMonthGrid(
     selectedDay: Int?,
     onSelect: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Column(modifier = modifier) {
         Text(
@@ -73,6 +74,7 @@ fun DayOfMonthGrid(
                         }
                         .selectable(
                             selected = selected,
+                            enabled = enabled,
                             role = Role.RadioButton,
                             onClick = { onSelect(day) }
                         )

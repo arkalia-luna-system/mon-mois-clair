@@ -110,7 +110,8 @@ fun PendingLetterFormScreen(
                     .heightIn(min = A11yTokens.minTouchHeight),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.medium,
+                enabled = !state.saving
             )
             OutlinedTextField(
                 value = state.what,
@@ -121,10 +122,12 @@ fun PendingLetterFormScreen(
                     .heightIn(min = A11yTokens.minTouchHeight),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.medium,
+                enabled = !state.saving
             )
             SecondaryA11yButton(
                 text = if (pendingPreview != null) "Reprendre la photo" else "Photo du courrier",
+                enabled = !state.saving,
                 onClick = {
                     val file = File(cameraDir, "pending_${System.currentTimeMillis()}.jpg")
                     val uri = FileProvider.getUriForFile(

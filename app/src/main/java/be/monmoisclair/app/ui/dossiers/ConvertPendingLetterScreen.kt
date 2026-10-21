@@ -141,7 +141,8 @@ fun ConvertPendingLetterScreen(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                enabled = !state.saving && !state.loading
             )
             OutlinedTextField(
                 value = state.monthlyAmountText,
@@ -153,11 +154,13 @@ fun ConvertPendingLetterScreen(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                enabled = !state.saving && !state.loading
             )
             DayOfMonthGrid(
                 selectedDay = state.dayText.trim().toIntOrNull()?.takeIf { it in 1..31 },
-                onSelect = { viewModel.setDay(it.toString()) }
+                onSelect = { viewModel.setDay(it.toString()) },
+                enabled = !state.saving && !state.loading
             )
             state.error?.let { err ->
                 val errShape = MaterialTheme.shapes.medium

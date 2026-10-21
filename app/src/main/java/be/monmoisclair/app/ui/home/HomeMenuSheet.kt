@@ -141,8 +141,8 @@ fun HomeMenuSheet(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = year.toString(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.Ink
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 FlowRow(

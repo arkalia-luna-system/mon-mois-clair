@@ -2,6 +2,7 @@ package be.monmoisclair.app.ui.health
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -31,7 +32,8 @@ fun HealthStatusRow(label: String, ok: Boolean) {
             .semantics(mergeDescendants = true) {
                 contentDescription = "$label : $status"
             },
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
             text = status,
@@ -50,8 +52,7 @@ fun HealthStatusRow(label: String, ok: Boolean) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.Ink,
-            modifier = Modifier.padding(start = 10.dp)
+            color = A11yTokens.Ink
         )
     }
 }

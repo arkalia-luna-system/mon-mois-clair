@@ -393,7 +393,11 @@ fun EditEntryScreen(
                 .padding(A11yTokens.screenPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Cette ligne n’est plus là.", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = "Cette ligne n’est plus là.",
+                style = MaterialTheme.typography.headlineMedium,
+                color = A11yTokens.Ink
+            )
             val missShape = MaterialTheme.shapes.medium
             Text(
                 text = "Elle a peut-être déjà été retirée. Retournez à l’accueil.",
@@ -799,7 +803,11 @@ private fun EntryFormScaffold(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(text = title, style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineMedium,
+                color = A11yTokens.Ink
+            )
 
             if (showRecurring) {
                 @OptIn(ExperimentalLayoutApi::class)
@@ -1412,6 +1420,10 @@ private fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Un
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(checked = checked, onCheckedChange = onChecked)
-        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.Ink
+        )
     }
 }

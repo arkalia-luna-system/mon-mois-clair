@@ -202,9 +202,14 @@ fun PermissionsSetupScreen(
                 color = A11yTokens.AccentWarn,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, softShape)
+                    .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), softShape)
                     .background(A11yTokens.PaperWarm, softShape)
                     .padding(12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription =
+                            "Vous pouvez continuer, mais les rappels risquent de ne pas sonner."
+                    }
             )
         }
     }

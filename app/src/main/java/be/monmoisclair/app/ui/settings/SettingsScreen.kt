@@ -111,7 +111,11 @@ fun SettingsScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = "Réglages", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Réglages",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         if (state.busy) {
             val busyShape = MaterialTheme.shapes.medium
             Text(
@@ -121,7 +125,7 @@ fun SettingsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperWarm, busyShape)
+                    .background(A11yTokens.PaperCard, busyShape)
                     .padding(12.dp)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
