@@ -333,10 +333,17 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         if (hasCamera) {
             Spacer(Modifier.height(8.dp))
             SecondaryA11yButton(
-                text = if (torchOn) "Éteindre la lampe" else "Lampe",
+                text = if (torchOn) "Éteindre la lampe" else "Allumer la lampe",
                 onClick = {
                     torchOn = !torchOn
                     camera?.cameraControl?.enableTorch(torchOn)
+                },
+                modifier = Modifier.semantics {
+                    contentDescription = if (torchOn) {
+                        "Éteindre la lampe du téléphone"
+                    } else {
+                        "Allumer la lampe pour lire le QR"
+                    }
                 }
             )
         }

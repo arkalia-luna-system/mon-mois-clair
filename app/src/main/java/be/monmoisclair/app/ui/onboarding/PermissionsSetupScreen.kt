@@ -101,14 +101,20 @@ fun PermissionsSetupScreen(
         }
 
         state.errorMessage?.let { msg ->
+            val errShape = MaterialTheme.shapes.medium
             Text(
                 text = msg,
                 color = A11yTokens.AccentDanger,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics {
-                    liveRegion = LiveRegionMode.Assertive
-                    contentDescription = msg
-                }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                    .background(A11yTokens.PaperWarm, errShape)
+                    .padding(12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Assertive
+                        contentDescription = msg
+                    }
             )
         }
 
