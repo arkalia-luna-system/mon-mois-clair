@@ -62,12 +62,6 @@ fun DossiersScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
-    LaunchedEffect(Unit) {
-        viewModel.shareIntents.collectLatest { intent ->
-            runCatching { context.startActivity(intent) }
-        }
-    }
-
     PinnedBackScaffold(onBack = onBack) {
         Text(
             text = "Mes dossiers",
