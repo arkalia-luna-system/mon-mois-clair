@@ -50,6 +50,7 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -221,6 +222,8 @@ fun EditTemplateScreen(
         return
     }
 
+    val fit = rememberDisplayFit()
+    val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -232,7 +235,7 @@ fun EditTemplateScreen(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(formGap)
         ) {
             Text(
                 text = "Modifier l’échéance",

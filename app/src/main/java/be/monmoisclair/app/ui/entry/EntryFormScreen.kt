@@ -74,6 +74,7 @@ import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
 
 /** Capture plein cadre (pas la miniature TakePicturePreview). */

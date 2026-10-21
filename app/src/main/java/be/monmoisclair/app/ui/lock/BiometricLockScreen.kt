@@ -68,22 +68,24 @@ fun BiometricLockScreen(
         if (autoPrompt) prompt()
     }
 
+    val lockGap = if (fit.compactHomeChrome) 12.dp else 16.dp
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
             .padding(A11yTokens.screenPadding),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(lockGap)
     ) {
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 16.dp else 32.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 12.dp else 32.dp))
         val brandShape = MaterialTheme.shapes.medium
+        val brandPad = if (fit.compactHomeChrome) 12.dp else 14.dp
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, brandShape)
                 .background(A11yTokens.PaperCard, brandShape)
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(brandPad),
+            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_brand_m),
@@ -107,8 +109,8 @@ fun BiometricLockScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, tipShape)
                 .background(A11yTokens.PaperCard, tipShape)
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(brandPad),
+            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 6.dp else 8.dp)
         ) {
             Text(
                 text = "Posez votre doigt sur le lecteur d’empreinte, " +

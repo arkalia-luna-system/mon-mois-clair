@@ -33,6 +33,7 @@ import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.time.YearMonth
 
 /**
@@ -66,6 +67,8 @@ fun HomeMenuSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val current = AppClock.currentYearMonth()
     val months = HomeMonthChoices.recentMonths(current)
+    val fit = rememberDisplayFit()
+    val menuGap = if (fit.compactHomeChrome) 12.dp else 16.dp
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -79,7 +82,7 @@ fun HomeMenuSheet(
                 .navigationBarsPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = A11yTokens.screenPadding)
-                .padding(bottom = 28.dp)
+                .padding(bottom = if (fit.compactHomeChrome) 20.dp else 28.dp)
         ) {
             Text(
                 text = "Menu",
@@ -99,9 +102,12 @@ fun HomeMenuSheet(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, introShape)
                     .background(A11yTokens.PaperCard, introShape)
-                    .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = if (fit.compactHomeChrome) 8.dp else 10.dp
+                    )
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(menuGap))
 
             SecondaryA11yButton(
                 text = "Réglages",
@@ -123,7 +129,7 @@ fun HomeMenuSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 14.dp else 20.dp))
             val monthsShape = MaterialTheme.shapes.medium
             Text(
                 text = "Mois",
@@ -133,7 +139,10 @@ fun HomeMenuSheet(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, monthsShape)
                     .background(A11yTokens.PaperCard, monthsShape)
-                    .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = if (fit.compactHomeChrome) 8.dp else 10.dp
+                    )
             )
             val byYear = months.groupBy { it.year }
             HomeMonthChoices.yearsInOrder(months).forEach { year ->
