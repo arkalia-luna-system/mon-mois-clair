@@ -108,9 +108,11 @@ fun ReminderHealthScreen(
                 )
             }
         } else {
-            HealthStatusRow("Notifications", r.notificationsGranted)
-            HealthStatusRow("Réveil à l’heure", r.exactAlarmGranted)
-            HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                HealthStatusRow("Notifications", r.notificationsGranted)
+                HealthStatusRow("Réveil à l’heure", r.exactAlarmGranted)
+                HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
+            }
             if (!r.safBackupOk) {
                 Text(
                     text = "La sauvegarde se vérifie dans Réglages.",

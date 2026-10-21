@@ -177,6 +177,17 @@ fun PendingLetterFormScreen(
                         }
                 )
             }
+            if (state.saving) {
+                Text(
+                    text = "Enregistrement du courrier…",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier.semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription = "Enregistrement du courrier"
+                    }
+                )
+            }
             PrimaryA11yButton(
                 text = if (state.saving) "Enregistrement…" else "Ranger",
                 onClick = viewModel::save,
