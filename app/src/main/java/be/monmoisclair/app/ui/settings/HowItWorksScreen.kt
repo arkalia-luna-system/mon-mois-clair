@@ -59,7 +59,7 @@ fun HowItWorksScreen(onBack: () -> Unit) {
                     Text(
                         text = section.body,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = A11yTokens.Ink
+                        color = A11yTokens.InkMuted
                     )
                 }
             }

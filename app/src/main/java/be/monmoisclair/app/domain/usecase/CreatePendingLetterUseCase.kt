@@ -29,7 +29,7 @@ class CreatePendingLetterUseCase @Inject constructor(
     ): CreatePendingLetterResult {
         val trimmedWho = who.trim()
         if (trimmedWho.isEmpty()) {
-            return CreatePendingLetterResult.InvalidInput("Indiquez à qui (le créancier).")
+            return CreatePendingLetterResult.InvalidInput("Indiquez à qui.")
         }
         val id = "pending-${UUID.randomUUID()}"
         val now = AppClock.nowEpochMs()

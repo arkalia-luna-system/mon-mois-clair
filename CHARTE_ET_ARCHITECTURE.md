@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.35** — Mettre de côté).
+Mise à jour : 2026-10-21 (lot **6.36** — résumé texte ; lots A–F clos).
 
 ## 1. Vision
 
@@ -83,6 +83,7 @@ Room / backup schéma **7** (étape 6.34) : mémoire papier (4) + dossier (5) + 
 | **6.33** | Mes dossiers (Menu si N>0) · EuroFormat · mailto URI · garde IBAN ajout | ✅ |
 | **6.34** | Courriers sans plan (`pending_letters`) · bandeau accueil · conversion → accord | ✅ lot D |
 | **6.35** | Mettre de côté (Réglages, facture mensuelle, alerte déficit) | ✅ lot E |
+| **6.36** | Résumé texte (Mes dossiers / Réglages si déficit ou dossier) | ✅ lot F |
 
 Journal : `PROGRESS_LOG.md`.
 

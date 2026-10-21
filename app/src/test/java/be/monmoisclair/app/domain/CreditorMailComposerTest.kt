@@ -35,6 +35,14 @@ class CreditorMailComposerTest {
     }
 
     @Test
+    fun looksLikeEmail_rejectsSpacesAndBrokenDomains() {
+        assertThat(CreditorMailComposer.looksLikeEmail("etude@example.be")).isTrue()
+        assertThat(CreditorMailComposer.looksLikeEmail("a b@example.be")).isFalse()
+        assertThat(CreditorMailComposer.looksLikeEmail("a@b..c")).isFalse()
+        assertThat(CreditorMailComposer.looksLikeEmail("a@b.c.")).isFalse()
+    }
+
+    @Test
     fun mailtoUri_putsSubjectAndBodyInQuery_notExtras() {
         val draft = CreditorMailComposer.Draft(
             to = "etude@example.be",

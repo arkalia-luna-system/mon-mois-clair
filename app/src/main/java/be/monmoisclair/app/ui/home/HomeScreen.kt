@@ -249,8 +249,10 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
+                                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
                                     .semantics {
                                         contentDescription = "Chargement de la photo"
+                                        liveRegion = LiveRegionMode.Polite
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
@@ -269,11 +271,27 @@ fun HomeScreen(
                             )
                         }
                         else -> {
+                            val photoErrShape = MaterialTheme.shapes.medium
                             Text(
                                 text = "Impossible d’ouvrir cette photo. " +
                                     "Ouvrez la ligne pour en reprendre une.",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.AccentDanger
+                                color = A11yTokens.AccentDanger,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        1.dp,
+                                        A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                                        photoErrShape
+                                    )
+                                    .background(A11yTokens.PaperWarm, photoErrShape)
+                                    .padding(12.dp)
+                                    .semantics {
+                                        liveRegion = LiveRegionMode.Assertive
+                                        contentDescription =
+                                            "Impossible d’ouvrir cette photo. " +
+                                                "Ouvrez la ligne pour en reprendre une."
+                                    }
                             )
                         }
                     }
@@ -484,12 +502,26 @@ fun HomeScreen(
                 if (state.summary.remainingCents < 0L &&
                     state.timeline.none { it is TimelineItem.Income }
                 ) {
+                    val incomeTipShape = MaterialTheme.shapes.medium
                     Text(
                         text = "Ajoutez un revenu (salaire).",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
+                        color = A11yTokens.AccentWarn,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                A11yTokens.AccentWarn.copy(alpha = 0.45f),
+                                incomeTipShape
+                            )
+                            .background(A11yTokens.PaperWarm, incomeTipShape)
+                            .padding(horizontal = 12.dp, vertical = 10.dp)
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = "Ajoutez un revenu (salaire)."
+                            }
                     )
                 }
                 state.nextMonthWarning?.let { warning ->
@@ -538,7 +570,10 @@ fun HomeScreen(
                                 onClickLabel = "Ouvrir Mes dossiers"
                             ) { onOpenDossiers() }
                             .padding(horizontal = 12.dp, vertical = 10.dp)
-                            .semantics { contentDescription = pendingLabel }
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = pendingLabel
+                            }
                     )
                 }
             }
@@ -652,10 +687,16 @@ fun HomeScreen(
                                         }
                                     )
                                     if (searchQuery.isNotBlank()) {
+                                        val searchTipShape = MaterialTheme.shapes.medium
                                         Text(
                                             text = "Le reste en haut est celui de tout le mois.",
                                             style = MaterialTheme.typography.bodyMedium,
-                                            color = A11yTokens.InkMuted
+                                            color = A11yTokens.InkMuted,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .border(1.dp, A11yTokens.PaperBorder, searchTipShape)
+                                                .background(A11yTokens.PaperWarm, searchTipShape)
+                                                .padding(10.dp)
                                         )
                                     }
                                 }
@@ -664,9 +705,11 @@ fun HomeScreen(
                         if (searchQuery.isNotBlank() && filteredTimeline.isEmpty()) {
                             item(key = "search-empty") {
                                 val searchEmptyShape = MaterialTheme.shapes.medium
+                                val emptySearch =
+                                    "Rien pour « ${searchQuery.trim()} ». " +
+                                        "Les totaux du haut restent ceux du mois."
                                 Text(
-                                    text = "Rien pour « ${searchQuery.trim()} ». " +
-                                        "Les totaux du haut restent ceux du mois.",
+                                    text = emptySearch,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = A11yTokens.InkMuted,
                                     modifier = Modifier
@@ -675,6 +718,10 @@ fun HomeScreen(
                                         .border(1.dp, A11yTokens.PaperBorder, searchEmptyShape)
                                         .background(A11yTokens.PaperCard, searchEmptyShape)
                                         .padding(14.dp)
+                                        .semantics {
+                                            liveRegion = LiveRegionMode.Polite
+                                            contentDescription = emptySearch
+                                        }
                                 )
                             }
                         }
@@ -962,7 +1009,8 @@ private fun StatusChip(
 @Composable
 private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
     val fit = rememberDisplayFit()
-    val rowPad = if (fit.compactHomeChrome) 8.dp else 12.dp
+    val compact = fit.compactHomeChrome
+    val rowPad = if (compact) 8.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
     Surface(
         color = A11yTokens.PaperCard,
@@ -978,14 +1026,17 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
                 .clickable(onClickLabel = "Modifier", onClick = onClick)
                 .padding(rowPad),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
         ) {
             DayBadge(item.dayLabel)
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 4.dp)
+            ) {
                 Text(
                     text = item.label,
                     style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 2,
+                    maxLines = if (compact) 1 else 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
@@ -1022,6 +1073,8 @@ private fun ExpenseRow(
             Modifier.border(2.dp, A11yTokens.AccentDanger, shape)
         else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
     }
+    val compact = fit.compactHomeChrome
+    val lineGap = if (compact) 2.dp else 4.dp
     Surface(
         color = bg,
         shape = shape,
@@ -1032,30 +1085,51 @@ private fun ExpenseRow(
         Row(
             modifier = Modifier.padding(rowPad),
             verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
         ) {
             DayBadge(item.dayLabel)
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(lineGap)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClickLabel = "Modifier", onClick = onClick),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(lineGap)
                 ) {
-                    Text(
-                        text = item.label,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = item.amountLabel,
-                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    // Compact + accord : pastille sur la 1ʳᵉ ligne pour ne pas
+                    // pousser montant / FAIT (hauteur ~800 dp, plan sortie §3).
+                    if (compact && item.isAgreement) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = item.label,
+                                style = MaterialTheme.typography.bodyLarge,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
+                            )
+                            StatusChip(
+                                "Accord",
+                                A11yTokens.PaperWarm,
+                                A11yTokens.Ink,
+                                outlined = true,
+                                compact = true
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = item.label,
+                            style = MaterialTheme.typography.bodyLarge,
+                            maxLines = if (compact) 1 else 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    // Accord : « pour quoi » juste sous le nom (plan §B / audit),
+                    // puis le montant — plus lisible que montant puis cause.
                     if (item.causeLabel.isNotBlank()) {
                         Text(
                             text = item.causeLabel,
@@ -1065,6 +1139,11 @@ private fun ExpenseRow(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
+                    Text(
+                        text = item.amountLabel,
+                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 }
                 // Hors zone « Modifier » : Copier / photo ne doivent pas ouvrir l’édition.
                 AnimatedVisibility(
@@ -1080,7 +1159,7 @@ private fun ExpenseRow(
                             text = item.paymentNote,
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted,
-                            maxLines = 2,
+                            maxLines = if (compact) 1 else 2,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
                         )
@@ -1096,7 +1175,11 @@ private fun ExpenseRow(
                         )
                     }
                 }
-                ExpenseStatusLine(item = item, onOpenReceipt = onOpenReceipt)
+                ExpenseStatusLine(
+                    item = item,
+                    onOpenReceipt = onOpenReceipt,
+                    hideAgreementChip = compact && item.isAgreement
+                )
             }
             SecondaryA11yButton(
                 text = if (item.isDone) "Remettre" else "FAIT ✓",
@@ -1120,12 +1203,13 @@ private fun ExpenseRow(
 @Composable
 private fun ExpenseStatusLine(
     item: TimelineItem.Expense,
-    onOpenReceipt: () -> Unit
+    onOpenReceipt: () -> Unit,
+    hideAgreementChip: Boolean = false
 ) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
     val showAuto = item.isAutoDebit
-    val showAgreement = item.isAgreement
+    val showAgreement = item.isAgreement && !hideAgreementChip
     val showDone = item.isDone
     val showLate = item.isOverdue && !item.isDone
     val showReceipt = item.hasReceipt
@@ -1171,7 +1255,7 @@ private fun ExpenseStatusLine(
         if (showReceipt) {
             // Bouton réel (pas pastille Text) : le tap ouvre bien la photo.
             SecondaryA11yButton(
-                text = "Voir la photo",
+                text = if (compact) "Photo" else "Voir la photo",
                 onClick = onOpenReceipt,
                 fillMaxWidth = false,
                 modifier = Modifier

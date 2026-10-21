@@ -90,7 +90,7 @@ Le comportement ci-dessous est dans le code. Le reste inclut désormais les frai
 
 ### Lot C — Fiche anti-confusion — clos au journal 6.32
 
-Schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · « Copier l’IBAN » + « Écrire » · frais cumulés · photos extras **visibles** (voir / enlever) · « Ajouter un courrier » sans remplacer la première · aide · **198/198** `--rerun-tasks`. Smoke téléphone « Écrire » encore ouvert (intent Mail). Motif frais = dernier saisi.
+Schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · « Copier l’IBAN » + « Écrire » · frais cumulés · photos extras **visibles** (voir / enlever) · « Ajouter un courrier » sans remplacer la première · aide · **198/198** `--rerun-tasks`. Smoke Ultra « Écrire » → Gmail Compose (**clos** 2026-10-21). Motif frais = dernier saisi.
 
 **Problème.** IBAN jeté après le scan. Pas d’e-mail. Une seule photo. Les frais ajoutés n’ont pas de geste propre.
 
@@ -140,7 +140,9 @@ Réglages : montant + jour, facture mensuelle « Mettre de côté », alerte dé
 
 **Charte.** Au moment du code, une phrase en §8 : les enveloppes multiples restent refusées ; une facture « Mettre de côté » est admise.
 
-### Lot F — Texte à montrer ou à envoyer — pas commencé
+### Lot F — Texte à montrer ou à envoyer — clos au journal 6.36
+
+`PrepareMonthSummaryUseCase` · bouton Mes dossiers · Réglages si déficit ou dossier · partage Android · **226/226**. Pas de PDF CPAS.
 
 **Problème.** Un mois négatif ou un rendez-vous médiation demande une liste propre. Le formulaire CPAS de Liège demande créancier, nature, solde, arrangement, plus les revenus et les charges.
 
@@ -211,11 +213,8 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–E clos** (`0.1.0-6.35`, schéma 7, 222 tests) : dossiers, courriers sans plan, Mettre de côté.
+**A–F clos** (`0.1.0-6.36`, schéma 7, 226 tests) : plan produit fini côté code.
 
-**Prochain geste produit** :
-
-1. Lot F (résumé texte à montrer / envoyer).
-2. Smoke « Écrire » / hauteur Accord dès qu’un accord a un e-mail.
+**Prochain geste** : hauteur courte type S26 (plan §5.10). Smoke Ultra « Écrire » + FAIT ≥ 48 dp : **fait** (`AUDIT_STATUS.md`).
 
 Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.

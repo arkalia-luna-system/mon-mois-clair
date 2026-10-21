@@ -18,10 +18,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -39,6 +41,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Lot D — Mes dossiers + courriers sans plan.
@@ -54,6 +57,7 @@ fun DossiersScreen(
     viewModel: DossiersViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -62,6 +66,12 @@ fun DossiersScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+    LaunchedEffect(Unit) {
+        viewModel.shareIntents.collectLatest { intent ->
+            runCatching { context.startActivity(intent) }
+        }
+    }
+
     PinnedBackScaffold(onBack = onBack) {
         Text(
             text = "Mes dossiers",
@@ -203,10 +213,16 @@ fun DossiersScreen(
             )
         }
         if (pending.isEmpty()) {
+            val emptyPendingShape = MaterialTheme.shapes.medium
             Text(
                 text = "Aucun pour le moment.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, emptyPendingShape)
+                    .background(A11yTokens.PaperWarm, emptyPendingShape)
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
@@ -222,6 +238,60 @@ fun DossiersScreen(
             text = "Ranger un courrier sans plan",
             onClick = onAddPending
         )
+        Spacer(modifier = Modifier.height(12.dp))
+        val summaryShape = MaterialTheme.shapes.medium
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, summaryShape)
+                .background(A11yTokens.PaperCard, summaryShape)
+                .padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                text = "Résumé à montrer",
+                style = MaterialTheme.typography.titleLarge,
+                color = A11yTokens.Ink
+            )
+            Text(
+                text = "À envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
+                    "Texte simple : revenus, factures, dossiers, mis de côté.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+            if (state.summaryBusy) {
+                val busyShape = MaterialTheme.shapes.medium
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                        .background(A11yTokens.PaperWarm, busyShape)
+                        .padding(12.dp)
+                        .semantics {
+                            contentDescription = "Préparation du résumé"
+                            liveRegion = LiveRegionMode.Polite
+                        }
+                ) {
+                    CircularProgressIndicator(
+                        color = A11yTokens.ButtonFill,
+                        strokeWidth = 3.dp,
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Text(
+                        text = "Préparation…",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.InkMuted
+                    )
+                }
+            }
+            SecondaryA11yButton(
+                text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
+                onClick = viewModel::shareSummary,
+                enabled = !state.summaryBusy && !state.loading
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
@@ -264,7 +334,17 @@ private fun DossierRow(
             )
         }
         if (item.isSettled) {
-            Text("Soldé", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.AccentOk)
+            val soldShape = MaterialTheme.shapes.medium
+            Text(
+                text = "Soldé",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.AccentOk,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), soldShape)
+                    .background(A11yTokens.PaperWarm, soldShape)
+                    .padding(horizontal = 10.dp, vertical = 8.dp)
+            )
         } else {
             LinearProgressIndicator(
                 progress = { progress },

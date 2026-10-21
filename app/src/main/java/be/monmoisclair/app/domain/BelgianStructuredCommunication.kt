@@ -57,14 +57,46 @@ object BelgianStructuredCommunication {
     /** Exemple canonique du plan : base 0 → contrôle 97. */
     const val EXAMPLE_VALID_DISPLAY = "+++000/0000/00097+++"
 
-    /** Presse-papiers banque : lettres et chiffres, majuscules. L’écran garde la saisie. */
-    fun ibanForClipboard(raw: String): String =
-        raw.filter { it.isLetterOrDigit() }.uppercase(Locale.ROOT)
+    /**
+     * Presse-papiers banque : lettres et chiffres, majuscules.
+     * Un préfixe « IBAN » collé devant (souvent sur le courrier) est retiré.
+     * L’écran garde la saisie.
+     */
+    fun ibanForClipboard(raw: String): String {
+        val compact = raw.filter { it.isLetterOrDigit() }.uppercase(Locale.ROOT)
+        if (compact.startsWith("IBAN") && compact.length > 6) {
+            val rest = compact.removePrefix("IBAN")
+            if (ibanLooksCopyable(rest)) return rest
+        }
+        return compact
+    }
 
-    /** 2 lettres + reste, longueur ISO (15 à 34). */
+    /** 2 lettres de pays, 2 chiffres de contrôle, longueur ISO (15 à 34). */
     fun ibanLooksCopyable(compact: String): Boolean =
         compact.length in 15..34 &&
-            compact.length >= 2 &&
             compact[0].isLetter() &&
-            compact[1].isLetter()
+            compact[1].isLetter() &&
+            compact[2].isDigit() &&
+            compact[3].isDigit()
+
+    /**
+     * Contrôle ISO 13616 : après déplacement des 4 premiers caractères,
+     * lettres A=10…Z=35, le nombre modulo 97 vaut 1.
+     */
+    fun ibanChecksumOk(compact: String): Boolean {
+        if (!ibanLooksCopyable(compact)) return false
+        val rearranged = compact.substring(4) + compact.substring(0, 4)
+        var remainder = 0
+        for (ch in rearranged) {
+            val chunk = when {
+                ch.isDigit() -> ch.toString()
+                ch.isLetter() -> (ch.code - 'A'.code + 10).toString()
+                else -> return false
+            }
+            for (digit in chunk) {
+                remainder = (remainder * 10 + (digit.code - '0'.code)) % 97
+            }
+        }
+        return remainder == 1
+    }
 }

@@ -135,10 +135,16 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Aide") {
+            val aideTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Explications simples : reste, FAIT, rappels, sauvegarde.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, aideTipShape)
+                    .background(A11yTokens.PaperWarm, aideTipShape)
+                    .padding(12.dp)
             )
             SecondaryA11yButton(
                 text = "Comment ça marche",
@@ -148,12 +154,18 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Mettre de côté") {
+            val savingsTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Une facture mensuelle, virée vers un autre compte. " +
                     "Elle entre dans le Reste dès le 1er. " +
                     "Ce n’est pas de l’argent gardé dans l’application.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, savingsTipShape)
+                    .background(A11yTokens.PaperWarm, savingsTipShape)
+                    .padding(12.dp)
             )
             OutlinedTextField(
                 value = state.savingsAmountText,
@@ -192,10 +204,20 @@ fun SettingsScreen(
                 )
             }
             state.savingsNextMonthNote?.let { note ->
+                val nextShape = MaterialTheme.shapes.medium
                 Text(
                     text = note,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, nextShape)
+                        .background(A11yTokens.PaperWarm, nextShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Polite
+                            contentDescription = note
+                        }
                 )
             }
             SecondaryA11yButton(
@@ -246,10 +268,16 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Confidentialité") {
+            val privacyTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Par défaut l’app s’ouvre sans code.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, privacyTipShape)
+                    .background(A11yTokens.PaperWarm, privacyTipShape)
+                    .padding(12.dp)
             )
             val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
             Row(
@@ -285,8 +313,8 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            Text(
-                text = when (state.availability) {
+            run {
+                val availText = when (state.availability) {
                     BiometricAvailability.Ready ->
                         "Disponible sur ce téléphone (empreinte, visage ou code)."
                     BiometricAvailability.NoneEnrolled ->
@@ -295,10 +323,35 @@ fun SettingsScreen(
                         "Empreinte ou code temporairement indisponible."
                     BiometricAvailability.Unsupported ->
                         "Pas d’empreinte ni de code sur ce téléphone."
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
+                }
+                val needsAttention = state.availability != BiometricAvailability.Ready
+                val availShape = MaterialTheme.shapes.medium
+                Text(
+                    text = availText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (needsAttention) A11yTokens.AccentWarn else A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(
+                            if (needsAttention) {
+                                Modifier
+                                    .border(
+                                        1.dp,
+                                        A11yTokens.AccentWarn.copy(alpha = 0.45f),
+                                        availShape
+                                    )
+                                    .background(A11yTokens.PaperWarm, availShape)
+                                    .padding(12.dp)
+                                    .semantics {
+                                        liveRegion = LiveRegionMode.Polite
+                                        contentDescription = availText
+                                    }
+                            } else {
+                                Modifier
+                            }
+                        )
+                )
+            }
             state.message?.let { msg ->
                 val msgShape = MaterialTheme.shapes.medium
                 val err = state.isError
@@ -329,10 +382,16 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Alertes") {
+            val alertesTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Notifications, réveil à l’heure et batterie, au même endroit.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, alertesTipShape)
+                    .background(A11yTokens.PaperWarm, alertesTipShape)
+                    .padding(12.dp)
             )
             SecondaryA11yButton(
                 text = "Vérifier les alertes",
@@ -342,18 +401,31 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Échéances hors ce mois") {
+            val echeancesTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Assurances, taxes, factures 1×/an ou tous les 3 mois — " +
                     "visibles ici quand elles ne tombent pas ce mois-ci. " +
                     "Touchez une carte pour corriger le nom, le montant, le jour ou le mois.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, echeancesTipShape)
+                    .background(A11yTokens.PaperWarm, echeancesTipShape)
+                    .padding(12.dp)
             )
             if (state.offMonthPeriodics.isEmpty()) {
+                val emptyShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Aucune pour l’instant. Quand vous créerez une facture « 1× par an » " +
                         "ou « tous les 3 mois », elle apparaîtra ici les autres mois.",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, emptyShape)
+                        .background(A11yTokens.PaperWarm, emptyShape)
+                        .padding(12.dp)
                 )
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
@@ -391,12 +463,57 @@ fun SettingsScreen(
             }
         }
 
+        if (state.showSummaryButton) {
+            SettingsCard(title = "Résumé à montrer") {
+                val tipShape = MaterialTheme.shapes.medium
+                Text(
+                    text = "À envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
+                        "Utile si le mois est en déficit, ou s’il y a un dossier.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, tipShape)
+                        .background(A11yTokens.PaperWarm, tipShape)
+                        .padding(12.dp)
+                )
+                if (state.summaryBusy) {
+                    Text(
+                        text = "Préparation du résumé…",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.PaperBorder, tipShape)
+                            .background(A11yTokens.PaperCard, tipShape)
+                            .padding(12.dp)
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = "Préparation du résumé"
+                            }
+                    )
+                }
+                SecondaryA11yButton(
+                    text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
+                    onClick = viewModel::shareMonthSummary,
+                    enabled = !state.busy && !state.summaryBusy
+                )
+            }
+        }
+
         SettingsCard(title = "Sauvegarde") {
+            val backupTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Copie automatique dans Documents (3 versions) : mois + photos. " +
                     "« Envoyer une copie » envoie une archive (mois et photos de factures) " +
                     "par WhatsApp ou Mail.",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, backupTipShape)
+                    .background(A11yTokens.PaperWarm, backupTipShape)
+                    .padding(12.dp)
             )
             run {
                 val healthLine = BackupHealthCopy.statusLine(state.backupHealth)
@@ -476,7 +593,7 @@ fun SettingsScreen(
                 )
             }
             Text(
-                text = "Données sur cet appareil uniquement. Pas de compte, pas de cloud.",
+                text = "Données sur ce téléphone uniquement. Pas de compte, pas de cloud.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )

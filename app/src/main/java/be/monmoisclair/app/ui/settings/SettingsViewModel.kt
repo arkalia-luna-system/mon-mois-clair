@@ -11,8 +11,10 @@ import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsResult
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
+import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListOffMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.OffMonthPeriodic
+import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
 import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -45,7 +47,10 @@ data class SettingsUiState(
     val savingsNextMonthNote: String? = null,
     val savingsBusy: Boolean = false,
     val savingsMessage: String? = null,
-    val savingsMessageError: Boolean = false
+    val savingsMessageError: Boolean = false,
+    /** Lot F — visible si déficit ou au moins un dossier. */
+    val showSummaryButton: Boolean = false,
+    val summaryBusy: Boolean = false
 )
 
 @HiltViewModel
@@ -55,7 +60,9 @@ class SettingsViewModel @Inject constructor(
     private val healthStore: BackupHealthStore,
     private val listOffMonth: ListOffMonthPeriodicsUseCase,
     private val shareBackup: ShareBackupUseCase,
-    private val configureSavings: ConfigureSavingsUseCase
+    private val configureSavings: ConfigureSavingsUseCase,
+    private val prepareMonthSummary: PrepareMonthSummaryUseCase,
+    private val listDossiers: ListDossiersUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -64,16 +71,28 @@ class SettingsViewModel @Inject constructor(
     private val _shareIntents = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
     val shareIntents: SharedFlow<Intent> = _shareIntents.asSharedFlow()
     private var savingsPreviewJob: Job? = null
+    /** Saisie en cours : un retour dans l’écran ne doit pas l’effacer. */
+    private var savingsDraftDirty = false
 
     init {
         refresh()
     }
 
     fun refresh() {
+        val dirtyAtStart = savingsDraftDirty
         viewModelScope.launch {
             val savings = configureSavings.read()
-            _uiState.update {
-                it.copy(
+            val summary = prepareMonthSummary()
+            val dossierCount = listDossiers().count
+            _uiState.update { cur ->
+                val dirtyNow = savingsDraftDirty
+                val keepDraft = dirtyNow || cur.savingsBusy || dirtyAtStart != dirtyNow
+                val storedAmount = if (savings.active) {
+                    MoneyFormat.centsToEditable(savings.amountCents)
+                } else {
+                    ""
+                }
+                cur.copy(
                     loading = false,
                     biometricEnabled = preference.isEnabled(),
                     availability = biometricAuth.availability(),
@@ -82,22 +101,22 @@ class SettingsViewModel @Inject constructor(
                     message = null,
                     isError = false,
                     savingsActive = savings.active,
-                    savingsAmountText = if (savings.active) {
-                        MoneyFormat.centsToEditable(savings.amountCents)
+                    savingsAmountText = if (keepDraft) cur.savingsAmountText else storedAmount,
+                    savingsDay = if (keepDraft) {
+                        cur.savingsDay
                     } else {
-                        ""
+                        savings.dayOfMonth.coerceIn(1, 31)
                     },
-                    savingsDay = savings.dayOfMonth.coerceIn(1, 31),
-                    savingsDeficit = null,
-                    savingsNextMonthNote = null,
-                    savingsMessage = null,
-                    savingsMessageError = false
+                    savingsDeficit = if (keepDraft) cur.savingsDeficit else null,
+                    savingsNextMonthNote = if (keepDraft) cur.savingsNextMonthNote else null,
+                    showSummaryButton = summary.isDeficit || dossierCount > 0
                 )
             }
         }
     }
 
     fun setSavingsAmount(value: String) {
+        savingsDraftDirty = true
         _uiState.update {
             it.copy(
                 savingsAmountText = value,
@@ -136,6 +155,7 @@ class SettingsViewModel @Inject constructor(
 
     fun setSavingsDay(day: Int) {
         if (day !in 1..31) return
+        savingsDraftDirty = true
         _uiState.update { it.copy(savingsDay = day) }
     }
 
@@ -165,6 +185,14 @@ class SettingsViewModel @Inject constructor(
             when (val result = configureSavings.save(cents, s.savingsDay)) {
                 ConfigureSavingsResult.Saved -> {
                     val again = configureSavings.read()
+                    val startsNextMonth = configureSavings.previewAmount(cents)
+                        .alreadyTransferredThisMonth
+                    savingsDraftDirty = false
+                    val noted = if (startsNextMonth) {
+                        "C’est noté. Ce mois reste FAIT. Le nouveau montant commence le mois suivant."
+                    } else {
+                        "C’est noté. La ligne « Mettre de côté » est dans le mois."
+                    }
                     _uiState.update {
                         it.copy(
                             savingsBusy = false,
@@ -176,8 +204,12 @@ class SettingsViewModel @Inject constructor(
                             },
                             savingsDay = if (again.active) again.dayOfMonth else s.savingsDay,
                             savingsDeficit = null,
-                            savingsNextMonthNote = null,
-                            savingsMessage = "C’est noté. La ligne « Mettre de côté » est dans le mois.",
+                            savingsNextMonthNote = if (startsNextMonth) {
+                                "Ce mois est déjà FAIT. Le nouveau montant commence le mois suivant."
+                            } else {
+                                null
+                            },
+                            savingsMessage = noted,
                             savingsMessageError = false
                         )
                     }
@@ -206,6 +238,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = configureSavings.remove()) {
                 ConfigureSavingsResult.Removed -> {
+                    savingsDraftDirty = false
                     _uiState.update {
                         it.copy(
                             savingsBusy = false,
@@ -232,6 +265,24 @@ class SettingsViewModel @Inject constructor(
                     _uiState.update { it.copy(savingsBusy = false) }
                 }
             }
+        }
+    }
+
+    /** Lot F — même texte que Mes dossiers (WhatsApp / Mail). */
+    fun shareMonthSummary() {
+        if (_uiState.value.busy || _uiState.value.summaryBusy) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(summaryBusy = true, message = null, isError = false) }
+            val result = prepareMonthSummary()
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
+                putExtra(Intent.EXTRA_TEXT, result.text)
+            }
+            _shareIntents.emit(
+                Intent.createChooser(intent, "Envoyer le résumé")
+            )
+            _uiState.update { it.copy(summaryBusy = false) }
         }
     }
 

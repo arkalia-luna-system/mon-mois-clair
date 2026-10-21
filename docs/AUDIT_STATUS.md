@@ -1,7 +1,7 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit : **6.33** (`0.1.0-6.33`, schéma Room **6**, **208/208** tests).  
+Journal produit : **6.36** (`0.1.0-6.36`, schéma Room **7**, **226/226** tests).  
 Dossiers / accords : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
 
@@ -12,8 +12,9 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 6.27 sticky / Menu / fréquence / photo fiche | ✅ code + Galaxy |
 | 6.28 Voir la photo (bouton) | ✅ code + Galaxy |
 | Smoke Galaxy | ✅ partiel — table ci-dessous |
-| Lot C « Écrire » (mail) | ⏳ code OK · geste réel à faire dès qu’un accord a un e-mail |
+| Lot C « Écrire » (mail) | ✅ smoke 2026-10-21 (Gmail Compose) |
 | 6.33 install + EuroFormat + Menu | ✅ smoke retour 2026-10-21 |
+| 6.36 + hauteur Accord / FAIT | ✅ smoke Ultra 2026-10-21 |
 
 ## Smoke SM-S938B — 2026-10-21
 
@@ -34,6 +35,10 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 13 | Install **6.33** + Reste avec espace fine | ✅ retour pause |
 | 14 | Menu sans Mes dossiers si 0 accord | ✅ |
 | 15 | Réglages affiche version 6.33 | ✅ |
-| 16 | « Écrire » ouvre un vrai brouillon Mail | ⏳ (pas d’accord+e-mail sous la main) |
+| 16 | « Écrire » ouvre un vrai brouillon Mail | ✅ fiche accord + e-mail → `ComposeActivityGmailExternal` (mailto URI) |
+| 17 | Ligne Accord : FAIT reste sur la carte, cible ≥ 48 dp | ✅ Ultra dens. 450 : hit `Marquer FAIT` **68 dp** ; pastille Accord visible sous « pour quoi » |
+| 18 | Install **6.36** | ✅ |
 
 Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.
+
+**Encore ouvert (hors Ultra)** : coup d’œil hauteur courte / texte large type S26 (plan §5 point 10) — pas rejoué ici.

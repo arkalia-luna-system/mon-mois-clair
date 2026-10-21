@@ -62,7 +62,12 @@ class UpdateInstanceUseCase @Inject constructor(
          * Si non null : remplace la liste des courriers en plus (puis [extraReceiptAppend]).
          * Null = ne pas toucher à la liste existante (sauf append).
          */
-        extraReceiptPathsReplace: String? = null
+        extraReceiptPathsReplace: String? = null,
+        /**
+         * Ligne déjà FAIT : ne pas réécrire son montant ni son jour,
+         * ni ceux du modèle (le montant à venir reste celui des Réglages).
+         */
+        keepDoneAmount: Boolean = false
     ): UpdateInstanceResult {
         val trimmed = label.trim()
         if (trimmed.isEmpty()) {
@@ -98,6 +103,9 @@ class UpdateInstanceUseCase @Inject constructor(
                 val ym = YearMonth.parse(current.ledgerId)
                 val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
                 val auto = isAutoDebit
+                val freezeDone = keepDoneAmount && current.status == ExpenseStatus.DONE
+                val lineAmount = if (freezeDone) current.amountCents else amountCents
+                val lineDay = if (freezeDone) current.dayOfMonth else clamped
                 val receipt = when {
                     clearReceipt -> ""
                     receiptRelativePath.isBlank() -> current.receiptRelativePath
@@ -171,8 +179,8 @@ class UpdateInstanceUseCase @Inject constructor(
                 instanceDao.updateExpense(
                     current.copy(
                         label = trimmed,
-                        amountCents = amountCents,
-                        dayOfMonth = clamped,
+                        amountCents = lineAmount,
+                        dayOfMonth = lineDay,
                         isAutoDebit = auto,
                         paymentNote = note,
                         receiptRelativePath = receipt
@@ -216,8 +224,8 @@ class UpdateInstanceUseCase @Inject constructor(
                             if (applyToFollowingMonths) {
                                 lotC.copy(
                                     label = trimmed,
-                                    amountCents = amountCents,
-                                    dayOfMonth = dayOfMonth,
+                                    amountCents = if (freezeDone) tpl.amountCents else amountCents,
+                                    dayOfMonth = if (freezeDone) tpl.dayOfMonth else dayOfMonth,
                                     isAutoDebit = auto,
                                     intervalMonths = when {
                                         intervalMonths != null && intervalMonths > 0 ->
@@ -248,8 +256,12 @@ class UpdateInstanceUseCase @Inject constructor(
                             instanceDao.updateExpense(
                                 item.copy(
                                     label = trimmed,
-                                    amountCents = amountCents,
-                                    dayOfMonth = MonthDayClamp.clamp(dayOfMonth, itemYm),
+                                    amountCents = if (freezeDone) item.amountCents else amountCents,
+                                    dayOfMonth = if (freezeDone) {
+                                        item.dayOfMonth
+                                    } else {
+                                        MonthDayClamp.clamp(dayOfMonth, itemYm)
+                                    },
                                     isAutoDebit = auto,
                                     paymentNote = note,
                                     receiptRelativePath = receipt

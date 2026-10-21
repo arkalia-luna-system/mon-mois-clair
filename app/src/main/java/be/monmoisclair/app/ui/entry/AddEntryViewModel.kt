@@ -180,21 +180,30 @@ class AddEntryViewModel @Inject constructor(
      * Visible seulement si le bloc accord est ouvert et le reste dû est vide.
      */
     fun saveAsPendingLetter() {
+        if (_state.value.saving || _state.value.saved) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
-            if (!s.isExpense || !s.dossierExpanded) return@launch
+            if (!s.isExpense || !s.dossierExpanded) {
+                _state.update { it.copy(saving = false) }
+                return@launch
+            }
             if (s.openingRemainingText.trim().isNotEmpty()) {
                 _state.update {
-                    it.copy(error = "Videz le reste dû pour ranger sans plan, ou Enregistrer un accord.")
+                    it.copy(
+                        saving = false,
+                        error = "Videz le reste dû pour ranger sans plan, ou Enregistrer un accord."
+                    )
                 }
                 return@launch
             }
             val who = s.label.trim()
             if (who.isEmpty()) {
-                _state.update { it.copy(error = "Indiquez à qui (le nom en haut).") }
+                _state.update {
+                    it.copy(saving = false, error = "Indiquez à qui (le nom en haut).")
+                }
                 return@launch
             }
-            _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = createPendingLetter(
                     who = who,
@@ -228,6 +237,8 @@ class AddEntryViewModel @Inject constructor(
     }
 
     fun save() {
+        if (_state.value.saving || _state.value.saved) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val existingId = createdInstanceId
             if (existingId != null) {
@@ -236,13 +247,15 @@ class AddEntryViewModel @Inject constructor(
             }
             val s = _state.value
             if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
-                _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
+                _state.update { it.copy(saving = false, error = MoneyFormat.FRACTION_HINT) }
                 return@launch
             }
             val cents = MoneyFormat.parseToCents(s.amountText)
             val day = s.dayText.trim().toIntOrNull()
             if (cents == null || day == null) {
-                _state.update { it.copy(error = "Vérifiez le montant et le jour (1 à 31).") }
+                _state.update {
+                    it.copy(saving = false, error = "Vérifiez le montant et le jour (1 à 31).")
+                }
                 return@launch
             }
             val openingRaw = s.openingRemainingText.trim()
@@ -251,7 +264,9 @@ class AddEntryViewModel @Inject constructor(
                 else -> MoneyFormat.parseToCents(openingRaw)
             }
             if (s.isExpense && s.dossierExpanded && openingRaw.isNotEmpty() && openingCents == null) {
-                _state.update { it.copy(error = "Vérifiez le reste dû (montant).") }
+                _state.update {
+                    it.copy(saving = false, error = "Vérifiez le reste dû (montant).")
+                }
                 return@launch
             }
             // IBAN / e-mail (souvent via QR) ne doivent pas disparaître en silence
@@ -260,6 +275,7 @@ class AddEntryViewModel @Inject constructor(
             if (s.isExpense && s.dossierExpanded && openingCents == null && hasCreditorBits) {
                 _state.update {
                     it.copy(
+                        saving = false,
                         error = "Indiquez le reste dû, ou « Ranger sans plan », " +
                             "ou videz l’IBAN et l’e-mail."
                     )
@@ -269,6 +285,7 @@ class AddEntryViewModel @Inject constructor(
             if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
                 _state.update {
                     it.copy(
+                        saving = false,
                         error = "Un accord doit être une facture qui revient " +
                             "(mensuel, 3 mois ou annuel)."
                     )
@@ -287,7 +304,6 @@ class AddEntryViewModel @Inject constructor(
                     RecurrenceAnchor.nextYearMonth(s.nextDueMonth, from = s.targetYearMonth)
                 else -> s.targetYearMonth
             }
-            _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = addEntry(
                     label = s.label, amountCents = cents, dayOfMonth = day,

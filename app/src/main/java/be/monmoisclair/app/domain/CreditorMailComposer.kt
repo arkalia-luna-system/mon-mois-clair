@@ -39,9 +39,11 @@ object CreditorMailComposer {
     /** Une arobase, un nom avant, un point dans le domaine. Pas un validateur complet. */
     fun looksLikeEmail(raw: String): Boolean {
         val t = raw.trim()
+        if (t.any { it.isWhitespace() }) return false
         val at = t.indexOf('@')
         if (at <= 0 || at != t.lastIndexOf('@')) return false
         val domain = t.substring(at + 1)
+        if (domain.startsWith('.') || domain.endsWith('.') || ".." in domain) return false
         val dot = domain.indexOf('.')
         return dot > 0 && dot < domain.lastIndex
     }

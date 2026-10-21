@@ -104,21 +104,21 @@ class ReminderSchedulerImpl @Inject constructor(
         return when (kind) {
             ReminderKind.J3 ->
                 if (auto) {
-                    "$amount — échéance le $day. Vérifiez le prélèvement."
+                    "$amount — le $day. Vérifiez le prélèvement."
                 } else {
-                    "$amount — échéance le $day. Pensez à payer."
+                    "$amount — le $day. Pensez à payer."
                 }
             ReminderKind.JD ->
                 if (auto) {
-                    "$amount — vérifiez le prélèvement aujourd'hui (le $day)."
+                    "$amount — vérifiez le prélèvement aujourd’hui (le $day)."
                 } else {
-                    "$amount — à payer aujourd'hui (le $day)."
+                    "$amount — à payer aujourd’hui (le $day)."
                 }
             ReminderKind.OVERDUE ->
                 if (auto) {
                     "$amount — prélèvement prévu le $day non confirmé. Vérifiez votre compte."
                 } else {
-                    "$amount — échéance le $day dépassée. À régler."
+                    "$amount — le $day est passé. À régler."
                 }
         }
     }

@@ -3,8 +3,8 @@
 Date du premier constat : 2026-10-21.  
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
-Dernière étape **fermée** dans le journal : **6.35** (`0.1.0-6.35`, `versionCode` 40), schéma **7**, tests **222/222** (`--rerun-tasks`).  
-Lots A–E tenus. Ouvert : smoke « Écrire » sur téléphone, lot F.
+Dernière étape **fermée** dans le journal : **6.36** (`0.1.0-6.36`, `versionCode` 41), schéma **7**, tests **226/226** (`--rerun-tasks`).  
+Lots A–F tenus. Smoke Ultra « Écrire » + hauteur Accord : **fait** (voir `AUDIT_STATUS.md`). Ouvert : hauteur courte type S26.
 
 Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
 Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
@@ -269,7 +269,7 @@ Ce qui est branché :
 Clos au **6.32** (UI voir/enlever, aide, suite **198/198**). Reste ouvert hors clôture :
 
 - L’ajout n’a pas « Copier l’IBAN » ni « Écrire ». Il faut rouvrir la fiche. Acceptable (dit dans l’aide).
-- `ACTION_SENDTO` + extras : smoke téléphone encore à faire.
+- `ACTION_SENDTO` via **mailto URI** : smoke Ultra OK (Gmail Compose, 2026-10-21).
 - Frais : seulement sur un accord déjà créé ; motif = dernier saisi (pas une liste datée).
 - Lettre sans plan / `agreementCents` : lot D, pas un oubli du C.
 
@@ -281,8 +281,8 @@ Clos au **6.32** (UI voir/enlever, aide, suite **198/198**). Reste ouvert hors c
 | Écran « Mes dossiers » | **Clos 6.34** (Menu si N>0 ou courriers, barre, reste, section sans plan) |
 | Courrier sans plan | **Clos 6.34** — `pending_letters`, bandeau accueil, conversion vers accord |
 | Mettre de côté | **Clos 6.35.** Réglages (montant, jour, déficit annoncé, retirer). Fiche : « déjà viré — pas disponible ici ». Accueil inchangé tant que ce n’est pas activé. Charte : enveloppes multiples refusées, une facture admise |
-| Résumé à montrer | Pas de texte partageable (revenus, charges, à qui, pour quoi, versement, reste, référence). Pas de faux PDF CPAS — et il ne faut pas en ajouter |
-| Smoke téléphone | Le journal 6.27 laissait ouvert : notification avec plusieurs factures, nom seul sur une échéance trimestrielle. `AUDIT_STATUS.md` les coche ensuite en manuel. Cette relecture **n’a pas** refait le geste, et n’a pas regardé la ligne Accord sur un écran court |
+| Résumé à montrer | **Clos 6.36** — texte partageable (4 colonnes dette, mis de côté à part). Pas de PDF CPAS |
+| Smoke téléphone | Notifs multi + trimestriel : cochés manuel dans `AUDIT_STATUS`. « Écrire » + FAIT ≥ 48 dp sur Ultra : **clos 2026-10-21**. Hauteur courte S26 encore ouverte |
 | Checklist « zéro dossier = zéro mot » | L’accueil tient. Le formulaire d’une dépense a **un** bouton de plus, replié : « C’est un retard ou un accord ? ». L’aide contient la section. C’est l’écart accepté au lot B. Ce n’est pas zéro pixel au sens strict du plan §5 point 2 |
 | Suite de tests | Clos au 6.32 : **198/198** avec `--rerun-tasks` |
 
@@ -296,7 +296,7 @@ Ils ne mettent même pas 1 € de côté. Une cagnotte à l’écran serait dép
 
 Le bouton replié sur chaque nouvelle dépense est le seul pixel nouveau que maman voit sans l’avoir demandé. Le garder fermé, sans le mot huissier, est la bonne limite. L’ouvrir par erreur puis quitter sans enregistrer ne doit rien créer : c’est le cas si le reste dû reste vide (`openingRemainingCents` null). Si elle remplit le reste par curiosité, elle crée un dossier. La phrase sous le champ (« Laissez vide si ce n’est pas un accord ») porte cette responsabilité. Elle est facile à rater sur un écran court. À relire au doigt, pas à rallonger avec un second avertissement.
 
-La pastille « Accord » sur fond chaud est lisible parce que le texte est encre, pas parce que le fond crie. Sur le S26, avec le texte large, la deuxième ligne (« pour quoi ») plus la pastille peut pousser le montant. Personne ne l’a mesuré dans cette passe. Le plan le demande encore (sortie, point 3).
+La pastille « Accord » sur fond chaud est lisible parce que le texte est encre, pas parce que le fond crie. Sur Ultra (2026-10-21) : FAIT reste sur la carte, hit ≥ 48 dp. Sur le S26 / hauteur ~800 dp + texte large, le plan (§5.3 / §5.10) demande encore le coup d’œil.
 
 Les frais en une somme et un motif unique suffisent pour une lettre. Ils ne suffisent pas pour trois lettres. Quand la troisième arrivera, le motif de la première aura disparu. Soit on accepte ça et on l’écrit dans l’aide (« le motif affiché est le dernier »), soit le lot C se termine avec une vraie liste. Je penche pour la liste courte seulement si l’affichage des photos multiples est fait en même temps : les deux sont « la lettre d’après ». Sinon on ferme le lot avec la somme, une phrase d’aide, et les photos visibles. Pas les deux chantiers à moitié.
 
@@ -311,10 +311,10 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Lot B — accord replié | Tenu (6.31) ; trou sync futures à l’édition **corrigé** (`AgreementFuturesSync`, branché Update + Toggle) |
 | Lot C — IBAN, mail, frais, plusieurs photos | Clos **6.32** — schéma 6, UI courriers, **198/198** |
 | Lot D — Mes dossiers + courriers sans plan | Clos **6.34** — schéma 7, bandeau, conversion, **214/214** |
-| Lot E — Mettre de côté | Clos **6.35** — **222/222** |
-| Lot F | Pas commencé |
+| Lot E — Mettre de côté | Clos **6.35** |
+| Lot F — résumé | Clos **6.36** — **226/226** |
 
-Prochaine action utile : lot F ; smoke « Écrire » dès qu’un accord a un e-mail. Pas de pastille « Huissier ».
+Prochaine action utile : coup d’œil hauteur courte / texte large type S26. Pas de pastille « Huissier ».
 
 ### 7.7 Passe du 21 octobre, après-midi
 

@@ -48,10 +48,14 @@ class BelgianStructuredCommunicationTest {
 
     @Test
     fun iban_stripsSpacesAndKeepsLetters() {
-        val compact = BelgianStructuredCommunication.ibanForClipboard("be68 5390 0754 7034")
+        val compact = BelgianStructuredCommunication.ibanForClipboard("IBAN be68 5390 0754 7034")
         assertThat(compact).isEqualTo("BE68539007547034")
         assertThat(BelgianStructuredCommunication.ibanLooksCopyable(compact)).isTrue()
         assertThat(BelgianStructuredCommunication.ibanLooksCopyable("123")).isFalse()
+        assertThat(BelgianStructuredCommunication.ibanLooksCopyable("BEAB539007547034")).isFalse()
+        assertThat(BelgianStructuredCommunication.ibanChecksumOk(compact)).isTrue()
+        assertThat(BelgianStructuredCommunication.ibanChecksumOk("BE68539007547035")).isFalse()
+        assertThat(BelgianStructuredCommunication.ibanChecksumOk("GB82WEST12345698765432")).isTrue()
     }
 
     @Test

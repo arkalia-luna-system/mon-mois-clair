@@ -363,23 +363,33 @@ fun EditEntryScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(A11yTokens.PaperCream)
-                .padding(A11yTokens.screenPadding)
-                .semantics {
-                    contentDescription = "Chargement de la fiche"
-                    liveRegion = LiveRegionMode.Polite
-                },
+                .padding(A11yTokens.screenPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                    .background(A11yTokens.PaperCard, busyShape)
+                    .padding(12.dp)
+                    .semantics {
+                        contentDescription = "Chargement de la fiche"
+                        liveRegion = LiveRegionMode.Polite
+                    }
             ) {
                 CircularProgressIndicator(
                     color = A11yTokens.ButtonFill,
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(28.dp)
                 )
-                Text("Chargement…", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    "Chargement…",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
             }
         }
         return
@@ -421,11 +431,14 @@ fun EditEntryScreen(
             containerColor = A11yTokens.PaperWarm,
             title = {
                 val name = state.label.trim().ifBlank { "cette entrée" }
-                Text("Supprimer $name ?")
+                Text(
+                    text = if (state.isSavingsLine) "Retirer la ligne ?" else "Supprimer $name ?",
+                    color = A11yTokens.Ink
+                )
             },
             text = {
                 Text(
-                    when {
+                    text = when {
                         state.isSavingsLine ->
                             "La ligne ne reviendra plus les mois suivants. " +
                                 "Les virements déjà marqués FAIT restent."
@@ -435,12 +448,13 @@ fun EditEntryScreen(
                         else ->
                             "Cette action retire la ligne du mois. Vous pourrez en recréer une ensuite."
                     },
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
                 )
             },
             confirmButton = {
                 DangerA11yButton(
-                    text = "Supprimer",
+                    text = if (state.isSavingsLine) "Retirer" else "Supprimer",
                     onClick = {
                         confirmDelete = false
                         viewModel.delete()
@@ -532,8 +546,10 @@ fun EditEntryScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
+                                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
                                     .semantics {
                                         contentDescription = "Chargement de la photo"
+                                        liveRegion = LiveRegionMode.Polite
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
@@ -552,11 +568,27 @@ fun EditEntryScreen(
                             )
                         }
                         else -> {
+                            val photoErrShape = MaterialTheme.shapes.medium
+                            val photoErr =
+                                "Impossible d’ouvrir cette photo. " +
+                                    "Reprenez-en une avec le bouton ci-dessous."
                             Text(
-                                text = "Impossible d’ouvrir cette photo. " +
-                                    "Reprenez-en une avec le bouton ci-dessous.",
+                                text = photoErr,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.AccentDanger
+                                color = A11yTokens.AccentDanger,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        1.dp,
+                                        A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                                        photoErrShape
+                                    )
+                                    .background(A11yTokens.PaperWarm, photoErrShape)
+                                    .padding(12.dp)
+                                    .semantics {
+                                        liveRegion = LiveRegionMode.Assertive
+                                        contentDescription = photoErr
+                                    }
                             )
                         }
                     }
@@ -630,6 +662,7 @@ fun EditEntryScreen(
         isSettled = state.isSettled,
         isSavingsLine = state.isSavingsLine,
         savingsTransferredCents = state.savingsTransferredCents,
+        lockAmountAndDay = state.isSavingsLine && state.savingsMonthDone,
         iban = state.iban,
         onIban = viewModel::setIban,
         onCopyIban = viewModel::copyIban,
@@ -644,8 +677,9 @@ fun EditEntryScreen(
         addedFeesNote = state.addedFeesNote,
         infoMessage = state.copyMessage,
         error = state.error,
-        primaryLabel = "Enregistrer",
-        primaryEnabled = true,
+        primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
+        primaryEnabled = !state.saving,
+        deleteLabel = if (state.isSavingsLine) "Retirer la ligne" else "Supprimer",
         onLabel = viewModel::setLabel,
         onAmount = viewModel::setAmount,
         onDay = viewModel::setDay,
@@ -654,7 +688,7 @@ fun EditEntryScreen(
         onApplyFollowing = viewModel::setApplyToFollowing,
         onPrimary = viewModel::save,
         onCancel = { requestLeave() },
-        onDelete = { confirmDelete = true }
+        onDelete = { if (!state.saving) confirmDelete = true }
     )
 }
 
@@ -748,6 +782,7 @@ private fun EntryFormScaffold(
     isSettled: Boolean = false,
     isSavingsLine: Boolean = false,
     savingsTransferredCents: Long = 0L,
+    lockAmountAndDay: Boolean = false,
     iban: String = "",
     onIban: (String) -> Unit = {},
     onCopyIban: (() -> Unit)? = null,
@@ -766,6 +801,7 @@ private fun EntryFormScaffold(
     error: String?,
     primaryLabel: String,
     primaryEnabled: Boolean,
+    deleteLabel: String = "Supprimer",
     onLabel: (String) -> Unit,
     onAmount: (String) -> Unit,
     onDay: (String) -> Unit,
@@ -853,7 +889,8 @@ private fun EntryFormScaffold(
                 keyboardActions = KeyboardActions(
                     onDone = { focusManager.clearFocus() }
                 ),
-                singleLine = true
+                singleLine = true,
+                enabled = !lockAmountAndDay
             )
             if (isSavingsLine) {
                 val savingsShape = MaterialTheme.shapes.medium
@@ -878,11 +915,20 @@ private fun EntryFormScaffold(
                             color = A11yTokens.InkMuted
                         )
                     }
+                    if (lockAmountAndDay) {
+                        Text(
+                            text = "Ce mois est déjà FAIT. Le montant affiché est celui du virement. " +
+                                "Pour les mois suivants, changez-le dans Réglages.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted
+                        )
+                    }
                 }
             }
             DayOfMonthGrid(
                 selectedDay = dayText.trim().toIntOrNull()?.takeIf { it in 1..31 },
-                onSelect = { onDay(it.toString()) }
+                onSelect = { onDay(it.toString()) },
+                enabled = !lockAmountAndDay
             )
 
             // Édition ponctuelle (sans modèle) : info seule.
@@ -933,10 +979,16 @@ private fun EntryFormScaffold(
                 }
                 if (showNextDueMonth) {
                     Text("Prochaine échéance", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
+                    val nextDueTipShape = MaterialTheme.shapes.medium
                     Text(
                         text = "Choisissez le mois où elle tombe (ex. taxe en mars).",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.PaperBorder, nextDueTipShape)
+                            .background(A11yTokens.PaperWarm, nextDueTipShape)
+                            .padding(10.dp)
                     )
                     @OptIn(ExperimentalLayoutApi::class)
                     FlowRow(
@@ -1012,10 +1064,16 @@ private fun EntryFormScaffold(
                     }
                     remainingCents?.let { rem ->
                         if (!isSettled) {
+                            val remShape = MaterialTheme.shapes.medium
                             Text(
                                 text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted
+                                color = A11yTokens.InkMuted,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(1.dp, A11yTokens.PaperBorder, remShape)
+                                    .background(A11yTokens.PaperWarm, remShape)
+                                    .padding(10.dp)
                             )
                         }
                     }
@@ -1100,6 +1158,17 @@ private fun EntryFormScaffold(
                     )
                     if (onCopyIban != null && iban.isNotBlank()) {
                         SecondaryA11yButton(text = "Copier l’IBAN", onClick = onCopyIban)
+                        val ibanTipShape = MaterialTheme.shapes.medium
+                        Text(
+                            text = "Pour coller dans l’app bancaire.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, A11yTokens.PaperBorder, ibanTipShape)
+                                .background(A11yTokens.PaperWarm, ibanTipShape)
+                                .padding(10.dp)
+                        )
                     }
                     OutlinedTextField(
                         value = creditorEmail,
@@ -1121,14 +1190,31 @@ private fun EntryFormScaffold(
                     )
                     if (onWriteMail != null && creditorEmail.isNotBlank()) {
                         SecondaryA11yButton(text = "Écrire", onClick = onWriteMail)
+                        val writeTipShape = MaterialTheme.shapes.medium
+                        Text(
+                            text = "Ouvre l’app Mail avec un brouillon. Rien n’est stocké ici.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, A11yTokens.PaperBorder, writeTipShape)
+                                .background(A11yTokens.PaperWarm, writeTipShape)
+                                .padding(10.dp)
+                        )
                     }
                     if (isAgreement) {
                         if (addedFeesCents > 0L) {
+                            val feesShape = MaterialTheme.shapes.medium
                             Text(
                                 text = "Frais déjà notés : ${MoneyFormat.formatCents(addedFeesCents)}" +
                                     if (addedFeesNote.isNotBlank()) " ($addedFeesNote)" else "",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted
+                                color = A11yTokens.InkMuted,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(1.dp, A11yTokens.PaperBorder, feesShape)
+                                    .background(A11yTokens.PaperWarm, feesShape)
+                                    .padding(10.dp)
                             )
                         }
                         OutlinedTextField(
@@ -1171,10 +1257,16 @@ private fun EntryFormScaffold(
                 ) {
                 if (onScanEpc != null) {
                     SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
+                    val scanTipShape = MaterialTheme.shapes.medium
                     Text(
                         text = "Visez le QR de la facture belge.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.PaperBorder, scanTipShape)
+                            .background(A11yTokens.PaperWarm, scanTipShape)
+                            .padding(10.dp)
                     )
                 }
                 OutlinedTextField(
@@ -1204,11 +1296,17 @@ private fun EntryFormScaffold(
                         onClick = onTakePhoto
                     )
                     if (appendOnAgreement) {
+                        val appendTipShape = MaterialTheme.shapes.medium
                         Text(
                             text = "La nouvelle photo s’ajoute aux courriers. " +
                                 "La première reste.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted
+                            color = A11yTokens.InkMuted,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, A11yTokens.PaperBorder, appendTipShape)
+                                .background(A11yTokens.PaperWarm, appendTipShape)
+                                .padding(10.dp)
                         )
                     }
                     if (onClearReceipt != null && (hasPendingPhoto || hasReceiptPhoto)) {
@@ -1222,14 +1320,29 @@ private fun EntryFormScaffold(
                         )
                     }
                     if (hasPendingPhoto) {
+                        val photoOkShape = MaterialTheme.shapes.medium
+                        val photoOkText = if (isAgreement && hasReceiptPhoto) {
+                            "Photo prête — s’ajoute aux courriers (la première reste)."
+                        } else {
+                            "Photo prête — enregistrée avec la facture."
+                        }
                         Text(
-                            text = if (isAgreement && hasReceiptPhoto) {
-                                "Photo prête — s’ajoute aux courriers (la première reste)."
-                            } else {
-                                "Photo prête — enregistrée avec la facture."
-                            },
+                            text = photoOkText,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.AccentOk
+                            color = A11yTokens.AccentOk,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    1.dp,
+                                    A11yTokens.AccentOk.copy(alpha = 0.35f),
+                                    photoOkShape
+                                )
+                                .background(A11yTokens.PaperWarm, photoOkShape)
+                                .padding(10.dp)
+                                .semantics {
+                                    liveRegion = LiveRegionMode.Polite
+                                    contentDescription = photoOkText
+                                }
                         )
                     }
                     if (hasReceiptPhoto && receiptPreview == null && onViewReceipt != null) {
@@ -1239,10 +1352,16 @@ private fun EntryFormScaffold(
                         )
                     }
                     receiptPreview?.let { bmp ->
+                        val zoomTipShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Touchez pour agrandir.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted
+                            color = A11yTokens.InkMuted,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, A11yTokens.PaperBorder, zoomTipShape)
+                                .background(A11yTokens.PaperWarm, zoomTipShape)
+                                .padding(10.dp)
                         )
                         Image(
                             bitmap = bmp.asImageBitmap(),
@@ -1369,7 +1488,11 @@ private fun EntryFormScaffold(
             SecondaryA11yButton(text = "Annuler", onClick = onCancel)
             if (onDelete != null) {
                 Spacer(modifier = Modifier.height(8.dp))
-                DangerA11yButton(text = "Supprimer", onClick = onDelete)
+                DangerA11yButton(
+                    text = deleteLabel,
+                    onClick = onDelete,
+                    enabled = primaryEnabled
+                )
             }
         }
     }

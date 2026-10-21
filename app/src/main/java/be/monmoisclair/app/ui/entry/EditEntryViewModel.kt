@@ -72,7 +72,10 @@ data class EditEntryState(
     /** Lot E — cette ligne est « Mettre de côté ». */
     val isSavingsLine: Boolean = false,
     val savingsTransferredCents: Long = 0L,
+    /** Ce mois est déjà viré : le montant de la fiche ne change pas l’avenir. */
+    val savingsMonthDone: Boolean = false,
     val error: String? = null,
+    val saving: Boolean = false,
     val done: Boolean = false,
     val loading: Boolean = true,
     /** Ligne absente (supprimée pendant l’ouverture). */
@@ -171,7 +174,8 @@ class EditEntryViewModel @Inject constructor(
                 addedFeesNote = tpl?.addedFeesNote.orEmpty(),
                 extraReceiptPaths = tpl?.extraReceiptPaths.orEmpty(),
                 isSavingsLine = isSavings,
-                savingsTransferredCents = transferred
+                savingsTransferredCents = transferred,
+                savingsMonthDone = isSavings && e.status == ExpenseStatus.DONE
             )
         }
     }
@@ -285,7 +289,7 @@ class EditEntryViewModel @Inject constructor(
             return
         }
         val compact = BelgianStructuredCommunication.ibanForClipboard(iban)
-        if (!BelgianStructuredCommunication.ibanLooksCopyable(compact)) {
+        if (!BelgianStructuredCommunication.ibanChecksumOk(compact)) {
             _state.update {
                 it.copy(error = "Vérifiez l’IBAN sur le courrier.", copyMessage = null)
             }
@@ -345,24 +349,77 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun save() {
+        if (_state.value.saving || _state.value.done) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
             if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
-                _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
+                _state.update { it.copy(saving = false, error = MoneyFormat.FRACTION_HINT) }
                 return@launch
             }
             val cents = MoneyFormat.parseToCents(s.amountText)
             val day = s.dayText.trim().toIntOrNull()
             if (cents == null || day == null) {
-                _state.update { it.copy(error = "Vérifiez le montant et le jour (1 à 31).") }
+                _state.update {
+                    it.copy(saving = false, error = "Vérifiez le montant et le jour (1 à 31).")
+                }
                 return@launch
             }
             var path = s.receiptRelativePath
             var extraAppend = ""
             var documentsHint: String? = null
             val cleared = s.receiptCleared && pendingBitmap == null
+            // null = inchangé ; -1 = une fois ; 1/3/12 = intervalle (crée le modèle si besoin).
+            val interval: Int? = if (!s.isExpense) {
+                null
+            } else {
+                when (s.recurrence) {
+                    RecurrenceChoice.Once -> if (s.hasTemplate) -1 else null
+                    RecurrenceChoice.Monthly -> 1
+                    RecurrenceChoice.Every3Months -> 3
+                    RecurrenceChoice.Yearly -> 12
+                }
+            }
+            val wantOpening = s.isExpense && s.dossierExpanded && !s.isAgreement
+            val openingRaw = s.openingRemainingText.trim()
+            val openingCents = when {
+                !wantOpening || openingRaw.isEmpty() -> null
+                else -> MoneyFormat.parseToCents(openingRaw)
+            }
+            if (wantOpening && openingRaw.isNotEmpty() && openingCents == null) {
+                _state.update { it.copy(saving = false, error = "Vérifiez le reste dû (montant).") }
+                return@launch
+            }
+            if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
+                _state.update {
+                    it.copy(
+                        saving = false,
+                        error = "Un accord doit être une facture qui revient " +
+                            "(mensuel, 3 mois ou annuel)."
+                    )
+                }
+                return@launch
+            }
+            val feeRaw = s.feeAddText.trim()
+            val feeAdd = when {
+                !s.isAgreement || feeRaw.isEmpty() -> 0L
+                else -> MoneyFormat.parseToCents(feeRaw)
+            }
+            if (s.isAgreement && feeRaw.isNotEmpty() && (feeAdd == null || feeAdd <= 0L)) {
+                _state.update { it.copy(saving = false, error = "Vérifiez le montant des frais.") }
+                return@launch
+            }
+            if (s.isAgreement && feeRaw.isEmpty() && s.feeNoteText.isNotBlank()) {
+                _state.update {
+                    it.copy(
+                        saving = false,
+                        error = "Indiquez le montant des frais avec le motif."
+                    )
+                }
+                return@launch
+            }
             pendingBitmap?.let { bmp ->
-                val owner = if (s.applyToFollowing) {
+                val owner = if (s.applyToFollowing || s.isSavingsLine) {
                     instanceDao.getExpenseById(s.id)?.templateId ?: s.id
                 } else {
                     s.id
@@ -385,46 +442,6 @@ class EditEntryViewModel @Inject constructor(
                             "Photo enregistrée. La copie dans Documents a échoué — elle sera retentée."
                     }
                 }
-                pendingBitmap = null
-            }
-            // null = inchangé ; -1 = une fois ; 1/3/12 = intervalle (crée le modèle si besoin).
-            val interval: Int? = if (!s.isExpense) {
-                null
-            } else {
-                when (s.recurrence) {
-                    RecurrenceChoice.Once -> if (s.hasTemplate) -1 else null
-                    RecurrenceChoice.Monthly -> 1
-                    RecurrenceChoice.Every3Months -> 3
-                    RecurrenceChoice.Yearly -> 12
-                }
-            }
-            val wantOpening = s.isExpense && s.dossierExpanded && !s.isAgreement
-            val openingRaw = s.openingRemainingText.trim()
-            val openingCents = when {
-                !wantOpening || openingRaw.isEmpty() -> null
-                else -> MoneyFormat.parseToCents(openingRaw)
-            }
-            if (wantOpening && openingRaw.isNotEmpty() && openingCents == null) {
-                _state.update { it.copy(error = "Vérifiez le reste dû (montant).") }
-                return@launch
-            }
-            if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
-                _state.update {
-                    it.copy(
-                        error = "Un accord doit être une facture qui revient " +
-                            "(mensuel, 3 mois ou annuel)."
-                    )
-                }
-                return@launch
-            }
-            val feeRaw = s.feeAddText.trim()
-            val feeAdd = when {
-                !s.isAgreement || feeRaw.isEmpty() -> 0L
-                else -> MoneyFormat.parseToCents(feeRaw)
-            }
-            if (s.isAgreement && feeRaw.isNotEmpty() && feeAdd == null) {
-                _state.update { it.copy(error = "Vérifiez le montant des frais.") }
-                return@launch
             }
             val syncCreditor = s.isExpense && (s.isAgreement || s.dossierExpanded)
             when (
@@ -435,7 +452,7 @@ class EditEntryViewModel @Inject constructor(
                     amountCents = cents,
                     dayOfMonth = day,
                     applyToFollowingMonths = s.applyToFollowing || s.isSavingsLine,
-                    isAutoDebit = s.isExpense && s.isAutoDebit,
+                    isAutoDebit = s.isExpense && s.isAutoDebit && !s.isSavingsLine,
                     paymentNote = s.paymentNote,
                     receiptRelativePath = path,
                     intervalMonths = if (s.isSavingsLine) 1 else interval,
@@ -453,34 +470,46 @@ class EditEntryViewModel @Inject constructor(
                     feeAddCents = feeAdd ?: 0L,
                     feeNote = s.feeNoteText,
                     extraReceiptAppend = extraAppend,
-                    extraReceiptPathsReplace = if (s.isAgreement) s.extraReceiptPaths else null
+                    extraReceiptPathsReplace = if (s.isAgreement) s.extraReceiptPaths else null,
+                    keepDoneAmount = s.isSavingsLine
                 )
             ) {
-                UpdateInstanceResult.Success -> _state.update {
-                    it.copy(done = true, copyMessage = documentsHint)
+                UpdateInstanceResult.Success -> {
+                    pendingBitmap = null
+                    _state.update {
+                        it.copy(saving = false, done = true, copyMessage = documentsHint)
+                    }
                 }
                 UpdateInstanceResult.NotFound ->
-                    _state.update { it.copy(error = "Cette ligne n’est plus là.") }
-                is UpdateInstanceResult.InvalidInput -> _state.update { it.copy(error = result.message) }
+                    _state.update { it.copy(saving = false, error = "Cette ligne n’est plus là.") }
+                is UpdateInstanceResult.InvalidInput ->
+                    _state.update { it.copy(saving = false, error = result.message) }
             }
         }
     }
 
     fun delete() {
+        if (_state.value.saving || _state.value.done) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             if (_state.value.isSavingsLine) {
                 when (configureSavings.remove()) {
-                    ConfigureSavingsResult.Removed -> _state.update { it.copy(done = true) }
+                    ConfigureSavingsResult.Removed ->
+                        _state.update { it.copy(saving = false, done = true) }
                     else -> _state.update {
-                        it.copy(error = "La ligne n’a pas pu être retirée. Réessayez depuis Réglages.")
+                        it.copy(
+                            saving = false,
+                            error = "La ligne n’a pas pu être retirée. Réessayez depuis Réglages."
+                        )
                     }
                 }
                 return@launch
             }
             when (deleteInstance(_state.value.id, _state.value.isExpense, _state.value.applyToFollowing)) {
-                DeleteInstanceResult.Success -> _state.update { it.copy(done = true) }
+                DeleteInstanceResult.Success ->
+                    _state.update { it.copy(saving = false, done = true) }
                 DeleteInstanceResult.NotFound ->
-                    _state.update { it.copy(error = "Cette ligne n’est plus là.") }
+                    _state.update { it.copy(saving = false, error = "Cette ligne n’est plus là.") }
             }
         }
     }

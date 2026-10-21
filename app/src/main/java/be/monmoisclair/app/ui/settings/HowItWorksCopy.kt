@@ -57,8 +57,9 @@ object HowItWorksCopy {
                 "Sur une facture répétée, la communication suit les mois suivants. " +
                 "À l’ajout, la photo d’une facture qui revient est reprise les mois suivants. " +
                 "Dans la fiche, elle ne suit que si vous cochez « Aussi les mois suivants ». " +
-                "Sur le mois, « Voir la photo » ouvre le papier. Dans la fiche, touchez la vignette " +
-                "pour l’agrandir. Vous pouvez reprendre la photo sans tout recréer. " +
+                "Sur le mois, « Voir la photo » (ou « Photo » sur petit écran) ouvre le papier. " +
+                "Dans la fiche, touchez la vignette pour l’agrandir. " +
+                "Vous pouvez reprendre la photo sans tout recréer. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."
         ),
         Section(
@@ -69,7 +70,8 @@ object HowItWorksCopy {
                 "Chaque FAIT baisse le reste du montant réellement payé. " +
                 "Quand c’est soldé, la ligne ne revient plus le mois suivant. " +
                 "La fiche dit « Soldé ». Les mois déjà payés restent. " +
-                "Sur un accord : IBAN (Copier), e-mail (Écrire), frais (« Ils ont ajouté un montant »). " +
+                "Sur un accord : IBAN (Copier), e-mail (Écrire — ouvre l’app Mail, sans stocker les échanges), " +
+                "frais (« Ils ont ajouté un montant »). " +
                 "Une nouvelle photo s’ajoute aux courriers sans remplacer la première ; " +
                 "vous pouvez voir ou enlever chaque courrier. " +
                 "Le motif des frais affiché est le dernier saisi. " +
@@ -77,15 +79,19 @@ object HowItWorksCopy {
                 "(reste dû et barre ; rien sur l’accueil). " +
                 "Sans versement encore : « Ranger sans plan » (photo + qui + pour quoi) — " +
                 "le courrier n’entre pas dans le Reste. Une ligne sur l’accueil " +
-                "« courrier sans plan · Voir » s’affiche s’il y en a."
+                "« courrier sans plan · Voir » s’affiche s’il y en a. " +
+                "« Préparer un résumé » (Mes dossiers, ou Réglages si déficit) " +
+                "écrit un texte à envoyer à un créancier ou à un conseiller — pas à tout le monde."
         ),
         Section(
             title = "Mettre de côté",
             body = "Réglages → « Mettre de côté » crée une facture mensuelle, virée vers un autre compte. " +
                 "Elle entre dans le Reste dès le 1er, comme le loyer. " +
                 "FAIT quand le virement est fait. " +
+                "Si ce mois est déjà FAIT, le montant des mois suivants se change dans Réglages, " +
+                "pas sur la fiche de ce virement. " +
                 "Ce n’est pas de l’argent gardé dans l’application. " +
-                "La fiche dit « déjà viré » : cette somme n’est pas disponible ici. " +
+                "La fiche dit « Déjà viré » : cette somme n’est pas disponible ici. " +
                 "Tant que vous ne l’activez pas, l’accueil ne change pas."
         ),
         Section(

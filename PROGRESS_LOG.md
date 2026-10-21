@@ -9,15 +9,35 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.35** (Lot E clos : Mettre de côté) |
+| Dernière étape terminée | **6.36** (Lot F clos : résumé texte) |
 | Étape en cours | — |
-| Prochaine sous-étape | Lot **F** (résumé texte) · smoke « Écrire » / hauteur Accord |
+| Prochaine sous-étape | Coup d’œil S26 / hauteur courte (plan §5.10) · polish si besoin |
 | Audit premium | Code clos · punch list audit traitée |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — Smoke Ultra : « Écrire » + hauteur Accord
+
+**Geste :** APK `0.1.0-6.36` sur SM-S938B. Accord « Etude Smoke » / cause Hopital2025. E-mail saisi en édition → **Écrire** → Gmail `ComposeActivityGmailExternal` (mailto). Accueil : pastille Accord visible ; cible FAIT **68 dp** (≥ 48) — FAIT pas poussé hors carte.
+
+**Pas de bump version** (doc smoke seulement).  
+**Encore :** hauteur courte type S26 (émulateur / téléphone maman), pas mesurée ici.
+
+### 2026-10-21 — 6.36 Lot F clos : résumé texte
+
+**Problème :** un mois négatif ou une médiation demande une liste propre, sans faux PDF CPAS.
+
+**Codé :**
+- `PrepareMonthSummaryUseCase` — texte brut (mois, revenus, factures, dossiers 4 colonnes, mis de côté à part, photos dans l’app)
+- Bouton « Préparer un résumé » dans Mes dossiers · aussi Réglages si déficit ou dossier
+- Partage Android (mail / WhatsApp) · phrase « créancier ou conseiller »
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **226/226** (59 fichiers, 0 échec)  
+**Version :** `0.1.0-6.36` · `versionCode` 41  
+**Smoke Ultra :** clos (entrée ci-dessus)
 
 ### 2026-10-21 — 6.35 Lot E clos : Mettre de côté
 
