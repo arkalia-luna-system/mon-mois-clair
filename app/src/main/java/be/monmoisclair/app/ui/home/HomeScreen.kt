@@ -451,6 +451,7 @@ fun HomeScreen(
                     )
                 }
                 state.nextMonthWarning?.let { warning ->
+                    val warnShape = MaterialTheme.shapes.medium
                     Text(
                         text = warning,
                         style = MaterialTheme.typography.bodyMedium,
@@ -461,11 +462,14 @@ fun HomeScreen(
                             .padding(top = fit.sectionGap)
                             .fillMaxWidth()
                             .heightIn(min = A11yTokens.minTouchHeight)
+                            .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), warnShape)
+                            .background(A11yTokens.PaperWarm, warnShape)
                             .clickable(
                                 role = Role.Button,
                                 onClickLabel = "Voir les échéances hors ce mois"
                             ) { onOpenSettings() }
-                            .padding(vertical = 8.dp)
+                            .padding(horizontal = 12.dp, vertical = 10.dp)
+                            .semantics { contentDescription = warning }
                     )
                 }
             }

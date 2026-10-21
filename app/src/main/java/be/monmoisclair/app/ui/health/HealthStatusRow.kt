@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.health
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -18,6 +19,7 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 @Composable
 fun HealthStatusRow(label: String, ok: Boolean) {
     val status = if (ok) "Prêt" else "À régler"
+    val shape = MaterialTheme.shapes.medium
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,7 +37,10 @@ fun HealthStatusRow(label: String, ok: Boolean) {
             modifier = Modifier
                 .background(
                     if (ok) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
-                    MaterialTheme.shapes.medium
+                    shape
+                )
+                .then(
+                    if (ok) Modifier else Modifier.border(1.dp, A11yTokens.AccentWarn, shape)
                 )
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         )
