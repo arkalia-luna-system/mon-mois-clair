@@ -132,8 +132,10 @@ fun DossiersScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, emptyShape)
                     .background(A11yTokens.PaperCard, emptyShape)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(if (fit.compactHomeChrome) 12.dp else 16.dp),
+                verticalArrangement = Arrangement.spacedBy(
+                    if (fit.compactHomeChrome) 6.dp else 8.dp
+                )
             ) {
                 Text(
                     text = "Aucun accord pour le moment.",

@@ -32,7 +32,7 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 8 | Envoyer copie → archive | ✅ |
 | 9 | Années groupées + pastilles En retard / Prélèvement | ✅ |
 | 10 | Biométrie | ✅ manuel (humain) |
-| 11 | Sticky Sans les futures / Après courses | ✅ 6.27 |
+| 11 | Sticky (au 6.27 : « Sans les futures » ; l’écran dit aujourd’hui « Hors à payer ») / Après courses | ✅ 6.27 |
 | 12 | Voir la photo sur la ligne | ✅ 6.28 |
 | 13 | Install **6.33** + Reste avec espace fine | ✅ retour pause |
 | 14 | Menu sans Mes dossiers si 0 accord | ✅ |

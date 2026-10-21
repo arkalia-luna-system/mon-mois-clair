@@ -1,5 +1,7 @@
 # Checklist validation Samsung (One UI)
 
+> **Figé le 2026-10-19, version 5.4.1.** Ce n’est pas la preuve du 6.36. Smoke actuel : `PROGRESS_LOG.md` et `docs/AUDIT_STATUS.md`.
+
 APK familial : `dist/MonMoisClair-release.apk` (éviter le debug au quotidien)
 
 ## Appareil validé (2026-10-19)
@@ -7,7 +9,7 @@ APK familial : `dist/MonMoisClair-release.apk` (éviter le debug au quotidien)
 | Champ | Valeur |
 |-------|--------|
 | Modèle adb | `SM-S938B` (Galaxy **S25 Ultra** — libellé système « S25 Ultra de Athalia ») |
-| Serial | `R3CY60BJ3ZM` |
+| Serial | non recopié (appareil personnel) |
 | Android | 16 (API 36) |
 | Compte | user 0 (pas Secure Folder) |
 | Version app | `0.1.0-5.4.1` (historique : 5.4 / 4.6 / 3.5.1) |

@@ -215,7 +215,7 @@ fun EditTemplateScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, missShape)
                     .background(A11yTokens.PaperCard, missShape)
-                    .padding(14.dp)
+                    .padding(12.dp)
             )
             SecondaryA11yButton(text = "Retour", onClick = onCancel)
         }

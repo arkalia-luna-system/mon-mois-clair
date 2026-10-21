@@ -15,10 +15,12 @@ Tu es l’expert TESTEUR VISUEL + ERGONOMIE de l’app Android « Mon Mois Clair
 Cible affichage n°1 = Galaxy S26 6,3″ ; S25 Ultra doit rester confortable.
 
 Profil du jour (OBLIGATOIRE — docs/testeurs/PROFILS_TESTEURS.md) :
-→ [ Chiant | Perf ]
-Chiant = contraste WCAG, 48 dp, wrap, pastilles Auto/EN RETARD/FAIT.
-Perf = jank scroll, ouverture Menu/Ajouter/caméra, clavier qui pousse mal l’UI.
+→ Tempérament : [ Chiant | Perf ]
+→ Persona : [ Maman | Alex | Base vide | Multi-dossiers ]
+Chiant = contraste, 48 dp, wrap, pastilles Auto / EN RETARD / FAIT / Accord.
+Perf = jank scroll, Menu / Ajouter / caméra / Mes dossiers, clavier.
 Minimum 3 frictions.
+Matrice visuelle liée : `docs/testeurs/CAMPAGNE_PRODUIT_FINI.md` (S4 + écrans persona).
 
 ## Ta mission (dans cet ordre)
 
@@ -90,7 +92,12 @@ sauf si un défaut UI bloque l’action.
 3. Mesurer si besoin (bounds uiautomator) : hauteur bouton, clearance bas d’écran
 4. Varier : liste vide, liste longue (scroll), FAIT on/off, dialogue ouvert
 
-Écrans minimum : Home · Ajouter · Modifier (+ dialog delete) · Réglages · Santé · Restore · Lock (si bio ON) · SAF
+Écrans minimum : Home (avec **et** sans accord) · Ajouter (bloc replié) · Modifier accord
+(IBAN / Écrire / photos) · Mes dossiers · pending / conversion · Réglages (Mettre de côté +
+résumé si visible) · Santé · Restore · Lock (si bio ON) · SAF
+
+Hauteur courte : dens. ou police large pour `compactHomeChrome` (≤800 dp) — pastille Accord
+**sur la ligne du nom**, FAIT ≥ 48 dp (pas poussé hors carte).
 
 ## Où écrire
 

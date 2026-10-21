@@ -854,8 +854,8 @@ private fun EntryFormScaffold(
             )
 
             if (showRecurring) {
-                @OptIn(ExperimentalLayoutApi::class)
                 val chipGap = if (fit.compactHomeChrome) 6.dp else 8.dp
+                @OptIn(ExperimentalLayoutApi::class)
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(chipGap),
                     verticalArrangement = Arrangement.spacedBy(chipGap)

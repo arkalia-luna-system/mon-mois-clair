@@ -142,11 +142,15 @@ Structure EXACTE :
 # Rapport test — YYYY-MM-DD
 
 ## Contexte
+- Profil / Persona :
 - Device / émulateur :
 - Version app (versionName) :
 - Étape PROGRESS concernée :
-- Build / install :
+- Build / install (debug|release) :
 - Tests Gradle : N/N
+
+## Matrice (cases CAMPAGNE_PRODUIT_FINI)
+- C… / D… / P… / E… / F… / S… : ✅ ou ❌ + note courte
 
 ## Synthèse
 - Verdict : OK / KO / OK avec réserves
@@ -155,8 +159,8 @@ Structure EXACTE :
 - Audit visuel : fait / partiel / confirmé-humain + code
 
 ## Parcours testés
-| Persona | Scénario | Code OK ? | Visuel OK ? | Preuve |
-|---------|----------|-----------|-------------|--------|
+| Persona | Scénario matrice | Code OK ? | Device OK ? | Preuve |
+|---------|------------------|-----------|-------------|--------|
 
 ## Problèmes trouvés
 | ID | Sévérité | Zone | Description | Attendu (charte) | Observé |
