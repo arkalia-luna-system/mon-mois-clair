@@ -19,6 +19,12 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Polish premium (cartes papier, sans Gradle)
+
+**Codé :** intros/status en cartes (scan, restore, SAF, permissions, alertes, verrou, aide, formulaire) · hero dossiers · CheckRow / HealthStatusRow · notifs FAIT ✓ · scaffolds gaps · WIP courriers laissé aux autres (écran Dossiers non cassé). Voir `docs/archive/POLISH_PASS.md`.
+
+**Version :** inchangée `0.1.0-6.33` · pas de Gradle ici.
+
 ### 2026-10-21 — Polish premium large (sans Gradle)
 
 **Codé :** passe continue UI/a11y/copy — aide, onboarding, chips, alertes Samsung, verrou, Mes dossiers empty, menu mois, scan, restore, partage, version TalkBack. Voir `docs/archive/POLISH_PASS.md`.

@@ -40,10 +40,10 @@ fun PinnedBackScaffold(
                 .weight(1f)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             content = content
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         SecondaryA11yButton(
             text = backLabel,
             onClick = onBack,

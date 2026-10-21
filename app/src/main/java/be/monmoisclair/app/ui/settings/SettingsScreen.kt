@@ -316,16 +316,22 @@ fun SettingsScreen(
             null
         }
         val stepLabel = AppVersionDisplay.stepLabel(versionName)
+        val footShape = MaterialTheme.shapes.medium
         Column(
             modifier = Modifier
                 .padding(top = 8.dp)
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, footShape)
+                .background(A11yTokens.PaperWarm, footShape)
+                .padding(14.dp)
                 .semantics(mergeDescendants = true) {
                     contentDescription = buildString {
                         append("Mon Mois Clair")
                         if (stepLabel != null) append(", étape $stepLabel")
                         append(". Données sur cet appareil uniquement.")
                     }
-                }
+                },
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = "Mon Mois Clair",
@@ -336,11 +342,8 @@ fun SettingsScreen(
                 Text(
                     text = stepLabel,
                     style = MaterialTheme.typography.bodySmall,
-                    color = A11yTokens.InkMuted,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    color = A11yTokens.InkMuted
                 )
-            } else {
-                Spacer(modifier = Modifier.height(4.dp))
             }
             Text(
                 text = "Données sur cet appareil uniquement. Pas de compte, pas de cloud.",
