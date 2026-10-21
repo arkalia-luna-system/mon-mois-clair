@@ -4,6 +4,7 @@ import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.DossierRemaining
+import be.monmoisclair.app.domain.EuroFormat
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,7 +20,13 @@ data class DossierListItem(
     val paidCents: Long,
     val isSettled: Boolean,
     /** Instance à ouvrir (mois courant si possible, sinon la plus récente). */
-    val openInstanceId: String?
+    val openInstanceId: String?,
+    /** Ligne vraiment dans le mois courant. */
+    val dueThisMonth: Boolean = false,
+    /** Forfait + rythme (« 50 € / an »), pas le versement partiel du mois. */
+    val cadenceLabel: String = "",
+    /** Null si un mois a divergé, ou si ce n’est pas estimable. */
+    val pacePhrase: String? = null
 )
 
 data class DossiersSnapshot(
@@ -68,6 +75,29 @@ class ListDossiersUseCase @Inject constructor(
             }
             // « Ce mois » = une ligne vraiment dans le mois, pas le forfait d’une échéance lointaine.
             if (!settled && thisMonth != null) monthTotal += thisMonth.amountCents
+            val doneAmounts = instances
+                .filter { it.status == ExpenseStatus.DONE }
+                .map { it.amountCents }
+            val todoAmounts = instances
+                .filter { it.status == ExpenseStatus.TODO }
+                .map { it.amountCents }
+            val pace = if (settled) {
+                null
+            } else {
+                DossierRemaining.pacePhrase(
+                    forfaitCents = tpl.amountCents,
+                    remainingCents = remaining,
+                    intervalMonths = tpl.intervalMonths,
+                    doneAmounts = doneAmounts,
+                    todoAmounts = todoAmounts
+                )
+            }
+            val cadence = if (settled || tpl.amountCents <= 0L) {
+                ""
+            } else {
+                EuroFormat.formatCents(tpl.amountCents) + " " +
+                    DossierRemaining.cadenceSuffix(tpl.intervalMonths)
+            }
             items += DossierListItem(
                 templateId = tpl.id,
                 who = tpl.label,
@@ -77,7 +107,10 @@ class ListDossiersUseCase @Inject constructor(
                 totalDueCents = totalDue.coerceAtLeast(0L),
                 paidCents = paid.coerceAtLeast(0L),
                 isSettled = settled,
-                openInstanceId = openId
+                openInstanceId = openId,
+                dueThisMonth = thisMonth != null,
+                cadenceLabel = cadence,
+                pacePhrase = pace
             )
         }
         // Ouverts d’abord, puis soldés ; alpha sur le nom.

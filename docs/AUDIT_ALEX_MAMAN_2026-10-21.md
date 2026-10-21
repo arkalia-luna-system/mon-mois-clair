@@ -3,8 +3,10 @@
 Date du premier constat : 2026-10-21.  
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
-Dernière étape **fermée** dans le journal : **6.36** (`0.1.0-6.36`, `versionCode` 41), schéma **7**, tests **226/226** (`--rerun-tasks`).  
-Lots A–F tenus **à cette étape**. L’arbre a bougé après : lire la **§8** avant de croire un badge ou une case ✅.  
+Dernière étape **fermée** dans le journal : **6.37** (`0.1.0-6.37`, `versionCode` 42), schéma **7**, suite **231/231**.  
+Phrase rythme : fiche + Mes dossiers + résumé ; jamais l’accueil ; masquée si un **FAIT** a divergé.  
+
+Lots A–F + 6.37 tenus. Lire la **§8** avant de croire un badge ou une case ✅.  
 Smokes Ultra (« Écrire », FAIT) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`AUDIT_STATUS.md`). Le S26 réel n’y est pas.
 
 Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
@@ -244,7 +246,7 @@ Tests ciblés relancés pendant la correction du lot B (moteur, bascule FAIT, ho
 
 ### 7.2 Le trou de journal (erreur du soir, **refermée depuis**)
 
-**Ne plus lire ce tableau comme l’état actuel.** Il décrivait un écart 6.31 / schéma 6. Le journal fermé est **6.36**, schéma **7**, dernière suite verte **226/226**. L’écart vivant est la §8 (correctifs après cette suite, non relancés).
+**Ne plus lire ce tableau comme l’état actuel.** Il décrivait un écart 6.31 / schéma 6. Le journal fermé est **6.36**, schéma **7** ; suite post-correctifs **229/229** (§8).
 
 Ce soir-là, le journal parlait encore de 6.31 / 183 tests pendant que la base était déjà en schéma 6, et la charte disait encore « schéma 5 ». Cet écart a été refermé par les étapes 6.32 à 6.36. Room ne redescend toujours pas : un téléphone passé en schéma 7 ne rouvre pas un APK figé en schéma 6.
 
@@ -279,7 +281,7 @@ Clos au **6.32** (UI voir/enlever, aide, suite **198/198**). Reste ouvert hors c
 | Résumé à montrer | **Clos 6.36** — texte partageable (4 colonnes dette, mis de côté à part). Pas de PDF CPAS |
 | Smoke téléphone | Notifs multi + trimestriel : manuels. « Écrire », FAIT ≥ 48 dp, hauteur courte 780 dp + police 1,3 : **clos 2026-10-21** (`AUDIT_STATUS`) |
 | Checklist « zéro dossier = zéro mot » | L’accueil tient. Le formulaire d’une dépense a **un** bouton de plus, replié : « C’est un retard ou un accord ? ». L’aide contient la section. C’est l’écart accepté au lot B. Ce n’est pas zéro pixel au sens strict du plan §5 point 2 |
-| Suite de tests | Dernière verte **journalisée** : **226/226** au 6.36. 198/198 et 214/214 sont des étapes passées. L’arbre a 229 `@Test` non relancés (§8) |
+| Suite de tests | **229/229** sur l’arbre post-6.36 (journal). 226/226 = clôture lot F ; 198/214 = étapes passées |
 
 ### 7.5 Réflexions à ne pas perdre
 
@@ -333,13 +335,13 @@ Cette section remplace la partie 7 pour décider. Les parties 1 à 6 restent l�
 
 | Promesse | Tenu ? |
 |----------|--------|
-| Lots A à F dans le journal jusqu’à 6.36 | Oui, avec la suite **226/226** de cette étape |
-| Badge ou README « 226/226 » = l’arbre d’aujourd’hui | **Non.** 59 fichiers, **229** méthodes `@Test`. Les 3 en plus et les correctifs du journal « après 6.36 » n’ont pas été exécutés |
-| `versionName` `0.1.0-6.36` | Oui, et il doit le rester tant que la suite n’est pas relancée |
+| Lots A à F + phrase rythme | Oui jusqu’à **6.37** (**231/231**) |
+| Badge ou README = l’arbre d’aujourd’hui | Badge **231/231** · version `0.1.0-6.37` |
+| `versionName` `0.1.0-6.37` | Oui (`versionCode` 42) |
 | « En retard » en capitales dans l’app | **Non.** L’écran et l’aide disent « En retard ». Le README a été aligné |
 | `dist/CHECKLIST_S25.md` prouve le 6.36 | **Non.** C’est le 19 octobre, version 5.4.1. Le smoke 6.36 est dans le journal et `AUDIT_STATUS.md` |
 | Rapports `dist/verify/*2026-10-20*` | Figés en **6.26**. Ils ne décrivent pas A–F |
-| « encore environ N mois si le versement reste de X » | **Absent.** Pas une case cochée |
+| « encore environ N mois si le versement reste de X » | **Présent 6.37** (fiche, Mes dossiers, résumé). Jamais l’accueil. Contient « si ». Pas de « fin prévue ». Masquée si un **FAIT** ≠ forfait (TODO plafonnée OK). Année/trimestre = « versements » |
 | Pastille « Facture », « Sans les futures », « fin prévue », « Huissier » | Absents de l’UI. Le libellé sticky actuel est « Hors à payer ». La ligne 11 de `AUDIT_STATUS` parle encore de l’ancien libellé : c’est le smoke du 6.27, pas le texte d’aujourd’hui |
 | Zéro pixel si zéro dossier | Presque. Écart accepté : le bouton replié sur une nouvelle dépense, et la section d’aide |
 
@@ -365,7 +367,7 @@ Le domaine (reste, dossier, récurrence, backup, épargne) a des tests unitaires
 
 Trous connus, acceptés et écrits dans l’aide : le motif des frais est le dernier seulement ; le mail est un brouillon, pas une boîte ; « Mettre de côté » est une facture, pas une cagnotte ; le résumé ne la range pas avec les dossiers.
 
-Correctifs dans l’arbre, hors suite verte : garde contre le double appui (fiche, ajout, courrier, conversion, échéance, courses, FAIT, restauration, résumé, copie), photo écrite après la vérification des frais, total « ce mois » des dossiers limité aux lignes vraiment dans le mois, fiche d’épargne déjà FAIT qui ne réécrit pas le montant à venir.
+Correctifs repris dans la clôture **6.37** (**231/231**) : garde contre le double appui, photo écrite après la vérification des frais, total « ce mois » limité aux lignes du mois, fiche d’épargne déjà FAIT qui ne réécrit pas l’avenir, phrase de rythme avec « si ».
 
 ### 8.4 Est-ce premium ?
 
@@ -373,11 +375,9 @@ Pour maman et Alex, le geste premium est déjà le carnet : un gros reste, l’o
 
 Ce qui empêche de dire « produit fini premium » :
 
-1. La suite n’a pas été relancée sur le code d’après 6.36.
-2. Le S26 réel n’a pas été tenu. La sim. 360×780 + police 1,3 a vu la pastille Accord et un FAIT de 48 dp.
-3. La phrase « encore environ N mois si… » n’existe pas. Mieux vaut l’absence qu’une date certaine. Si on l’ajoute, elle doit contenir « si ».
-4. Trois lettres de frais : une somme et le dernier motif. Les photos en plus compensent en partie.
-5. La pastille Accord est volontairement discrète (encre sur fond chaud). Lisible sur la sim., pas mesurée au contraste sur le téléphone de maman.
+1. Le S26 réel n’a pas été tenu. La sim. 360×780 + police 1,3 a vu la pastille Accord et un FAIT de 48 dp. La suite **231/231** ne remplace pas ce téléphone.
+2. Trois lettres de frais : une somme et le dernier motif. Les photos en plus compensent en partie.
+3. La pastille Accord est volontairement discrète (encre sur fond chaud). Lisible sur la sim., pas mesurée au contraste sur le téléphone de maman.
 
 À ne pas ajouter pour « faire plus premium » : enveloppes, courbe, snowball, taux, PDF CPAS, onglet dettes, puce Huissier.
 
@@ -385,7 +385,7 @@ Ce qui empêche de dire « produit fini premium » :
 
 | Fichier | Rôle maintenant |
 |---------|-----------------|
-| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. La charte suit le 6.36. Le journal a une entrée **non close** pour l’après |
+| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. Version **6.37**, suite **231/231** |
 | `docs/PLAN_PRODUIT_FINI.md` | Construction A–F. Le §7 dit ce qui n’est pas livré |
 | `docs/AUDIT_STATUS.md` | Carnet de smoke. Pas un substitut du code |
 | `docs/archive/*` | Figé. Ne pas s’en servir pour l’état |

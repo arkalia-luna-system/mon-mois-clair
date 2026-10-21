@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.36** — résumé texte ; lots A–F clos). Des correctifs sont dans l’arbre après cette étape : ils ne changent pas cette charte tant qu’une suite Gradle ne les a pas fermés dans le journal.
+Mise à jour : 2026-10-21 (lot **6.37** — phrase rythme dossier ; lots A–F + estimation honnête).
 
 ## 1. Vision
 
@@ -84,6 +84,7 @@ Room / backup schéma **7** (étape 6.34) : mémoire papier (4) + dossier (5) + 
 | **6.34** | Courriers sans plan (`pending_letters`) · bandeau accueil · conversion → accord | ✅ lot D |
 | **6.35** | Mettre de côté (Réglages, facture mensuelle, alerte déficit) | ✅ lot E |
 | **6.36** | Résumé texte (Mes dossiers / Réglages si déficit ou dossier) | ✅ lot F |
+| **6.37** | Phrase rythme (« encore environ N… si… ») fiche / Mes dossiers | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

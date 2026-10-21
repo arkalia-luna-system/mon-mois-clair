@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/derni%C3%A8re%20suite%20verte-226%2F226%20au%206.36-yellow)](#statut)
+[![Tests](https://img.shields.io/badge/tests-231%2F231-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.36-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.37-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,11 +23,11 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.36` |
-| Dernière étape | **6.36** Lot F clos — résumé texte |
-| Device | Smoke **6.36** sur **Galaxy S25 Ultra** (`SM-S938B`) et sim. hauteur courte. `dist/CHECKLIST_S25.md` est le passage du **19 oct** (version 5.4.1), pas la preuve du 6.36. Le vrai S26 de maman n’est pas dans ce carnet |
+| Version | `0.1.0-6.37` |
+| Dernière étape | **6.37** Phrase rythme dossier |
+| Device | Smoke **6.36** sur **Galaxy S25 Ultra** (`SM-S938B`) et sim. hauteur courte. `dist/CHECKLIST_S25.md` est le passage du **19 oct** (version 5.4.1), pas la preuve du 6.37. Le vrai S26 de maman n’est pas dans ce carnet |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | Dernière suite **verte** : **226/226** au 6.36. L’arbre a 229 méthodes `@Test` non relancées — voir le journal, entrée « après 6.36 » |
+| Tests unitaires | **231/231** OK (59 fichiers, `--rerun-tasks`) |
 | Schéma Room | **7** — `pending_letters` (+ 6 : IBAN, e-mail, frais, extras) |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)
@@ -79,6 +79,7 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 | **Courriers sans plan** (bandeau + conversion) | ✅ |
 | **Mettre de côté** (Réglages, facture mensuelle) | ✅ |
 | **Résumé à envoyer** (Mes dossiers / Réglages) | ✅ |
+| **Phrase rythme** (fiche / Mes dossiers, avec « si ») | ✅ |
 
 ---
 
@@ -111,6 +112,7 @@ Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, fact
 6.34      Lot D — courriers sans plan (schéma 7)       ✅
 6.35      Lot E — Mettre de côté                       ✅
 6.36      Lot F — résumé texte                         ✅
+6.37      Phrase rythme dossier (si / environ)         ✅
 Smoke « Écrire » + FAIT ≥ 48 dp (Ultra)                ✅ 2026-10-21
 Hauteur courte type S26 (sim. 360×780 + texte 1,3)      ✅ 2026-10-21
 ```

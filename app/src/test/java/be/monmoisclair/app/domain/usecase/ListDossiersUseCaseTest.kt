@@ -104,6 +104,10 @@ class ListDossiersUseCaseTest {
         assertThat(item.remainingCents).isEqualTo(20_000L)
         assertThat(item.isSettled).isFalse()
         assertThat(item.openInstanceId).isEqualTo("exp:2026-10:tpl-acc")
+        assertThat(item.dueThisMonth).isTrue()
+        assertThat(item.cadenceLabel).isEqualTo("50 € / mois")
+        assertThat(item.pacePhrase)
+            .isEqualTo("Encore environ 4 mois si le versement reste de 50 €.")
     }
 
     @Test
@@ -125,6 +129,11 @@ class ListDossiersUseCaseTest {
         val snap = list()
         assertThat(snap.count).isEqualTo(1)
         assertThat(snap.monthTotalCents).isEqualTo(0L)
-        assertThat(snap.items.single().monthCents).isEqualTo(12_000L)
+        val item = snap.items.single()
+        assertThat(item.monthCents).isEqualTo(12_000L)
+        assertThat(item.dueThisMonth).isFalse()
+        assertThat(item.cadenceLabel).isEqualTo("120 € / an")
+        assertThat(item.pacePhrase)
+            .isEqualTo("Encore environ 1 versement si le versement reste de 120 €.")
     }
 }

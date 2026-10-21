@@ -95,10 +95,19 @@ class PrepareMonthSummaryUseCase @Inject constructor(
                 sb.append("• À qui : ${d.who}")
                 if (d.what.isNotBlank()) sb.append(" · Pour quoi : ${d.what}")
                 sb.appendLine()
-                sb.appendLine(
-                    "  Versement : ${EuroFormat.formatCents(d.monthCents)} · " +
-                        "Reste : ${EuroFormat.formatCents(d.remainingCents)}"
-                )
+                if (d.dueThisMonth) {
+                    sb.appendLine(
+                        "  Versement ce mois : ${EuroFormat.formatCents(d.monthCents)} · " +
+                            "Reste : ${EuroFormat.formatCents(d.remainingCents)}"
+                    )
+                } else {
+                    sb.appendLine(
+                        "  Pas de versement ce mois. · Reste : ${EuroFormat.formatCents(d.remainingCents)}"
+                    )
+                }
+                if (!d.pacePhrase.isNullOrBlank()) {
+                    sb.appendLine("  ${d.pacePhrase}")
+                }
                 if (ref.isNotBlank()) {
                     sb.appendLine("  Référence : $ref")
                 }

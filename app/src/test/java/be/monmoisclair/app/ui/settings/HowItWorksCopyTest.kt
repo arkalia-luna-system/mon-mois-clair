@@ -40,6 +40,8 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Ranger sans plan")
         assertThat(all).contains("Préparer un résumé")
         assertThat(all).contains("app Mail")
+        assertThat(all).contains("encore environ N mois si le versement reste de X")
+        assertThat(all).contains("forfait")
         assertThat(all).doesNotContain("ancre")
         assertThat(all).doesNotContain("EN RETARD")
         assertThat(all).doesNotContain("+ Divers")

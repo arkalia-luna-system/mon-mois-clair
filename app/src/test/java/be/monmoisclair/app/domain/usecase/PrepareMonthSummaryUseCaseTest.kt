@@ -107,8 +107,11 @@ class PrepareMonthSummaryUseCaseTest {
         val text = result.text
         assertThat(text).contains("À qui : Étude")
         assertThat(text).contains("Pour quoi : Hôpital")
-        assertThat(text).contains("Versement :")
+        assertThat(text).contains("Versement ce mois :")
         assertThat(text).contains("Reste :")
+        assertThat(text).contains("Encore environ")
+        assertThat(text).contains("si le versement reste de")
+        assertThat(text).doesNotContain("fin prévue")
         assertThat(text).contains("Référence : +++000/0000/00097+++")
         assertThat(text).doesNotContain("receipts/")
         assertThat(text).doesNotContain("secret.webp")
@@ -153,6 +156,31 @@ class PrepareMonthSummaryUseCaseTest {
         assertThat(text).contains("300")
         assertThat(text.lowercase()).doesNotContain("payez d’abord")
         assertThat(text.lowercase()).doesNotContain("payez d'abord")
+    }
+
+    @Test
+    fun offMonthDossier_saysNoPaymentThisMonth_andKeepsPace() = runBlocking {
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-tax",
+                label = "Taxe",
+                amountCents = 12_000L,
+                dayOfMonth = 3,
+                active = true,
+                intervalMonths = 12,
+                causeLabel = "2025",
+                openingRemainingCents = 12_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        val text = prepare(YearMonth.of(2026, 10)).text
+        assertThat(text).contains("À qui : Taxe")
+        assertThat(text).contains("Pas de versement ce mois.")
+        assertThat(text).doesNotContain("Versement ce mois :")
+        assertThat(text).contains("Encore environ 1 versement si le versement reste de 120 €.")
+        assertThat(text).doesNotContain("fin prévue")
     }
 
     @Test

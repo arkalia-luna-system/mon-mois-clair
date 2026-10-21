@@ -2,8 +2,8 @@
 
 Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A à F** clos dans le journal jusqu’à `0.1.0-6.36` (schéma Room **7**, dernière suite verte **226/226**).  
-L’arbre a des correctifs **après** cette suite : ils ne sont pas une nouvelle version. Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
+Lots **A à F** + phrase rythme **6.37** clos dans le journal (`0.1.0-6.37`, schéma Room **7**, **231/231**).  
+Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
 
@@ -108,7 +108,7 @@ Schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · « 
 
 ### Lot D — Mes dossiers, et le tiroir — clos au journal 6.34
 
-Schéma **7** + migration + backup · `pending_letters` · « Ranger sans plan » (ajout) + formulaire Mes dossiers · section liste · conversion versement+reste → accord · bandeau accueil · Menu si dossiers **ou** courriers · **214/214**. Phrase optionnelle « encore N mois si… » **non** livrée (pas bloquante).
+Schéma **7** + migration + backup · `pending_letters` · « Ranger sans plan » (ajout) + formulaire Mes dossiers · section liste · conversion versement+reste → accord · bandeau accueil · Menu si dossiers **ou** courriers · **214/214**. Phrase optionnelle « encore N mois si… » livrée au journal **6.37**.
 
 **Problème.** Quatre accords ne se voient bien que si on quitte le mois **volontairement**. Une lettre reçue sans plan ne doit pas inventer un montant.
 
@@ -117,7 +117,7 @@ Schéma **7** + migration + backup · `pending_letters` · « Ranger sans plan �
 - Section **« Courriers sans plan »** : photo + qui + pour quoi, **montant vide**. Ça n’entre pas dans le Reste et ne crée pas de ligne de mois.
 - Dès qu’ils fixent un versement, le courrier devient un dossier du lot B.
 - S’il existe au moins un courrier sans plan : **une** ligne sur l’accueil, même famille que « À prévoir ».
-- Phrase optionnelle « encore environ N mois si… » : reportée (pas dans 6.34).
+- Phrase optionnelle « encore environ N mois si… » : **clos 6.37** (fiche, Mes dossiers, résumé ; pas l’accueil).
 
 **Maman.** 0 dossier et 0 courrier : pas de bouton Menu (tenu).
 
@@ -201,25 +201,24 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 |--------|--------|
 | Le bloc « retard ou accord » s’ouvre par erreur et fait peur | Fermé par défaut. Aucun champ huissier tant qu’il est fermé. On peut le refermer sans enregistrer (déjà : quitter sans enregistrer) |
 | Deux restes (colonne + calcul) qui divergent | Une seule source : calcul. Pas de colonne « reste actuel » |
-| La photo modèle + la photo du mois se contredisent | Le mois affiche la sienne s’il en a une, sinon celle du modèle |
+| La photo modèle + la photo du mois se contredisent | Le mois affiche la sienne. Un mois sans photo n’emprunte pas celle du modèle : « enlever ce mois » reste vrai |
 | Archive ZIP > 45 Mo à cause des lettres | Plafond déjà là. Qualité baissée au-dessus de ~400 Ko (`ReceiptPhotoStore`). On ne stocke pas l’original 12 Mpx |
 | Schéma 7 (clos 6.34) | Room ne redescend pas : un téléphone en 7 ne rouvre pas un APK figé en 6 |
 | Motif de frais = dernier seulement | Accepté au C (aide). Liste datée = chantier séparé, pas D |
 | Maman active « Mettre de côté » trop haut | Alerte déficit **avant** enregistrement |
 | Le résumé part par WhatsApp (pas chiffré de bout en bout selon les réglages) | Le bouton dit « à envoyer à un créancier ou à un conseiller », pas « partager à tout le monde ». On ne peut pas empêcher le geste. On n’y met pas l’identité |
-| Promesse de date | La phrase « encore environ N mois si… » **n’est pas à l’écran**. Il n’y a pas non plus de « fin prévue ». Ne pas cocher ce point comme livré |
+| Promesse de date | Phrase **6.37** : **« si »**, jamais « fin prévue ». Masquée si un **FAIT** ≠ forfait. Cadence annuelle/trimestrielle = « versements » |
 
 ---
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F clos** au journal (`0.1.0-6.36`, schéma 7, suite verte **226/226**). Le plan de construction est tenu dans le code de cette étape.
+**A–F clos** + phrase rythme **6.37** (`0.1.0-6.37`, schéma 7, **231/231**). Le plan de construction est tenu.
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
-- la phrase « encore environ N mois si le versement reste de X » (prévue au principe 9, absente de l’écran) ;
-- une suite Gradle sur les correctifs d’après 6.36 (journal, entrée non close) ;
-- le S26 de maman en main.
+- le S26 de maman en main ;
+- tests d’écran instrumentés.
 
-**Prochain geste** : une seule suite `./gradlew :app:testDebugUnitTest --rerun-tasks`. Si elle est verte, le journal peut alors parler d’une nouvelle étape. Pas avant.
+**Prochain geste** : campagne personae [`testeurs/CAMPAGNE_PRODUIT_FINI.md`](testeurs/CAMPAGNE_PRODUIT_FINI.md).
 
 Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.

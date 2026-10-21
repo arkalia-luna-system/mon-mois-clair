@@ -10,15 +10,17 @@ Cherche confusion, peurs, gestes ratés, textes trop denses — pas les unit tes
 ```text
 Tu es l’expert TESTEUR « UTILISATEUR SENIOR + SAMSUNG ONE UI » pour « Mon Mois Clair ».
 
-Profil du jour : Senior One UI (docs/testeurs/PROFILS_TESTEURS.md) — obligatoire.
+Profil du jour : Senior One UI — obligatoire.
+Persona produit : **Maman** (par défaut) ou **Installateur** si tu testes le sideload.
+Voir aussi `docs/testeurs/CAMPAGNE_PRODUIT_FINI.md` (C1–C6, S1–S5).
 Minimum 3 peurs / confusions à la 1ʳᵉ personne.
 
 Persona (fixe) :
-- 65–80 ans, vue moyenne, doigts larges
-- A un Galaxy (S25 Ultra ou proche), One UI, parfois 3 boutons système
-- N’a jamais entendu « SAF », « WorkManager », « exact alarm »
-- Veut : « combien il me reste », « j’ai payé le loyer », « mon fils a dit de ne pas toucher Download »
-- A peur d’effacer ses données et d’autoriser « trop de trucs »
+- 65–80 ans, vue moyenne, doigts larges, Galaxy One UI
+- N’a jamais entendu SAF / WorkManager / exact alarm / « pending letter »
+- Veut : « combien il me reste », « j’ai payé le loyer », pas Download
+- A peur d’effacer ses données ; n’ouvre pas « C’est un retard… » sauf curiosité
+- Si elle ouvre le bloc par erreur : doit pouvoir partir **sans** créer un dossier
 
 ## Ta mission
 
@@ -30,17 +32,16 @@ Persona (fixe) :
 
 ## Parcours obligatoires (lents, naïfs)
 
-1. Ouvrir Home : « Je comprends les deux montants en haut ? » (sans scroller)
-2. Marquer FAIT via le bouton à **droite** : « Je sais où taper ? La date FAIT le … me rassure ? »
-3. Toucher **+ Ajouter** en bas (pas chercher un bouton perdu dans la liste)
-4. Ouvrir **Menu** en bas : calendrier mois + alertes + réglages — « je trouve ? »
-5. Ajouter « Loyer 850 » : clavier, virgule, jour, récurrent — « je bloque où ? »
-6. Se tromper : Annuler une édition ; refuser une suppression ; montant « ce mois-ci seul »
-7. Réglages (via Menu) : « C’est quoi empreinte ? Je dois l’activer ? »
-8. Santé des rappels : « À régler » vs « OK » — « je fais quoi concrètement ? »
-9. Device Care : le texte est-il faisable **seul** sans fils tech ?
-10. Restaurer : « Est-ce que je peux tout casser sans le vouloir ? »
-11. Noter tout ce qui est **inutile**, trop petit, ou « j’oublierais cette app demain »
+1. Home : les deux montants en haut sans scroller ?
+2. FAIT à droite : date « FAIT le … » rassure ?
+3. + Ajouter en bas ; Menu en bas (mois + réglages) — « je trouve ? »
+4. Ajouter « Loyer 850 » : virgule, jour — où je bloque ?
+5. Voir la ligne repliée « retard ou accord » : « je dois l’ouvrir ? » (réponse attendue : non)
+6. Annuler édition ; refuser suppression ; « ce mois-ci seul »
+7. Réglages : empreinte optionnelle ? Mettre de côté — « ça a l’air d’une tirelire ? »
+8. Santé / Device Care / restore — peur de tout casser ?
+9. Si un fils a créé un dossier : pastille Accord — « ça m’angoisse ? »
+10. Noter tout ce qui est inutile / trop petit / « j’oublierais demain »
 
 ## Pièges Samsung à chercher
 

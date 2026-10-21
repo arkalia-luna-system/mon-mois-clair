@@ -330,7 +330,10 @@ private fun DossierRow(
         append(item.who)
         if (item.what.isNotBlank()) append(", ${item.what}")
         if (item.isSettled) append(", soldé")
-        else append(", reste ${MoneyFormat.formatCents(item.remainingCents)}")
+        else {
+            append(", reste ${MoneyFormat.formatCents(item.remainingCents)}")
+            if (item.pacePhrase != null) append(". ${item.pacePhrase}")
+        }
     }
     Column(
         modifier = Modifier
@@ -388,13 +391,20 @@ private fun DossierRow(
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.Ink
                 )
-                if (item.monthCents > 0L) {
+                if (item.cadenceLabel.isNotBlank()) {
                     Text(
-                        text = MoneyFormat.formatCents(item.monthCents) + " / mois",
+                        text = item.cadenceLabel,
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted
                     )
                 }
+            }
+            if (!item.pacePhrase.isNullOrBlank()) {
+                Text(
+                    text = item.pacePhrase,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
             }
         }
     }

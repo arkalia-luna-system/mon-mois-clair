@@ -76,7 +76,9 @@ object HowItWorksCopy {
                 "vous pouvez voir ou enlever chaque courrier. " +
                 "Le motif des frais affiché est le dernier saisi. " +
                 "S’il y a au moins un accord : Menu → « Mes dossiers » " +
-                "(reste dû et barre ; rien sur l’accueil). " +
+                "(reste dû, barre, et « encore environ N mois si le versement reste de X » " +
+                "sur la fiche et Mes dossiers — seulement si chaque versement déjà FAIT " +
+                "est resté au forfait ; rien de tout ça sur l’accueil). " +
                 "Sans versement encore : « Ranger sans plan » (photo + qui + pour quoi) — " +
                 "le courrier n’entre pas dans le Reste. Une ligne sur l’accueil " +
                 "« courrier sans plan · Voir » s’affiche s’il y en a. " +

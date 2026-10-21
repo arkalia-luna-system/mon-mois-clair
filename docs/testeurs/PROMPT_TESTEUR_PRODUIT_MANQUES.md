@@ -81,14 +81,21 @@ Pour chaque trou potentiel, répondre :
 - Bio optionnelle : comprend-on que par défaut c’est ouvert ?
 - Si HW KO : message non anxiogène ?
 
-### Trous fréquents à chercher (exemples, pas une checklist fermée)
-- Pas de récap annuel / totaux hors mois courant
-- Pas d’export CSV / partage (hors charte ? noter seulement)
-- Pas d’aide « comment ça marche » in-app
-- Liste très longue : pas de recherche / filtre
-- Pas de confirmation visuelle « backup écrit » après mutation
-- Libellés ambigus (Santé, Device Care, FAIT)
-- Rien n’explique J−3 / Jour J concrètement à l’utilisateur
+### Lots A–F (produit fini) — manques / opacités
+- Zéro dossier : l’accueil est-il **identique** (seul écart accepté = bloc replié + aide) ?
+- Accord : comprend-on que le gros chiffre Home = versement du mois, pas la dette ?
+- Écrire / IBAN : sait-on qu’il faut **rouvrir** la fiche après création ?
+- Pending « Ranger sans plan » : clair que ce n’est **pas** dans À payer ?
+- Mettre de côté : peur de cagnotte à l’écran ? Alerte déficit comprise ?
+- Résumé : utile pour un créancier / conseiller ? Mis de côté **pas** mélangé à la dette ?
+- Motif frais = dernier seulement : l’aide le dit-elle assez ?
+- Aide in-app : sections retard/accord / dossiers / résumé à jour ?
+
+### Trous fréquents (exemples)
+- Libellés ambigus (Santé, Device Care, FAIT, Accord)
+- Rien n’explique J−3 / Jour J concrètement
+- Confirmation backup après mutation trop discrète
+- Liste longue : recherche OK ? filtre manquant utile ou hors charte ?
 
 ## Livrable
 

@@ -6,7 +6,8 @@ Index des notes **actives**. Le reste est archivé ou réservé aux campagnes te
 
 | Fichier | Rôle |
 |---------|------|
-| [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | Lots A→F : faits / à faire |
+| [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | Lots A→F clos côté code |
+| [`testeurs/CAMPAGNE_PRODUIT_FINI.md`](testeurs/CAMPAGNE_PRODUIT_FINI.md) | Campagne testeurs toute l’app (personae) |
 | [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) | Constats. **L’état pour décider est la §8** |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy (carnet visuel) |
 | [`CI.md`](CI.md) | Feuille de route CI |

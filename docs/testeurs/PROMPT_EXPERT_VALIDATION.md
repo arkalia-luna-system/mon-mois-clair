@@ -37,17 +37,17 @@ profils ont été traités ou explicitement reportés, sans fausse promesse.
 - `.cursor/rules/pre-push-verification.mdc`
 - `docs/testeurs/README_TESTEURS.md`
 
-## Checklist claims 6.8+ (cocher)
+## Checklist claims 6.36 / lots A–F (cocher)
 
-- [ ] Accueil = ledger ; Menu + Ajouter en barre basse (pas fourre-tout scroll)
-- [ ] « FAIT le JJ/MM » visible si doneAtEpochMs
-- [ ] Palette carnet (pas blanc pur / rouge sang) dans A11yTokens
-- [ ] Pas de claim « report auto du reste » / graphiques / banque
-- [ ] Édition montant : défaut ce mois-ci seul
-- [ ] Grille jours 1–31 ; « Auto » lisible (encre sur or, pas or sur crème)
-- [ ] Menu « Alertes » = notifications ou alarmes exactes seulement
-- [ ] versionName = PROGRESS = README = APK installé
-- [ ] Tests N/N = compte XML après --rerun-tasks
+- [ ] Accueil = ledger ; Menu + Ajouter en barre basse
+- [ ] « FAIT le JJ/MM » ; pastille Accord sans € dette sur Home
+- [ ] Schéma / backup **7** ; pending_letters ; pas de claim schéma 5/6 seul
+- [ ] Lots D/E/F décrits seulement s’ils sont clos au journal + tests
+- [ ] Pas de claim banque / cloud / graphiques / huissier / « fin prévue » sans « si »
+- [ ] versionName = PROGRESS = README = APK installé (release famille)
+- [ ] Tests N/N = compte XML après `--rerun-tasks`
+- [ ] Rapports campagne (`CAMPAGNE_PRODUIT_FINI`) : P0/P1 traités ou reportés
+- [ ] Smokes listés dans `docs/AUDIT_STATUS.md` cohérents avec la réalité device
 
 ## Sortie
 

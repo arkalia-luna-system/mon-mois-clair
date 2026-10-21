@@ -61,6 +61,11 @@ data class EditEntryState(
     /** Reste calculé (null = pas un dossier). */
     val remainingCents: Long? = null,
     val isSettled: Boolean = false,
+    /**
+     * « Encore environ N mois si… » — null si un FAIT a divergé, si c’est soldé,
+     * ou si ce n’est pas un accord. Jamais affiché sur l’accueil.
+     */
+    val pacePhrase: String? = null,
     /** Lot C — visibles seulement sur un dossier. */
     val iban: String = "",
     val creditorEmail: String = "",
@@ -148,13 +153,24 @@ class EditEntryViewModel @Inject constructor(
         } ?: 0L
         val fees = tpl?.addedFeesCents ?: 0L
         val remaining = DossierRemaining.remainingCents(opening, paid, fees)
+        val instances = e.templateId?.let { instanceDao.expensesByTemplate(it) }.orEmpty()
         val savingsId = appMetaDao.get(AppMetaKeys.SAVINGS_TEMPLATE_ID)?.value?.trim().orEmpty()
         val isSavings = tpl != null && tpl.active && tpl.id == savingsId
-        val transferred = if (isSavings && e.templateId != null) {
-            instanceDao.sumAmountCentsByTemplateAndStatus(e.templateId, ExpenseStatus.DONE)
+        val pace = if (isSavings || tpl == null || remaining == null || remaining <= 0L) {
+            null
         } else {
-            0L
+            DossierRemaining.pacePhrase(
+                forfaitCents = tpl.amountCents,
+                remainingCents = remaining,
+                intervalMonths = tpl.intervalMonths,
+                doneAmounts = instances.filter { it.status == ExpenseStatus.DONE }.map { it.amountCents },
+                todoAmounts = instances.filter { it.status == ExpenseStatus.TODO }.map { it.amountCents }
+            )
         }
+        val transferred = e.templateId
+            ?.takeIf { isSavings }
+            ?.let { instanceDao.sumAmountCentsByTemplateAndStatus(it, ExpenseStatus.DONE) }
+            ?: 0L
         _state.update {
             it.copy(
                 loading = false, label = e.label,
@@ -167,6 +183,7 @@ class EditEntryViewModel @Inject constructor(
                 isAgreement = DossierRemaining.isDossier(opening),
                 remainingCents = remaining,
                 isSettled = DossierRemaining.isSettled(opening, paid, fees),
+                pacePhrase = pace,
                 dossierExpanded = DossierRemaining.isDossier(opening),
                 iban = tpl?.iban.orEmpty(),
                 creditorEmail = tpl?.creditorEmail.orEmpty(),

@@ -680,6 +680,7 @@ fun EditEntryScreen(
         isAgreement = state.isAgreement,
         remainingCents = state.remainingCents,
         isSettled = state.isSettled,
+        pacePhrase = state.pacePhrase,
         isSavingsLine = state.isSavingsLine,
         savingsTransferredCents = state.savingsTransferredCents,
         lockAmountAndDay = state.isSavingsLine && state.savingsMonthDone,
@@ -800,6 +801,7 @@ private fun EntryFormScaffold(
     isAgreement: Boolean = false,
     remainingCents: Long? = null,
     isSettled: Boolean = false,
+    pacePhrase: String? = null,
     isSavingsLine: Boolean = false,
     savingsTransferredCents: Long = 0L,
     lockAmountAndDay: Boolean = false,
@@ -1100,6 +1102,13 @@ private fun EntryFormScaffold(
                                     .background(A11yTokens.PaperWarm, remShape)
                                     .padding(10.dp)
                             )
+                            if (!pacePhrase.isNullOrBlank()) {
+                                Text(
+                                    text = pacePhrase,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = A11yTokens.InkMuted
+                                )
+                            }
                         }
                     }
                     OutlinedTextField(
