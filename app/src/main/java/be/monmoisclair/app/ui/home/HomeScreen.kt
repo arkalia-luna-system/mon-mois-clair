@@ -79,6 +79,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.MainActivity
+import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -872,12 +873,13 @@ fun HomeScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = if (keyboardOpen) 8.dp else 88.dp)
         ) { data ->
+            val verify = data.visuals.message == BelgianStructuredCommunication.VERIFY_ON_MAIL
             Snackbar(
                 snackbarData = data,
                 shape = MaterialTheme.shapes.medium,
-                containerColor = A11yTokens.Ink,
-                contentColor = A11yTokens.ButtonText,
-                actionColor = A11yTokens.ButtonText
+                containerColor = if (verify) A11yTokens.PaperWarm else A11yTokens.Ink,
+                contentColor = if (verify) A11yTokens.Ink else A11yTokens.ButtonText,
+                actionColor = if (verify) A11yTokens.Ink else A11yTokens.ButtonText
             )
         }
     }
