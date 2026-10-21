@@ -15,7 +15,7 @@ object HowItWorksCopy {
             body = "Le gros chiffre, c’est le « Reste après factures » : vos revenus du mois moins toutes les factures " +
                 "(payées ou non). " +
                 "« À payer » dit ce qui reste à régler. " +
-                "« Hors à payer » (en brun) montre ce qu’il resterait si on ne comptait que les factures déjà FAIT. " +
+                "« Après les FAIT » (en brun) montre ce qu’il resterait si on ne comptait que les factures déjà cochées. " +
                 "Ce n’est pas le solde de votre compte en banque. " +
                 "Chaque mois est une page neuve : l’app ne reporte pas toute seule ce qui restait. " +
                 "Pour le noter, ajoutez un revenu « Reste du mois passé », une seule fois."

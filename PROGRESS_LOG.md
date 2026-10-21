@@ -11,19 +11,36 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 |-------|--------|
 | Dernière étape terminée | **6.37** (phrase rythme dossier) |
 | Étape en cours | — |
-| Prochaine sous-étape | Campagne device : finir Visuel Perf · Produit Fidélité ×2 · Senior One UI |
-| Audit premium | Smokes 6.36 clos · phrase rythme **6.37** · campagne Ultra en cours · **232/232** |
+| Prochaine sous-étape | — (campagne device clôturée côté P0/P1) · S26 maman optionnel |
+| Audit premium | Smokes + campagne Ultra · sticky « Après les FAIT » · **232/232** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
 
+### 2026-10-21 — Campagne : sticky Senior + snackbar FAIT
+
+**Vu :** « Hors à payer » opaque (Senior/Produit) ; doute « FAIT efface la ligne ? ».
+
+**Codé :** sticky → **Après les FAIT** · aide + charte · snackbar « Noté FAIT — la ligne reste ».  
+**Tests :** **232/232** (`--rerun-tasks`). Version inchangée `0.1.0-6.37`.  
+**Suite :** dumps campagne allégés (rapports seuls).
+
 ### 2026-10-21 — Rangement fin de journée (docs / dist)
 
 **Fait :** AppleDouble `._*` retirés · checklist S25 → `docs/archive/` · rapports 2026-10-20 archivés · dumps `dist/verify` (audit, from_zero, p3*, visuel…) effacés · debug APK retiré · `.gitignore` ignore campagnes/py/log · index `docs/` + `dist/verify/README` à jour.  
 **Préservé :** `campagne-2026-10-21/` (agents en cours) · release APK locale · RESET.  
 **Pas de bump version.**
+
+### 2026-10-21 — Campagne suite : « Après les FAIT » + hint jours
+
+**Vu :** Senior ne comprenait pas « Hors à payer » ; hint grille sous le pli.
+
+**Codé :** sticky « Après les FAIT » (+ aide / charte) · hint jour **au-dessus** de la grille.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **232/232**  
+**Version :** inchangée `0.1.0-6.37` · device SM-S938B vérifié
 
 ### 2026-10-21 — Campagne device (correctifs P0/P1, pas de bump)
 

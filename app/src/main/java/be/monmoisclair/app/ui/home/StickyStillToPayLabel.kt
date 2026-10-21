@@ -30,5 +30,6 @@ fun stickyWithoutUnpaidLabel(
     formatCents: (Long) -> String = MoneyFormat::formatCents
 ): String? {
     if (stillToPayCents <= 0L) return null
-    return "Hors à payer ${formatCents(remainingCents + stillToPayCents)}"
+    // Libellé familial : « Hors à payer » restait opaque (campagne Senior).
+    return "Après les FAIT ${formatCents(remainingCents + stillToPayCents)}"
 }

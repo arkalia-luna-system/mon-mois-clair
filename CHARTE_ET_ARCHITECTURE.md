@@ -35,10 +35,10 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 |-------|------|--------|
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
 | **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 |
-| **Hors à payer** | Revenus − factures **déjà FAIT** (= Reste + À payer) | Seulement s’il reste à payer (> 0) |
+| **Après les FAIT** | Revenus − factures **déjà FAIT** (= Reste + À payer) | Seulement s’il reste à payer (> 0) ; ancien libellé « Hors à payer » |
 | **Après courses** | Reste − courses / divers du mois | Seulement si courses > 0 |
 
-Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Hors à payer = brun `#8A5A1E` ; Après courses = muted.  
+Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun `#8A5A1E` ; Après courses = muted.  
 Pas de plaque colorée, pas de nom d’app dans l’en-tête.
 
 **Interdit** : empiler Alertes / aide / restore dans le Menu (ils vivent dans **Réglages**) ; boutons critiques collés tout en haut.  
@@ -177,7 +177,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 
 | Idée étude | Décision MMC |
 |------------|--------------|
-| Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Hors à payer** (si besoin) + **Après courses** (si besoin). Gros chiffre = signal n°1 (36 sp compact / 42 sp confort) |
+| Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Après les FAIT** (si besoin) + **Après courses** (si besoin). Gros chiffre = signal n°1 (36 sp compact / 42 sp confort) |
 | Check-off | Bouton d’**action** « FAIT ✓ » à droite (≥ 96 dp). « À payer » baisse tout de suite. Le bouton ne s’appelle pas « À PAYER » : un bouton dit l’action |
 | Preuve | Pastille **« FAIT le JJ/MM »** (`doneAtEpochMs`) |
 | Liste > graphiques | Jamais camembert / courbes |

@@ -52,7 +52,12 @@ fun DayOfMonthGrid(
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted
         )
-        Spacer(Modifier.height(if (fit.compactHomeChrome) 4.dp else 6.dp))
+        Text(
+            text = "Touchez un jour (1 à 31). Faites défiler la page pour voir la suite.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted,
+            modifier = Modifier.padding(top = 2.dp, bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
+        )
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(dayGap),
             verticalArrangement = Arrangement.spacedBy(dayGap)
@@ -100,12 +105,6 @@ fun DayOfMonthGrid(
                 }
             }
         }
-        Text(
-            text = "Faites défiler pour voir tous les jours (1 à 31).",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier.padding(top = 6.dp)
-        )
         if (selectedDay != null && selectedDay > 28) {
             Spacer(Modifier.height(8.dp))
             val tipShape = MaterialTheme.shapes.medium

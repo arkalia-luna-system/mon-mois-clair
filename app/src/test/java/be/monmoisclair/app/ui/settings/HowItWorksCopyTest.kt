@@ -23,7 +23,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("1 à 31")
         assertThat(all).contains("Ajouter")
         assertThat(all).contains("Après courses")
-        assertThat(all).contains("Hors à payer")
+        assertThat(all).contains("Après les FAIT")
         assertThat(all).contains("« Copier »")
         assertThat(all).contains("12 chiffres")
         assertThat(all).contains("Aussi les mois suivants")
