@@ -45,7 +45,11 @@ fun ConvertPendingLetterScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        Text(text = "Fixer un versement", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Fixer un versement",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         if (state.loading) {
             val busyShape = MaterialTheme.shapes.medium
             Row(

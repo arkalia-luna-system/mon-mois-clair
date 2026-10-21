@@ -55,7 +55,11 @@ fun SafSetupScreen(
             style = MaterialTheme.typography.labelLarge,
             color = A11yTokens.InkMuted
         )
-        Text(text = "Dossier de sauvegarde", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Dossier de sauvegarde",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Choisissez un dossier dans Documents (pas Téléchargements / Download). " +

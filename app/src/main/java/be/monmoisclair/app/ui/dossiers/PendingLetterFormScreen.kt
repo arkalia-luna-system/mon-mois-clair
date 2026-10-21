@@ -84,7 +84,11 @@ fun PendingLetterFormScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        Text(text = "Courrier sans plan", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Courrier sans plan",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
         val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Qui, pour quoi, photo — pas de montant. Rien dans le Reste.",

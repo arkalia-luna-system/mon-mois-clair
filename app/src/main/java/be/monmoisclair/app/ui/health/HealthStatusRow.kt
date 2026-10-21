@@ -50,6 +50,7 @@ fun HealthStatusRow(label: String, ok: Boolean) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.Ink,
             modifier = Modifier.padding(start = 10.dp)
         )
     }
