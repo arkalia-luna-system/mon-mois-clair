@@ -946,10 +946,16 @@ private fun EntryFormScaffold(
                     label = "Prélèvement automatique",
                     onChecked = onAutoDebit
                 )
+                val autoTipShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Les rappels diront de vérifier le prélèvement (la ligne reste à cocher FAIT).",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, autoTipShape)
+                        .background(A11yTokens.PaperCard, autoTipShape)
+                        .padding(12.dp)
                 )
             }
             if (showDossierSection) {
@@ -972,10 +978,16 @@ private fun EntryFormScaffold(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                     if (isSettled) {
+                        val settledShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Soldé",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.AccentOk
+                            color = A11yTokens.AccentOk,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), settledShape)
+                                .background(A11yTokens.PaperWarm, settledShape)
+                                .padding(12.dp)
                         )
                     }
                     remainingCents?.let { rem ->

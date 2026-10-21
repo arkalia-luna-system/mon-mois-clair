@@ -30,8 +30,8 @@ fun HowItWorksScreen(onBack: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, introShape)
-                .background(A11yTokens.PaperWarm, introShape)
-                .padding(12.dp)
+                .background(A11yTokens.PaperCard, introShape)
+                .padding(14.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         HowItWorksCopy.sections.forEach { section ->

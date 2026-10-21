@@ -170,6 +170,17 @@ fun ConvertPendingLetterScreen(
                         }
                 )
             }
+            if (state.saving) {
+                Text(
+                    text = "Création de l’accord…",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier.semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription = "Création de l’accord"
+                    }
+                )
+            }
             PrimaryA11yButton(
                 text = if (state.saving) "Enregistrement…" else "Créer l’accord",
                 onClick = viewModel::convert,

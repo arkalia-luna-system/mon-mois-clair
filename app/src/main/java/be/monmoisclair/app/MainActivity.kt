@@ -10,7 +10,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +22,8 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -122,10 +126,20 @@ class MainActivity : AppCompatActivity() {
                             },
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(
-                                color = A11yTokens.ButtonFill,
-                                strokeWidth = 3.dp
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                CircularProgressIndicator(
+                                    color = A11yTokens.ButtonFill,
+                                    strokeWidth = 3.dp
+                                )
+                                Text(
+                                    text = "Chargement…",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = A11yTokens.InkMuted
+                                )
+                            }
                         }
                     }
                     state.needsUnlock && !sessionEntered -> {

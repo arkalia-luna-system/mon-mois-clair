@@ -167,18 +167,30 @@ fun RestoreBackupScreen(
 
         state.message?.let { msg ->
             if (!showSuccessDialog) {
+                val msgShape = MaterialTheme.shapes.medium
+                val err = state.isError
                 Text(
                     text = msg,
-                    color = if (state.isError) A11yTokens.AccentDanger else A11yTokens.AccentOk,
+                    color = if (err) A11yTokens.AccentDanger else A11yTokens.AccentOk,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.semantics {
-                        liveRegion = if (state.isError) {
-                            LiveRegionMode.Assertive
-                        } else {
-                            LiveRegionMode.Polite
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            1.dp,
+                            if (err) A11yTokens.AccentDanger.copy(alpha = 0.4f)
+                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            msgShape
+                        )
+                        .background(A11yTokens.PaperWarm, msgShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = if (err) {
+                                LiveRegionMode.Assertive
+                            } else {
+                                LiveRegionMode.Polite
+                            }
+                            contentDescription = msg
                         }
-                        contentDescription = msg
-                    }
                 )
             }
         }

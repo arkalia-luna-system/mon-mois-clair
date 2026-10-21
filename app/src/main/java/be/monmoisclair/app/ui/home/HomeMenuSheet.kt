@@ -120,7 +120,15 @@ fun HomeMenuSheet(
             }
 
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Mois", style = MaterialTheme.typography.titleLarge)
+            val monthsShape = MaterialTheme.shapes.medium
+            Text(
+                text = "Mois",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, monthsShape)
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
+            )
             val byYear = months.groupBy { it.year }
             HomeMonthChoices.yearsInOrder(months).forEach { year ->
                 val yearMonths = byYear[year] ?: return@forEach
