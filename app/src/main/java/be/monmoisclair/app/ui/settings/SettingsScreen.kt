@@ -452,13 +452,13 @@ fun SettingsScreen(
                 .padding(top = 8.dp)
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, footShape)
-                .background(A11yTokens.PaperWarm, footShape)
+                .background(A11yTokens.PaperCard, footShape)
                 .padding(14.dp)
                 .semantics(mergeDescendants = true) {
                     contentDescription = buildString {
                         append("Mon Mois Clair")
                         if (stepLabel != null) append(", étape $stepLabel")
-                        append(". Données sur cet appareil uniquement.")
+                        append(". Données sur ce téléphone uniquement.")
                     }
                 },
             verticalArrangement = Arrangement.spacedBy(4.dp)

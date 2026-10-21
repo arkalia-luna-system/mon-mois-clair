@@ -251,7 +251,11 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .border(1.dp, statusBorder, statusShape)
-                .background(A11yTokens.PaperWarm, statusShape)
+                .background(
+                    if (statusColor == A11yTokens.Ink) A11yTokens.PaperCard
+                    else A11yTokens.PaperWarm,
+                    statusShape
+                )
                 .padding(horizontal = 12.dp, vertical = 10.dp)
                 .semantics {
                     liveRegion = LiveRegionMode.Polite
