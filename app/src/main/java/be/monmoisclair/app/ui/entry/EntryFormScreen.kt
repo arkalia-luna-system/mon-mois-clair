@@ -1118,14 +1118,26 @@ private fun EntryFormScaffold(
                     } else {
                         A11yTokens.AccentOk
                     },
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription = it
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
         }
 
         error?.let {
-            Text(text = it, color = A11yTokens.AccentDanger, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = it,
+                color = A11yTokens.AccentDanger,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics {
+                    liveRegion = LiveRegionMode.Assertive
+                    contentDescription = it
+                }
+            )
             Spacer(modifier = Modifier.height(8.dp))
         }
         PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
