@@ -210,7 +210,11 @@ fun HomeScreen(
             faitUndoActive = true
             try {
                 val result = snackbarHostState.showSnackbar(
-                    message = if (markingDone) "Noté FAIT" else "Remis à payer",
+                    message = if (markingDone) {
+                        "Noté FAIT — la ligne reste"
+                    } else {
+                        "Remis à payer"
+                    },
                     actionLabel = "Annuler",
                     duration = SnackbarDuration.Long
                 )
@@ -350,7 +354,7 @@ fun HomeScreen(
                                 try {
                                     val result = snackbarHostState.showSnackbar(
                                         message = if (pastMarkingDone) {
-                                            "Noté FAIT"
+                                            "Noté FAIT — la ligne reste"
                                         } else {
                                             "Remis à payer"
                                         },

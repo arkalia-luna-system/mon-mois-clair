@@ -342,7 +342,7 @@ Cette section remplace la partie 7 pour décider. Les parties 1 à 6 restent l�
 | Checklist S25 prouve le 6.37 | **Non.** Archivée (`docs/archive/CHECKLIST_S25_2026-10-19.md`, v5.4.1). Smoke actuel : journal + `AUDIT_STATUS.md` |
 | Rapports `dist/verify/*2026-10-20*` | Figés en **6.26**. Ils ne décrivent pas A–F |
 | « encore environ N mois si le versement reste de X » | **Présent 6.37** (fiche, Mes dossiers, résumé). Jamais l’accueil. Contient « si ». Pas de « fin prévue ». Masquée si un **FAIT** ≠ forfait (TODO plafonnée OK). Année/trimestre = « versements » |
-| Pastille « Facture », « Sans les futures », « fin prévue », « Huissier » | Absents de l’UI. Le libellé sticky actuel est « Hors à payer ». La ligne 11 de `AUDIT_STATUS` parle encore de l’ancien libellé : c’est le smoke du 6.27, pas le texte d’aujourd’hui |
+| Pastille « Facture », « fin prévue », « Huissier » | Absents de l’UI. Sticky familial : **Après les FAIT** (ex « Hors à payer ») |
 | Zéro pixel si zéro dossier | Presque. Écart accepté : le bouton replié sur une nouvelle dépense, et la section d’aide |
 
 ### 8.2 Sécurité
