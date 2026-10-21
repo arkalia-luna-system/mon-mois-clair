@@ -36,6 +36,14 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 **Tests :** suite déjà **198/198** (52 fichiers) au 6.32 — pas de nouveau test métier ici.  
 **Version :** inchangée `0.1.0-6.32`
 
+### 2026-10-21 — Fix sync futures accord (édition montant / frais)
+
+**Problème (audit 7.4) :** après un FAIT qui effaçait le mois suivant, baisser le montant ou ajouter des frais (ligne encore DONE) ne recréait pas la suite.
+
+**Codé :** `AgreementFuturesSync` partagé — `afterToggle` (Toggle) · `afterAmountOrFeesChange` (Update, même si DONE) · DONE ne réserve pas le mois courant une 2ᵉ fois.
+
+**Tests :** `DossierAgreementUseCaseTest` → baisse montant + frais (11 tests dossier, 0 échec dans la passe ciblée).
+
 ### 2026-10-21 — Docs : archive + index (plus de doublons)
 
 **Fait :** vérif code lots A/B/C OK · `docs/README.md` · archive (`AUDIT_PREMIUM`, `POLISH_PASS`, `RECHERCHE_OUTILS`) · prompts → `docs/testeurs/` · plan §7 + smoke status à jour (6.32). WIP polish autre agent **non** touché.

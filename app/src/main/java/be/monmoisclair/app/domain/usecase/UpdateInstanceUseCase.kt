@@ -266,6 +266,17 @@ class UpdateInstanceUseCase @Inject constructor(
                             instanceDao.updateExpense(item.copy(paymentNote = note))
                         }
                     }
+                    // Lot B trou audit : baisse montant / frais après FAIT qui avait
+                    // effacé le mois suivant → resynchro (même si ligne encore DONE).
+                    val refreshed = instanceDao.getExpenseById(id)
+                    if (refreshed?.templateId != null) {
+                        AgreementFuturesSync.afterAmountOrFeesChange(
+                            expense = refreshed,
+                            instanceDao = instanceDao,
+                            templateDao = templateDao,
+                            monthLedgerDao = monthLedgerDao
+                        )
+                    }
                 }
             } else {
                 val current = instanceDao.getIncomeById(id)

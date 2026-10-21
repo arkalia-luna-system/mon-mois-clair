@@ -460,6 +460,159 @@ class DossierAgreementUseCaseTest {
         assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-stop")).isNull()
     }
 
+    /**
+     * Trou audit 7.4 : après un FAIT qui a effacé le mois suivant, baisser
+     * le montant de ce mois (ligne encore FAIT) doit recréer la suite.
+     */
+    @Test
+    fun update_loweringSettlingAmount_recreatesNextMonth() = runBlocking {
+        freezeAt("2026-10-05T12:00:00+02:00")
+        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), mutatingRepo())
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-lower",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                active = true,
+                anchorYearMonth = "2026-10",
+                openingRemainingCents = 5_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-11", "2026-11", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-10:tpl-lower",
+                ledgerId = "2026-10",
+                templateId = "tpl-lower",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-11:tpl-lower",
+                ledgerId = "2026-11",
+                templateId = "tpl-lower",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        toggle("exp:2026-10:tpl-lower")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-lower")).isNull()
+
+        val result = update(
+            id = "exp:2026-10:tpl-lower",
+            isExpense = true,
+            label = "Étude",
+            amountCents = 3_000L,
+            dayOfMonth = 12,
+            applyToFollowingMonths = false
+        )
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        val nov = db.instanceDao().getExpenseById("exp:2026-11:tpl-lower")
+        assertThat(nov).isNotNull()
+        assertThat(nov!!.status).isEqualTo(ExpenseStatus.TODO)
+        assertThat(nov.amountCents).isEqualTo(2_000L)
+    }
+
+    /** Frais ajoutés sur une ligne déjà FAIT (soldée) → le mois suivant revient. */
+    @Test
+    fun update_addFeesWhileDone_recreatesNextMonth() = runBlocking {
+        freezeAt("2026-10-05T12:00:00+02:00")
+        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), mutatingRepo())
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-fee",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                active = true,
+                anchorYearMonth = "2026-10",
+                openingRemainingCents = 5_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-11", "2026-11", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-10:tpl-fee",
+                ledgerId = "2026-10",
+                templateId = "tpl-fee",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-11:tpl-fee",
+                ledgerId = "2026-11",
+                templateId = "tpl-fee",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        toggle("exp:2026-10:tpl-fee")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-fee")).isNull()
+
+        assertThat(
+            update(
+                id = "exp:2026-10:tpl-fee",
+                isExpense = true,
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                applyToFollowingMonths = false,
+                feeAddCents = 2_000L,
+                feeNote = "rappel"
+            )
+        ).isEqualTo(UpdateInstanceResult.Success)
+
+        assertThat(db.templateDao().getExpenseById("tpl-fee")!!.addedFeesCents).isEqualTo(2_000L)
+        val nov = db.instanceDao().getExpenseById("exp:2026-11:tpl-fee")
+        assertThat(nov).isNotNull()
+        assertThat(nov!!.amountCents).isEqualTo(2_000L)
+    }
+
     private fun freezeAt(isoOffsetDateTime: String) {
         val instant = java.time.OffsetDateTime.parse(isoOffsetDateTime).toInstant()
         AppClock.clock = Clock.fixed(instant, brussels)
