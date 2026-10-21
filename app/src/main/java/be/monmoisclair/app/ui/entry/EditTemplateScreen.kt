@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,10 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -29,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -145,9 +149,24 @@ fun EditTemplateScreen(
                 .fillMaxSize()
                 .background(A11yTokens.PaperCream)
                 .padding(A11yTokens.screenPadding)
-                .semantics { contentDescription = "Chargement de l’échéance" }
+                .semantics { contentDescription = "Chargement de l’échéance" },
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Chargement…", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                CircularProgressIndicator(
+                    color = A11yTokens.ButtonFill,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(28.dp)
+                )
+                Text(
+                    "Chargement…",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
+            }
         }
         return
     }
@@ -161,10 +180,16 @@ fun EditTemplateScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text("Cette échéance n’est plus là.", style = MaterialTheme.typography.headlineMedium)
+            val missShape = MaterialTheme.shapes.medium
             Text(
                 text = "Elle a peut-être déjà été retirée. Retournez à l’accueil ou aux Réglages.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, missShape)
+                    .background(A11yTokens.PaperCard, missShape)
+                    .padding(14.dp)
             )
             SecondaryA11yButton(text = "Retour", onClick = onCancel)
         }
@@ -174,6 +199,7 @@ fun EditTemplateScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(A11yTokens.PaperCream)
             .imePadding()
             .padding(A11yTokens.screenPadding)
     ) {
@@ -184,17 +210,27 @@ fun EditTemplateScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text("Modifier l’échéance", style = MaterialTheme.typography.headlineMedium)
-            Text(
-                text = state.intervalHint,
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
-            Text(
-                text = "Les mois déjà notés sur l’accueil ne changent pas. " +
-                    "Les mois suivants suivront cette échéance.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
+            val hintShape = MaterialTheme.shapes.medium
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, hintShape)
+                    .background(A11yTokens.PaperCard, hintShape)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(
+                    text = state.intervalHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+                Text(
+                    text = "Les mois déjà notés sur l’accueil ne changent pas. " +
+                        "Les mois suivants suivront cette échéance.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+            }
             OutlinedTextField(
                 value = state.label,
                 onValueChange = viewModel::setLabel,

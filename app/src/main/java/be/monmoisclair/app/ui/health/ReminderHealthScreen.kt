@@ -57,11 +57,17 @@ fun ReminderHealthScreen(
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted
         )
+        val scheduleShape = MaterialTheme.shapes.medium
         Text(
             text = "3 jours avant à 10 h, le jour même à 9 h, puis chaque matin à 10 h " +
                 "tant que ce n’est pas payé.",
             style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, scheduleShape)
+                .background(A11yTokens.PaperCard, scheduleShape)
+                .padding(12.dp)
         )
 
         val r = report
@@ -110,14 +116,20 @@ fun ReminderHealthScreen(
                 )
             }
             if (r.isFullyHealthy) {
+                val okShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Tout est prêt pour les alertes.",
                     color = A11yTokens.AccentOk,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.semantics {
-                        liveRegion = LiveRegionMode.Polite
-                        contentDescription = "Tout est prêt pour les alertes."
-                    }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.4f), okShape)
+                        .background(A11yTokens.PaperWarm, okShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Polite
+                            contentDescription = "Tout est prêt pour les alertes."
+                        }
                 )
             }
         }

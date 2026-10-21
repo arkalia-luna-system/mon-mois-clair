@@ -81,10 +81,15 @@ fun DayOfMonthGrid(
         }
         if (selectedDay != null && selectedDay > 28) {
             Spacer(Modifier.height(8.dp))
+            val tipShape = MaterialTheme.shapes.medium
             Text(
                 text = "En février (et les mois courts), ce sera le dernier jour du mois.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .border(1.dp, A11yTokens.PaperBorder, tipShape)
+                    .background(A11yTokens.PaperCard, tipShape)
+                    .padding(12.dp)
             )
         }
     }

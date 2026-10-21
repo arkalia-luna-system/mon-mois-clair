@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardActions
@@ -266,6 +267,7 @@ fun AddEntryScreen(
         onIban = viewModel::setIban,
         creditorEmail = state.creditorEmail,
         onCreditorEmail = viewModel::setCreditorEmail,
+        onSaveAsPendingLetter = viewModel::saveAsPendingLetter,
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
@@ -365,9 +367,20 @@ fun EditEntryScreen(
                 .semantics {
                     contentDescription = "Chargement de la fiche"
                     liveRegion = LiveRegionMode.Polite
-                }
+                },
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Chargement…", style = MaterialTheme.typography.bodyLarge)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                CircularProgressIndicator(
+                    color = A11yTokens.ButtonFill,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(28.dp)
+                )
+                Text("Chargement…", style = MaterialTheme.typography.bodyLarge)
+            }
         }
         return
     }
@@ -506,7 +519,7 @@ fun EditEntryScreen(
                         }
                         else -> {
                             Text(
-                                text = "Photo introuvable dans Documents. " +
+                                text = "Impossible d’ouvrir cette photo. " +
                                     "Reprenez-en une avec le bouton ci-dessous.",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = A11yTokens.AccentDanger
@@ -697,6 +710,8 @@ private fun EntryFormScaffold(
     creditorEmail: String = "",
     onCreditorEmail: (String) -> Unit = {},
     onWriteMail: (() -> Unit)? = null,
+    /** Lot D — ajout seulement : ranger sans inventer de montant. */
+    onSaveAsPendingLetter: (() -> Unit)? = null,
     feeAddText: String = "",
     onFeeAddText: (String) -> Unit = {},
     feeNoteText: String = "",
@@ -945,6 +960,21 @@ private fun EntryFormScaffold(
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted
                         )
+                        if (onSaveAsPendingLetter != null &&
+                            openingRemainingText.isBlank()
+                        ) {
+                            SecondaryA11yButton(
+                                text = "Ranger sans plan",
+                                onClick = onSaveAsPendingLetter,
+                                enabled = primaryEnabled
+                            )
+                            Text(
+                                text = "Photo et nom seulement — rien dans le Reste " +
+                                    "tant que le versement n’est pas fixé.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                        }
                     }
                     // Lot C — IBAN / e-mail / frais (dossier seulement).
                     OutlinedTextField(
@@ -956,7 +986,14 @@ private fun EntryFormScaffold(
                             .heightIn(min = A11yTokens.minTouchHeight),
                         textStyle = MaterialTheme.typography.bodyLarge,
                         singleLine = true,
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Ascii,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { focusManager.clearFocus() }
+                        )
                     )
                     if (onCopyIban != null && iban.isNotBlank()) {
                         SecondaryA11yButton(text = "Copier l’IBAN", onClick = onCopyIban)
@@ -971,7 +1008,13 @@ private fun EntryFormScaffold(
                         textStyle = MaterialTheme.typography.bodyLarge,
                         singleLine = true,
                         shape = MaterialTheme.shapes.medium,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { focusManager.clearFocus() }
+                        )
                     )
                     if (onWriteMail != null) {
                         SecondaryA11yButton(text = "Écrire", onClick = onWriteMail)
@@ -1013,7 +1056,16 @@ private fun EntryFormScaffold(
                 }
             }
             if (showPaymentAssist) {
+                val paperShape = MaterialTheme.shapes.medium
                 Text("Facture papier", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, paperShape)
+                        .background(A11yTokens.PaperCard, paperShape)
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                 if (onScanEpc != null) {
                     SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
                     Text(
@@ -1134,6 +1186,7 @@ private fun EntryFormScaffold(
                         }
                     }
                 }
+                }
             }
             if (showApplyFollowing && hasTemplate) {
                 CheckRow(
@@ -1217,11 +1270,15 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
 private fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Unit) {
     // Checkbox avec onCheckedChange réel : le pattern toggleable+null
     // n’enregistre pas les taps sur One UI / uiautomator (case « Revient… » morte).
+    val shape = MaterialTheme.shapes.medium
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
+            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .background(A11yTokens.PaperCard, shape)
             .clickable(role = Role.Checkbox) { onChecked(!checked) }
+            .padding(horizontal = 4.dp, vertical = 2.dp)
             .semantics {
                 contentDescription = if (checked) "$label, coché" else "$label, non coché"
             },

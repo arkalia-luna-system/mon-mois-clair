@@ -47,6 +47,14 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Test `DisplayFit` compact ≤ 800 dp | `DisplayFitTest` |
 | P1 | Lot C : voir / enlever courriers en plus + aide | `EntryFormScreen`, `EditEntryViewModel`, `UpdateInstanceUseCase` |
 | P2 | CI : bloc `concurrency` retiré (plus de faux « cancelled ») | `.github/workflows/ci.yml`, `docs/CI.md` |
+| P2 | Formulaire : bloc accord + facture papier en carte | `EntryFormScreen` |
+| P2 | Accueil : badge jour PaperWarm + contour | `HomeScreen` DayBadge |
+| P2 | Scan : statut dans encadré papier | `ScanEpcScreen` |
+| P2 | Dossiers : hero résumé encadré | `DossiersScreen` |
+| P2 | Restore / SAF / permissions / aide : intros cartes | Restore, SafSetup, Permissions, HowItWorks |
+| P2 | Alertes : calendrier + OK + lignes santé en cartes | ReminderHealth, HealthStatusRow |
+| P2 | Verrou / modèle / cases / grille jours / menu | Lock, EditTemplate, CheckRow, DayGrid, HomeMenu |
+| P2 | Réglages : bandeau « préparation copie » | `SettingsScreen` |
 
 ## Encore ouvert (plus tard)
 

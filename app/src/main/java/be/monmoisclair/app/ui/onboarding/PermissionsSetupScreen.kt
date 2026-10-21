@@ -4,10 +4,14 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -73,11 +77,17 @@ fun PermissionsSetupScreen(
             color = A11yTokens.InkMuted
         )
         Text(text = "Alertes fiables", style = MaterialTheme.typography.headlineMedium)
+        val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +
                 "le réveil à l’heure, et laissez la batterie non limitée pour cette application.",
             style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, tipShape)
+                .background(A11yTokens.PaperCard, tipShape)
+                .padding(14.dp)
         )
 
         if (report != null) {

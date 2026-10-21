@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -212,7 +211,6 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         Modifier
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
-            .imePadding()
             .padding(A11yTokens.screenPadding)
     ) {
         Text("Scanner une facture", style = MaterialTheme.typography.headlineMedium)
@@ -222,21 +220,28 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             color = A11yTokens.InkMuted
         )
         Spacer(Modifier.height(8.dp))
+        val statusColor = when (status) {
+            "Facture reconnue." -> A11yTokens.AccentOk
+            "Ce QR n’est pas une facture belge.",
+            "Lecture du QR impossible. Recadrez ou réessayez.",
+            "Caméra indisponible.",
+            "Autorisez la caméra pour scanner la facture." -> A11yTokens.AccentDanger
+            else -> A11yTokens.Ink
+        }
+        val statusShape = MaterialTheme.shapes.medium
         Text(
             status,
             style = MaterialTheme.typography.bodyLarge,
-            color = when (status) {
-                "Facture reconnue." -> A11yTokens.AccentOk
-                "Ce QR n’est pas une facture belge.",
-                "Lecture du QR impossible. Recadrez ou réessayez.",
-                "Caméra indisponible.",
-                "Autorisez la caméra pour scanner la facture." -> A11yTokens.AccentDanger
-                else -> A11yTokens.Ink
-            },
-            modifier = Modifier.semantics {
-                liveRegion = LiveRegionMode.Polite
-                contentDescription = status
-            }
+            color = statusColor,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, statusShape)
+                .background(A11yTokens.PaperWarm, statusShape)
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+                .semantics {
+                    liveRegion = LiveRegionMode.Polite
+                    contentDescription = status
+                }
         )
         Spacer(Modifier.height(12.dp))
         if (hasCamera) {

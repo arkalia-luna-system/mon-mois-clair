@@ -2,10 +2,12 @@ package be.monmoisclair.app.ui.lock
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -88,26 +90,42 @@ fun BiometricLockScreen(
             text = "Application verrouillée",
             style = MaterialTheme.typography.headlineMedium
         )
-        Text(
-            text = "Posez votre doigt sur le lecteur d’empreinte, " +
-                "ou utilisez le code / visage du téléphone.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
-        )
-        Text(
-            text = "Si rien ne s’ouvre : touchez « Déverrouiller maintenant ».",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
+        val tipShape = MaterialTheme.shapes.medium
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, tipShape)
+                .background(A11yTokens.PaperCard, tipShape)
+                .padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "Posez votre doigt sur le lecteur d’empreinte, " +
+                    "ou utilisez le code / visage du téléphone.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+            Text(
+                text = "Si rien ne s’ouvre : touchez « Déverrouiller maintenant ».",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+        }
         message?.let {
+            val errShape = MaterialTheme.shapes.medium
             Text(
                 text = it,
                 color = A11yTokens.AccentDanger,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics {
-                    liveRegion = LiveRegionMode.Assertive
-                    contentDescription = it
-                }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                    .background(A11yTokens.PaperWarm, errShape)
+                    .padding(12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Assertive
+                        contentDescription = it
+                    }
             )
         }
         Spacer(modifier = Modifier.weight(1f))

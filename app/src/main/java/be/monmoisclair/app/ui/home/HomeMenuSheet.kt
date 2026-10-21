@@ -70,6 +70,7 @@ fun HomeMenuSheet(
                 .padding(bottom = 28.dp)
         ) {
             Text(text = "Menu", style = MaterialTheme.typography.headlineMedium)
+            val introShape = MaterialTheme.shapes.medium
             Text(
                 text = if (dossierCount > 0) {
                     "Réglages, dossiers, ou un autre mois."
@@ -77,7 +78,11 @@ fun HomeMenuSheet(
                     "Réglages, ou un autre mois."
                 },
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, introShape)
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
 

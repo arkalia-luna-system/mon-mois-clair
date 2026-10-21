@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,10 +22,16 @@ fun HowItWorksScreen(onBack: () -> Unit) {
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = HowItWorksCopy.TITLE, style = MaterialTheme.typography.headlineMedium)
+        val introShape = MaterialTheme.shapes.medium
         Text(
             text = "Guide court pour utiliser Mon Mois Clair sans stress.",
             style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, introShape)
+                .background(A11yTokens.PaperWarm, introShape)
+                .padding(12.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
         HowItWorksCopy.sections.forEach { section ->

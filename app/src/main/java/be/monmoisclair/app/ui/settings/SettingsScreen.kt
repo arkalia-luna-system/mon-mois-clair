@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -95,7 +96,9 @@ fun SettingsScreen(
             }
             else -> {
                 viewModel.onEnableAuthResult(
-                    BiometricAuthResult.Failed("Pas disponible sur ce téléphone.")
+                    BiometricAuthResult.Failed(
+                        "Pas d’empreinte ni de code sur ce téléphone."
+                    )
                 )
             }
         }
@@ -105,14 +108,20 @@ fun SettingsScreen(
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = "Réglages", style = MaterialTheme.typography.headlineMedium)
         if (state.busy) {
+            val busyShape = MaterialTheme.shapes.medium
             Text(
                 text = "Préparation de la copie…",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier.semantics {
-                    liveRegion = LiveRegionMode.Polite
-                    contentDescription = "Préparation de la copie"
-                }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                    .background(A11yTokens.PaperWarm, busyShape)
+                    .padding(12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription = "Préparation de la copie"
+                    }
             )
         }
 
@@ -176,9 +185,9 @@ fun SettingsScreen(
                     BiometricAvailability.NoneEnrolled ->
                         "Aucune empreinte / code d’écran enregistré. Configurez-les dans les réglages du téléphone."
                     BiometricAvailability.HardwareUnavailable ->
-                        "Capteur indisponible pour le moment."
+                        "Empreinte ou code temporairement indisponible."
                     BiometricAvailability.Unsupported ->
-                        "Pas disponible sur ce téléphone."
+                        "Pas d’empreinte ni de code sur ce téléphone."
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted

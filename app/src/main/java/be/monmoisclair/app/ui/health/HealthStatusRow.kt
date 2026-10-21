@@ -20,11 +20,14 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 fun HealthStatusRow(label: String, ok: Boolean) {
     val status = if (ok) "Prêt" else "À régler"
     val shape = MaterialTheme.shapes.medium
+    val chipShape = MaterialTheme.shapes.small
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .padding(vertical = 6.dp)
+            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .background(A11yTokens.PaperCard, shape)
+            .padding(horizontal = 12.dp, vertical = 10.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = "$label : $status"
             },
@@ -37,10 +40,10 @@ fun HealthStatusRow(label: String, ok: Boolean) {
             modifier = Modifier
                 .background(
                     if (ok) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
-                    shape
+                    chipShape
                 )
                 .then(
-                    if (ok) Modifier else Modifier.border(1.dp, A11yTokens.AccentWarn, shape)
+                    if (ok) Modifier else Modifier.border(1.dp, A11yTokens.AccentWarn, chipShape)
                 )
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         )

@@ -2,8 +2,12 @@ package be.monmoisclair.app.ui.onboarding
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,12 +56,18 @@ fun SafSetupScreen(
             color = A11yTokens.InkMuted
         )
         Text(text = "Dossier de sauvegarde", style = MaterialTheme.typography.headlineMedium)
+        val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Choisissez un dossier dans Documents (pas Téléchargements / Download). " +
                 "À chaque modification, une copie de sécurité y sera écrite automatiquement " +
                 "(3 versions). Sans ce dossier, vos données peuvent être perdues.",
             style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, tipShape)
+                .background(A11yTokens.PaperCard, tipShape)
+                .padding(14.dp)
         )
         state.errorMessage?.let { msg ->
             Text(
