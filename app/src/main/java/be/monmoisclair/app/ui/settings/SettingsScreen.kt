@@ -130,7 +130,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, busyShape)
                     .background(A11yTokens.PaperCard, busyShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
                         contentDescription = "Préparation de la copie"
@@ -148,7 +148,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, aideTipShape)
                     .background(A11yTokens.PaperWarm, aideTipShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
             )
             SecondaryA11yButton(
                 text = "Comment ça marche",
@@ -169,7 +169,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, savingsTipShape)
                     .background(A11yTokens.PaperWarm, savingsTipShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
             )
             OutlinedTextField(
                 value = state.savingsAmountText,
@@ -200,7 +200,7 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), deficitShape)
                         .background(A11yTokens.PaperWarm, deficitShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = deficit
@@ -217,7 +217,7 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, nextShape)
                         .background(A11yTokens.PaperWarm, nextShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = note
@@ -261,7 +261,7 @@ fun SettingsScreen(
                             if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
                             msgShape
                         )
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = if (err) {
                                 LiveRegionMode.Assertive
@@ -284,7 +284,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, privacyTipShape)
                     .background(A11yTokens.PaperWarm, privacyTipShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
             )
             val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
             Row(
@@ -348,7 +348,7 @@ fun SettingsScreen(
                                         availShape
                                     )
                                     .background(A11yTokens.PaperWarm, availShape)
-                                    .padding(12.dp)
+                                    .padding(tipPad)
                                     .semantics {
                                         liveRegion = LiveRegionMode.Polite
                                         contentDescription = availText
@@ -378,7 +378,7 @@ fun SettingsScreen(
                             if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
                             msgShape
                         )
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = if (err) {
                                 LiveRegionMode.Assertive
@@ -401,7 +401,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, alertesTipShape)
                     .background(A11yTokens.PaperWarm, alertesTipShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
             )
             SecondaryA11yButton(
                 text = "Vérifier les alertes",
@@ -422,7 +422,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, echeancesTipShape)
                     .background(A11yTokens.PaperWarm, echeancesTipShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
             )
             if (state.offMonthPeriodics.isEmpty()) {
                 val emptyShape = MaterialTheme.shapes.medium
@@ -435,7 +435,7 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, emptyShape)
                         .background(A11yTokens.PaperWarm, emptyShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                 )
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
@@ -490,7 +490,7 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, tipShape)
                         .background(A11yTokens.PaperCard, tipShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                 )
                 if (state.summaryBusy) {
                     Text(
@@ -501,7 +501,7 @@ fun SettingsScreen(
                             .fillMaxWidth()
                             .border(1.dp, A11yTokens.PaperBorder, tipShape)
                             .background(A11yTokens.PaperCard, tipShape)
-                            .padding(12.dp)
+                            .padding(tipPad)
                             .semantics {
                                 liveRegion = LiveRegionMode.Polite
                                 contentDescription = "Préparation du résumé"
@@ -528,7 +528,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, backupTipShape)
                     .background(A11yTokens.PaperWarm, backupTipShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
             )
             run {
                 val healthLine = BackupHealthCopy.statusLine(state.backupHealth)
@@ -550,7 +550,7 @@ fun SettingsScreen(
                             if (healthOk) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
                             healthShape
                         )
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = healthLine
