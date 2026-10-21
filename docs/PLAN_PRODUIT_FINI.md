@@ -2,7 +2,7 @@
 
 Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A à F** + phrase rythme **6.37** clos dans le journal (`0.1.0-6.37`, schéma Room **7**, **231/231**).  
+Lots **A à F** + phrase rythme **6.37** clos dans le journal (`0.1.0-6.37`, schéma Room **7**, **233/233**).  
 Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -213,7 +213,7 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F clos** + phrase rythme **6.37** (`0.1.0-6.37`, schéma 7, **231/231**). Le plan de construction est tenu.
+**A–F clos** + phrase rythme **6.37** (`0.1.0-6.37`, schéma 7, **233/233**). Le plan de construction est tenu.
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;

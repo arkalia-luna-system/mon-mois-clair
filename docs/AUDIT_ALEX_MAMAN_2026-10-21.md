@@ -3,7 +3,7 @@
 Date du premier constat : 2026-10-21.  
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
-Dernière étape **fermée** dans le journal : **6.37** (`0.1.0-6.37`, `versionCode` 42), schéma **7**, suite **231/231**.  
+Dernière étape **fermée** dans le journal : **6.37** (`0.1.0-6.37`, `versionCode` 42), schéma **7**, suite **233/233**.  
 Phrase rythme : fiche + Mes dossiers + résumé ; jamais l’accueil ; masquée si un **FAIT** a divergé.  
 
 Lots A–F + 6.37 tenus. Lire la **§8** avant de croire un badge ou une case ✅.  
@@ -335,8 +335,8 @@ Cette section remplace la partie 7 pour décider. Les parties 1 à 6 restent l�
 
 | Promesse | Tenu ? |
 |----------|--------|
-| Lots A à F + phrase rythme | Oui jusqu’à **6.37** (**231/231**) |
-| Badge ou README = l’arbre d’aujourd’hui | Badge **231/231** · version `0.1.0-6.37` |
+| Lots A à F + phrase rythme | Oui jusqu’à **6.37** (**233/233**) |
+| Badge ou README = l’arbre d’aujourd’hui | Badge **233/233** · version `0.1.0-6.37` |
 | `versionName` `0.1.0-6.37` | Oui (`versionCode` 42) |
 | « En retard » en capitales dans l’app | **Non.** L’écran et l’aide disent « En retard ». Le README a été aligné |
 | Checklist S25 prouve le 6.37 | **Non.** Archivée (`docs/archive/CHECKLIST_S25_2026-10-19.md`, v5.4.1). Smoke actuel : journal + `AUDIT_STATUS.md` |
@@ -385,7 +385,7 @@ Ce qui empêche de dire « produit fini premium » :
 
 | Fichier | Rôle maintenant |
 |---------|-----------------|
-| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. Version **6.37**, suite **231/231** |
+| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. Version **6.37**, suite **233/233** |
 | `docs/PLAN_PRODUIT_FINI.md` | Construction A–F. Le §7 dit ce qui n’est pas livré |
 | `docs/AUDIT_STATUS.md` | Carnet de smoke. Pas un substitut du code |
 | `docs/archive/*` | Figé. Ne pas s’en servir pour l’état |

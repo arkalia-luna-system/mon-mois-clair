@@ -143,7 +143,7 @@ Mesurer une cible : hauteur bounds ≥ `48 * densité / 160` px.
 | 3a | Produit | Fidélité + Maman | C5–C6, abandon, zéro pixel |
 | 3b | Produit | Fidélité + Médiateur | E*, F*, D3–D4 |
 | 4 | Senior | Maman | Peurs, jargon, Device Care |
-| fin | Validation | Claims 6.37 + 231/231 + P0/P1 | Lecture rapports |
+| fin | Validation | Claims 6.37 + 233/233 + P0/P1 | Lecture rapports |
 
 ## 4. Interdits
 
