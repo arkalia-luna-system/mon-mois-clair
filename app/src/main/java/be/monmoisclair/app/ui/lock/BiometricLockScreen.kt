@@ -76,20 +76,30 @@ fun BiometricLockScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 16.dp else 32.dp))
-        Image(
-            painter = painterResource(R.drawable.ic_brand_m),
-            contentDescription = "Mon Mois Clair",
-            modifier = Modifier.size(48.dp)
-        )
-        Text(
-            text = "Mon Mois Clair",
-            style = MaterialTheme.typography.labelLarge,
-            color = A11yTokens.InkMuted
-        )
-        Text(
-            text = "Application verrouillée",
-            style = MaterialTheme.typography.headlineMedium
-        )
+        val brandShape = MaterialTheme.shapes.medium
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, A11yTokens.PaperBorder, brandShape)
+                .background(A11yTokens.PaperCard, brandShape)
+                .padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_brand_m),
+                contentDescription = "Mon Mois Clair",
+                modifier = Modifier.size(48.dp)
+            )
+            Text(
+                text = "Mon Mois Clair",
+                style = MaterialTheme.typography.labelLarge,
+                color = A11yTokens.InkMuted
+            )
+            Text(
+                text = "Application verrouillée",
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
         val tipShape = MaterialTheme.shapes.medium
         Column(
             modifier = Modifier

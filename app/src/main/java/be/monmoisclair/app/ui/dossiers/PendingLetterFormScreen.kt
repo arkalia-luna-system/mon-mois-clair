@@ -7,11 +7,13 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +26,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
@@ -127,7 +132,7 @@ fun PendingLetterFormScreen(
                     takePicture.launch(uri)
                 }
             )
-            if (pendingPreview != null) {
+            pendingPreview?.let { bmp ->
                 val okShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Photo prête.",
@@ -142,6 +147,17 @@ fun PendingLetterFormScreen(
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = "Photo prête"
                         }
+                )
+                Image(
+                    bitmap = bmp.asImageBitmap(),
+                    contentDescription = "Aperçu du courrier",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(140.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(A11yTokens.PaperWarm)
+                        .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
                 )
             }
             state.error?.let { err ->
