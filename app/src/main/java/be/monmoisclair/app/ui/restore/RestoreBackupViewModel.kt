@@ -55,8 +55,8 @@ class RestoreBackupViewModel @Inject constructor(
 
     private fun runRestore(block: suspend () -> RestoreResult) {
         if (_uiState.value.busy) return
+        _uiState.update { it.copy(busy = true, message = null, isError = false, success = false) }
         viewModelScope.launch {
-            _uiState.update { it.copy(busy = true, message = null, isError = false, success = false) }
             val result = try {
                 block()
             } catch (e: Exception) {

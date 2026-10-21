@@ -66,7 +66,8 @@ class ListDossiersUseCase @Inject constructor(
                 settled -> 0L
                 else -> tpl.amountCents
             }
-            if (!settled) monthTotal += monthCents
+            // « Ce mois » = une ligne vraiment dans le mois, pas le forfait d’une échéance lointaine.
+            if (!settled && thisMonth != null) monthTotal += thisMonth.amountCents
             items += DossierListItem(
                 templateId = tpl.id,
                 who = tpl.label,

@@ -105,4 +105,26 @@ class ListDossiersUseCaseTest {
         assertThat(item.isSettled).isFalse()
         assertThat(item.openInstanceId).isEqualTo("exp:2026-10:tpl-acc")
     }
+
+    @Test
+    fun offMonthDossier_doesNotCountInThisMonthTotal() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-tax",
+                label = "Taxe",
+                amountCents = 12_000L,
+                dayOfMonth = 3,
+                active = true,
+                intervalMonths = 12,
+                causeLabel = "2025",
+                openingRemainingCents = 12_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        val snap = list()
+        assertThat(snap.count).isEqualTo(1)
+        assertThat(snap.monthTotalCents).isEqualTo(0L)
+        assertThat(snap.items.single().monthCents).isEqualTo(12_000L)
+    }
 }

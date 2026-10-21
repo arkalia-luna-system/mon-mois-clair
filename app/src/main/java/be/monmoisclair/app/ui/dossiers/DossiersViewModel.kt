@@ -56,8 +56,9 @@ class DossiersViewModel @Inject constructor(
 
     /** Lot F — texte à envoyer à un créancier ou à un conseiller. */
     fun shareSummary() {
+        if (_state.value.summaryBusy || _state.value.loading) return
+        _state.value = _state.value.copy(summaryBusy = true)
         viewModelScope.launch {
-            _state.value = _state.value.copy(summaryBusy = true)
             val result = prepareMonthSummary()
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"

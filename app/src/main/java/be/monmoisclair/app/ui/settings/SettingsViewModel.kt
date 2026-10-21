@@ -271,8 +271,8 @@ class SettingsViewModel @Inject constructor(
     /** Lot F — même texte que Mes dossiers (WhatsApp / Mail). */
     fun shareMonthSummary() {
         if (_uiState.value.busy || _uiState.value.summaryBusy) return
+        _uiState.update { it.copy(summaryBusy = true, message = null, isError = false) }
         viewModelScope.launch {
-            _uiState.update { it.copy(summaryBusy = true, message = null, isError = false) }
             val result = prepareMonthSummary()
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
@@ -287,8 +287,9 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun shareSecurityCopy() {
+        if (_uiState.value.busy || _uiState.value.savingsBusy) return
+        _uiState.update { it.copy(busy = true, message = null, isError = false) }
         viewModelScope.launch {
-            _uiState.update { it.copy(busy = true, message = null, isError = false) }
             when (val result = shareBackup()) {
                 is ShareBackupResult.Ready -> {
                     _shareIntents.emit(result.intent)

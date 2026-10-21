@@ -42,6 +42,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
 
 @Composable
@@ -52,6 +53,8 @@ fun PendingLetterFormScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(state.saved) {
@@ -98,7 +101,7 @@ fun PendingLetterFormScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, tipShape)
                 .background(A11yTokens.PaperCard, tipShape)
-                .padding(14.dp)
+                .padding(tipPad)
         )
         Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
             OutlinedTextField(
