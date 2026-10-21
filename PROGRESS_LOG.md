@@ -19,6 +19,14 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Campagne suite_pe : P2 / D2 / D11
+
+**Vu :** conversion courrier — grille mangeait « Créer l’accord » · reste/cadence trop bas sous les 31 jours.  
+**Codé :** `PinnedActionScaffold` sur conversion · bandeau reste + cadence + rythme **au-dessus** de la grille (fiche accord).  
+**Faux positifs automation :** E* (Activer introuvable), S1/S2/S9 (pas scroll / notif).  
+**Dumps :** `suite_pe` purgé.  
+**Tests :** **235/235**. Version inchangée `0.1.0-6.38`.
+
 ### 2026-10-21 — 6.38 Historique daté des frais
 
 **Problème :** trois lettres de frais = une somme + un seul motif (le dernier disparaissait).

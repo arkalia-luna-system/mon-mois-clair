@@ -955,6 +955,56 @@ private fun EntryFormScaffold(
                     }
                 }
             }
+            // Accords : reste + rythme au-dessus de la grille (campagne D2 / D11 —
+            // ne plus exiger de scroller sous les 31 jours).
+            if (isAgreement && !isSavingsLine) {
+                val remShape = MaterialTheme.shapes.medium
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, remShape)
+                        .background(A11yTokens.PaperWarm, remShape)
+                        .padding(tipPad),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    if (isSettled) {
+                        Text(
+                            text = "Soldé",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = A11yTokens.AccentOk
+                        )
+                    } else {
+                        remainingCents?.let { rem ->
+                            Text(
+                                text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.Ink
+                            )
+                        }
+                        val interval = when (recurrence) {
+                            RecurrenceChoice.Every3Months -> 3
+                            RecurrenceChoice.Yearly -> 12
+                            else -> 1
+                        }
+                        val forfait = MoneyFormat.parseToCents(amountText)
+                        if (forfait != null && forfait > 0L && !isSettled) {
+                            Text(
+                                text = MoneyFormat.formatCents(forfait) + " " +
+                                    be.monmoisclair.app.domain.DossierRemaining.cadenceSuffix(interval),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                        }
+                        if (!pacePhrase.isNullOrBlank()) {
+                            Text(
+                                text = pacePhrase,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                        }
+                    }
+                }
+            }
             DayOfMonthGrid(
                 selectedDay = dayText.trim().toIntOrNull()?.takeIf { it in 1..31 },
                 onSelect = { onDay(it.toString()) },
