@@ -13,12 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -182,15 +183,14 @@ fun SettingsScreen(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done
+                ),
                 enabled = !state.busy && !state.savingsBusy
             )
-            DayOfMonthGrid(
-                selectedDay = state.savingsDay,
-                onSelect = { day ->
-                    if (!state.savingsBusy && !state.busy) viewModel.setSavingsDay(day)
-                }
-            )
+            // Alerte + Activer avant la grille : au clavier, les 31 jours
+            // mangeaient l’action (campagne E / SM-S938B).
             state.savingsDeficit?.let { deficit ->
                 val deficitShape = MaterialTheme.shapes.medium
                 Text(
@@ -273,6 +273,12 @@ fun SettingsScreen(
                         }
                 )
             }
+            DayOfMonthGrid(
+                selectedDay = state.savingsDay,
+                onSelect = { day ->
+                    if (!state.savingsBusy && !state.busy) viewModel.setSavingsDay(day)
+                }
+            )
         }
 
         SettingsCard(title = "Confidentialité") {
