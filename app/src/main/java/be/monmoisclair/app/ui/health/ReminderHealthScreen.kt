@@ -70,7 +70,8 @@ fun ReminderHealthScreen(
             }
             if (r.samsungDeviceCareHintNeeded) {
                 Text(
-                    text = "Dans Samsung, retirez Mon Mois Clair de la mise en veille.",
+                    text = "Sur Samsung : Paramètres → Batterie → Limites d’utilisation " +
+                        "en arrière-plan → retirez Mon Mois Clair de la mise en veille.",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

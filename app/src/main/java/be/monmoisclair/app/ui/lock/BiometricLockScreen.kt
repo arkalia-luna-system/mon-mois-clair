@@ -16,6 +16,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import be.monmoisclair.app.R
@@ -93,7 +97,11 @@ fun BiometricLockScreen(
             Text(
                 text = it,
                 color = A11yTokens.AccentDanger,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.semantics {
+                    liveRegion = LiveRegionMode.Assertive
+                    contentDescription = it
+                }
             )
         }
         Spacer(modifier = Modifier.weight(1f))
