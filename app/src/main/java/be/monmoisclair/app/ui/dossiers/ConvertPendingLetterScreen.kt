@@ -62,7 +62,7 @@ fun ConvertPendingLetterScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, busyShape)
                     .background(A11yTokens.PaperCard, busyShape)
-                    .padding(12.dp)
+                    .padding(tipPad)
                     .semantics {
                         contentDescription = "Chargement du courrier"
                         liveRegion = LiveRegionMode.Polite
@@ -177,7 +177,7 @@ fun ConvertPendingLetterScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
                         .background(A11yTokens.PaperWarm, errShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Assertive
                             contentDescription = err
@@ -194,7 +194,7 @@ fun ConvertPendingLetterScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.PaperBorder, busyShape)
                         .background(A11yTokens.PaperCard, busyShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = "Création de l’accord"

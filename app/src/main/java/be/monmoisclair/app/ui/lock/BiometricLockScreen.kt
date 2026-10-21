@@ -134,7 +134,7 @@ fun BiometricLockScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
                     .background(A11yTokens.PaperWarm, errShape)
-                    .padding(12.dp)
+                    .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
                     .semantics {
                         liveRegion = LiveRegionMode.Assertive
                         contentDescription = it

@@ -152,7 +152,7 @@ fun PendingLetterFormScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), okShape)
                         .background(A11yTokens.AccentOkSoft, okShape)
-                        .padding(12.dp)
+                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = "Photo prête. Touchez Ranger pour la garder."
