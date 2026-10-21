@@ -1,10 +1,14 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,11 +28,23 @@ fun HowItWorksScreen(onBack: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         HowItWorksCopy.sections.forEach { section ->
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(text = section.title, style = MaterialTheme.typography.titleLarge)
-                Text(text = section.body, style = MaterialTheme.typography.bodyLarge)
+            val shape = MaterialTheme.shapes.medium
+            Surface(
+                color = A11yTokens.PaperCard,
+                shape = shape,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, shape)
+            ) {
+                Column(
+                    modifier = Modifier.padding(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(text = section.title, style = MaterialTheme.typography.titleLarge)
+                    Text(text = section.body, style = MaterialTheme.typography.bodyLarge)
+                }
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

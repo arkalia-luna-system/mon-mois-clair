@@ -76,7 +76,8 @@ fun PermissionsSetupScreen(
         Text(
             text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +
                 "le réveil à l’heure, et laissez la batterie non limitée pour cette application.",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
         )
 
         if (report != null) {

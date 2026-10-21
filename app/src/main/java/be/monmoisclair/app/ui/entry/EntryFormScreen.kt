@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -1154,6 +1155,7 @@ private fun EntryFormScaffold(
 
 @Composable
 private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
+    val shape = MaterialTheme.shapes.medium
     val bg = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm
     val fg = if (selected) A11yTokens.ButtonText else A11yTokens.Ink
     Text(
@@ -1161,11 +1163,15 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
         color = fg,
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
-            .clip(MaterialTheme.shapes.medium)
-            .background(bg)
+            .clip(shape)
+            .background(bg, shape)
+            .then(if (selected) Modifier else Modifier.border(1.dp, A11yTokens.PaperBorder, shape))
             .clickable(role = Role.RadioButton, onClick = onClick)
             .heightIn(min = A11yTokens.minTouchHeight)
             .padding(horizontal = 16.dp, vertical = 12.dp)
+            .semantics {
+                contentDescription = if (selected) "$text, sélectionné" else text
+            }
     )
 }
 

@@ -56,7 +56,8 @@ fun SafSetupScreen(
             text = "Choisissez un dossier dans Documents (pas Téléchargements / Download). " +
                 "À chaque modification, une copie de sécurité y sera écrite automatiquement " +
                 "(3 versions). Sans ce dossier, vos données peuvent être perdues.",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
         )
         state.errorMessage?.let { msg ->
             Text(
