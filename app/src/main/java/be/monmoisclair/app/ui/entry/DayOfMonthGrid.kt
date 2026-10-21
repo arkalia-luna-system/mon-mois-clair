@@ -2,6 +2,7 @@ package be.monmoisclair.app.ui.entry
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -64,8 +65,8 @@ fun DayOfMonthGrid(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        // Taille stricte 48 dp (pas defaultMinSize : selectable/texte
-                        // gonflaient à ~64 dp → rangée coupée sous Enregistrer).
+                        // clickable Material gonflait à ~64 dp (campagne Ultra).
+                        // size + clickable(indication=null) garde exactement 48 dp.
                         .size(A11yTokens.minTouchHeight)
                         .alpha(if (enabled) 1f else 0.45f)
                         .clip(shape)
@@ -76,16 +77,18 @@ fun DayOfMonthGrid(
                             shape
                         )
                         .semantics {
+                            this.selected = selected
                             contentDescription = when {
                                 !enabled -> "Jour $day, indisponible"
                                 selected -> "Jour $day, sélectionné"
                                 else -> "Jour $day"
                             }
                         }
-                        .selectable(
-                            selected = selected,
+                        .clickable(
                             enabled = enabled,
                             role = Role.RadioButton,
+                            indication = null,
+                            interactionSource = null,
                             onClick = { onSelect(day) }
                         )
                 ) {
