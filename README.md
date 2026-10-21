@@ -70,9 +70,14 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 | **Home freeze** (pas de nouvelles options quotidiennes) | ✅ |
 | **Comment ça marche** (Réglages → aide) | ✅ |
 | **Scanner facture** (QR EPC Belgique) | ✅ |
-| **Communication + Copier** (banque) | ✅ |
-| **Photo facture** (WebP SAF) | ✅ |
+| **Communication + Copier** (banque, mod 97) | ✅ |
+| **Photo facture** (WebP SAF) + courriers en plus (accord) | ✅ |
+| **Accord / retard** (replié, pastille, reste dû, arrêt si soldé) | ✅ |
+| **IBAN · Écrire · frais** (fiche accord) | ✅ |
 | **Bandeau « mois prochain »** (périodiques) | ✅ |
+| **Mes dossiers / lettre sans plan** | ⏳ lot D |
+| **Mettre de côté** | ⏳ lot E |
+| **Résumé à envoyer** | ⏳ lot F |
 
 ---
 
@@ -96,11 +101,13 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, facture papier.
 
 ```text
-1–5    socle, ledger, rappels, sauvegarde, aide     ✅
-6.0–6.3   scan QR, photo, communication             ✅
-6.4–6.8   écrans Galaxy, menu, fidélité outil       ✅
-6.9–6.19  contraste, audit premium, photo in-app          ✅
-Smoke device du visuel 6.10–6.19                    à refaire sur téléphone
+1–5       socle, ledger, rappels, sauvegarde, aide     ✅
+6.0–6.29  scan, photo, Galaxy, audit premium           ✅
+6.30      Lot A — mémoire papier (note/photo modèle)   ✅
+6.31      Lot B — dossier / pastille Accord            ✅
+6.32      Lot C — IBAN, mail, frais, courriers         ✅
+D / E / F Mes dossiers · épargne · résumé              ⏳
+Smoke « Écrire » (mail) + hauteur courte Accord        ⏳ Galaxy
 ```
 
 

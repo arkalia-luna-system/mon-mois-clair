@@ -28,6 +28,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 **Tests :** suite déjà **198/198** (52 fichiers) au 6.32 — pas de nouveau test métier ici.  
 **Version :** inchangée `0.1.0-6.32`
 
+### 2026-10-21 — Docs : archive + index (plus de doublons)
+
+**Fait :** vérif code lots A/B/C OK · `docs/README.md` · archive (`AUDIT_PREMIUM`, `POLISH_PASS`, `RECHERCHE_OUTILS`) · prompts → `docs/testeurs/` · plan §7 + smoke status à jour (6.32). WIP polish autre agent **non** touché.
+
 ### 2026-10-21 — 6.32 Lot C : fiche anti-confusion (IBAN, mail, frais, photos)
 
 **Problème :** IBAN perdu après le QR ; pas d’e-mail prêt ; avenant / 2ᵉ lettre sans place ; photo extra invisible.
@@ -46,7 +50,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Problème :** zip-bomb / lectures illimitées ; FileProvider trop large ; verrou bio asynchrone ; copy Samsung ; messages restore techniques ; lot C (schéma 6) déjà dans l’arbre sans clôture.
 
-**Codé (polish) :** lectures bornées · restore photos locales · FileProvider `share/`+`camera/` · sweep JPEG · `SCHEDULE_EXACT_ALARM` · debounce `TIME_SET` · bio lock sync · scan/onboarding/settings copy · `docs/POLISH_PASS.md`.
+**Codé (polish) :** lectures bornées · restore photos locales · FileProvider `share/`+`camera/` · sweep JPEG · `SCHEDULE_EXACT_ALARM` · debounce `TIME_SET` · bio lock sync · scan/onboarding/settings copy · (note figée : `docs/archive/POLISH_PASS.md`).
 
 **Arbre lot C (non clos)** : Room **6** (IBAN, e-mail, `extraReceiptPaths`, frais) · UI IBAN/mail/frais en édition · 2ᵉ photo stockée mais **pas affichée** · `CreditorMailComposer` + tests unitaires mail/chemins/frais. `versionName` reste **6.31** jusqu’à clôture C.
 

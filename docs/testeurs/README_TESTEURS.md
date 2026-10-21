@@ -3,6 +3,8 @@
 Chaque prompt = **un agent / un chat** distinct.  
 **Seul** l’expert validation commit/push (si demandé).
 
+Campagnes optionnelles (pas le journal produit). État actuel : `PROGRESS_LOG.md` · plan : [`../PLAN_PRODUIT_FINI.md`](../PLAN_PRODUIT_FINI.md).
+
 | # | Fichier | Mission de base |
 |---|---------|-----------------|
 | 1 | [`PROMPT_TESTEUR_CORRECTEUR.md`](PROMPT_TESTEUR_CORRECTEUR.md) | Bugs, régressions, Gradle, parcours complets |
