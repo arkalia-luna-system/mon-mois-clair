@@ -10,8 +10,8 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Champ | Valeur |
 |-------|--------|
 | Dernière étape terminée | **6.33** (Mes dossiers liste + EuroFormat/mailto/polish) |
-| Étape en cours | Lot D à finir : courriers sans plan · smoke « Écrire » au retour téléphone |
-| Prochaine sous-étape | Schéma courrier sans plan + ligne d’accueil · puis E/F |
+| Étape en cours | Lot D à finir : **courriers sans plan** (schéma 7) · smoke « Écrire » au retour |
+| Prochaine sous-étape | Table `pending_letters` + section Mes dossiers + bandeau accueil · puis E/F |
 | Audit premium | Code clos · punch list audit traitée |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
