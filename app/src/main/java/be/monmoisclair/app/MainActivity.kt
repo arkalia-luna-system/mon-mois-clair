@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                AppWordmark(markSize = 44.dp, announce = false)
+                                AppWordmark(width = 220.dp, announce = false)
                                 CircularProgressIndicator(
                                     color = A11yTokens.ButtonFill,
                                     strokeWidth = 3.dp

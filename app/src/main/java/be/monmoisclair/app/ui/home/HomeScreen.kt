@@ -81,6 +81,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.MainActivity
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.R
+import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
@@ -510,12 +511,7 @@ fun HomeScreen(
                     state.timeline.none { it is TimelineItem.Income }
                 ) {
                     val incomeTipShape = MaterialTheme.shapes.medium
-                    Text(
-                        text = "Ajoutez un revenu (salaire).",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.AccentWarn,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .border(
@@ -528,17 +524,24 @@ fun HomeScreen(
                             .semantics {
                                 liveRegion = LiveRegionMode.Polite
                                 contentDescription = "Ajoutez un revenu (salaire)."
-                            }
-                    )
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        BrandMark()
+                        Text(
+                            text = "Ajoutez un revenu (salaire).",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.AccentWarn,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
                 state.nextMonthWarning?.let { warning ->
                     val warnShape = MaterialTheme.shapes.medium
-                    Text(
-                        text = warning,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.AccentWarn,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
+                    Row(
                         modifier = Modifier
                             .padding(top = fit.sectionGap)
                             .fillMaxWidth()
@@ -553,8 +556,20 @@ fun HomeScreen(
                             .semantics {
                                 liveRegion = LiveRegionMode.Polite
                                 contentDescription = warning
-                            }
-                    )
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        BrandMark()
+                        Text(
+                            text = warning,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.AccentWarn,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
                 if (state.pendingLetterCount > 0) {
                     val pendingLabel = if (state.pendingLetterCount == 1) {
@@ -563,12 +578,7 @@ fun HomeScreen(
                         "${state.pendingLetterCount} courriers sans plan · Voir"
                     }
                     val pendingShape = MaterialTheme.shapes.medium
-                    Text(
-                        text = pendingLabel,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.Ink,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                    Row(
                         modifier = Modifier
                             .padding(top = fit.sectionGap)
                             .fillMaxWidth()
@@ -583,8 +593,20 @@ fun HomeScreen(
                             .semantics {
                                 liveRegion = LiveRegionMode.Polite
                                 contentDescription = pendingLabel
-                            }
-                    )
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        BrandMark()
+                        Text(
+                            text = pendingLabel,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.Ink,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
             }
             HorizontalDivider(color = A11yTokens.PaperBorder)
@@ -627,6 +649,7 @@ fun HomeScreen(
                                         .background(A11yTokens.PaperCard, loadShape)
                                         .padding(if (fit.compactHomeChrome) 12.dp else 14.dp)
                                 ) {
+                                    BrandMark(height = 32.dp)
                                     CircularProgressIndicator(
                                         color = A11yTokens.ButtonFill,
                                         strokeWidth = 3.dp,
@@ -655,6 +678,7 @@ fun HomeScreen(
                                     if (fit.compactHomeChrome) 6.dp else 8.dp
                                 )
                             ) {
+                                BrandMark(height = 36.dp)
                                 Text(
                                     text = "Rien encore ce mois",
                                     style = MaterialTheme.typography.headlineMedium,
@@ -715,30 +739,28 @@ fun HomeScreen(
                                                 .padding(10.dp)
                                         )
                                     }
+                                    // Collé au champ : sinon le Lazy item suivant
+                                    // disparaît sous le clavier Samsung (campagne C7).
+                                    if (searchQuery.isNotBlank() && filteredTimeline.isEmpty()) {
+                                        val searchEmptyShape = MaterialTheme.shapes.medium
+                                        val emptySearch =
+                                            "Rien pour « ${searchQuery.trim()} ». " +
+                                                "Les totaux du haut restent ceux du mois."
+                                        Text(
+                                            text = emptySearch,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = A11yTokens.InkMuted,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .border(1.dp, A11yTokens.PaperBorder, searchEmptyShape)
+                                                .background(A11yTokens.PaperCard, searchEmptyShape)
+                                                .padding(if (fit.compactHomeChrome) 12.dp else 14.dp)
+                                                .semantics {
+                                                    liveRegion = LiveRegionMode.Polite
+                                                }
+                                        )
+                                    }
                                 }
-                            }
-                        }
-                        if (searchQuery.isNotBlank() && filteredTimeline.isEmpty()) {
-                            item(key = "search-empty") {
-                                val searchEmptyShape = MaterialTheme.shapes.medium
-                                val emptySearch =
-                                    "Rien pour « ${searchQuery.trim()} ». " +
-                                        "Les totaux du haut restent ceux du mois."
-                                Text(
-                                    text = emptySearch,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.InkMuted,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 12.dp)
-                                        .border(1.dp, A11yTokens.PaperBorder, searchEmptyShape)
-                                        .background(A11yTokens.PaperCard, searchEmptyShape)
-                                        .padding(if (fit.compactHomeChrome) 12.dp else 14.dp)
-                                        .semantics {
-                                            liveRegion = LiveRegionMode.Polite
-                                            contentDescription = emptySearch
-                                        }
-                                )
                             }
                         }
                         items(filteredTimeline, key = { item ->

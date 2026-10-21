@@ -600,7 +600,7 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             AppWordmark(
-                markSize = if (fit.compactHomeChrome) 28.dp else 32.dp,
+                width = if (fit.compactHomeChrome) 200.dp else 240.dp,
                 announce = false
             )
             if (stepLabel != null) {

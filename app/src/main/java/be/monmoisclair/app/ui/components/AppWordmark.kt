@@ -1,14 +1,13 @@
 package be.monmoisclair.app.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -16,17 +15,21 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.R
-import be.monmoisclair.app.ui.theme.A11yTokens
+
+/** Carnet + nom, repris du logo (livre ouvert, filet or, coche). */
+private const val LockupRatio = 960f / 715f
+
+/** Livre seul, pour une bandeau ou une petite accroche. */
+private const val MarkRatio = 256f / 210f
 
 /**
- * Le même M que l’icône, plus le nom.
- * Réservé aux écrans qui présentent l’application (verrou, départ, réglages, aide).
- * Pas sur le mois : l’accueil reste le carnet.
+ * Le logo complet. Pas sur la liste du mois.
+ * [width] est la largeur affichée ; la hauteur suit l’image.
  */
 @Composable
 fun AppWordmark(
     modifier: Modifier = Modifier,
-    markSize: Dp = 32.dp,
+    width: Dp = 220.dp,
     announce: Boolean = true
 ) {
     val spoken = if (announce) {
@@ -34,20 +37,30 @@ fun AppWordmark(
     } else {
         Modifier.clearAndSetSemantics {}
     }
-    Row(
-        modifier = modifier.then(spoken),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_brand_m),
-            contentDescription = null,
-            modifier = Modifier.size(markSize)
-        )
-        Text(
-            text = "Mon Mois Clair",
-            style = MaterialTheme.typography.labelLarge,
-            color = A11yTokens.Ink
-        )
-    }
+    Image(
+        painter = painterResource(R.drawable.book_lockup),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = modifier
+            .then(spoken)
+            .widthIn(max = width)
+            .fillMaxWidth()
+            .aspectRatio(LockupRatio)
+    )
+}
+
+/** Le carnet seul, à poser au bord d’un bandeau. */
+@Composable
+fun BrandMark(
+    modifier: Modifier = Modifier,
+    height: Dp = 28.dp
+) {
+    Image(
+        painter = painterResource(R.drawable.book_mark),
+        contentDescription = null,
+        contentScale = ContentScale.Fit,
+        modifier = modifier
+            .height(height)
+            .aspectRatio(MarkRatio)
+    )
 }

@@ -56,7 +56,7 @@ fun ReminderHealthScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
-        AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
+        AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
         Text(
             text = "Alertes",
             style = MaterialTheme.typography.headlineMedium,

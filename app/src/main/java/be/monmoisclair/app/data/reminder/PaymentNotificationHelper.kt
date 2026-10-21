@@ -66,7 +66,7 @@ class PaymentNotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_reminder)
+            .setSmallIcon(R.drawable.book_stat)
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
@@ -97,7 +97,7 @@ class PaymentNotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_reminder)
+            .setSmallIcon(R.drawable.book_stat)
             .setContentTitle("$label — noté FAIT")
             .setContentText("Touchez Remettre si c’était une erreur.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

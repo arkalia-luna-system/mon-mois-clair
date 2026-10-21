@@ -26,7 +26,7 @@ fun HowItWorksScreen(onBack: () -> Unit) {
     val sectionGap = if (fit.compactHomeChrome) 8.dp else 10.dp
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
-        AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
+        AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
         Text(
             text = HowItWorksCopy.TITLE,
             style = MaterialTheme.typography.headlineMedium,

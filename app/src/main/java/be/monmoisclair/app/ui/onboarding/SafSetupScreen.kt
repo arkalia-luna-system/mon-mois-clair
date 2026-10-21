@@ -54,7 +54,7 @@ fun SafSetupScreen(
         onSecondary = onCancel
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
-        AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
+        AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
         Text(
             text = "Dossier de sauvegarde",
             style = MaterialTheme.typography.headlineMedium,

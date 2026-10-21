@@ -84,7 +84,7 @@ fun BiometricLockScreen(
                 .padding(brandPad),
             verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
-            AppWordmark(markSize = if (fit.compactHomeChrome) 36.dp else 44.dp)
+            AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 260.dp)
             Text(
                 text = "Application verrouillée",
                 style = MaterialTheme.typography.headlineMedium,

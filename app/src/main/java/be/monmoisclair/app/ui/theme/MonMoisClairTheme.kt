@@ -48,8 +48,8 @@ private val AppShapes = Shapes(
     extraLarge = RoundedCornerShape(12.dp)
 )
 
-/** Source Serif 4 — chiffre / display (carnet). OFL Adobe. */
-private val DisplaySerif = FontFamily(
+/** Source Serif 4 — chiffre, et le nom de l’app. OFL Adobe. */
+internal val BrandSerif = FontFamily(
     Font(R.font.source_serif4_regular, FontWeight.Normal),
     Font(R.font.source_serif4_semibold, FontWeight.SemiBold),
     Font(R.font.source_serif4_semibold, FontWeight.Bold)
@@ -65,7 +65,7 @@ private val UiSans = FontFamily(
 
 private val AppTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = DisplaySerif,
+        fontFamily = BrandSerif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 34.sp,
         color = A11yTokens.Ink

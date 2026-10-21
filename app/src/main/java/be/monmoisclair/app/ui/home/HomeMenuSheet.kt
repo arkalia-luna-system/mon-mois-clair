@@ -85,7 +85,7 @@ fun HomeMenuSheet(
                 .padding(horizontal = A11yTokens.screenPadding)
                 .padding(bottom = if (fit.compactHomeChrome) 20.dp else 28.dp)
         ) {
-            AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
+            AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
             Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
             Text(
                 text = "Menu",

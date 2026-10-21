@@ -10,10 +10,10 @@
         <!-- windowLightNavigationBar : values-v27 (API 27+). -->
     </style>
 
-    <!-- Android 12+ SplashScreen API — même papier, même M que l’icône. -->
+    <!-- Android 12+ — le carnet du logo, sur le même papier. -->
     <style name="Theme.MonMoisClair.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/paper_cream</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_brand_m</item>
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/book_launcher</item>
         <item name="postSplashScreenTheme">@style/Theme.MonMoisClair</item>
     </style>
 </resources>
