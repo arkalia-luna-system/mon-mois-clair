@@ -35,6 +35,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.reminder.ReminderHealthReport
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.health.HealthStatusRow
@@ -78,11 +79,7 @@ fun PermissionsSetupScreen(
         }
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
-        Text(
-            text = "Mon Mois Clair",
-            style = MaterialTheme.typography.labelLarge,
-            color = A11yTokens.InkMuted
-        )
+        AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
         Text(
             text = "Alertes fiables",
             style = MaterialTheme.typography.headlineMedium,

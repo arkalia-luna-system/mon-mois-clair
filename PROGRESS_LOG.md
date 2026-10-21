@@ -19,6 +19,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Marque (pas une étape)
+
+Le M bloc et son filet or laissent place à un M au trait, le même partout : icône, splash, notification, chargement, verrou, départ, menu, alertes, aide, pied des réglages. L’accueil du mois ne porte pas de logo. `versionName` reste `0.1.0-6.37`. Pas de nouvelle suite (dernière close : **231/231**).
+
 ### 2026-10-21 — 6.37 Phrase rythme dossier
 
 **Problème :** sans estimation honnête, Alex invente une date de fin ; avec une date certaine, on ment dès qu’un mois diverge.

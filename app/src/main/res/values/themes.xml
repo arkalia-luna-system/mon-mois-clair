@@ -10,7 +10,7 @@
         <!-- windowLightNavigationBar : values-v27 (API 27+). -->
     </style>
 
-    <!-- Android 12+ SplashScreen API — même papier, icône M. -->
+    <!-- Android 12+ SplashScreen API — même papier, même M que l’icône. -->
     <style name="Theme.MonMoisClair.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/paper_cream</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_brand_m</item>

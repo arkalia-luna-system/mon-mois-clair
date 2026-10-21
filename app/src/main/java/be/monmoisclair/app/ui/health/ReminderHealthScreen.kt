@@ -29,6 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -55,6 +56,7 @@ fun ReminderHealthScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
+        AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
         Text(
             text = "Alertes",
             style = MaterialTheme.typography.headlineMedium,

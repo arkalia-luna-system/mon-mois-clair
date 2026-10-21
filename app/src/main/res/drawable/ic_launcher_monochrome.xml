@@ -4,11 +4,12 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Silhouette blanche : Android 13 teinte selon le thème. -->
+    <!-- Même M : Android 13 le teinte selon le thème. -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M30,70 L30,32 L44,32 L54,50 L64,32 L78,32 L78,70 L66,70 L66,48 L54,66 L42,48 L42,70 Z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M34,73 L74,73 L74,77 L34,77 Z" />
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="10"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M30,78 L30,30 L54,52 L78,30 L78,78" />
 </vector>

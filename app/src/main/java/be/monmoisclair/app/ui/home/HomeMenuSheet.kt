@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -84,6 +85,8 @@ fun HomeMenuSheet(
                 .padding(horizontal = A11yTokens.screenPadding)
                 .padding(bottom = if (fit.compactHomeChrome) 20.dp else 28.dp)
         ) {
+            AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
+            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
             Text(
                 text = "Menu",
                 style = MaterialTheme.typography.headlineMedium,

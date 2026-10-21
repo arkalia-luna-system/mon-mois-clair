@@ -1,6 +1,5 @@
 package be.monmoisclair.app.ui.lock
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -10,23 +9,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import be.monmoisclair.app.R
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -87,16 +84,7 @@ fun BiometricLockScreen(
                 .padding(brandPad),
             verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_brand_m),
-                contentDescription = "Mon Mois Clair",
-                modifier = Modifier.size(48.dp)
-            )
-            Text(
-                text = "Mon Mois Clair",
-                style = MaterialTheme.typography.labelLarge,
-                color = A11yTokens.InkMuted
-            )
+            AppWordmark(markSize = if (fit.compactHomeChrome) 36.dp else 44.dp)
             Text(
                 text = "Application verrouillée",
                 style = MaterialTheme.typography.headlineMedium,

@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -596,12 +597,11 @@ fun SettingsScreen(
                         append(". Données sur ce téléphone uniquement.")
                     }
                 },
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = "Mon Mois Clair",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
+            AppWordmark(
+                markSize = if (fit.compactHomeChrome) 28.dp else 32.dp,
+                announce = false
             )
             if (stepLabel != null) {
                 Text(

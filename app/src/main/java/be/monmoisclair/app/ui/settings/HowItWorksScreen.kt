@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -25,6 +26,7 @@ fun HowItWorksScreen(onBack: () -> Unit) {
     val sectionGap = if (fit.compactHomeChrome) 8.dp else 10.dp
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
+        AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
         Text(
             text = HowItWorksCopy.TITLE,
             style = MaterialTheme.typography.headlineMedium,

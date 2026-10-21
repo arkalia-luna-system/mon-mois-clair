@@ -46,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import be.monmoisclair.app.ui.MainViewModel
 import be.monmoisclair.app.ui.lock.BiometricLockScreen
 import be.monmoisclair.app.ui.navigation.AppNavHost
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.MonMoisClairTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -130,6 +131,7 @@ class MainActivity : AppCompatActivity() {
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
+                                AppWordmark(markSize = 44.dp, announce = false)
                                 CircularProgressIndicator(
                                     color = A11yTokens.ButtonFill,
                                     strokeWidth = 3.dp

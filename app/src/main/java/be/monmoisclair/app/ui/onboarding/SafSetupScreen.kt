@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -53,11 +54,7 @@ fun SafSetupScreen(
         onSecondary = onCancel
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
-        Text(
-            text = "Mon Mois Clair",
-            style = MaterialTheme.typography.labelLarge,
-            color = A11yTokens.InkMuted
-        )
+        AppWordmark(markSize = if (fit.compactHomeChrome) 28.dp else 32.dp)
         Text(
             text = "Dossier de sauvegarde",
             style = MaterialTheme.typography.headlineMedium,
