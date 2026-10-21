@@ -11,13 +11,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 |-------|--------|
 | Dernière étape terminée | **6.37** (phrase rythme dossier) |
 | Étape en cours | — |
-| Prochaine sous-étape | Lancer campagne device [`docs/testeurs/`](docs/testeurs/) (prompts renforcés 6.37) · S26 maman en main |
-| Audit premium | Smokes 6.36 clos · phrase rythme **6.37** · **231/231** |
+| Prochaine sous-étape | Campagne device : finir Visuel Perf · Produit Fidélité ×2 · Senior One UI |
+| Audit premium | Smokes 6.36 clos · phrase rythme **6.37** · campagne Ultra en cours · **232/232** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — Campagne device (correctifs P0/P1, pas de bump)
+
+**Vu sur SM-S938B** (release `0.1.0-6.37`) : grille jours qui mangeait Enregistrer ; recherche `zzzz` sans message au-dessus du clavier ; déplier « retard ou accord » = faux dirty ; hero Mes dossiers lu 2× en TalkBack.
+
+**Codé :** cases jour en `size(48.dp)` + hint défiler · message vide recherche collé sous le champ · dirty AddEntry sans `dossierExpanded` seul · a11y hero sans contentDescription doublon · spacer bas formulaire.
+
+**Preuves :** `dist/verify/campagne-2026-10-21/` · `RAPPORT_CAMPAGNE.md`  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **232/232** (59 fichiers, 0 échec)  
+**Version :** inchangée `0.1.0-6.37`
 
 ### 2026-10-21 — Marque (pas une étape)
 

@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -64,12 +64,9 @@ fun DayOfMonthGrid(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        // Taille fixe 48 dp : le padding interne gonflait à ~64 dp
-                        // et coupait les jours 21–25 sous Enregistrer (campagne device).
-                        .defaultMinSize(
-                            minWidth = A11yTokens.minTouchHeight,
-                            minHeight = A11yTokens.minTouchHeight
-                        )
+                        // Taille stricte 48 dp (pas defaultMinSize : selectable/texte
+                        // gonflaient à ~64 dp → rangée coupée sous Enregistrer).
+                        .size(A11yTokens.minTouchHeight)
                         .alpha(if (enabled) 1f else 0.45f)
                         .clip(shape)
                         .background(bg, shape)

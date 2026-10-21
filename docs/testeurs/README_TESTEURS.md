@@ -9,7 +9,7 @@ Chaque prompt = **un agent / un chat**.
 | [`PROFILS_TESTEURS.md`](PROFILS_TESTEURS.md) | Tempéraments + personae |
 | Prompts 1–5 ci-dessous | Mission de chaque expert |
 
-Version cible journal : **`0.1.0-6.37`** · schéma **7** · tests **231/231**.
+Version cible journal : **`0.1.0-6.37`** · schéma **7** · tests **232/232**.
 
 ## En-tête obligatoire (coller en haut de chaque chat)
 

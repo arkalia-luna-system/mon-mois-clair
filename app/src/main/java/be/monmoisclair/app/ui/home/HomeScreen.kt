@@ -726,21 +726,8 @@ fun HomeScreen(
                                             null
                                         }
                                     )
-                                    if (searchQuery.isNotBlank()) {
-                                        val searchTipShape = MaterialTheme.shapes.medium
-                                        Text(
-                                            text = "Le reste en haut est celui de tout le mois.",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = A11yTokens.InkMuted,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .border(1.dp, A11yTokens.PaperBorder, searchTipShape)
-                                                .background(A11yTokens.PaperCard, searchTipShape)
-                                                .padding(10.dp)
-                                        )
-                                    }
-                                    // Collé au champ : sinon le Lazy item suivant
-                                    // disparaît sous le clavier Samsung (campagne C7).
+                                    // Message vide juste sous le champ (au-dessus du tip) :
+                                    // sinon clavier Samsung masque le Lazy item suivant (C7).
                                     if (searchQuery.isNotBlank() && filteredTimeline.isEmpty()) {
                                         val searchEmptyShape = MaterialTheme.shapes.medium
                                         val emptySearch =
@@ -758,6 +745,18 @@ fun HomeScreen(
                                                 .semantics {
                                                     liveRegion = LiveRegionMode.Polite
                                                 }
+                                        )
+                                    } else if (searchQuery.isNotBlank()) {
+                                        val searchTipShape = MaterialTheme.shapes.medium
+                                        Text(
+                                            text = "Le reste en haut est celui de tout le mois.",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = A11yTokens.InkMuted,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .border(1.dp, A11yTokens.PaperBorder, searchTipShape)
+                                                .background(A11yTokens.PaperCard, searchTipShape)
+                                                .padding(10.dp)
                                         )
                                     }
                                 }
