@@ -1,9 +1,9 @@
 # Plan — du carnet fini à un outil qui tient aussi les retards
 
-Date : 2026-10-21, mis à jour après clôture lot **D**.  
+Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A, B, C, D** clos dans le journal (`0.1.0-6.30` … `0.1.0-6.34`, schéma Room **7**).  
-On n’anticipe **pas** E, F dans `versionName`, le README ou les badges. Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.
+Lots **A à F** clos dans le journal jusqu’à `0.1.0-6.36` (schéma Room **7**, dernière suite verte **226/226**).  
+L’arbre a des correctifs **après** cette suite : ils ne sont pas une nouvelle version. Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
 
@@ -25,7 +25,7 @@ Deux personnes, **un** écran.
 
 Hors produit, même à la fin : banque, cloud, pub, graphiques, enveloppes multiples, snowball, taux d’intérêt, conseil juridique, formulaire CPAS officiel.
 
-Le smoke déjà noté au journal (notification avec plusieurs factures, échéance trimestrielle au doigt) reste à faire sur le Galaxy. Il ne bloque pas la conception. Il bloque l’idée que « tout le visuel 6.x est revérifié ».
+Les smokes notés au journal (notification, trimestriel, « Écrire », hauteur courte simulée) sont faits sur Ultra ou en simulation. Le téléphone S26 de maman, tenu en main, n’est pas dans le carnet.
 
 ---
 
@@ -57,7 +57,7 @@ Le comportement ci-dessous est dans le code. Deux précisions apparues en le vé
 
 - Enregistrer une communication sur une facture répétée la range aussi sur le modèle.
 - Le mois nouveau la réaffiche, avec Copier.
-- La photo du modèle se revoit sur les mois suivants (pastille « Facture »). Une photo prise « seulement ce mois-ci » ne s’impose pas aux autres mois : la case existe déjà dans l’esprit de « Aussi les mois suivants ». Par défaut, une référence et une lettre d’accord **suivent** ; on le dit dans la phrase du bouton, pas dans un nouveau réglage.
+- La photo du modèle se revoit sur les mois suivants. Sur le mois, le bouton s’appelle « Voir la photo » (il n’y a pas de pastille « Facture »). Une photo prise « seulement ce mois-ci » ne s’impose pas aux autres mois : la case existe déjà dans l’esprit de « Aussi les mois suivants ». Par défaut, une référence et une lettre d’accord **suivent** ; on le dit dans la phrase du bouton, pas dans un nouveau réglage.
 - Copier : si le texte est une communication structurée **valide** (modulo 97), le presse-papiers reçoit les **12 chiffres**. L’écran garde `+++…+++`. Si le contrôle échoue : « Vérifiez sur le courrier. » et on copie le texte tel quel. Une note libre (« loyer ») est copiée telle quelle.
 
 **Données.** Colonnes optionnelles sur `expense_templates` : `paymentNote`, `receiptRelativePath` (une photo canonique). Schéma **4**. Les instances gardent leurs champs (override du mois).
@@ -215,6 +215,6 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 **A–F clos** (`0.1.0-6.36`, schéma 7, 226 tests) : plan produit fini côté code.
 
-**Prochain geste** : hauteur courte type S26 (plan §5.10). Smoke Ultra « Écrire » + FAIT ≥ 48 dp : **fait** (`AUDIT_STATUS.md`).
+**Prochain geste** : — (A–F + smokes Ultra / hauteur courte §5.10 clos). Polish si le vrai S26 maman diverge.
 
 Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.

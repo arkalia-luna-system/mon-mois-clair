@@ -397,12 +397,15 @@ fun EditEntryScreen(
     }
 
     if (state.missing) {
+        val missFit = rememberDisplayFit()
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(A11yTokens.PaperCream)
                 .padding(A11yTokens.screenPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(
+                if (missFit.compactHomeChrome) 12.dp else 16.dp
+            )
         ) {
             Text(
                 text = "Cette ligne n’est plus là.",
@@ -418,7 +421,7 @@ fun EditEntryScreen(
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, missShape)
                     .background(A11yTokens.PaperCard, missShape)
-                    .padding(14.dp)
+                    .padding(if (missFit.compactHomeChrome) 12.dp else 14.dp)
             )
             SecondaryA11yButton(text = "Retour", onClick = onCancel)
         }
@@ -827,6 +830,8 @@ private fun EntryFormScaffold(
     }
     val fit = rememberDisplayFit()
     val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
+    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPadLg = if (fit.compactHomeChrome) 12.dp else 14.dp
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
         modifier = Modifier
@@ -1516,6 +1521,9 @@ private fun EntryFormScaffold(
 
 @Composable
 private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
+    val fit = rememberDisplayFit()
+    val hPad = if (fit.compactHomeChrome) 12.dp else 16.dp
+    val vPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
     val bg = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm
     val fg = if (selected) A11yTokens.ButtonText else A11yTokens.Ink
@@ -1533,7 +1541,7 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
             )
             .clickable(role = Role.RadioButton, onClick = onClick)
             .heightIn(min = A11yTokens.minTouchHeight)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = hPad, vertical = vPad)
             .semantics {
                 contentDescription = if (selected) "$text, sélectionné" else text
             }

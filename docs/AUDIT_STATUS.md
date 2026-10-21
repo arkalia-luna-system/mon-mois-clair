@@ -15,6 +15,7 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | Lot C « Écrire » (mail) | ✅ smoke 2026-10-21 (Gmail Compose) |
 | 6.33 install + EuroFormat + Menu | ✅ smoke retour 2026-10-21 |
 | 6.36 + hauteur Accord / FAIT | ✅ smoke Ultra 2026-10-21 |
+| Hauteur courte type S26 | ✅ sim. 360×780 dp + texte 1,3 (2026-10-21) |
 
 ## Smoke SM-S938B — 2026-10-21
 
@@ -36,9 +37,10 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 14 | Menu sans Mes dossiers si 0 accord | ✅ |
 | 15 | Réglages affiche version 6.33 | ✅ |
 | 16 | « Écrire » ouvre un vrai brouillon Mail | ✅ fiche accord + e-mail → `ComposeActivityGmailExternal` (mailto URI) |
-| 17 | Ligne Accord : FAIT reste sur la carte, cible ≥ 48 dp | ✅ Ultra dens. 450 : hit `Marquer FAIT` **68 dp** ; pastille Accord visible sous « pour quoi » |
-| 18 | Install **6.36** | ✅ |
+| 17 | Ligne Accord : FAIT reste sur la carte, cible ≥ 48 dp | ✅ Ultra : hit FAIT ≥ 48 dp ; pastille visible |
+| 18 | Install **6.36** (+ polish release après-midi) | ✅ |
+| 19 | Hauteur courte ~780 dp + police 1,3 : Accord sur la ligne du nom, FAIT ≥ 48 dp | ✅ dens. 640 (= 360×780) ; chip à droite du nom ; cause puis montant ; FAIT **48 dp** |
+| 20 | Menu (Réglages / Mes dossiers) sous chrome compact | ✅ |
+| 21 | Fiche ajout : bloc « C’est un retard ou un accord ? » replié (▾) | ✅ |
 
 Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.
-
-**Encore ouvert (hors Ultra)** : coup d’œil hauteur courte / texte large type S26 (plan §5 point 10) — pas rejoué ici.

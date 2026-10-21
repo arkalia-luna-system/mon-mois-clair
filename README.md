@@ -7,7 +7,7 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-226%2F226-success)](#statut)
+[![Tests](https://img.shields.io/badge/derni%C3%A8re%20suite%20verte-226%2F226%20au%206.36-yellow)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
 [![Version](https://img.shields.io/badge/version-0.1.0--6.36-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -25,9 +25,9 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 |---------|------|
 | Version | `0.1.0-6.36` |
 | Dernière étape | **6.36** Lot F clos — résumé texte |
-| Device | Validé sur **Galaxy S25 Ultra** (`SM-S938B`) ; cible maman **S26 6,3″** |
+| Device | Smoke **6.36** sur **Galaxy S25 Ultra** (`SM-S938B`) et sim. hauteur courte. `dist/CHECKLIST_S25.md` est le passage du **19 oct** (version 5.4.1), pas la preuve du 6.36. Le vrai S26 de maman n’est pas dans ce carnet |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **226/226** OK |
+| Tests unitaires | Dernière suite **verte** : **226/226** au 6.36. L’arbre a 229 méthodes `@Test` non relancées — voir le journal, entrée « après 6.36 » |
 | Schéma Room | **7** — `pending_letters` (+ 6 : IBAN, e-mail, frais, extras) |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)
@@ -47,7 +47,7 @@ Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion ban
 |----------|------|
 | **Reste après factures** sticky | ✅ |
 | **Courses / divers** (+/−) | ✅ |
-| **EN RETARD** + relance overdue | ✅ |
+| **En retard** (badge, pas des capitales) + relance | ✅ |
 | **Prélèvement auto** (icône + notif) | ✅ |
 | **Récurrence** une fois / mois / N mois / an | ✅ |
 | **Liste chronologique** du mois | ✅ |
@@ -112,7 +112,7 @@ Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, fact
 6.35      Lot E — Mettre de côté                       ✅
 6.36      Lot F — résumé texte                         ✅
 Smoke « Écrire » + FAIT ≥ 48 dp (Ultra)                ✅ 2026-10-21
-Hauteur courte type S26                                ⏳
+Hauteur courte type S26 (sim. 360×780 + texte 1,3)      ✅ 2026-10-21
 ```
 
 

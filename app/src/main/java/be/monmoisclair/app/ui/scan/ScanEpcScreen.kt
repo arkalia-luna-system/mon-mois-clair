@@ -333,9 +333,9 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     .fillMaxWidth()
                     .border(1.dp, A11yTokens.PaperBorder, denyShape)
                     .background(A11yTokens.PaperCard, denyShape)
-                    .padding(14.dp)
+                    .padding(tipPad)
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
             if (permanentlyDenied) {
                 SecondaryA11yButton(
                     text = "Ouvrir les réglages",

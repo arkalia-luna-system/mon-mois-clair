@@ -602,12 +602,15 @@ fun HomeScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 48.dp)
+                                    .padding(vertical = if (fit.compactHomeChrome) 32.dp else 48.dp)
                                     .semantics {
                                         contentDescription = "Chargement du mois"
+                                        liveRegion = LiveRegionMode.Polite
                                     },
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                                verticalArrangement = Arrangement.spacedBy(
+                                    if (fit.compactHomeChrome) 12.dp else 16.dp
+                                )
                             ) {
                                 val loadShape = MaterialTheme.shapes.medium
                                 Row(
@@ -617,7 +620,7 @@ fun HomeScreen(
                                         .fillMaxWidth()
                                         .border(1.dp, A11yTokens.PaperBorder, loadShape)
                                         .background(A11yTokens.PaperCard, loadShape)
-                                        .padding(14.dp)
+                                        .padding(if (fit.compactHomeChrome) 12.dp else 14.dp)
                                 ) {
                                     CircularProgressIndicator(
                                         color = A11yTokens.ButtonFill,
@@ -639,11 +642,13 @@ fun HomeScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 24.dp)
+                                    .padding(vertical = if (fit.compactHomeChrome) 16.dp else 24.dp)
                                     .border(1.dp, A11yTokens.PaperBorder, emptyShape)
                                     .background(A11yTokens.PaperCard, emptyShape)
-                                    .padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    .padding(if (fit.compactHomeChrome) 12.dp else 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    if (fit.compactHomeChrome) 6.dp else 8.dp
+                                )
                             ) {
                                 Text(
                                     text = "Rien encore ce mois",
@@ -809,7 +814,8 @@ fun HomeScreen(
                                     } else {
                                         "Noter des courses"
                                     },
-                                    style = MaterialTheme.typography.titleLarge
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = A11yTokens.Ink
                                 )
                                 Text(
                                     text = if (diversExpanded) "Fermer" else "Ouvrir",

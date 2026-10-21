@@ -4,7 +4,7 @@ Date du premier constat : 2026-10-21.
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
 Dernière étape **fermée** dans le journal : **6.36** (`0.1.0-6.36`, `versionCode` 41), schéma **7**, tests **226/226** (`--rerun-tasks`).  
-Lots A–F tenus. Smoke Ultra « Écrire » + hauteur Accord : **fait** (voir `AUDIT_STATUS.md`). Ouvert : hauteur courte type S26.
+Lots A–F tenus. Smokes Ultra (« Écrire », FAIT) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`AUDIT_STATUS.md`).
 
 Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
 Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
@@ -217,7 +217,7 @@ Figées, pour l’historique. L’arbre n’est plus celui-là. Voir la partie 7
 - QR : `EpcPayment` a `iban` et `remittance`. Le matin, `applyEpc` jetait l’IBAN. **Le chantier C le garde dans l’état du formulaire.**
 - Photo : `receipts/{id}.webp`, max 2048 px, qualité 90, et maintenant une baisse de qualité au-dessus d’environ 400 Ko.
 - Fréquences UI : `RecurrenceChoice` = Once, Monthly, Every3Months, Yearly. Pas de cinquième. Toujours vrai.
-- Backup : le matin `CURRENT_SCHEMA_VERSION = "3"`. Aujourd’hui `"6"`, codec accepte 1 à 6.
+- Backup : le matin `CURRENT_SCHEMA_VERSION = "3"`. Le journal fermé est depuis au schéma **7** (1 à 7). Cette ligne a un temps dit « 6 » : c’était déjà faux au moment de la partie 7.
 
 ---
 
@@ -241,17 +241,11 @@ Le carnet de maman est toujours l’accueil : mois, gros reste, FAIT, courses, m
 
 Tests ciblés relancés pendant la correction du lot B (moteur, bascule FAIT, hors-mois, communication, aide, mise à jour d’instance, dossiers) : verts. Ce n’est **pas** la suite complète.
 
-### 7.2 Le trou de journal (erreur, pas un détail)
+### 7.2 Le trou de journal (erreur du soir, **refermée depuis**)
 
-Le code a migré. Les documents de version, non.
+**Ne plus lire ce tableau comme l’état actuel.** Il décrivait un écart 6.31 / schéma 6. Le journal fermé est **6.36**, schéma **7**, dernière suite verte **226/226**. L’écart vivant est la §8 (correctifs après cette suite, non relancés).
 
-| Endroit | Ce qu’il dit | Ce que le code fait |
-|---------|----------------|---------------------|
-| `PROGRESS_LOG.md`, README, `versionName` | 6.31 clos, schéma 5, 183 tests | `versionName` est encore `0.1.0-6.31` |
-| `AppDatabase`, `AppMetaKeys`, `Migrations.MIGRATION_5_6`, `DatabaseModule` | — | Schéma **6** déjà enregistré |
-| `CHARTE_ET_ARCHITECTURE.md` §3 (avant cette relecture) | Schéma 5, reste = départ − FAIT | Le calcul ajoute déjà `addedFeesCents` |
-
-Conséquence : installer cet arbre sur un téléphone en schéma 5 **monte** la base en 6. Revenir au commit 6.31 ensuite casse l’ouverture (Room ne redescend pas). On ne ferme pas une version 6.32 dans le journal tant que la suite complète n’a pas été relancée et que le lot C n’est pas réellement fini. On ne laisse pas non plus la charte affirmer « schéma 5 » pendant que la base est en 6.
+Ce soir-là, le journal parlait encore de 6.31 / 183 tests pendant que la base était déjà en schéma 6, et la charte disait encore « schéma 5 ». Cet écart a été refermé par les étapes 6.32 à 6.36. Room ne redescend toujours pas : un téléphone passé en schéma 7 ne rouvre pas un APK figé en schéma 6.
 
 Smoke carnet : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Punch list visuelle figée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md).
 
@@ -282,9 +276,9 @@ Clos au **6.32** (UI voir/enlever, aide, suite **198/198**). Reste ouvert hors c
 | Courrier sans plan | **Clos 6.34** — `pending_letters`, bandeau accueil, conversion vers accord |
 | Mettre de côté | **Clos 6.35.** Réglages (montant, jour, déficit annoncé, retirer). Fiche : « déjà viré — pas disponible ici ». Accueil inchangé tant que ce n’est pas activé. Charte : enveloppes multiples refusées, une facture admise |
 | Résumé à montrer | **Clos 6.36** — texte partageable (4 colonnes dette, mis de côté à part). Pas de PDF CPAS |
-| Smoke téléphone | Notifs multi + trimestriel : cochés manuel dans `AUDIT_STATUS`. « Écrire » + FAIT ≥ 48 dp sur Ultra : **clos 2026-10-21**. Hauteur courte S26 encore ouverte |
+| Smoke téléphone | Notifs multi + trimestriel : manuels. « Écrire », FAIT ≥ 48 dp, hauteur courte 780 dp + police 1,3 : **clos 2026-10-21** (`AUDIT_STATUS`) |
 | Checklist « zéro dossier = zéro mot » | L’accueil tient. Le formulaire d’une dépense a **un** bouton de plus, replié : « C’est un retard ou un accord ? ». L’aide contient la section. C’est l’écart accepté au lot B. Ce n’est pas zéro pixel au sens strict du plan §5 point 2 |
-| Suite de tests | Clos au 6.32 : **198/198** avec `--rerun-tasks` |
+| Suite de tests | Dernière verte **journalisée** : **226/226** au 6.36. 198/198 et 214/214 sont des étapes passées. L’arbre a 229 `@Test` non relancés (§8) |
 
 ### 7.5 Réflexions à ne pas perdre
 
@@ -296,7 +290,7 @@ Ils ne mettent même pas 1 € de côté. Une cagnotte à l’écran serait dép
 
 Le bouton replié sur chaque nouvelle dépense est le seul pixel nouveau que maman voit sans l’avoir demandé. Le garder fermé, sans le mot huissier, est la bonne limite. L’ouvrir par erreur puis quitter sans enregistrer ne doit rien créer : c’est le cas si le reste dû reste vide (`openingRemainingCents` null). Si elle remplit le reste par curiosité, elle crée un dossier. La phrase sous le champ (« Laissez vide si ce n’est pas un accord ») porte cette responsabilité. Elle est facile à rater sur un écran court. À relire au doigt, pas à rallonger avec un second avertissement.
 
-La pastille « Accord » sur fond chaud est lisible parce que le texte est encre, pas parce que le fond crie. Sur Ultra (2026-10-21) : FAIT reste sur la carte, hit ≥ 48 dp. Sur le S26 / hauteur ~800 dp + texte large, le plan (§5.3 / §5.10) demande encore le coup d’œil.
+La pastille « Accord » sur fond chaud est lisible parce que le texte est encre, pas parce que le fond crie. Sur Ultra + sim. 780 dp / police 1,3 (2026-10-21) : pastille sur la ligne du nom en chrome compact, FAIT hit ≥ 48 dp.
 
 Les frais en une somme et un motif unique suffisent pour une lettre. Ils ne suffisent pas pour trois lettres. Quand la troisième arrivera, le motif de la première aura disparu. Soit on accepte ça et on l’écrit dans l’aide (« le motif affiché est le dernier »), soit le lot C se termine avec une vraie liste. Je penche pour la liste courte seulement si l’affichage des photos multiples est fait en même temps : les deux sont « la lettre d’après ». Sinon on ferme le lot avec la somme, une phrase d’aide, et les photos visibles. Pas les deux chantiers à moitié.
 
@@ -314,7 +308,7 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Lot E — Mettre de côté | Clos **6.35** |
 | Lot F — résumé | Clos **6.36** — **226/226** |
 
-Prochaine action utile : coup d’œil hauteur courte / texte large type S26. Pas de pastille « Huissier ».
+Prochaine action utile : polish au fil de l’eau si un vrai S26 maman diverge. Pas de pastille « Huissier ».
 
 ### 7.7 Passe du 21 octobre, après-midi
 

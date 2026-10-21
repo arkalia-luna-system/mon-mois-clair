@@ -11,20 +11,49 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 |-------|--------|
 | Dernière étape terminée | **6.36** (Lot F clos : résumé texte) |
 | Étape en cours | — |
-| Prochaine sous-étape | Coup d’œil S26 / hauteur courte (plan §5.10) · polish si besoin |
-| Audit premium | Code clos · punch list audit traitée |
+| Prochaine sous-étape | Relancer **une** suite Gradle sur l’arbre actuel, puis seulement décider d’une étape. Phrase « encore N mois si… » **non codée** |
+| Audit premium | Smokes 6.36 clos. Correctifs **après** 6.36 dans l’arbre, **suite non relancée** — entrée ci-dessous |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
 
+### 2026-10-21 — Correctifs après 6.36 (pas une étape)
+
+**Pas clos.** `versionName` reste `0.1.0-6.36` · `versionCode` 41.  
+Dernière suite verte journalisée : **226/226** (59 fichiers).  
+L’arbre contient maintenant **229** méthodes `@Test` dans les mêmes 59 fichiers. Ces méthodes en plus, et les correctifs ci-dessous, **n’ont pas** été passés dans Gradle. Ne pas écrire 229/229 ni bumper le badge.
+
+**Dans le code :**
+- IBAN copié seulement si le contrôle international passe ; le mot « IBAN » collé devant est retiré
+- E-mail refusé s’il y a un espace, un point final ou deux points d’affilée
+- Bandeau d’accueil « Vérifiez sur le courrier » en crème, pas le même fond que « Copié »
+- Un second appui ne double plus : fiche, ajout, ranger, convertir un courrier, échéance hors mois, courses, restauration, résumé, copie de sauvegarde
+- FAIT : le second appui est ignoré ; Annuler pendant le premier est honoré une fois l’écriture finie
+- Photo : le texte dit de toucher Enregistrer ou Ranger ; « de ce mois » seulement si la photo ne suit pas la série
+- Frais : un motif sans montant est refusé ; la photo n’est écrite qu’après cette vérification
+- Mettre de côté : le montant en cours de saisie survit à un aller-retour ; si le mois est déjà FAIT, le message et la fiche ne prétendent pas changer ce virement
+- Mes dossiers : le total « ce mois » ne compte pas une échéance sans ligne dans le mois
+
+**Pas dans le produit (ne pas le marquer fait) :** « encore environ N mois si le versement reste de X ». Pas de tests d’écran instrumentés. Lint CI non bloquant. Le vrai S26 de maman n’a pas été tenu en main (seulement une sim. 360×780).
+
+Détail : `docs/AUDIT_ALEX_MAMAN_2026-10-21.md` §8.
+
+### 2026-10-21 — Smoke hauteur courte type S26 (sim. Ultra)
+
+**Geste :** release réinstallée (polish après 6.36). Densité appareil **640** → **360×780 dp** (`compactHomeChrome`). Police système **1,3** le temps du geste (remise à **1,15** après).
+
+**Vu :** pastille **Accord** à droite du nom ; « pour quoi » puis montant ; FAIT hit **48 dp** aligné en haut ; Menu Réglages / Mes dossiers ; fiche ajout avec bloc « C’est un retard ou un accord ? » replié (▾).
+
+**Pas de bump version** (smoke + install polish). Plan §5.3 / §5.10 : clos sur sim.
+
 ### 2026-10-21 — Smoke Ultra : « Écrire » + hauteur Accord
 
-**Geste :** APK `0.1.0-6.36` sur SM-S938B. Accord « Etude Smoke » / cause Hopital2025. E-mail saisi en édition → **Écrire** → Gmail `ComposeActivityGmailExternal` (mailto). Accueil : pastille Accord visible ; cible FAIT **68 dp** (≥ 48) — FAIT pas poussé hors carte.
+**Geste :** APK `0.1.0-6.36` sur SM-S938B. Accord « Etude Smoke » / cause Hopital2025. E-mail saisi en édition → **Écrire** → Gmail `ComposeActivityGmailExternal` (mailto). Accueil : pastille Accord visible ; cible FAIT ≥ 48 dp — FAIT pas poussé hors carte.
 
 **Pas de bump version** (doc smoke seulement).  
-**Encore :** hauteur courte type S26 (émulateur / téléphone maman), pas mesurée ici.
+**Suite :** hauteur courte — entrée ci-dessus.
 
 ### 2026-10-21 — 6.36 Lot F clos : résumé texte
 
