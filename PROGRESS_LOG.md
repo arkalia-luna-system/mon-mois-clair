@@ -9,14 +9,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.27** (sticky Sans les futures · Menu court · photo + fréquence) |
+| Dernière étape terminée | **6.28** (Voir la photo fiable · Menu · Alertes une ligne) |
 | Étape en cours | *(aucune)* |
-| Prochaine sous-étape | Smoke notif / trimestriel (déjà OK en manuel) |
-| Audit premium | Code clos · smoke partiel |
+| Prochaine sous-étape | *(aucune bloquante)* |
+| Audit premium | Code clos · smoke partiel (notif/trimestriel OK manuel) |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — 6.28 Premium : photo au doigt + libellé Menu
+
+**Problème :** pastille « Facture » (Text clickable) ne réagissait pas au tap sur Galaxy ; si le fichier manquait, le dialogue se fermait sans explication ; « Menu / Alertes » coupait sur 2 lignes ; photos seulement dans SAF (illisibles si Documents KO).
+
+**Codé :** bouton « Voir la photo » · dialogue avec message d’erreur · « Menu · Alertes » · copie locale + SAF à l’enregistrement / relecture.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **165/165** (47 fichiers, 0 échec)  
+**Version :** `0.1.0-6.28` · `versionCode` 33
 
 ### 2026-10-21 — 6.27 Retours manuels maman (photo, fréquence, menu, sticky)
 

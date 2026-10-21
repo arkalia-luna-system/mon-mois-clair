@@ -1,8 +1,8 @@
 # Audit premium — points encore ouverts
 
 Date : 2026-10-20.  
-Code : étape **6.26** (`0.1.0-6.26`) — gel stable sur `main` en fin de journée.  
-Mesure tests : **162/162** (47 fichiers, `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
+Code : étape **6.28** (`0.1.0-6.28`).  
+Mesure tests : **165/165** (47 fichiers, `--rerun-tasks`). Cette note ne remplace pas un passage au doigt sur le Galaxy.
 
 But : ce qu’il reste à corriger pour que l’app se lise comme un objet fini, pas comme un chantier.  
 Hors sujet (charte, ne pas les ajouter) : banque, cloud, pub, graphiques, report automatique du solde, troisième bouton sur l’accueil.

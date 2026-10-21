@@ -150,13 +150,11 @@ fun HomeScreen(
             return@LaunchedEffect
         }
         receiptLoading = true
+        receiptBitmap = null
         val bmp = viewModel.loadReceiptBitmap(path)
         receiptBitmap = bmp
         receiptLoading = false
-        if (bmp == null) {
-            receiptPathToShow = null
-            snackbarHostState.showSnackbar("Photo de facture introuvable.")
-        }
+        // Garde le dialogue ouvert même si le fichier manque (message dans le dialogue).
     }
 
     val filteredTimeline = remember(state.timeline, searchQuery) {
@@ -258,6 +256,14 @@ fun HomeScreen(
                                     .fillMaxWidth()
                                     .heightIn(min = 280.dp, max = 520.dp)
                                     .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                            )
+                        }
+                        else -> {
+                            Text(
+                                text = "Photo introuvable dans Documents. " +
+                                    "Ouvrez la ligne pour en reprendre une.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.AccentDanger
                             )
                         }
                     }
@@ -580,8 +586,17 @@ fun HomeScreen(
                                         viewModel.copyPaymentNote(item.paymentNote)
                                     },
                                     onOpenReceipt = {
-                                        receiptTitle = item.label.trim().ifBlank { "Facture" }
-                                        receiptPathToShow = item.receiptRelativePath
+                                        val path = item.receiptRelativePath.trim()
+                                        if (path.isEmpty()) {
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(
+                                                    "Aucune photo liée à cette facture."
+                                                )
+                                            }
+                                        } else {
+                                            receiptTitle = item.label.trim().ifBlank { "Facture" }
+                                            receiptPathToShow = path
+                                        }
                                     }
                                 )
                             }
@@ -701,7 +716,7 @@ fun HomeScreen(
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             SecondaryA11yButton(
-                                text = if (remindersBlocked) "Menu\nAlertes" else "Menu",
+                                text = if (remindersBlocked) "Menu · Alertes" else "Menu",
                                 onClick = { menuOpen = true },
                                 modifier = Modifier.fillMaxWidth()
                             )
@@ -772,8 +787,7 @@ private fun DayBadge(label: String) {
 private fun StatusChip(
     text: String,
     container: Color,
-    content: Color,
-    onClick: (() -> Unit)? = null
+    content: Color
 ) {
     Text(
         text = text,
@@ -781,15 +795,6 @@ private fun StatusChip(
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
             .background(container, MaterialTheme.shapes.medium)
-            .then(
-                if (onClick != null) {
-                    Modifier
-                        .heightIn(min = A11yTokens.minTouchHeight)
-                        .clickable(role = Role.Button, onClick = onClick)
-                } else {
-                    Modifier
-                }
-            )
             .padding(horizontal = 8.dp, vertical = 4.dp)
     )
 }
@@ -952,11 +957,12 @@ private fun ExpenseStatusLine(
             StatusChip("En retard", A11yTokens.AccentDanger, A11yTokens.ButtonText)
         }
         if (showReceipt) {
-            StatusChip(
-                text = "Facture",
-                container = A11yTokens.PaperWarm,
-                content = A11yTokens.Ink,
-                onClick = onOpenReceipt
+            // Bouton réel (pas pastille Text) : le tap ouvre bien la photo.
+            SecondaryA11yButton(
+                text = "Voir la photo",
+                onClick = onOpenReceipt,
+                fillMaxWidth = false,
+                modifier = Modifier.widthIn(min = 96.dp)
             )
         }
     }
