@@ -58,6 +58,11 @@ fun DossiersScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         Text(text = "Mes dossiers", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = "Accords et retards — le reste dû est ici, pas sur l’accueil.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
+        )
 
         if (state.loading) {
             Text(
@@ -98,12 +103,10 @@ fun DossiersScreen(
             text = heroLabel,
             style = MaterialTheme.typography.titleLarge,
             color = A11yTokens.Ink,
-            modifier = Modifier.semantics { contentDescription = heroLabel }
-        )
-        Text(
-            text = "Le reste dû est ici — pas sur l’accueil.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
+            modifier = Modifier.semantics {
+                liveRegion = LiveRegionMode.Polite
+                contentDescription = heroLabel
+            }
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {

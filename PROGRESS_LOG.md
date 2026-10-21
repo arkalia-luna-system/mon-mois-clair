@@ -19,6 +19,12 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Polish scan / dossiers / restore (copy + couleur)
+
+**Codé :** sous-titre Mes dossiers · statut scan coloré (OK / erreur) · intro restore muted · hero dossiers live region.
+
+**Version :** inchangée `0.1.0-6.33`
+
 ### 2026-10-21 — Polish Mes dossiers + jargon backup
 
 **Codé :** cartes dossiers type papier (bordure, gap) · sous-titre Menu si N>0 · hors-mois espacées · messages `BackupFailure` sans « SAF » / schemaVersion brut.

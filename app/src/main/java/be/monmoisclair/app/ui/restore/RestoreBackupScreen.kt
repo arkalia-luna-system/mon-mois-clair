@@ -134,7 +134,8 @@ fun RestoreBackupScreen(
         Text(text = "Restaurer une sauvegarde", style = MaterialTheme.typography.headlineMedium)
         Text(
             text = "Pour retrouver vos mois après une réinstallation ou un nouveau téléphone.",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
         )
         Text(
             text = "Restaurer remplace tout ce qui est dans l’app. " +

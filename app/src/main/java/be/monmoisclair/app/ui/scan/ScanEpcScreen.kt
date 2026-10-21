@@ -220,6 +220,14 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         Text(
             status,
             style = MaterialTheme.typography.bodyLarge,
+            color = when (status) {
+                "Facture reconnue." -> A11yTokens.AccentOk
+                "Ce QR n’est pas une facture belge.",
+                "Lecture du QR impossible. Recadrez ou réessayez.",
+                "Caméra indisponible.",
+                "Autorisez la caméra pour scanner la facture." -> A11yTokens.AccentDanger
+                else -> A11yTokens.Ink
+            },
             modifier = Modifier.semantics {
                 liveRegion = LiveRegionMode.Polite
                 contentDescription = status
