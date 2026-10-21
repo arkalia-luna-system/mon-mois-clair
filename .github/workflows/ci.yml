@@ -51,7 +51,7 @@ jobs:
 
       # Cache ~/.gradle + build-cache (gros gain dès le 2ᵉ run).
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/develop' && github.ref != 'refs/heads/main' }}
 
