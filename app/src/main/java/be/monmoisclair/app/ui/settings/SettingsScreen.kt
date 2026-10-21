@@ -110,8 +110,11 @@ fun SettingsScreen(
         }
     }
 
+    val fit = rememberDisplayFit()
+    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPadLg = if (fit.compactHomeChrome) 12.dp else 14.dp
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         Text(
             text = "Réglages",
             style = MaterialTheme.typography.headlineMedium,
@@ -450,13 +453,18 @@ fun SettingsScreen(
                                 ) { onEditTemplate(item.templateId) }
                         ) {
                             Column(
-                                modifier = Modifier.padding(14.dp),
+                                modifier = Modifier.padding(tipPadLg),
                                 verticalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
-                                Text(text = item.label, style = MaterialTheme.typography.titleLarge)
+                                Text(
+                                    text = item.label,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = A11yTokens.Ink
+                                )
                                 Text(
                                     text = viewModel.formatPeriodicAmountLine(item),
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = A11yTokens.Ink
                                 )
                                 Text(
                                     text = "Prochaine : ${item.nextDueLabel}",
@@ -580,7 +588,7 @@ fun SettingsScreen(
                 .fillMaxWidth()
                 .border(1.dp, A11yTokens.PaperBorder, footShape)
                 .background(A11yTokens.PaperCard, footShape)
-                .padding(14.dp)
+                .padding(tipPadLg)
                 .semantics(mergeDescendants = true) {
                     contentDescription = buildString {
                         append("Mon Mois Clair")
