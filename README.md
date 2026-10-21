@@ -109,6 +109,8 @@ Smoke device du visuel 6.10–6.19                    à refaire sur téléphone
 
 ```bash
 export COPYFILE_DISABLE=1
+# Sur le volume T7 : préférer ./scripts/git-safe.sh <commande git>
+# (purge les sidecars AppleDouble ._ dans .git → évite « non-monotonic index » au push)
 # Signature release (une fois) : copier keystore.properties.example → keystore.properties
 # et générer release/monmoisclair-release.jks (jamais committer le .jks)
 ./gradlew :app:testDebugUnitTest --rerun-tasks
