@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 /**
  * Écran secondaire : contenu scrollable + **Retour toujours visible** en bas
@@ -28,6 +29,9 @@ fun PinnedBackScaffold(
     backLabel: String = "Retour",
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val fit = rememberDisplayFit()
+    val contentGap = if (fit.compactHomeChrome) 8.dp else 12.dp
+    val pinGap = if (fit.compactHomeChrome) 8.dp else 12.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,10 +44,10 @@ fun PinnedBackScaffold(
                 .weight(1f)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(contentGap),
             content = content
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(pinGap))
         SecondaryA11yButton(
             text = backLabel,
             onClick = onBack,

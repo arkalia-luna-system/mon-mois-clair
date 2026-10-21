@@ -45,6 +45,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -615,6 +616,10 @@ private fun SettingsCard(
     title: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val fit = rememberDisplayFit()
+    val cardPad = if (fit.compactHomeChrome) 12.dp else 16.dp
+    val innerGap = if (fit.compactHomeChrome) 8.dp else 10.dp
+    val betweenCards = if (fit.compactHomeChrome) 10.dp else 14.dp
     Surface(
         color = A11yTokens.PaperCard,
         shape = MaterialTheme.shapes.medium,
@@ -623,8 +628,8 @@ private fun SettingsCard(
             .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            modifier = Modifier.padding(cardPad),
+            verticalArrangement = Arrangement.spacedBy(innerGap)
         ) {
             Text(
                 text = title,
@@ -634,5 +639,5 @@ private fun SettingsCard(
             content()
         }
     }
-    Spacer(modifier = Modifier.height(14.dp))
+    Spacer(modifier = Modifier.height(betweenCards))
 }

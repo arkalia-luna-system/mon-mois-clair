@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 /**
  * Onboarding / flux guidé : contenu scrollable + **une** action primaire fixe en bas
@@ -31,6 +32,9 @@ fun PinnedActionScaffold(
     secondaryEnabled: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    val fit = rememberDisplayFit()
+    val contentGap = if (fit.compactHomeChrome) 8.dp else 12.dp
+    val pinGap = if (fit.compactHomeChrome) 8.dp else 12.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,17 +47,17 @@ fun PinnedActionScaffold(
                 .weight(1f)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(contentGap),
             content = content
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(pinGap))
         if (secondaryLabel != null && onSecondary != null) {
             SecondaryA11yButton(
                 text = secondaryLabel,
                 onClick = onSecondary,
                 enabled = secondaryEnabled
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 10.dp))
         }
         PrimaryA11yButton(
             text = primaryLabel,
