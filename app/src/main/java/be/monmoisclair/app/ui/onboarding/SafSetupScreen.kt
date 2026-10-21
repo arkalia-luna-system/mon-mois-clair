@@ -69,6 +69,23 @@ fun SafSetupScreen(
                 .background(A11yTokens.PaperCard, tipShape)
                 .padding(14.dp)
         )
+        if (state.saving) {
+            val busyShape = MaterialTheme.shapes.medium
+            Text(
+                text = "Enregistrement du dossier…",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
+                    .background(A11yTokens.PaperWarm, busyShape)
+                    .padding(12.dp)
+                    .semantics {
+                        liveRegion = LiveRegionMode.Polite
+                        contentDescription = "Enregistrement du dossier"
+                    }
+            )
+        }
         state.errorMessage?.let { msg ->
             val errShape = MaterialTheme.shapes.medium
             Text(

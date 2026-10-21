@@ -1166,7 +1166,9 @@ private fun ExpenseStatusLine(
                 text = "Voir la photo",
                 onClick = onOpenReceipt,
                 fillMaxWidth = false,
-                modifier = Modifier.widthIn(min = 96.dp)
+                modifier = Modifier
+                    .widthIn(min = 96.dp)
+                    .semantics { contentDescription = "Voir la photo de la facture" }
             )
         }
     }
