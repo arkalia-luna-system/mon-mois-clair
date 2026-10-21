@@ -6,7 +6,7 @@ Relecture du code : le même jour ; lots A/B/C ensuite clos au journal (**6.32**
 Dernière étape **fermée** dans le journal : **6.32** (`0.1.0-6.32`, `versionCode` 37), schéma **6**, tests **198/198** (`--rerun-tasks`).  
 Lots A/B/C tenus. Ouvert : smoke « Écrire » sur téléphone, lots D/E/F.
 
-Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`RECHERCHE_OUTILS_2026-10-21.md`](RECHERCHE_OUTILS_2026-10-21.md)).  
+Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
 Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
 
 La partie 1 est le constat du matin (schéma 3). Elle reste pour comprendre pourquoi les lots existent. **L’état actuel est la partie 7.** La partie 5 dit ce qu’il ne faut pas coder même si le brief le demande.
@@ -253,7 +253,7 @@ Le code a migré. Les documents de version, non.
 
 Conséquence : installer cet arbre sur un téléphone en schéma 5 **monte** la base en 6. Revenir au commit 6.31 ensuite casse l’ouverture (Room ne redescend pas). On ne ferme pas une version 6.32 dans le journal tant que la suite complète n’a pas été relancée et que le lot C n’est pas réellement fini. On ne laisse pas non plus la charte affirmer « schéma 5 » pendant que la base est en 6.
 
-`docs/AUDIT_STATUS.md` et `docs/AUDIT_PREMIUM.md` parlent encore de 6.28 et de 165 tests. Le journal, lui, est à 6.31 / 183. Ces deux notes décrivent le carnet visuel, pas les dossiers. Leur en-tête est en retard sur le journal, pas sur le schéma 6.
+Smoke carnet : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Punch list visuelle figée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md).
 
 ### 7.3 Lot C — clos au journal 6.32
 

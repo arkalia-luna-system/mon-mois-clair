@@ -8,7 +8,7 @@ On n’anticipe **pas** D, E, F dans `versionName`, le README ou les badges. Dé
 Lectures liées :
 
 - Constat et arbitrages : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md)
-- Sources : [`RECHERCHE_OUTILS_2026-10-21.md`](RECHERCHE_OUTILS_2026-10-21.md)
+- Sources (archive) : [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)
 
 ---
 
@@ -187,7 +187,7 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 5. Photo d’octobre visible en novembre sans reprendre la photo.
 6. Mois à 30 € au lieu de 50 € : le reste baisse de 30 €.
 7. Reste à 0 : décembre n’a plus la ligne ; novembre FAIT est encore dans l’historique.
-8. Restauration d’un backup **schéma 3** réussit encore. Le schéma annoncé par le journal (5 au 6.31, puis 6 quand C sera clos) ramène notes, photos et dossiers. Un schéma dans Room sans ligne de journal n’est pas une restauration prouvée.
+8. Restauration d’un backup **schéma 3** réussit encore. Le schéma **6** (journal 6.32) ramène notes, photos, IBAN, frais et courriers.
 9. `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `README.md` décrivent le lot **après** les tests, pas avant.
 10. Smoke au doigt sur le S25 Ultra, et un coup d’œil texte large sur une largeur S26 (ou émulateur 360 dp × hauteur courte) : menu, fiche repliée, ligne Accord.
 
@@ -201,9 +201,8 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 | Deux restes (colonne + calcul) qui divergent | Une seule source : calcul. Pas de colonne « reste actuel » |
 | La photo modèle + la photo du mois se contredisent | Le mois affiche la sienne s’il en a une, sinon celle du modèle |
 | Archive ZIP > 45 Mo à cause des lettres | Plafond déjà là. Qualité baissée au-dessus de ~400 Ko (`ReceiptPhotoStore`). On ne stocke pas l’original 12 Mpx |
-| Schéma 6 posé avant la fin du lot C | Finir C ou retirer la migration avant d’installer sur un téléphone déjà en 5. Room ne redescend pas |
-| Deuxième photo rangée et invisible | Le lot C n’est pas clos tant qu’on ne peut pas la revoir |
-| Motif de frais écrasé par le suivant | Une phrase d’aide, ou une liste. Pas un cumul silencieux de motifs |
+| Schéma 6 (clos 6.32) | Room ne redescend pas : un téléphone en 6 ne peut plus installer un APK figé en schéma 5 |
+| Motif de frais = dernier seulement | Accepté au C (aide). Liste datée = chantier séparé, pas D |
 | Maman active « Mettre de côté » trop haut | Alerte déficit **avant** enregistrement |
 | Le résumé part par WhatsApp (pas chiffré de bout en bout selon les réglages) | Le bouton dit « à envoyer à un créancier ou à un conseiller », pas « partager à tout le monde ». On ne peut pas empêcher le geste. On n’y met pas l’identité |
 | Promesse de date | Phrase avec « si ». Test qui échoue si l’UI contient « fin prévue » sans condition |
@@ -212,14 +211,12 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-A et B sont le produit qui aide déjà : la référence et la photo reviennent, le versement est réservé dans le Reste, le reste dû baisse du montant coché, la ligne s’arrête quand c’est soldé, l’accueil de maman n’a pas gagné de menu.
+**A, B, C clos** (`0.1.0-6.32`, schéma 6, 198 tests) : référence + photo qui reviennent, pastille Accord, reste qui baisse, IBAN / mail / frais, courriers en plus visibles.
 
-Le prochain geste est de **finir le lot C** (ou de le retirer proprement), pas d’ouvrir Mes dossiers.
+**Prochain geste produit** (choisir, pas enchaîner) :
 
-Ordre concret :
+1. Smoke Galaxy : « Écrire » ouvre un vrai brouillon Mail ; ligne Accord sur hauteur courte.
+2. **Lot D** — Mes dossiers + courrier sans plan — seulement si quatre accords deviennent pénibles à comparer mois par mois.
+3. Puis E (Mettre de côté) et F (résumé texte). Pas avant.
 
-1. Rendre les photos supplémentaires visibles, et permettre d’en enlever une sans effacer la première.
-2. Décider du motif de frais : une seule phrase (« le motif affiché est le dernier ») **ou** une courte liste. Pas les deux à moitié. La somme des centimes, elle, est déjà le bon modèle.
-3. Tests du texte de mail, du reste après frais, d’un chemin de photo en plus. Puis `./gradlew :app:testDebugUnitTest --rerun-tasks`, compter les `TEST-*.xml`, et seulement alors écrire le journal, la charte, le README et `versionName`.
-4. Au doigt : Écrire ouvre un vrai brouillon ; la ligne Accord sur une hauteur courte ne pousse pas FAIT hors de la carte ; quitter le bloc dossier sans reste dû ne crée rien.
-5. Ensuite seulement le lot D. E et F après. L’épargne et le résumé n’aident pas si la deuxième lettre est déjà perdue.
+Risques C déjà tranchés : motif frais = dernier saisi (aide) ; photos extras = voir / enlever.

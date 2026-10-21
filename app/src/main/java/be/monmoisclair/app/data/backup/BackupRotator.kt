@@ -23,15 +23,15 @@ class BackupRotator {
         if (tree.exists(to)) {
             val deleted = tree.delete(to)
             if (!deleted && tree.exists(to)) {
-                throw BackupFailure.Io("Impossible de supprimer la cible avant rename: $to")
+                throw BackupFailure.Io("Impossible de faire tourner les copies dans Documents.")
             }
         }
         tree.rename(from, to)
         if (!tree.exists(to)) {
-            throw BackupFailure.Io("Rename échoué: $from → $to")
+            throw BackupFailure.Io("Impossible de faire tourner les copies dans Documents.")
         }
         if (tree.exists(from)) {
-            throw BackupFailure.Io("Source encore présente après rename: $from")
+            throw BackupFailure.Io("Impossible de faire tourner les copies dans Documents.")
         }
     }
 }

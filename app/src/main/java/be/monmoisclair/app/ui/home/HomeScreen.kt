@@ -243,7 +243,10 @@ fun HomeScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(200.dp),
+                                    .height(200.dp)
+                                    .semantics {
+                                        contentDescription = "Chargement de la photo"
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator(color = A11yTokens.ButtonFill)
@@ -475,7 +478,10 @@ fun HomeScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 48.dp),
+                                    .padding(vertical = 48.dp)
+                                    .semantics {
+                                        contentDescription = "Chargement du mois"
+                                    },
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {

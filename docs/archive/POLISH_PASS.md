@@ -21,15 +21,21 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Verrou : message d’échec en live region assertive | `BiometricLockScreen` |
 | P2 | Accueil compact : padding cartes + pastille Accord contour | `HomeScreen` |
 | P2 | StatusChip TalkBack « Statut : … » | `HomeScreen` |
-| P1 | SAF copyThenDelete lecture bornée | `SafDocumentBackupTree` |
+| P1 | SAF `readUtf8` + copyThenDelete lectures bornées | `SafDocumentBackupTree` |
+| P2 | Messages backup/restore sans jargon SAF / URI | `SafDocumentBackupTree`, `SafBackupStore`, `BackupRotator`, `BackupRestorer` |
+| P2 | Cibles tactile cartes hors-mois (Réglages) | `SettingsScreen` |
+| P2 | TalkBack chargement app / mois / photo | `MainActivity`, `HomeScreen` |
+| P2 | Live regions messages Réglages / Restaurer | `SettingsScreen`, `RestoreBackupScreen` |
 | P2 | Test `DisplayFit` compact ≤ 800 dp | `DisplayFitTest` |
+| P1 | Lot C : voir / enlever courriers en plus + aide | `EntryFormScreen`, `EditEntryViewModel`, `UpdateInstanceUseCase` |
+| P2 | CI : `cancel-in-progress: true` (plus de faux « cancelled » en file) | `.github/workflows/ci.yml`, `docs/CI.md` |
 
 ## Encore ouvert (plus tard)
 
-- Lot C : UI photos extras visibles (chantier produit, pas polish seul)
-- Smoke Galaxy (notif multi-factures, trimestriel)
+- Smoke Galaxy (notif multi-factures, trimestriel, « Écrire »)
 - Lint soft → findings utiles un par un
 - Detekt (phase 2 suite)
+- Lots D / E / F si besoin (plan produit)
 
 ## Règle collab
 

@@ -15,6 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -144,7 +148,15 @@ fun RestoreBackupScreen(
                 Text(
                     text = msg,
                     color = if (state.isError) A11yTokens.AccentDanger else A11yTokens.AccentOk,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.semantics {
+                        liveRegion = if (state.isError) {
+                            LiveRegionMode.Assertive
+                        } else {
+                            LiveRegionMode.Polite
+                        }
+                        contentDescription = msg
+                    }
                 )
             }
         }

@@ -35,7 +35,7 @@ profils ont été traités ou explicitement reportés, sans fausse promesse.
 - `CHARTE_ET_ARCHITECTURE.md` (surtout §8 fidélité étude 2026)
 - `PROGRESS_LOG.md`, `README.md`
 - `.cursor/rules/pre-push-verification.mdc`
-- `docs/README_TESTEURS.md`
+- `docs/testeurs/README_TESTEURS.md`
 
 ## Checklist claims 6.8+ (cocher)
 

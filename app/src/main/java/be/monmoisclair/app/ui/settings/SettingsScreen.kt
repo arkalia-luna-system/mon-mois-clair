@@ -22,7 +22,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -164,7 +168,15 @@ fun SettingsScreen(
                 Text(
                     text = msg,
                     color = if (state.isError) A11yTokens.AccentDanger else A11yTokens.AccentOk,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.semantics {
+                        liveRegion = if (state.isError) {
+                            LiveRegionMode.Assertive
+                        } else {
+                            LiveRegionMode.Polite
+                        }
+                        contentDescription = msg
+                    }
                 )
             }
         }
@@ -203,6 +215,7 @@ fun SettingsScreen(
                         shape = MaterialTheme.shapes.medium,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
                             .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
                             .clickable(
                                 role = Role.Button,

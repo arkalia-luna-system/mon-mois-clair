@@ -19,6 +19,15 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — CI + polish premium (messages / TalkBack)
+
+**Problème :** badge « 1 erreur » = runs CI **cancelled** (file de pushes, `cancel-in-progress: false`) ; messages SAF/URI trop techniques ; chargements sans sémantique TalkBack.
+
+**Codé :** concurrency CI `cancel-in-progress: true` (dernier push gagne) · messages Documents en français · live regions Réglages/Restaurer · contentDescription chargements · docs rangés (`archive/`, `testeurs/`).
+
+**Tests :** suite déjà **198/198** (52 fichiers) au 6.32 — pas de nouveau test métier ici.  
+**Version :** inchangée `0.1.0-6.32`
+
 ### 2026-10-21 — 6.32 Lot C : fiche anti-confusion (IBAN, mail, frais, photos)
 
 **Problème :** IBAN perdu après le QR ; pas d’e-mail prêt ; avenant / 2ᵉ lettre sans place ; photo extra invisible.

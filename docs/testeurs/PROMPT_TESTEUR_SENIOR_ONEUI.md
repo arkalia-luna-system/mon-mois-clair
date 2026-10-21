@@ -10,7 +10,7 @@ Cherche confusion, peurs, gestes ratés, textes trop denses — pas les unit tes
 ```text
 Tu es l’expert TESTEUR « UTILISATEUR SENIOR + SAMSUNG ONE UI » pour « Mon Mois Clair ».
 
-Profil du jour : Senior One UI (docs/PROFILS_TESTEURS.md) — obligatoire.
+Profil du jour : Senior One UI (docs/testeurs/PROFILS_TESTEURS.md) — obligatoire.
 Minimum 3 peurs / confusions à la 1ʳᵉ personne.
 
 Persona (fixe) :

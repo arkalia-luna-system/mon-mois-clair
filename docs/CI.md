@@ -15,7 +15,7 @@ Workflow : [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 - accélération : `gradle/actions/setup-gradle` (cache) + `org.gradle.caching` / `parallel` **en env CI seulement**
 - runner **`ubuntu-24.04`** (pin, pas `ubuntu-latest`)
 - actions à jour (Node 24) : `setup-android@v4`, `upload-artifact@v7`
-- concurrency **sans** annulation du run en cours (`cancel-in-progress: false`) : le job finit ; les pushes suivants attendent (évite les fausses « erreurs » Canceling)
+- concurrency **avec** annulation (`cancel-in-progress: true`) : le push le plus récent gagne. Les runs annulés après un nouveau push ne sont **pas** des échecs de tests — c’est normal quand on enchaîne les commits.
 
 Travail quotidien = **`develop`** uniquement (voir charte §5).
 Échec = le push casse le build ou les tests → à corriger avant de considérer la branche OK.

@@ -45,7 +45,7 @@ class BackupRestorer @Inject constructor(
             mapFailure(e)
         } catch (e: Exception) {
             healthStore.markBroken()
-            RestoreResult.IoError(e.message ?: "restoreFromLatest échoué")
+            RestoreResult.IoError("Impossible de lire la dernière sauvegarde.")
         }
     }
 
@@ -70,7 +70,7 @@ class BackupRestorer @Inject constructor(
         } catch (e: BackupFailure) {
             mapFailure(e)
         } catch (e: Exception) {
-            RestoreResult.IoError(e.message ?: "Lecture URI impossible")
+            RestoreResult.IoError("Impossible de lire ce fichier de sauvegarde.")
         }
     }
 
@@ -214,11 +214,11 @@ class BackupRestorer @Inject constructor(
                     input,
                     BackupSecurityArchive.MAX_ZIP_BYTES
                 )
-            } ?: throw BackupFailure.Io("openInputStream null pour $uri")
+            } ?: throw BackupFailure.Io("Impossible d’ouvrir le fichier de sauvegarde.")
         } catch (e: BackupFailure) {
             throw e
         } catch (e: Exception) {
-            throw BackupFailure.Io("Lecture fichier backup impossible", e)
+            throw BackupFailure.Io("Impossible de lire le fichier de sauvegarde.", e)
         }
     }
 
@@ -237,10 +237,14 @@ class BackupRestorer @Inject constructor(
                         actual = match.groupValues[2]
                     )
                 } else {
-                    RestoreResult.IoError(failure.message ?: "Intégrité backup invalide")
+                    RestoreResult.IoError(
+                        failure.message ?: "Cette copie est abîmée ou a été modifiée."
+                    )
                 }
             }
-            is BackupFailure.Io -> RestoreResult.IoError(failure.message ?: "Erreur I/O restore")
+            is BackupFailure.Io -> RestoreResult.IoError(
+                failure.message ?: "Impossible de lire cette sauvegarde."
+            )
         }
     }
 }

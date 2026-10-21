@@ -1,8 +1,9 @@
-# Audits premium — statut
+# Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Le journal du carnet, lui, est à **6.31** (`0.1.0-6.31`, 183 tests annoncés à la clôture de B). Cet en-tête ne décrit pas le schéma 6 du lot C, qui n’est pas clos. Produit dossiers : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.  
-Synthèse visuelle : [`AUDIT_PREMIUM.md`](AUDIT_PREMIUM.md) (figée plus tôt, en-tête 6.28).
+Journal produit : **6.32** (`0.1.0-6.32`, schéma Room **6**, **198/198** tests).  
+Dossiers / accords : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) partie 7.  
+Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
 
 | Vague | État |
 |-------|------|
@@ -11,6 +12,7 @@ Synthèse visuelle : [`AUDIT_PREMIUM.md`](AUDIT_PREMIUM.md) (figée plus tôt, e
 | 6.27 sticky / Menu / fréquence / photo fiche | ✅ code + Galaxy |
 | 6.28 Voir la photo (bouton) | ✅ code + Galaxy |
 | Smoke Galaxy | ✅ partiel — table ci-dessous |
+| Lot C « Écrire » (mail) | ⏳ smoke téléphone encore ouvert |
 
 ## Smoke SM-S938B — 2026-10-21
 
@@ -29,4 +31,4 @@ Synthèse visuelle : [`AUDIT_PREMIUM.md`](AUDIT_PREMIUM.md) (figée plus tôt, e
 | 11 | Sticky Sans les futures / Après courses | ✅ 6.27 |
 | 12 | Voir la photo sur la ligne | ✅ 6.28 |
 
-Ne pas rouvrir l’audit pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.
+Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.

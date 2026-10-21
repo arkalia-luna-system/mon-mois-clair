@@ -29,6 +29,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -112,7 +114,9 @@ class MainActivity : AppCompatActivity() {
                 when {
                     state.loading -> {
                         Box(
-                            modifier = rootModifier,
+                            modifier = rootModifier.semantics {
+                                contentDescription = "Chargement de Mon Mois Clair"
+                            },
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)

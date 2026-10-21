@@ -30,7 +30,7 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 | Tests unitaires | **198/198** OK |
 | Schéma Room | **6** (migration depuis 5) — IBAN, e-mail, frais, `extraReceiptPaths` |
 
-Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel : [`docs/AUDIT_PREMIUM.md`](docs/AUDIT_PREMIUM.md)
+Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)
 
 ---
 

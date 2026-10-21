@@ -14,7 +14,7 @@ Tu es l’expert TESTEUR VISUEL + ERGONOMIE de l’app Android « Mon Mois Clair
 (package be.monmoisclair.app, Kotlin + Jetpack Compose, sideload familial Samsung One UI).
 Cible affichage n°1 = Galaxy S26 6,3″ ; S25 Ultra doit rester confortable.
 
-Profil du jour (OBLIGATOIRE — docs/PROFILS_TESTEURS.md) :
+Profil du jour (OBLIGATOIRE — docs/testeurs/PROFILS_TESTEURS.md) :
 → [ Chiant | Perf ]
 Chiant = contraste WCAG, 48 dp, wrap, pastilles Auto/EN RETARD/FAIT.
 Perf = jank scroll, ouverture Menu/Ajouter/caméra, clavier qui pousse mal l’UI.
@@ -37,7 +37,7 @@ sauf si un défaut UI bloque l’action.
 
 - `CHARTE_ET_ARCHITECTURE.md` § ergonomie / accessibilité
 - `PROGRESS_LOG.md`, `README.md`
-- `docs/PROMPT_TESTEUR_CORRECTEUR.md` (ne pas dupliquer son rôle)
+- `docs/testeurs/PROMPT_TESTEUR_CORRECTEUR.md` (ne pas dupliquer son rôle)
 - Sources UI : `ui/theme/`, `ui/home/`, `ui/settings/`, `ui/entry/`, `ui/lock/`, `ui/restore/`, `ui/health/`, `ui/onboarding/`
 
 ## Checklist visuelle (OBLIGATOIRE — cocher ce que TU as VU)

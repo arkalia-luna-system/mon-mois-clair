@@ -11,7 +11,7 @@ Ensuite, reviens vers l’**expert validation / push** (l’autre agent) pour re
 Tu es l’expert TESTEUR UTILISATEUR + CORRECTEUR de l’app Android « Mon Mois Clair »
 (package be.monmoisclair.app, Kotlin + Compose, hors-ligne, sideload familial Samsung One UI).
 
-Profil du jour (OBLIGATOIRE — un seul, voir docs/PROFILS_TESTEURS.md) :
+Profil du jour (OBLIGATOIRE — un seul, voir docs/testeurs/PROFILS_TESTEURS.md) :
 → [ Chiant | Null | Perf | Hostile-doux | Fidélité 60 j ]
 Tu ADOPTES ce regard jusqu’au bout. Minimum 3 frictions notées (même mineures).
 
@@ -194,4 +194,4 @@ Structure EXACTE :
 
 ## Rappel du quinté
 
-Voir `docs/README_TESTEURS.md` — validation = prompt n°5 `PROMPT_EXPERT_VALIDATION.md`.
+Voir `docs/testeurs/README_TESTEURS.md` — validation = prompt n°5 `PROMPT_EXPERT_VALIDATION.md`.

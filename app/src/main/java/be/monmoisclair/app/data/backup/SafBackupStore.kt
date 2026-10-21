@@ -69,31 +69,30 @@ class SafBackupStore @Inject constructor(
             throw e
         } catch (e: Exception) {
             healthStore.markBroken()
-            throw BackupFailure.Io("Échec writeRotatedBackup", e)
+            throw BackupFailure.Io("Impossible d’écrire la sauvegarde dans Documents.", e)
         }
     }
 
     suspend fun readLatestValidBackup(): BackupDocument {
         val tree = openTreeOrThrow()
-        var lastError: Exception? = null
         for (name in BackupFileNames.rotatedNewestFirst) {
             if (!tree.exists(name)) continue
             try {
                 val raw = tree.readUtf8(name)
                 return codec.decodeAndVerify(raw)
-            } catch (e: Exception) {
-                lastError = e
+            } catch (_: Exception) {
+                // Essayer le fichier de rotation suivant.
             }
         }
         healthStore.markBroken()
         throw BackupFailure.Integrity(
-            "Aucun backup valide trouvé (1..3). Dernière erreur: ${lastError?.message}"
+            "Aucune sauvegarde valide dans Documents."
         )
     }
 
     suspend fun writeBinaryRelative(relativePath: String, bytes: ByteArray) {
         val tree = openTreeOrThrow() as? SafDocumentBackupTree
-            ?: throw BackupFailure.Io("Arbre SAF requis pour les photos")
+            ?: throw BackupFailure.Io("Dossier Documents requis pour les photos.")
         tree.writeBinaryRelative(relativePath, bytes)
     }
 
@@ -114,20 +113,19 @@ class SafBackupStore @Inject constructor(
     /** Contenu brut du dernier backup valide (pour partage T8). */
     suspend fun readLatestValidBackupUtf8(): String {
         val tree = openTreeOrThrow()
-        var lastError: Exception? = null
         for (name in BackupFileNames.rotatedNewestFirst) {
             if (!tree.exists(name)) continue
             try {
                 val raw = tree.readUtf8(name)
                 codec.decodeAndVerify(raw)
                 return raw
-            } catch (e: Exception) {
-                lastError = e
+            } catch (_: Exception) {
+                // Essayer le fichier de rotation suivant.
             }
         }
         healthStore.markBroken()
         throw BackupFailure.Integrity(
-            "Aucun backup valide à partager. Dernière erreur: ${lastError?.message}"
+            "Aucune sauvegarde valide à partager."
         )
     }
 
@@ -150,7 +148,7 @@ class SafBackupStore @Inject constructor(
             throw e
         } catch (e: Exception) {
             healthStore.markBroken()
-            throw BackupFailure.Io("Ouverture arbre SAF impossible", e)
+            throw BackupFailure.Io("Dossier Documents inaccessible.", e)
         }
     }
 }

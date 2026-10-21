@@ -17,7 +17,7 @@ Chaque agent choisit **un profil du jour** (ou on lui en impose un) et reste fid
 1. Un chat = **un** expert (correcteur / visuel / produit / senior / validation) **+ un** profil.
 2. Le rapport commence par : `Profil : Chiant | Null | …`
 3. Interdit de « voir tout en rose » : chaque profil doit lister **au moins 3 frictions** (même mineures) ou expliquer pourquoi impossible.
-4. Les 5 prompts dans `docs/PROMPT_TESTEUR_*.md` et `PROMPT_EXPERT_VALIDATION.md` restent la mission ; le profil **colore** la façon de chercher.
+4. Les 5 prompts dans `docs/testeurs/PROMPT_TESTEUR_*.md` et `PROMPT_EXPERT_VALIDATION.md` restent la mission ; le profil **colore** la façon de chercher.
 
 ## Campagne recommandée (une passe famille)
 

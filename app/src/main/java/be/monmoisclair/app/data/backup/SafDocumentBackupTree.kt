@@ -14,7 +14,7 @@ class SafDocumentBackupTree(
 ) : BackupTree {
 
     private val root: DocumentFile = DocumentFile.fromTreeUri(context, treeUri)
-        ?: throw BackupFailure.Io("URI arbre SAF invalide: $treeUri")
+        ?: throw BackupFailure.Io("Dossier Documents inaccessible.")
 
     override fun exists(fileName: String): Boolean = root.findFile(fileName) != null
 
@@ -25,30 +25,33 @@ class SafDocumentBackupTree(
 
     override fun readUtf8(fileName: String): String {
         val file = root.findFile(fileName)
-            ?: throw BackupFailure.Io("Fichier SAF absent: $fileName")
+            ?: throw BackupFailure.Io("Fichier de sauvegarde introuvable dans Documents.")
         val uri = file.uri
         try {
             context.contentResolver.openInputStream(uri)?.use { input ->
-                return input.readBytes().toString(Charsets.UTF_8)
-            } ?: throw BackupFailure.Io("openInputStream null pour $fileName")
+                return BackupSecurityArchive.readBounded(
+                    input,
+                    BackupSecurityArchive.MAX_ZIP_BYTES
+                ).toString(Charsets.UTF_8)
+            } ?: throw BackupFailure.Io("Impossible de lire la sauvegarde dans Documents.")
         } catch (e: BackupFailure) {
             throw e
         } catch (e: Exception) {
-            throw BackupFailure.Io("Lecture SAF échouée: $fileName", e)
+            throw BackupFailure.Io("Impossible de lire la sauvegarde dans Documents.", e)
         }
     }
 
     override fun writeUtf8Sync(fileName: String, content: String) {
         val existing = root.findFile(fileName)
         if (existing != null && !existing.delete()) {
-            throw BackupFailure.Io("Impossible de recréer proprement $fileName")
+            throw BackupFailure.Io("Impossible d’écrire la sauvegarde dans Documents.")
         }
         // octet-stream : évite que SAF ajoute un .json indésirable au displayName.
         val created = root.createFile("application/octet-stream", fileName)
-            ?: throw BackupFailure.Io("createFile échoué pour $fileName")
+            ?: throw BackupFailure.Io("Impossible de créer le fichier de sauvegarde dans Documents.")
         try {
             val pfd = context.contentResolver.openFileDescriptor(created.uri, "w")
-                ?: throw BackupFailure.Io("openFileDescriptor null pour $fileName")
+                ?: throw BackupFailure.Io("Impossible d’écrire la sauvegarde dans Documents.")
             pfd.use { descriptor ->
                 FileOutputStream(descriptor.fileDescriptor).use { fos ->
                     fos.write(content.toByteArray(Charsets.UTF_8))
@@ -59,16 +62,16 @@ class SafDocumentBackupTree(
         } catch (e: BackupFailure) {
             throw e
         } catch (e: Exception) {
-            throw BackupFailure.Io("Écriture sync SAF échouée: $fileName", e)
+            throw BackupFailure.Io("Impossible d’écrire la sauvegarde dans Documents.", e)
         }
     }
 
     override fun rename(fromName: String, toName: String) {
         val from = root.findFile(fromName)
-            ?: throw BackupFailure.Io("Rename SAF: source absente $fromName")
+            ?: throw BackupFailure.Io("Rotation de sauvegarde impossible dans Documents.")
         val existingTarget = root.findFile(toName)
         if (existingTarget != null && !existingTarget.delete()) {
-            throw BackupFailure.Io("Rename SAF: delete cible échoué $toName")
+            throw BackupFailure.Io("Rotation de sauvegarde impossible dans Documents.")
         }
         val renamed = from.renameTo(toName)
         if (!renamed) {
@@ -76,13 +79,13 @@ class SafDocumentBackupTree(
             copyThenDelete(from, toName)
         }
         if (root.findFile(toName) == null) {
-            throw BackupFailure.Io("Rename SAF échoué: $fromName → $toName")
+            throw BackupFailure.Io("Rotation de sauvegarde impossible dans Documents.")
         }
     }
 
     fun writeBinaryRelative(relativePath: String, bytes: ByteArray) {
         val safe = BackupSecurityArchive.sanitizeReceiptPath(relativePath)
-            ?: throw BackupFailure.Io("Chemin photo invalide")
+            ?: throw BackupFailure.Io("Chemin photo invalide.")
         val parts = safe.split('/')
         var dir = root
         for (i in 0 until parts.lastIndex) {
@@ -90,17 +93,17 @@ class SafDocumentBackupTree(
             val existing = dir.findFile(name)
             dir = when {
                 existing != null && existing.isDirectory -> existing
-                existing != null -> throw BackupFailure.Io("Conflit dossier photo: $name")
+                existing != null -> throw BackupFailure.Io("Impossible d’enregistrer la photo dans Documents.")
                 else -> dir.createDirectory(name)
-                    ?: throw BackupFailure.Io("createDirectory échoué: $name")
+                    ?: throw BackupFailure.Io("Impossible d’enregistrer la photo dans Documents.")
             }
         }
         val fileName = parts.last()
         dir.findFile(fileName)?.delete()
         val created = dir.createFile("image/webp", fileName)
-            ?: throw BackupFailure.Io("createFile photo échoué: $safe")
+            ?: throw BackupFailure.Io("Impossible d’enregistrer la photo dans Documents.")
         val pfd = context.contentResolver.openFileDescriptor(created.uri, "w")
-            ?: throw BackupFailure.Io("openFileDescriptor photo null")
+            ?: throw BackupFailure.Io("Impossible d’enregistrer la photo dans Documents.")
         pfd.use { descriptor ->
             FileOutputStream(descriptor.fileDescriptor).use { fos ->
                 fos.write(bytes)
@@ -143,11 +146,11 @@ class SafDocumentBackupTree(
     private fun copyThenDelete(from: DocumentFile, toName: String) {
         val bytes = context.contentResolver.openInputStream(from.uri)?.use {
             BackupSecurityArchive.readBounded(it, BackupSecurityArchive.MAX_ZIP_BYTES)
-        } ?: throw BackupFailure.Io("Fallback copy: lecture source impossible")
+        } ?: throw BackupFailure.Io("Rotation de sauvegarde impossible dans Documents.")
         val created = root.createFile("application/octet-stream", toName)
-            ?: throw BackupFailure.Io("Fallback copy: createFile $toName impossible")
+            ?: throw BackupFailure.Io("Rotation de sauvegarde impossible dans Documents.")
         val pfd = context.contentResolver.openFileDescriptor(created.uri, "w")
-            ?: throw BackupFailure.Io("Fallback copy: openFileDescriptor null")
+            ?: throw BackupFailure.Io("Rotation de sauvegarde impossible dans Documents.")
         pfd.use { descriptor ->
             FileOutputStream(descriptor.fileDescriptor).use { fos ->
                 fos.write(bytes)
@@ -156,7 +159,7 @@ class SafDocumentBackupTree(
             }
         }
         if (!from.delete()) {
-            throw BackupFailure.Io("Fallback copy: delete source échoué ${from.name}")
+            throw BackupFailure.Io("Rotation de sauvegarde impossible dans Documents.")
         }
     }
 }
