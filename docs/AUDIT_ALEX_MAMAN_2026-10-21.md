@@ -271,7 +271,7 @@ Ce qui est branché :
 Ce qui ne tient pas encore :
 
 - Aucun bouton pour **voir** les courriers en plus, en enlever un, ou en ajouter un sans remplacer « par accident de logique ». La deuxième photo est rangée et invisible. La personne croira qu’elle a remplacé la première.
-- Pas de test unitaire trouvé pour le texte du mail, les frais, ni la liste de chemins.
+- Tests unitaires **présents** pour le texte du mail (`CreditorMailComposerTest`), la liste de chemins (`ReceiptPathListTest`), et les frais dans le reste (`DossierRemainingTest`). Il manque encore : test d’intégration save→template IBAN/frais, et surtout la **suite complète** `--rerun-tasks` avant de fermer une version.
 - L’ajout n’a pas « Copier l’IBAN » ni « Écrire ». Il faut rouvrir la fiche. Acceptable. À dire dans l’aide quand le lot sera clos, pas avant.
 - `ACTION_SENDTO` + extras (objet, corps) est souvent ignoré par l’app Mail selon le téléphone. Le texte est bon. L’ouverture réelle n’a pas été tenue au doigt.
 - Les frais ne se saisissent pas le jour de la création (le bloc frais n’apparaît que si `isAgreement`). Il faut enregistrer l’accord, revenir, puis ajouter. C’est le bon geste (un plus, pas un chiffre inventé au départ), encore non expliqué dans l’aide.
@@ -313,7 +313,7 @@ Le mail ne doit pas devenir une boîte de réception. Le brouillon actuel est le
 | Carnet du mois | Tenu. C’est le produit de maman |
 | Lot A — mémoire du papier | Tenu dans le code et dans le journal 6.30 |
 | Lot B — accord replié | Tenu dans le code et dans le journal 6.31, avec le trou « modifier le montant après coup ne recrée pas le mois suivant » |
-| Lot C — IBAN, mail, frais, plusieurs photos | À moitié dans l’arbre, schéma 6 déjà migré, **pas** dans le journal, **pas** revu par la suite complète, photos en plus invisibles |
+| Lot C — IBAN, mail, frais, plusieurs photos | Dans l’arbre (schéma 6, commit polish + WIP), journal **honnête** (WIP, versionName encore 6.31), tests partiels OK, **pas** clos : photos en plus invisibles, pas de suite `--rerun-tasks` de clôture, pas de 6.32 |
 | Lots D, E, F | Pas commencés. Ne pas les coder tant que C n’est pas clos ou retiré |
 
-Prochaine action utile : finir ou retirer le lot C, relancer `./gradlew :app:testDebugUnitTest --rerun-tasks`, puis seulement aligner charte, journal, README et `versionName` sur le nombre de tests obtenu. Pas de pastille « Huissier ». Pas d’écran dossiers avant ça.
+Prochaine action utile : **un seul** Gradle à la fois (buildDir isolé si 2 agents). Finir le lot C (UI photos extras + aide), `./gradlew :app:testDebugUnitTest --rerun-tasks`, puis seulement 6.32 / charte / README. Pas de pastille « Huissier ». Pas d’écran dossiers avant ça.

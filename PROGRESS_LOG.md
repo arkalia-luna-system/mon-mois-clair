@@ -10,13 +10,18 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Champ | Valeur |
 |-------|--------|
 | Dernière étape terminée | **6.31** (lot B — dossier / accord replié) |
-| Étape en cours | Lot C **dans l’arbre, pas clos** — Room déjà en 6, `versionName` encore 6.31, suite complète non relancée |
-| Prochaine sous-étape | Finir le lot C (photos en plus visibles, tests, journal) avant D. Voir `docs/AUDIT_ALEX_MAMAN_2026-10-21.md` §7 |
+| Étape en cours | Lot C **WIP** (schéma 6 dans l’arbre, pas de 6.32) — IBAN/mail/frais OK ; photos extras **invisibles** ; suite clôture non faite |
+| Prochaine sous-étape | Finir C : UI voir/retirer photos extras + aide + `--rerun-tasks` → puis 6.32. D/E/F après. Audit §7 |
 | Audit premium | Code clos · punch list audit traitée |
+| Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-21 — Docs alignées (état réel A/B/C)
+
+**Fait :** relecture code sans suite Gradle lourde · audit §7 + plan + journal mis à jour (tests mail/chemins/frais présents ; photos extras encore sans UI) · push docs. Autre agent : tests isolés lot B OK à laisser finir.
 
 ### 2026-10-21 — Polish premium (sécurité / restore / a11y) + WIP lot C
 
@@ -24,10 +29,11 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Codé (polish) :** lectures bornées · restore photos locales · FileProvider `share/`+`camera/` · sweep JPEG · `SCHEDULE_EXACT_ALARM` · debounce `TIME_SET` · bio lock sync · scan/onboarding/settings copy · `docs/POLISH_PASS.md`.
 
-**Arbre lot C (non clos)** : Room 6 (IBAN, e-mail, multi-photos, frais) — `versionName` reste 6.31 jusqu’à clôture C.
+**Arbre lot C (non clos)** : Room **6** (IBAN, e-mail, `extraReceiptPaths`, frais) · UI IBAN/mail/frais en édition · 2ᵉ photo stockée mais **pas affichée** · `CreditorMailComposer` + tests unitaires mail/chemins/frais. `versionName` reste **6.31** jusqu’à clôture C.
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **198/198** (52 fichiers, 0 échec)  
-**Version :** inchangée `0.1.0-6.31`
+**Tests :** annoncés au commit polish → **198/198** (52 fichiers) — ne pas recompter sans `--rerun-tasks` après nouveaux fichiers.  
+**Version :** inchangée `0.1.0-6.31` · `versionCode` 36  
+**Commit :** `60b18af`
 
 ### 2026-10-21 — 6.31 Lot B : dossier / accord (replié)
 

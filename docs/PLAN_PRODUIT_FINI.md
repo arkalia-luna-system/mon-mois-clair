@@ -91,7 +91,9 @@ Le comportement ci-dessous est dans le code. Le reste inclut désormais les frai
 
 ### Lot C — Fiche anti-confusion — commencé, pas clos
 
-Le schéma 6, la migration, le backup, les champs IBAN / e-mail dans le bloc dossier, « Copier l’IBAN » et « Écrire » en édition, le cumul de frais sur un accord déjà créé, et le rangement d’une deuxième photo dans `extraReceiptPaths` sont dans l’arbre. Ça ne suffit pas à fermer le lot. Voir l’audit, partie 7.3. Il reste : voir et retirer les photos en plus, tests (texte du mail, frais, chemins), suite Gradle complète, geste réel « Écrire » sur le téléphone, phrase d’aide, puis seulement le journal et la version. Ne pas enchaîner D tant que ce n’est pas fait — ou tant que le schéma 6 n’est pas retiré si on abandonne le lot.
+**Déjà dans l’arbre** (vérifié au code, journal WIP, `versionName` encore 6.31) : schéma 6 + migration + backup · QR → IBAN · bloc dossier IBAN/e-mail · édition « Copier l’IBAN » + « Écrire » (`CreditorMailComposer`) · frais cumulés sur accord existant · 2ᵉ photo → `extraReceiptPaths` · compression ~400 Ko · tests unitaires mail / chemins / frais.
+
+**Il reste pour fermer** : UI pour **voir / retirer** les photos en plus · phrase d’aide · smoke « Écrire » sur téléphone · **une** suite `./gradlew :app:testDebugUnitTest --rerun-tasks` · puis seulement `0.1.0-6.32` + badges. Voir audit partie 7.3. Ne pas enchaîner D tant que ce n’est pas fait.
 
 **Problème.** IBAN jeté après le scan. Pas d’e-mail. Une seule photo. Les frais ajoutés n’ont pas de geste propre.
 
