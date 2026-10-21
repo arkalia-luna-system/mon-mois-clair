@@ -560,12 +560,27 @@ fun HomeScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                CircularProgressIndicator(color = A11yTokens.ButtonFill)
-                                Text(
-                                    text = "Chargement du mois…",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.InkMuted
-                                )
+                                val loadShape = MaterialTheme.shapes.medium
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .border(1.dp, A11yTokens.PaperBorder, loadShape)
+                                        .background(A11yTokens.PaperWarm, loadShape)
+                                        .padding(14.dp)
+                                ) {
+                                    CircularProgressIndicator(
+                                        color = A11yTokens.ButtonFill,
+                                        strokeWidth = 3.dp,
+                                        modifier = Modifier.size(28.dp)
+                                    )
+                                    Text(
+                                        text = "Chargement du mois…",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = A11yTokens.InkMuted
+                                    )
+                                }
                             }
                         }
                     }

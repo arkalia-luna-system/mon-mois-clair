@@ -213,22 +213,30 @@ fun SettingsScreen(
                 )
             }
             state.savingsMessage?.let { msg ->
+                val msgShape = MaterialTheme.shapes.medium
+                val err = state.savingsMessageError
                 Text(
                     text = msg,
-                    color = if (state.savingsMessageError) {
-                        A11yTokens.AccentDanger
-                    } else {
-                        A11yTokens.AccentOk
-                    },
+                    color = if (err) A11yTokens.AccentDanger else A11yTokens.AccentOk,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.semantics {
-                        liveRegion = if (state.savingsMessageError) {
-                            LiveRegionMode.Assertive
-                        } else {
-                            LiveRegionMode.Polite
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            1.dp,
+                            if (err) A11yTokens.AccentDanger.copy(alpha = 0.4f)
+                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            msgShape
+                        )
+                        .background(A11yTokens.PaperWarm, msgShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = if (err) {
+                                LiveRegionMode.Assertive
+                            } else {
+                                LiveRegionMode.Polite
+                            }
+                            contentDescription = msg
                         }
-                        contentDescription = msg
-                    }
                 )
             }
         }
@@ -288,18 +296,30 @@ fun SettingsScreen(
                 color = A11yTokens.InkMuted
             )
             state.message?.let { msg ->
+                val msgShape = MaterialTheme.shapes.medium
+                val err = state.isError
                 Text(
                     text = msg,
-                    color = if (state.isError) A11yTokens.AccentDanger else A11yTokens.AccentOk,
+                    color = if (err) A11yTokens.AccentDanger else A11yTokens.AccentOk,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.semantics {
-                        liveRegion = if (state.isError) {
-                            LiveRegionMode.Assertive
-                        } else {
-                            LiveRegionMode.Polite
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            1.dp,
+                            if (err) A11yTokens.AccentDanger.copy(alpha = 0.4f)
+                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            msgShape
+                        )
+                        .background(A11yTokens.PaperWarm, msgShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = if (err) {
+                                LiveRegionMode.Assertive
+                            } else {
+                                LiveRegionMode.Polite
+                            }
+                            contentDescription = msg
                         }
-                        contentDescription = msg
-                    }
                 )
             }
         }
@@ -374,19 +394,30 @@ fun SettingsScreen(
                     "par WhatsApp ou Mail.",
                 style = MaterialTheme.typography.bodyLarge
             )
-            Text(
-                text = BackupHealthCopy.statusLine(state.backupHealth),
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (BackupHealthCopy.isOk(state.backupHealth)) {
-                    A11yTokens.AccentOk
-                } else {
-                    A11yTokens.AccentDanger
-                },
-                modifier = Modifier.semantics {
-                    liveRegion = LiveRegionMode.Polite
-                    contentDescription = BackupHealthCopy.statusLine(state.backupHealth)
-                }
-            )
+            run {
+                val healthLine = BackupHealthCopy.statusLine(state.backupHealth)
+                val healthOk = BackupHealthCopy.isOk(state.backupHealth)
+                val healthShape = MaterialTheme.shapes.medium
+                Text(
+                    text = healthLine,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (healthOk) A11yTokens.AccentOk else A11yTokens.AccentDanger,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            1.dp,
+                            if (healthOk) A11yTokens.AccentOk.copy(alpha = 0.35f)
+                            else A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                            healthShape
+                        )
+                        .background(A11yTokens.PaperWarm, healthShape)
+                        .padding(12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Polite
+                            contentDescription = healthLine
+                        }
+                )
+            }
             SecondaryA11yButton(
                 text = "Dossier de sauvegarde",
                 onClick = onOpenSaf,
