@@ -80,13 +80,19 @@ fun BiometricLockScreen(
             modifier = Modifier.size(48.dp)
         )
         Text(
+            text = "Mon Mois Clair",
+            style = MaterialTheme.typography.labelLarge,
+            color = A11yTokens.InkMuted
+        )
+        Text(
             text = "Application verrouillée",
             style = MaterialTheme.typography.headlineMedium
         )
         Text(
             text = "Posez votre doigt sur le lecteur d’empreinte, " +
                 "ou utilisez le code / visage du téléphone.",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
         )
         Text(
             text = "Si rien ne s’ouvre : touchez « Déverrouiller maintenant ».",

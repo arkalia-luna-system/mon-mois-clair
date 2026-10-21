@@ -30,6 +30,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -424,6 +425,7 @@ fun EditEntryScreen(
     /** null = fermé ; "" = aperçu en attente / photo principale ; sinon chemin d’un courrier en plus. */
     var dialogPath by remember { mutableStateOf<String?>(null) }
     var dialogBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    var dialogLoading by remember { mutableStateOf(false) }
     LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto) {
         if (state.hasPendingPhoto) return@LaunchedEffect
         if (state.receiptRelativePath.isBlank()) {
@@ -435,13 +437,23 @@ fun EditEntryScreen(
     LaunchedEffect(dialogPath, pendingPreview, receiptBitmap) {
         val path = dialogPath ?: run {
             dialogBitmap = null
+            dialogLoading = false
             return@LaunchedEffect
         }
-        dialogBitmap = when {
+        val instant = when {
             path.isEmpty() -> pendingPreview ?: receiptBitmap
             path == state.receiptRelativePath -> pendingPreview ?: receiptBitmap
-            else -> viewModel.decodeReceiptBitmap(path)
+            else -> null
         }
+        if (instant != null) {
+            dialogBitmap = instant
+            dialogLoading = false
+            return@LaunchedEffect
+        }
+        dialogLoading = true
+        dialogBitmap = null
+        dialogBitmap = viewModel.decodeReceiptBitmap(path)
+        dialogLoading = false
     }
 
     if (dialogPath != null) {
@@ -467,23 +479,39 @@ fun EditEntryScreen(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
-                    if (bmp != null) {
-                        Image(
-                            bitmap = bmp.asImageBitmap(),
-                            contentDescription = "Photo de la facture",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 280.dp, max = 520.dp)
-                                .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
-                        )
-                    } else {
-                        Text(
-                            text = "Photo introuvable dans Documents. " +
-                                "Reprenez-en une avec le bouton ci-dessous.",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.AccentDanger
-                        )
+                    when {
+                        dialogLoading -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .semantics {
+                                        contentDescription = "Chargement de la photo"
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(color = A11yTokens.ButtonFill)
+                            }
+                        }
+                        bmp != null -> {
+                            Image(
+                                bitmap = bmp.asImageBitmap(),
+                                contentDescription = "Photo de la facture",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 280.dp, max = 520.dp)
+                                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                            )
+                        }
+                        else -> {
+                            Text(
+                                text = "Photo introuvable dans Documents. " +
+                                    "Reprenez-en une avec le bouton ci-dessous.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.AccentDanger
+                            )
+                        }
                     }
                     PrimaryA11yButton(
                         text = "Fermer",
@@ -495,7 +523,7 @@ fun EditEntryScreen(
     }
 
     EntryFormScaffold(
-        title = "Modifier",
+        title = state.label.trim().ifBlank { "Modifier la facture" },
         label = state.label,
         amountText = state.amountText,
         dayText = state.dayText,
@@ -927,7 +955,7 @@ private fun EntryFormScaffold(
                     OutlinedTextField(
                         value = creditorEmail,
                         onValueChange = onCreditorEmail,
-                        label = { Text("E-mail du créancier") },
+                        label = { Text("E-mail (pour Écrire)") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = A11yTokens.minTouchHeight),
@@ -1183,7 +1211,10 @@ private fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Un
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .clickable(role = Role.Checkbox) { onChecked(!checked) },
+            .clickable(role = Role.Checkbox) { onChecked(!checked) }
+            .semantics {
+                contentDescription = if (checked) "$label, coché" else "$label, non coché"
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(checked = checked, onCheckedChange = onChecked)

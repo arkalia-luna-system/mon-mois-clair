@@ -133,7 +133,8 @@ fun PermissionsSetupScreen(
             Text(
                 text = "Dans Samsung, retirez Mon Mois Clair de la mise en veille " +
                     "(Paramètres → Batterie → Limites d’utilisation en arrière-plan).",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.AccentWarn
             )
         }
 
@@ -146,7 +147,8 @@ fun PermissionsSetupScreen(
             Text(
                 text = "Vous pouvez continuer, mais les rappels risquent de ne pas sonner " +
                     "tant que tous les points ne sont pas prêts.",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.AccentWarn
             )
         }
     }

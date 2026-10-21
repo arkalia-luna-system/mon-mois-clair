@@ -62,8 +62,9 @@ fun RestoreBackupScreen(
             title = { Text("Restauration réussie") },
             text = {
                 Text(
-                    state.message
-                        ?: "Les données affichées viennent de la sauvegarde."
+                    text = state.message
+                        ?: "Les données affichées viennent de la sauvegarde.",
+                    style = MaterialTheme.typography.bodyLarge
                 )
             },
             confirmButton = {
@@ -88,10 +89,11 @@ fun RestoreBackupScreen(
             title = { Text("Remplacer toutes les données ?") },
             text = {
                 Text(
-                    "La restauration remplace toutes les données de l’application " +
+                    text = "La restauration remplace toutes les données de l’application " +
                         "(tous les mois) par le contenu de la sauvegarde. " +
                         "Le dossier de sauvegarde choisi sur ce téléphone est conservé. " +
-                        "Cette action ne peut pas être annulée."
+                        "Cette action ne peut pas être annulée.",
+                    style = MaterialTheme.typography.bodyLarge
                 )
             },
             confirmButton = {

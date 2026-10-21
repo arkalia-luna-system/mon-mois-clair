@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.home
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -119,11 +120,16 @@ fun HomeMenuSheet(
                     yearMonths.forEach { ym ->
                         val selected = ym == selectedYearMonth
                         val chipLabel = DayLabelFormat.monthChipShort(ym)
+                        val chipShape = MaterialTheme.shapes.medium
                         Surface(
                             color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
-                            shape = MaterialTheme.shapes.medium,
+                            shape = chipShape,
                             modifier = Modifier
                                 .heightIn(min = A11yTokens.minTouchHeight)
+                                .then(
+                                    if (selected) Modifier
+                                    else Modifier.border(1.dp, A11yTokens.PaperBorder, chipShape)
+                                )
                                 .semantics(mergeDescendants = true) {
                                     contentDescription = if (selected) {
                                         "Mois affiché : $chipLabel"

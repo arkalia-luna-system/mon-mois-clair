@@ -1,12 +1,21 @@
 package be.monmoisclair.app.ui.health
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -45,7 +54,8 @@ fun ReminderHealthScreen(
         Text(text = "Alertes", style = MaterialTheme.typography.headlineMedium)
         Text(
             text = "Vérifiez que Mon Mois Clair peut vraiment vous prévenir sur ce téléphone.",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
         )
         Text(
             text = "3 jours avant à 10 h, le jour même à 9 h, puis chaque matin à 10 h " +
@@ -56,14 +66,25 @@ fun ReminderHealthScreen(
 
         val r = report
         if (r == null) {
-            Text(
-                text = "Vérification…",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.semantics {
                     contentDescription = "Vérification des alertes"
+                    liveRegion = LiveRegionMode.Polite
                 }
-            )
+            ) {
+                CircularProgressIndicator(
+                    color = A11yTokens.ButtonFill,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(28.dp)
+                )
+                Text(
+                    text = "Vérification…",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
+            }
         } else {
             HealthStatusRow("Notifications", r.notificationsGranted)
             HealthStatusRow("Réveil à l’heure", r.exactAlarmGranted)
@@ -79,7 +100,13 @@ fun ReminderHealthScreen(
                 Text(
                     text = "Sur Samsung : Paramètres → Batterie → Limites d’utilisation " +
                         "en arrière-plan → retirez Mon Mois Clair de la mise en veille.",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.AccentWarn,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), MaterialTheme.shapes.medium)
+                        .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                        .padding(12.dp)
                 )
             }
             if (r.isFullyHealthy) {

@@ -40,6 +40,10 @@ Rôle : sécurité / bugs / polish **sans** écraser le WIP lot B/C.
 | P2 | Mes dossiers : cartes papier + gaps | `DossiersScreen` |
 | P2 | Menu sous-titre si dossiers · hors-mois espacées | `HomeMenuSheet`, `SettingsScreen` |
 | P2 | BackupFailure messages humains | `BackupModels` |
+| P2 | Aide cartes · chips contour · snackbar arrondi | HowItWorks, TypeChip, DayGrid, snackbar |
+| P2 | Alertes Samsung encadré · verrou muted · version TalkBack | Health, Lock, Settings |
+| P2 | Empty dossiers carte · menu mois contour · partage copy | Dossiers, HomeMenu, ShareBackupMessages |
+| P2 | Scan sous-titre · restore dialogues bodyLarge | ScanEpc, RestoreBackup |
 | P2 | Test `DisplayFit` compact ≤ 800 dp | `DisplayFitTest` |
 | P1 | Lot C : voir / enlever courriers en plus + aide | `EntryFormScreen`, `EditEntryViewModel`, `UpdateInstanceUseCase` |
 | P2 | CI : bloc `concurrency` retiré (plus de faux « cancelled ») | `.github/workflows/ci.yml`, `docs/CI.md` |

@@ -104,6 +104,17 @@ fun SettingsScreen(
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = "Réglages", style = MaterialTheme.typography.headlineMedium)
+        if (state.busy) {
+            Text(
+                text = "Préparation de la copie…",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.semantics {
+                    liveRegion = LiveRegionMode.Polite
+                    contentDescription = "Préparation de la copie"
+                }
+            )
+        }
 
         SettingsCard(title = "Aide") {
             Text(
@@ -287,28 +298,39 @@ fun SettingsScreen(
         } catch (_: Exception) {
             null
         }
-        Text(
-            text = "Mon Mois Clair",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier.padding(top = 8.dp)
-        )
         val stepLabel = AppVersionDisplay.stepLabel(versionName)
-        if (stepLabel != null) {
+        Column(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = buildString {
+                        append("Mon Mois Clair")
+                        if (stepLabel != null) append(", étape $stepLabel")
+                        append(". Données sur cet appareil uniquement.")
+                    }
+                }
+        ) {
             Text(
-                text = stepLabel,
-                style = MaterialTheme.typography.bodySmall,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.padding(bottom = 4.dp)
+                text = "Mon Mois Clair",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
             )
-        } else {
-            Spacer(modifier = Modifier.height(4.dp))
+            if (stepLabel != null) {
+                Text(
+                    text = stepLabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            } else {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+            Text(
+                text = "Données sur cet appareil uniquement. Pas de compte, pas de cloud.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
         }
-        Text(
-            text = "Données sur cet appareil uniquement. Pas de compte, pas de cloud.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
     }
 }
 
@@ -328,9 +350,13 @@ private fun SettingsCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(text = title, style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = A11yTokens.Ink
+            )
             content()
         }
     }
-    Spacer(modifier = Modifier.height(12.dp))
+    Spacer(modifier = Modifier.height(14.dp))
 }

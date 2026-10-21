@@ -77,16 +77,27 @@ fun DossiersScreen(
         }
         val snap = state.snapshot
         if (snap.items.isEmpty()) {
-            Text(
-                text = "Aucun accord pour le moment.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
-            )
-            Text(
-                text = "Sur une facture, ouvrez « C’est un retard ou un accord ? ».",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
+            val emptyShape = MaterialTheme.shapes.medium
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, emptyShape)
+                    .background(A11yTokens.PaperCard, emptyShape)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Aucun accord pour le moment.",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.Ink
+                )
+                Text(
+                    text = "Sur une facture, ouvrez « C’est un retard ou un accord ? » " +
+                        "et indiquez combien il reste aujourd’hui.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
+            }
             return@PinnedBackScaffold
         }
 
@@ -169,7 +180,7 @@ private fun DossierRow(
                 progress = { progress },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(8.dp)
+                    .height(10.dp)
                     .clip(MaterialTheme.shapes.small)
                     .semantics {
                         contentDescription =
