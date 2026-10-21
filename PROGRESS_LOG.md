@@ -19,6 +19,14 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Mes dossiers sans sursaut + gradlew exécutable (CI)
+
+**Vu :** micro-saut Mes dossiers ; job GitHub `submit-gradle` en échec.  
+**Cause dossiers :** `refresh()` à chaque `ON_RESUME` vidait la liste (`loading=true`).  
+**Cause CI :** `gradlew` indexé en `100644` → `Permission denied` sur Automatic Dependency Submission.  
+**Codé :** refresh doux ; `git update-index --chmod=+x gradlew`.  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **236/236** (60 fichiers). Version inchangée `0.1.0-6.38`.
+
 ### 2026-10-21 — Garde-fou montants + Mettre de côté (clavier)
 
 **Vu :** saisie absurde (ex. 99999) possible ; tests adb avaient tapé sur le tel (fantôme). Plus d’automation input.  

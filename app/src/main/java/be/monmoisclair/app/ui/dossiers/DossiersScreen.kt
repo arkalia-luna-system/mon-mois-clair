@@ -94,7 +94,10 @@ fun DossiersScreen(
                 .padding(tipPad)
         )
 
-        if (state.loading) {
+        val snap = state.snapshot
+        val pending = state.pendingLetters
+        // Spinner seulement au tout premier chargement (liste encore vide).
+        if (state.loading && snap.items.isEmpty() && pending.isEmpty()) {
             val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -122,8 +125,6 @@ fun DossiersScreen(
             }
             return@PinnedBackScaffold
         }
-        val snap = state.snapshot
-        val pending = state.pendingLetters
 
         if (snap.items.isEmpty() && pending.isEmpty()) {
             val emptyShape = MaterialTheme.shapes.medium

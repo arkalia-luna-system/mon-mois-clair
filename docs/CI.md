@@ -33,8 +33,11 @@ Travail quotidien = **`develop`** uniquement (voir charte §5).
 
 1. ✅ Dependabot Actions → PRs hebdo.
 2. ✅ Dependabot Gradle → PRs hebdo (rapport / revue manuelle, pas de garde CI).
-3. ⏳ Plus tard : scan CVE (ex. dependency-check) en **rapport** puis éventuellement en garde.
-4. Garder hors CI : secrets (`keystore`, `local.properties`) — déjà dans `.gitignore` / `SECURITY.md`.
+3. ✅ Automatic Dependency Submission (Gradle) : `gradlew` **doit** être exécutable dans git
+   (`100755`). Sinon le job `submit-gradle` échoue avec `Permission denied` /
+   « Gradle validation failed in the repository root ».
+4. ⏳ Plus tard : scan CVE (ex. dependency-check) en **rapport** puis éventuellement en garde.
+5. Garder hors CI : secrets (`keystore`, `local.properties`) — déjà dans `.gitignore` / `SECURITY.md`.
 
 ## Phase 4 — plus corsé (optionnel)
 

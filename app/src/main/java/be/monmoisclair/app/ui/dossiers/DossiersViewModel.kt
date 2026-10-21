@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,14 +44,23 @@ class DossiersViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            _state.value = DossiersUiState(loading = true)
+            val previous = _state.value
+            val firstPaint =
+                previous.snapshot.items.isEmpty() && previous.pendingLetters.isEmpty()
+            // Ne pas vider la liste (spinner plein écran) à chaque ON_RESUME :
+            // sinon micro-saut quand on revient d’une fiche / du multitâche.
+            if (firstPaint) {
+                _state.update { it.copy(loading = true) }
+            }
             val snap = listDossiers()
             val pending = listPendingLetters()
-            _state.value = DossiersUiState(
-                loading = false,
-                snapshot = snap,
-                pendingLetters = pending
-            )
+            _state.update {
+                it.copy(
+                    loading = false,
+                    snapshot = snap,
+                    pendingLetters = pending
+                )
+            }
         }
     }
 
