@@ -339,7 +339,7 @@ Cette section remplace la partie 7 pour décider. Les parties 1 à 6 restent l�
 | Badge ou README = l’arbre d’aujourd’hui | Badge **231/231** · version `0.1.0-6.37` |
 | `versionName` `0.1.0-6.37` | Oui (`versionCode` 42) |
 | « En retard » en capitales dans l’app | **Non.** L’écran et l’aide disent « En retard ». Le README a été aligné |
-| `dist/CHECKLIST_S25.md` prouve le 6.36 | **Non.** C’est le 19 octobre, version 5.4.1. Le smoke 6.36 est dans le journal et `AUDIT_STATUS.md` |
+| Checklist S25 prouve le 6.37 | **Non.** Archivée (`docs/archive/CHECKLIST_S25_2026-10-19.md`, v5.4.1). Smoke actuel : journal + `AUDIT_STATUS.md` |
 | Rapports `dist/verify/*2026-10-20*` | Figés en **6.26**. Ils ne décrivent pas A–F |
 | « encore environ N mois si le versement reste de X » | **Présent 6.37** (fiche, Mes dossiers, résumé). Jamais l’accueil. Contient « si ». Pas de « fin prévue ». Masquée si un **FAIT** ≠ forfait (TODO plafonnée OK). Année/trimestre = « versements » |
 | Pastille « Facture », « Sans les futures », « fin prévue », « Huissier » | Absents de l’UI. Le libellé sticky actuel est « Hors à payer ». La ligne 11 de `AUDIT_STATUS` parle encore de l’ancien libellé : c’est le smoke du 6.27, pas le texte d’aujourd’hui |
@@ -391,7 +391,7 @@ Ce qui empêche de dire « produit fini premium » :
 | `docs/archive/*` | Figé. Ne pas s’en servir pour l’état |
 | `docs/testeurs/*` | Prompts de campagne. Pas l’état du produit |
 | `dist/verify/*2026-10-20*` | Campagne 6.26. Bandeau en tête |
-| `dist/CHECKLIST_S25.md` | Passage du 19 oct. Bandeau en tête |
+| `docs/archive/CHECKLIST_S25_2026-10-19.md` | Passage du 19 oct (5.4.1), archivé |
 | `SECURITY.md` | Modèle de menace, complété par la §8.2 |
 
 Pas de second audit premium à rouvrir. Pas de doublon de plan à créer.

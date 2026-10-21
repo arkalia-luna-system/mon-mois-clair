@@ -104,7 +104,7 @@ L’app scanne déjà ce QR (`EpcQrParser`) et copie déjà la communication. Tr
 
 ## 6. Comparaison d’outils — quoi voler, quoi laisser
 
-Repères déjà utilisés par l’audit premium du projet (charte, `docs/AUDIT_PREMIUM.md`) : AllPaid, réversibilité Wayflyer, états vides Appthetics. On ne les rouvre pas. On ajoute le regard **dettes / acomptes**.
+Repères déjà utilisés par l’audit premium du projet (charte, `docs/archive/AUDIT_PREMIUM.md`) : AllPaid, réversibilité Wayflyer, états vides Appthetics. On ne les rouvre pas. On ajoute le regard **dettes / acomptes**.
 
 | Outil | Ce qu’il fait bien | Ce qu’on ne copie pas | Décision MMC |
 |-------|--------------------|------------------------|--------------|

@@ -19,6 +19,12 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — Rangement fin de journée (docs / dist)
+
+**Fait :** AppleDouble `._*` retirés · checklist S25 → `docs/archive/` · rapports 2026-10-20 archivés · dumps `dist/verify` (audit, from_zero, p3*, visuel…) effacés · debug APK retiré · `.gitignore` ignore campagnes/py/log · index `docs/` + `dist/verify/README` à jour.  
+**Préservé :** `campagne-2026-10-21/` (agents en cours) · release APK locale · RESET.  
+**Pas de bump version.**
+
 ### 2026-10-21 — Campagne device (correctifs P0/P1, pas de bump)
 
 **Vu sur SM-S938B** (release `0.1.0-6.37`) : grille jours qui mangeait Enregistrer ; recherche `zzzz` sans message au-dessus du clavier ; déplier « retard ou accord » = faux dirty ; hero Mes dossiers lu 2× en TalkBack.

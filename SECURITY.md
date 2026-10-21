@@ -27,4 +27,4 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 - `local.properties`
 - `keystore.properties`, `*.jks`, `*.keystore`
 - APK / AAB binaires
-- Dumps device (`dist/verify/**` hors `RESET_TESTS_FROM_ZERO.md`)
+- Dumps device (`dist/verify/**` hors `RESET_TESTS_FROM_ZERO.md` + `README.md`)

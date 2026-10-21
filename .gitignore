@@ -26,9 +26,13 @@ keystore.properties
 *.keystore
 /release/*.jks
 
-# Dumps device temporaires (rapports de campagne) — garder seulement RESET
+# Dumps device temporaires (rapports de campagne) — garder RESET + README
 /dist/verify/**/*.xml
 /dist/verify/**/*.json
 /dist/verify/**/*.txt
+/dist/verify/**/*.log
+/dist/verify/**/*.py
 /dist/verify/RAPPORT_*.md
 /dist/verify/**/RAPPORT_*.md
+# Scripts / scrap adb des agents (locaux)
+/dist/verify/campagne-*/

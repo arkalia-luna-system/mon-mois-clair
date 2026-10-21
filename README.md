@@ -8,7 +8,7 @@
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-232%2F232-success)](#statut)
-[![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](dist/CHECKLIST_S25.md)
+[![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
 [![Version](https://img.shields.io/badge/version-0.1.0--6.37-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -25,7 +25,7 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 |---------|------|
 | Version | `0.1.0-6.37` |
 | Dernière étape | **6.37** Phrase rythme dossier |
-| Device | Smoke **6.36** sur **Galaxy S25 Ultra** (`SM-S938B`) et sim. hauteur courte. `dist/CHECKLIST_S25.md` est le passage du **19 oct** (version 5.4.1), pas la preuve du 6.37. Le vrai S26 de maman n’est pas dans ce carnet |
+| Device | Smoke **6.36–6.37** sur **Galaxy S25 Ultra** (`SM-S938B`) + sim. hauteur courte. Checklist 5.4.1 archivée. Campagne testeurs en cours : `docs/testeurs/`. S26 maman pas encore en main |
 | Distribution | Sideload familial **release signé** (hors Play Store) |
 | Tests unitaires | **232/232** OK (59 fichiers, `--rerun-tasks`) |
 | Schéma Room | **7** — `pending_letters` (+ 6 : IBAN, e-mail, frais, extras) |
