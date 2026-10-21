@@ -70,12 +70,14 @@ class ConvertPendingLetterViewModel @Inject constructor(
     fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null) }
 
     fun convert() {
+        if (_state.value.saving || _state.value.done || _state.value.loading) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
             if (MoneyFormat.tooManyFractionDigits(s.openingRemainingText) ||
                 MoneyFormat.tooManyFractionDigits(s.monthlyAmountText)
             ) {
-                _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
+                _state.update { it.copy(saving = false, error = MoneyFormat.FRACTION_HINT) }
                 return@launch
             }
             val opening = MoneyFormat.parseToCents(s.openingRemainingText)
@@ -83,11 +85,13 @@ class ConvertPendingLetterViewModel @Inject constructor(
             val day = s.dayText.trim().toIntOrNull()
             if (opening == null || monthly == null || day == null) {
                 _state.update {
-                    it.copy(error = "Vérifiez le reste dû, le versement et le jour.")
+                    it.copy(
+                        saving = false,
+                        error = "Vérifiez le reste dû, le versement et le jour."
+                    )
                 }
                 return@launch
             }
-            _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = convert(
                     letterId = letterId,

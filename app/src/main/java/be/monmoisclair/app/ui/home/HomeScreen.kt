@@ -1178,7 +1178,7 @@ private fun ExpenseRow(
                             onClick = onCopyNote,
                             fillMaxWidth = false,
                             modifier = Modifier
-                                .widthIn(min = 96.dp)
+                                .widthIn(min = if (compact) 88.dp else 96.dp)
                                 .semantics {
                                     contentDescription = "Copier la communication"
                                 }
@@ -1196,7 +1196,7 @@ private fun ExpenseRow(
                 onClick = onToggle,
                 fillMaxWidth = false,
                 modifier = Modifier
-                    .widthIn(min = 96.dp)
+                    .widthIn(min = if (compact) 88.dp else 96.dp)
                     .semantics {
                         contentDescription = if (item.isDone) {
                             "Remettre à payer"
@@ -1269,7 +1269,7 @@ private fun ExpenseStatusLine(
                 onClick = onOpenReceipt,
                 fillMaxWidth = false,
                 modifier = Modifier
-                    .widthIn(min = 96.dp)
+                    .widthIn(min = if (compact) 80.dp else 96.dp)
                     .semantics { contentDescription = "Voir la photo de la facture" }
             )
         }

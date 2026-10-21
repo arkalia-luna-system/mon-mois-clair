@@ -1311,7 +1311,13 @@ private fun EntryFormScaffold(
                     }
                     if (onClearReceipt != null && (hasPendingPhoto || hasReceiptPhoto)) {
                         SecondaryA11yButton(
-                            text = if (isAgreement && hasReceiptPhoto && !hasPendingPhoto) {
+                            text = if (
+                                !hasPendingPhoto &&
+                                hasReceiptPhoto &&
+                                !applyFollowing &&
+                                !isSavingsLine &&
+                                (isAgreement || hasTemplate)
+                            ) {
                                 "Enlever la photo de ce mois"
                             } else {
                                 "Enlever la photo"
@@ -1322,9 +1328,9 @@ private fun EntryFormScaffold(
                     if (hasPendingPhoto) {
                         val photoOkShape = MaterialTheme.shapes.medium
                         val photoOkText = if (isAgreement && hasReceiptPhoto) {
-                            "Photo prête — s’ajoute aux courriers (la première reste)."
+                            "Photo prête. Elle s’ajoutera aux courriers quand vous enregistrerez."
                         } else {
-                            "Photo prête — enregistrée avec la facture."
+                            "Photo prête. Touchez Enregistrer pour la garder."
                         }
                         Text(
                             text = photoOkText,

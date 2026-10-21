@@ -49,9 +49,10 @@ class PendingLetterFormViewModel @Inject constructor(
     }
 
     fun save() {
+        if (_state.value.saving || _state.value.saved) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
-            _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = createPendingLetter(who = s.who, what = s.what)
             ) {

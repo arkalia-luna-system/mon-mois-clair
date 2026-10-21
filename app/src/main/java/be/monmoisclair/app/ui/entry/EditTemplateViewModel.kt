@@ -97,23 +97,26 @@ class EditTemplateViewModel @Inject constructor(
     }
 
     fun save() {
+        if (_state.value.saving || _state.value.saved || _state.value.loading) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
             if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
-                _state.update { it.copy(error = MoneyFormat.FRACTION_HINT) }
+                _state.update { it.copy(saving = false, error = MoneyFormat.FRACTION_HINT) }
                 return@launch
             }
             val cents = MoneyFormat.parseToCents(s.amountText)
             val day = s.dayText.trim().toIntOrNull()
             if (cents == null || day == null) {
-                _state.update { it.copy(error = "Vérifiez le montant et le jour (1 à 31).") }
+                _state.update {
+                    it.copy(saving = false, error = "Vérifiez le montant et le jour (1 à 31).")
+                }
                 return@launch
             }
             val anchor = RecurrenceAnchor.resolveTemplateAnchor(
                 selectedMonth = s.anchorMonth,
                 existingAnchor = s.existingAnchor
             )
-            _state.update { it.copy(saving = true, error = null) }
             when (
                 val result = updateTemplate(
                     templateId = templateId,
@@ -137,8 +140,9 @@ class EditTemplateViewModel @Inject constructor(
 
     /** E02 : retirer l’échéance hors mois (désactive le modèle). */
     fun archive() {
+        if (_state.value.saving || _state.value.saved || _state.value.loading) return
+        _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
-            _state.update { it.copy(saving = true, error = null) }
             when (archiveTemplate(templateId)) {
                 ArchiveExpenseTemplateResult.Success ->
                     _state.update { it.copy(saving = false, archived = true, saved = true) }
