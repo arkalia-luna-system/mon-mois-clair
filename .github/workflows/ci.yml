@@ -11,13 +11,11 @@ on:
   pull_request:
     branches: [develop, main]
 
-# Un seul job à la fois par branche. cancel-in-progress: true =
-# le push le plus récent gagne (agents / pushes rapides).
-# Évite la file de runs « cancelled » (pending remplacés) qui
-# apparaissent comme « 1 erreur » alors que le code est sain.
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+# Pas de concurrency : chaque push va au bout.
+# cancel-in-progress (true ou false) produisait des runs « cancelled »
+# (« Canceling since a higher priority waiting request… ») affichés
+# comme « 1 erreur » alors que les tests n’avaient pas échoué.
+# Sur ce dépôt familial, des runs parallèles courts sont acceptables.
 
 jobs:
   build-and-test:

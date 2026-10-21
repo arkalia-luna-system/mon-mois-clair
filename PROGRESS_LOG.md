@@ -19,11 +19,19 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-21 — CI : plus de concurrency (vrai fix des « cancelled »)
+
+**Problème :** « Canceling since a higher priority waiting request… » = `concurrency` GitHub (true comme false). Affiché comme « 1 erreur » sans échec de test.
+
+**Codé :** retrait du bloc `concurrency` dans `.github/workflows/ci.yml` · chaque push termine · `docs/CI.md` à jour.
+
+**Version :** inchangée `0.1.0-6.32`
+
 ### 2026-10-21 — CI + polish premium (messages / TalkBack)
 
-**Problème :** badge « 1 erreur » = runs CI **cancelled** (file de pushes, `cancel-in-progress: false`) ; messages SAF/URI trop techniques ; chargements sans sémantique TalkBack.
+**Problème :** badge « 1 erreur » = runs CI **cancelled** ; messages SAF/URI trop techniques ; chargements sans sémantique TalkBack.
 
-**Codé :** concurrency CI `cancel-in-progress: true` (dernier push gagne) · messages Documents en français · live regions Réglages/Restaurer · contentDescription chargements · docs rangés (`archive/`, `testeurs/`).
+**Codé :** messages Documents en français · live regions Réglages/Restaurer · contentDescription chargements · docs rangés (`archive/`, `testeurs/`). (La tentative `cancel-in-progress: true` ne suffisait pas — corrigée juste au-dessus.)
 
 **Tests :** suite déjà **198/198** (52 fichiers) au 6.32 — pas de nouveau test métier ici.  
 **Version :** inchangée `0.1.0-6.32`
