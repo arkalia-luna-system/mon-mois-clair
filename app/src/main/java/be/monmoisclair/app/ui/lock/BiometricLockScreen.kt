@@ -2,6 +2,8 @@ package be.monmoisclair.app.ui.lock
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -66,10 +69,20 @@ fun BiometricLockScreen(
     }
 
     val lockGap = if (fit.compactHomeChrome) 12.dp else 16.dp
+    // Consomme les taps / focus (zones vides) pour ne pas atteindre le NavHost dessous.
+    val eatClicks = remember { MutableInteractionSource() }
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(A11yTokens.PaperCream)
+            .clickable(
+                interactionSource = eatClicks,
+                indication = null,
+                onClick = { }
+            )
+            .semantics {
+                contentDescription = "Application verrouillée"
+            }
             .padding(A11yTokens.screenPadding),
         verticalArrangement = Arrangement.spacedBy(lockGap)
     ) {

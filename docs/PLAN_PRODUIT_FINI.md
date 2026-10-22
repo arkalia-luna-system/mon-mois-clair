@@ -2,7 +2,7 @@
 
 Date : 2026-10-21 (état code mis à jour **2026-10-22**).  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37–**6.53** clos (`0.1.0-6.53`, schéma Room **8**). Benchmark : formes / PDF / nuit / OCR / résumé PDF (18/22 pt) / widget / finitions / copy.  
+Lots **A à F** + 6.37–**6.54** clos (`0.1.0-6.54`, schéma Room **8**). Benchmark : formes / PDF / nuit / OCR / résumé PDF (18/22 pt) / widget / finitions / copy.  
 Détail (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -214,7 +214,7 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37–6.53** clos (`0.1.0-6.53`, schéma **8**, unitaires **280/280**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). La feuille résumé est le même texte, en **18/22 pt**, papier crème, polices du carnet.
+**A–F + 6.37–6.54** clos (`0.1.0-6.54`, schéma **8**, unitaires **281/281**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). La feuille résumé est le même texte, en **18/22 pt**, papier crème, polices du carnet.
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;

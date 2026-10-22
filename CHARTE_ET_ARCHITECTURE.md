@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.53** — copy Réglages / Aide resserrée).
+Mise à jour : 2026-10-22 (lot **6.54** — photo+PDF / verrou / PDF busy).
 
 ## 1. Vision
 
@@ -103,6 +103,7 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.51** | PDF résumé : 18/22 pt, Source Sans/Serif, pied de page | ✅ |
 | **6.52** | Retry PDF à l’ajout · cache thème · ZIP `ShareFileIntents` · docs archivés | ✅ |
 | **6.53** | Copy Réglages / Aide / Alertes / restauration — moins de phrases inutiles | ✅ |
+| **6.54** | hasReceipt photo+PDF · verrou consomme taps · PDF `finally` · VIEW ClipData · widget nuit | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

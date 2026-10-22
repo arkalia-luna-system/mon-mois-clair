@@ -43,6 +43,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 import be.monmoisclair.app.ui.MainViewModel
 import be.monmoisclair.app.ui.lock.BiometricLockScreen
 import be.monmoisclair.app.ui.navigation.AppNavHost
@@ -50,9 +51,15 @@ import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.MonMoisClairTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var widgetSink: CarnetWidgetSink
 
     private var pendingHighlightExpenseId: String? = null
 
@@ -100,6 +107,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
                     onDispose { }
+                }
+                // Widget « Comme le téléphone » : couleurs au bascule nuit système.
+                LaunchedEffect(night) {
+                    withContext(Dispatchers.IO) {
+                        runCatching { widgetSink.refresh() }
+                    }
                 }
                 val navController = rememberNavController()
                 val lifecycleOwner = LocalLifecycleOwner.current

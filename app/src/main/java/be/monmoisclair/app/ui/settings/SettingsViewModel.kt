@@ -383,22 +383,32 @@ class SettingsViewModel @Inject constructor(
             it.copy(summaryBusy = true, flashMessage = null, flashMessageError = false)
         }
         viewModelScope.launch {
-            val result = prepareMonthSummary()
-            val file = withContext(Dispatchers.IO) {
-                val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
-                val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
-                summaryPdfWriter.write(result.text, out)
+            try {
+                val result = prepareMonthSummary()
+                val file = withContext(Dispatchers.IO) {
+                    val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
+                    val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
+                    summaryPdfWriter.write(result.text, out)
+                }
+                val uri = FileProvider.getUriForFile(
+                    appContext,
+                    "${appContext.packageName}.fileprovider",
+                    file
+                )
+                val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
+                _shareIntents.emit(
+                    Intent.createChooser(intent, "Envoyer le PDF")
+                )
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(
+                        flashMessage = "Le PDF n’a pas pu être préparé. Réessayez.",
+                        flashMessageError = true
+                    )
+                }
+            } finally {
+                _uiState.update { it.copy(summaryBusy = false) }
             }
-            val uri = FileProvider.getUriForFile(
-                appContext,
-                "${appContext.packageName}.fileprovider",
-                file
-            )
-            val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
-            _shareIntents.emit(
-                Intent.createChooser(intent, "Envoyer le PDF")
-            )
-            _uiState.update { it.copy(summaryBusy = false) }
         }
     }
 

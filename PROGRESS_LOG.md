@@ -9,15 +9,28 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.53** (copy Réglages / Aide resserrée) |
+| Dernière étape terminée | **6.54** (photo+PDF bouton · verrou taps · PDF busy) |
 | Étape en cours | — |
-| Prochaine sous-étape | Reprendre la photo de loyer3 — ou S26 maman |
-| Audit premium | Benchmark clos · copy premium 6.53 · **280/280** |
+| Prochaine sous-étape | Smoke photo loyer3 / verrou — ou S26 maman |
+| Audit premium | Benchmark clos · P0 audit 6.54 · **281/281** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.54 Correctifs P0 audit (photo / verrou / PDF)
+
+**Vu (audits agents) :** « Voir la photo » masqué si `webp\n…pdf` (endsWith sur toute la chaîne — cas loyer3) ; taps passant sous l’overlay biométrie ; `summaryBusy` PDF sans `finally` ; VIEW sans ClipData ; widget stale au bascule nuit.
+
+**Codé :**
+- `hasReceipt` via `ReceiptPathList.primaryPhotoOrFirst`
+- Overlay verrou consomme les clics
+- `try/finally` PDF résumé ; `viewIntent` + ClipData
+- Refresh widget quand `night` change dans `MainActivity`
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **281/281** (66 fichiers).  
+**Version :** `0.1.0-6.54` · `versionCode` 59.
 
 ### 2026-10-22 — 6.53 Copy premium (Réglages / Aide / Alertes)
 
@@ -27,11 +40,11 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 - Textes raccourcis / retirés là où le contrôle suffit ; Aide plus dense ; ton aligné Mes dossiers / aperçu / Menu / restauration
 - Photo : décodage **local d’abord** (puis Documents) ; si échec in-app → « Ouvrir à part »
 - Sécurité revue OK (pas d’INTERNET, allowBackup false, ClipData, zip-slip, FLAG_SECURE, clipboard sensible)
+- **P0 feedback sauvegarde :** `backupMessage` sous Sauvegarde (plus dans Confidentialité) ; `refresh()` ne wipe plus ; tip « 3 copies… » seulement si dossier choisi ; HowItWorks Facture papier / Retard / Sur une année coupés
+- **P1/P2 :** déficit clavier non doublé ; tip Apparence/Aide/Alertes retirés ; messages VM courts ; empty échéances « Aucune… » ; un seul « Préparation… » résumé
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **280/280** (66 fichiers).  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **281/281** (66 fichiers).  
 **Version :** `0.1.0-6.53` · `versionCode` 58.
-
-**Finition même lot :** messages Réglages séparés (biométrie / sauvegarde / flash) pour ne plus écraser le feedback ; Aide encore plus courte ; photo masquée sur ligne « Mettre de côté » en édition.
 
 ### 2026-10-22 — 6.52 Finitions chasse d’erreurs + rangement docs
 

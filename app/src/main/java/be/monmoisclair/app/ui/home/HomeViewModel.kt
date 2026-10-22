@@ -149,8 +149,13 @@ class HomeViewModel @Inject constructor(
                                 ),
                                 isAutoDebit = exp.isAutoDebit,
                                 paymentNote = exp.paymentNote,
-                                hasReceipt = exp.receiptRelativePath.isNotBlank() &&
-                                    !exp.receiptRelativePath.endsWith(".pdf", ignoreCase = true),
+                                hasReceipt = run {
+                                    val primary = ReceiptPathList.primaryPhotoOrFirst(
+                                        exp.receiptRelativePath,
+                                        receiptPhotos::isPdf
+                                    )
+                                    primary.isNotBlank() && !receiptPhotos.isPdf(primary)
+                                },
                                 receiptRelativePath = exp.receiptRelativePath,
                                 causeLabel = tpl?.causeLabel.orEmpty(),
                                 isAgreement = DossierRemaining.isDossier(tpl?.openingRemainingCents),

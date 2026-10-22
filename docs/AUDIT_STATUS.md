@@ -1,7 +1,7 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit fermé : **6.53** (`0.1.0-6.53`, schéma Room **8**, unitaires **280/280**).  
+Journal produit fermé : **6.54** (`0.1.0-6.54`, schéma Room **8**, unitaires **281/281**).  
 Phrase rythme : domaine + UI fiche / Mes dossiers (pas de smoke device dédié pour cette phrase seule).  
 Dossiers / accords (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
@@ -17,7 +17,7 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 6.33 install + EuroFormat + Menu | ✅ smoke retour 2026-10-21 |
 | 6.36 + hauteur Accord / FAIT | ✅ smoke Ultra 2026-10-21 |
 | Hauteur courte type S26 | ✅ sim. 360×780 dp + texte 1,3 (2026-10-21) |
-| 6.43–6.53 | ✅ code. Smoke S25 du 2026-10-22 : accueil nuit, widget posé, OCR `+++`, PDF en attente à côté d’une photo. Photo loyer3 illisible (à corriger). S26 : pas encore |
+| 6.43–6.54 | ✅ code. Smoke S25 du 2026-10-22 : accueil nuit, widget posé, OCR `+++`, PDF. Photo loyer3 : correctif bouton `hasReceipt` (6.54) à revalider au doigt. S26 : pas encore |
 
 ## Smoke SM-S938B — 2026-10-21
 

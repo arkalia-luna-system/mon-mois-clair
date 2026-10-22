@@ -34,4 +34,16 @@ class ReceiptPathListTest {
         assertThat(ReceiptPathList.primaryPhotoOrFirst("receipts/seul.pdf", isPdf))
             .isEqualTo("receipts/seul.pdf")
     }
+
+    @Test
+    fun hasReceiptHomeLogic_photoPlusPdf_stillShowsPhotoButton() {
+        val isPdf: (String) -> Boolean = { it.endsWith(".pdf", ignoreCase = true) }
+        val raw = "receipts/loyer3.webp\nreceipts/loyer3-pdf.pdf"
+        // Ancien bug accueil : endsWith(".pdf") sur toute la chaîne → bouton masqué.
+        assertThat(raw.endsWith(".pdf", ignoreCase = true)).isTrue()
+        val primary = ReceiptPathList.primaryPhotoOrFirst(raw, isPdf)
+        val hasReceipt = primary.isNotBlank() && !isPdf(primary)
+        assertThat(hasReceipt).isTrue()
+        assertThat(primary).isEqualTo("receipts/loyer3.webp")
+    }
 }

@@ -101,6 +101,7 @@ class ReceiptPhotoStore @Inject constructor(
         val mime = BackupSecurityArchive.mimeForReceiptPath(relativePath) ?: "*/*"
         return Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(uri, mime)
+            clipData = android.content.ClipData.newRawUri("", uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }

@@ -97,22 +97,25 @@ class DossiersViewModel @Inject constructor(
         if (_state.value.summaryBusy || _state.value.loading) return
         _state.value = _state.value.copy(summaryBusy = true)
         viewModelScope.launch {
-            val result = prepareMonthSummary()
-            val file = withContext(Dispatchers.IO) {
-                val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
-                val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
-                summaryPdfWriter.write(result.text, out)
+            try {
+                val result = prepareMonthSummary()
+                val file = withContext(Dispatchers.IO) {
+                    val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
+                    val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
+                    summaryPdfWriter.write(result.text, out)
+                }
+                val uri = FileProvider.getUriForFile(
+                    appContext,
+                    "${appContext.packageName}.fileprovider",
+                    file
+                )
+                val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
+                _shareIntents.emit(
+                    Intent.createChooser(intent, "Envoyer le PDF")
+                )
+            } finally {
+                _state.value = _state.value.copy(summaryBusy = false)
             }
-            val uri = FileProvider.getUriForFile(
-                appContext,
-                "${appContext.packageName}.fileprovider",
-                file
-            )
-            val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
-            _shareIntents.emit(
-                Intent.createChooser(intent, "Envoyer le PDF")
-            )
-            _state.value = _state.value.copy(summaryBusy = false)
         }
     }
 }
