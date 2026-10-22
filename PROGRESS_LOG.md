@@ -9,15 +9,29 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.57** (suite audit H05–WDG01) |
+| Dernière étape terminée | **6.58** (audit matrice + tip-boxes restantes) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke S26 / doigt — ou FORM01 regroupement profond |
-| Audit premium | Quick wins + pass micro · **284/284** |
+| Prochaine sous-étape | Smoke S26 / doigt — FORM01 regroupement profond (volontairement différé) |
+| Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **284/284** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.58 Audit exhaustif + last tip-boxes
+
+**Vu :** claims 6.56/6.57 OK sur Accueil/Menu/Scan/Widget ; restaient tip-boxes hors états (édition échéance, dossiers courriers, empty fiche) et « Fermer » photo encore Primary ; dialogs PaperWarm vs PaperCream.
+
+**Codé (visuel seulement) :**
+- SYS01 : tips EditTemplate / empty missing / Courriers sans plan / Convert missing → InkMuted sans boîte
+- Dialogs photo fiche : Fermer = Secondary ; PaperCream (restore, settings, fiche, modèle)
+- WDG02 **ACCEPTÉ** : RemoteViews = police système (pas Source Sans)
+- FORM01 **PARTIEL** : sans boîte-dans-boîte OK ; regroupement profond différé
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **284/284** (67 fichiers).  
+**Version :** `0.1.0-6.58` · `versionCode` 63.  
+**Pas un claim « premium terminé »** : smoke doigt / S26 / FORM01 profond restent ouverts.
 
 ### 2026-10-22 — 6.57 Suite audit (Accueil / Réglages / micro)
 

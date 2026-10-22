@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.56** — mois du menu au-dessus de la barre).
+Mise à jour : 2026-10-22 (lot **6.58** — audit tip-boxes / dialogs papier).
 
 ## 1. Vision
 
@@ -78,6 +78,8 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.54** | hasReceipt photo+PDF · verrou anti-tap · PDF `finally` · VIEW ClipData · widget nuit | ✅ |
 | **6.55** | 1er frame Apparence · cache empreinte · OCR sans collage · widget si le processus vit | ✅ |
 | **6.56** | Feuille Menu : marge basse hors défilement (plancher 48 dp) · polish carnet (sticky, tips) | ✅ |
+| **6.57** | Accueil H05–H14 · Réglages radio/case · SCAN/LOCK/LOAD · widget 32 sp | ✅ |
+| **6.58** | Matrice audit · tip-boxes hors états retirées · dialogs PaperCream | ✅ |
 
 ## 5. Branches Git (verrouillé)
 

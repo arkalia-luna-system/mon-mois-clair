@@ -82,13 +82,9 @@ fun ConvertPendingLetterScreen(
                     )
                 }
             } else {
-                val missShape = MaterialTheme.shapes.medium
+                // SYS01 : empty / manquant = typo seule (pas tip-box).
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, missShape)
-                        .background(A11yTokens.PaperCard, missShape)
-                        .padding(if (fit.compactHomeChrome) 12.dp else 16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(
                         if (fit.compactHomeChrome) 6.dp else 8.dp
                     )
@@ -101,7 +97,8 @@ fun ConvertPendingLetterScreen(
                     Text(
                         text = "Il a peut-être déjà été converti ou retiré.",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = A11yTokens.InkMuted
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }

@@ -1,12 +1,12 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.57**).  
+Date : 2026-10-22 (état code : **6.58**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · 6.56 menu/sticky · **6.57** tips sans tip-box, H05–H14, SET radio/case, LOCK/LOAD, SCAN calme, DOS02, WDG01, SYS03 |
+| **Fait** | … · 6.56/6.57 Accueil–widget · **6.58** matrice audit + tip-boxes restantes (EditTemplate, dossiers, Fermer Secondary, dialogs PaperCream) · WDG02 accepté |
 | **Pas fait** | S26 en main · smoke doigt · FORM01 regroupement profond |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).

@@ -68,7 +68,7 @@ fun RestoreBackupScreen(
         AlertDialog(
             onDismissRequest = { /* forcer un OK explicite */ },
             shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperWarm,
+            containerColor = A11yTokens.PaperCream,
             title = {
                 Text(
                     text = "Restauration réussie",
@@ -101,7 +101,7 @@ fun RestoreBackupScreen(
         AlertDialog(
             onDismissRequest = { if (!state.busy) pending = null },
             shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperWarm,
+            containerColor = A11yTokens.PaperCream,
             title = {
                 Text(
                     text = "Remplacer toutes les données ?",

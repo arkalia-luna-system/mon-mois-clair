@@ -63,7 +63,6 @@ fun DossiersScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     val sectionGap = if (fit.compactHomeChrome) 10.dp else 16.dp
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -237,40 +236,28 @@ fun DossiersScreen(
         }
 
         Spacer(modifier = Modifier.height(sectionGap))
-        val pendingIntroShape = MaterialTheme.shapes.medium
-        Column(
+        // SYS01 / PEN01 : titre + tip InkMuted, sans tip-box.
+        Text(
+            text = "Courriers sans plan",
+            style = MaterialTheme.typography.titleLarge,
+            color = A11yTokens.Ink
+        )
+        Text(
+            text = "Reçus, sans versement fixé — rien dans le Reste.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted,
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, pendingIntroShape)
-                .background(A11yTokens.PaperCard, pendingIntroShape)
-                .padding(tipPad),
-            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 4.dp else 6.dp)
-        ) {
-            Text(
-                text = "Courriers sans plan",
-                style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.Ink
-            )
-            Text(
-                text = "Reçus, sans versement fixé — rien dans le Reste.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
-        }
+                .padding(top = if (fit.compactHomeChrome) 4.dp else 6.dp)
+        )
         if (pending.isEmpty()) {
-            val emptyPendingShape = MaterialTheme.shapes.medium
             Text(
                 text = "Aucun pour le moment.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, emptyPendingShape)
-                    .background(A11yTokens.PaperCard, emptyPendingShape)
-                    .padding(
-                        horizontal = tipPad,
-                        vertical = if (fit.compactHomeChrome) 10.dp else 12.dp
-                    )
+                    .padding(vertical = if (fit.compactHomeChrome) 8.dp else 10.dp)
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {

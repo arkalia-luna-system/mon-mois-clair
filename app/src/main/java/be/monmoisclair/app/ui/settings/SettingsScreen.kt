@@ -131,6 +131,8 @@ fun SettingsScreen(
     if (confirmRemoveSavings) {
         AlertDialog(
             onDismissRequest = { confirmRemoveSavings = false },
+            shape = MaterialTheme.shapes.medium,
+            containerColor = A11yTokens.PaperCream,
             title = {
                 Text("Retirer « Mettre de côté » ?")
             },

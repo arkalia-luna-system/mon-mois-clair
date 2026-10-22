@@ -79,7 +79,7 @@ fun EditTemplateScreen(
         AlertDialog(
             onDismissRequest = { confirmLeave = false },
             shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperWarm,
+            containerColor = A11yTokens.PaperCream,
             title = {
                 Text(
                     text = "Quitter sans enregistrer ?",
@@ -120,7 +120,7 @@ fun EditTemplateScreen(
         AlertDialog(
             onDismissRequest = { confirmArchive = false },
             shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperWarm,
+            containerColor = A11yTokens.PaperCream,
             title = {
                 Text(
                     text = "Retirer $name ?",
@@ -207,16 +207,11 @@ fun EditTemplateScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = A11yTokens.Ink
             )
-            val missShape = MaterialTheme.shapes.medium
             Text(
                 text = "Elle a peut-être déjà été retirée. Retournez à l’accueil ou aux Réglages.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, missShape)
-                    .background(A11yTokens.PaperCard, missShape)
-                    .padding(12.dp)
+                modifier = Modifier.fillMaxWidth()
             )
             SecondaryA11yButton(text = "Retour", onClick = onCancel)
         }
@@ -225,7 +220,6 @@ fun EditTemplateScreen(
 
     val fit = rememberDisplayFit()
     val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -244,27 +238,20 @@ fun EditTemplateScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = A11yTokens.Ink
             )
-            val hintShape = MaterialTheme.shapes.medium
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, hintShape)
-                    .background(A11yTokens.PaperCard, hintShape)
-                    .padding(tipPad),
-                verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 4.dp else 6.dp)
-            ) {
-                Text(
-                    text = state.intervalHint,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
-                Text(
-                    text = "Les mois déjà notés sur l’accueil ne changent pas. " +
-                        "Les mois suivants suivront cette échéance.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
-            }
+            // SYS01 : tip courant = texte InkMuted (pas de tip-box).
+            Text(
+                text = state.intervalHint,
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = "Les mois déjà notés sur l’accueil ne changent pas. " +
+                    "Les mois suivants suivront cette échéance.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
+            )
             OutlinedTextField(
                 value = state.label,
                 onValueChange = viewModel::setLabel,
@@ -294,26 +281,16 @@ fun EditTemplateScreen(
                 selectedDay = state.dayText.toIntOrNull(),
                 onSelect = { viewModel.setDay(it.toString()) }
             )
-            val anchorShape = MaterialTheme.shapes.medium
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, anchorShape)
-                    .background(A11yTokens.PaperCard, anchorShape)
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    "Mois de la prochaine échéance",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.InkMuted
-                )
-                Text(
-                    text = state.anchorYearLabel,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.Ink
-                )
-            }
+            Text(
+                "Mois de la prochaine échéance",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+            Text(
+                text = state.anchorYearLabel,
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.Ink
+            )
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)

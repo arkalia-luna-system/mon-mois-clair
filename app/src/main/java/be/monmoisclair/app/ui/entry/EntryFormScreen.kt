@@ -276,7 +276,7 @@ fun AddEntryScreen(
                             )
                             .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
                     )
-                    PrimaryA11yButton(
+                    SecondaryA11yButton(
                         text = "Fermer",
                         onClick = { showReceiptDialog = false }
                     )
@@ -486,16 +486,11 @@ fun EditEntryScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = A11yTokens.Ink
             )
-            val missShape = MaterialTheme.shapes.medium
             Text(
                 text = "Elle a peut-être déjà été retirée. Retournez à l’accueil.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, missShape)
-                    .background(A11yTokens.PaperCard, missShape)
-                    .padding(if (missFit.compactHomeChrome) 12.dp else 14.dp)
+                modifier = Modifier.fillMaxWidth()
             )
             SecondaryA11yButton(text = "Retour", onClick = onCancel)
         }
@@ -506,7 +501,7 @@ fun EditEntryScreen(
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
             shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperWarm,
+            containerColor = A11yTokens.PaperCream,
             title = {
                 val name = state.label.trim().ifBlank { "cette entrée" }
                 Text(
@@ -696,7 +691,7 @@ fun EditEntryScreen(
                             )
                         }
                     }
-                    PrimaryA11yButton(
+                    SecondaryA11yButton(
                         text = "Fermer",
                         onClick = { dialogPath = null }
                     )
@@ -859,7 +854,7 @@ private fun DiscardChangesDialog(
     AlertDialog(
         onDismissRequest = onStay,
         shape = MaterialTheme.shapes.medium,
-        containerColor = A11yTokens.PaperWarm,
+        containerColor = A11yTokens.PaperCream,
         title = {
             Text(
                 text = "Quitter sans enregistrer ?",
