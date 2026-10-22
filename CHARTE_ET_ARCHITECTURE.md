@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.62** — fiche pratique grille / Paiement / EXIF).
+Mise à jour : 2026-10-22 (lot **6.67** — hub Réglages + Courses sticky + fiche + secondaires).
 
 ## 1. Vision
 
@@ -35,10 +35,10 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 |-------|------|--------|
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
 | **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
-| **Après courses** | Reste − courses / divers du mois | Seulement si courses > 0 (pas de lien teal « Noter des courses ») |
+| **Courses** (tap ≥48) | Montant divers du mois ; ouvre la sheet d’édition | Toujours hors aperçu futur (`Courses` ou `Courses X € · après Y €`) |
 | **Après les FAIT** · **Mis de côté** · alertes | Détail | Derrière **Plus / Moins** (pas de mini-dashboard) |
 
-Courses : **une** UI en bas de liste (« J’ai dépensé » / « Corriger »), pas de 2ᵉ sheet depuis le sticky.
+Courses : **une** sheet (`HomeCoursesSheet`) ouverte depuis la ligne sticky (et rappel InkMuted en bas de liste). Pas de 2ᵉ formulaire empilé ; pas de lien teal « Noter des courses ».
 
 Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun `#8A5A1E` ; Après courses = muted, **brique** si négatif.  
 Pas de plaque colorée, pas de nom d’app dans l’en-tête. Tips courants = texte `InkMuted` (boîtes = erreur / ok / warn seulement).
@@ -84,6 +84,8 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.60** | Densité Secondary fiche · QuietLink · typo titres · À venir / CheckRow sans boîte | ✅ |
 | **6.61** | Smoke S25 polish Accueil/fiche (socle, Annuler QuietLink) | ✅ |
 | **6.62** | Fiche : grille sous sticky · Paiement fermé · EXIF JPEG · tips courts | ✅ |
+| **6.65–6.66** | Accueil Courses sticky (claim) · secondaires dossiers/widget | ✅ code fusionné en **6.67** |
+| **6.67** | Hub Réglages + sous-pages · Courses sticky branché · Menu allégé · une version | ✅ |
 
 ## 5. Branches Git (verrouillé)
 
@@ -140,6 +142,8 @@ Appliqué **une seule fois** dans `MainActivity`.
 Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomClearance` · `HomeMenuSheet` · `DisableFrameworkScrollbars`.
 
 ## 7. Hub Réglages & usage sur une année (verrouillé)
+
+**Forme (6.67) :** hub court (lignes filet + ›) → **sous-pages** (Apparence, Mettre de côté, Confidentialité, Échéances, Résumé si utile, Sauvegarde, Aide). Alertes ouvre Santé. Pas tout empilé sur une page.
 
 ### Inventaire (indispensable vs redondant)
 

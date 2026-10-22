@@ -9,15 +9,34 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.66** (polish écrans hors Accueil/Réglages/fiche) |
+| Dernière étape terminée | **6.67** (réconciliation Accueil / Réglages / fiche / secondaires) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt manuel (biométrie, widget home, scan caméra) · S26 |
+| Prochaine sous-étape | Smoke doigt manuel (Courses sticky, hub Réglages, biométrie, widget, scan) · S26 |
 | Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **291/291** |
-| Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
+| Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.67 Réconciliation (écrasements agents parallèles)
+
+**Contexte :** plusieurs agents (Accueil Courses, hub Réglages, fiche, secondaires) se sont écrasés (commits/version/docs). Stoppés ; un seul fil de merge.
+
+**Écrasé puis récupéré :**
+- Accueil **6.65** : `HomeCoursesSheet` / `stickyCoursesLabel` / Menu allégé existaient en fichiers orphelins — **non branchés** dans `HomeScreen` (formulaire bas de liste encore là). Restauré depuis stash + dangling commit.
+- Réglages hub **6.64/6.67** : `SettingsPages` + nav sous-routes écrasés — restaurés depuis stash (`SettingsScreen` hub 144 lignes) + `SettingsPages.kt` / `AppRoute` / `AppNavHost`.
+- Fiche **6.62** code : déjà en HEAD (`8ed4d7f`) au-dessus de **6.66** secondaires.
+- Secondaires **6.66** : conservés (dossiers / widget / tips).
+
+**Codé / branché :**
+- Sticky : 1 hero Reste + ligne Courses tappable → sheet unique ; bas de liste = rappel InkMuted
+- Menu : titres seuls, pas Alertes/Aide/Restore
+- Réglages : hub filets + sous-pages (Apparence, Épargne, Confidentialité, Échéances, Résumé, Sauvegarde, Aide) ; Alertes → Santé
+- Charte Accueil : Courses dans sticky (plus « UI bas de liste seule »)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **291/291** (69 fichiers, 0 failure ; incl. StickyCoursesLabel + SettingsHubCopy).  
+**Version :** `0.1.0-6.67` · `versionCode` 72.
 
 ### 2026-10-22 — 6.66 Polish écrans secondaires (dossiers / à venir / scan / widget)
 

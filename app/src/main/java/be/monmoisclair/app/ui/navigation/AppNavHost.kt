@@ -28,8 +28,16 @@ import be.monmoisclair.app.ui.onboarding.SafSetupScreen
 import be.monmoisclair.app.ui.restore.RestoreBackupScreen
 import be.monmoisclair.app.ui.scan.EpcScanHandoff
 import be.monmoisclair.app.ui.scan.ScanEpcScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import be.monmoisclair.app.ui.settings.HowItWorksScreen
+import be.monmoisclair.app.ui.settings.SettingsAppearanceScreen
+import be.monmoisclair.app.ui.settings.SettingsBackupScreen
+import be.monmoisclair.app.ui.settings.SettingsDeadlinesScreen
+import be.monmoisclair.app.ui.settings.SettingsHelpScreen
+import be.monmoisclair.app.ui.settings.SettingsPrivacyScreen
+import be.monmoisclair.app.ui.settings.SettingsSavingsScreen
 import be.monmoisclair.app.ui.settings.SettingsScreen
+import be.monmoisclair.app.ui.settings.SettingsSummaryScreen
 import be.monmoisclair.app.ui.upcoming.UpcomingScreen
 
 @Composable
@@ -130,11 +138,67 @@ fun AppNavHost(
         composable(AppRoute.Settings) {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
+                onOpenAppearance = { navController.navigate(AppRoute.SettingsAppearance) },
+                onOpenSavings = { navController.navigate(AppRoute.SettingsSavings) },
+                onOpenPrivacy = { navController.navigate(AppRoute.SettingsPrivacy) },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
+                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) },
+                onOpenSummary = { navController.navigate(AppRoute.SettingsSummary) },
+                onOpenBackup = { navController.navigate(AppRoute.SettingsBackup) },
+                onOpenHelp = { navController.navigate(AppRoute.SettingsHelp) }
+            )
+        }
+        composable(AppRoute.SettingsAppearance) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsAppearanceScreen(
+                onBack = { navController.popBackStack() },
+                viewModel = hiltViewModel(parent)
+            )
+        }
+        composable(AppRoute.SettingsSavings) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsSavingsScreen(
+                onBack = { navController.popBackStack() },
+                viewModel = hiltViewModel(parent)
+            )
+        }
+        composable(AppRoute.SettingsPrivacy) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsPrivacyScreen(
+                onBack = { navController.popBackStack() },
+                viewModel = hiltViewModel(parent)
+            )
+        }
+        composable(AppRoute.SettingsDeadlines) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsDeadlinesScreen(
+                onBack = { navController.popBackStack() },
+                onEditTemplate = { id -> navController.navigate(AppRoute.editTemplate(id)) },
+                viewModel = hiltViewModel(parent)
+            )
+        }
+        composable(AppRoute.SettingsSummary) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsSummaryScreen(
+                onBack = { navController.popBackStack() },
+                viewModel = hiltViewModel(parent)
+            )
+        }
+        composable(AppRoute.SettingsBackup) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsBackupScreen(
+                onBack = { navController.popBackStack() },
                 onOpenSaf = { navController.navigate(AppRoute.SafSetup) },
                 onOpenRestore = { navController.navigate(AppRoute.RestoreBackup) },
+                viewModel = hiltViewModel(parent)
+            )
+        }
+        composable(AppRoute.SettingsHelp) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsHelpScreen(
+                onBack = { navController.popBackStack() },
                 onOpenHowItWorks = { navController.navigate(AppRoute.HowItWorks) },
-                onEditTemplate = { id -> navController.navigate(AppRoute.editTemplate(id)) }
+                viewModel = hiltViewModel(parent)
             )
         }
         composable(AppRoute.HowItWorks) {

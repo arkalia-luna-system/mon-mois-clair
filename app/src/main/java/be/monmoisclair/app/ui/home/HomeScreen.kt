@@ -33,7 +33,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -70,8 +69,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -89,7 +86,6 @@ import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
-import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.StampShape
@@ -127,17 +123,17 @@ fun HomeScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
     val keyboardOpen = imeOpen()
-    val diversBring = rememberFocusKeepsVisible()
     val haptics = LocalHapticFeedback.current
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var diversInput by remember { mutableStateOf("") }
-    var diversExpanded by remember { mutableStateOf(false) }
-    /** Sticky : Reste + 1 statut (+ Après courses si > 0) ; le reste derrière « Plus ». */
+    /** Unique UI Courses : sheet depuis le sticky (pas de formulaire en bas de liste). */
+    var coursesSheetOpen by remember { mutableStateOf(false) }
+    /** Sticky : Reste + 1 statut (+ Courses) ; le reste derrière « Plus ». */
     var stickyDetailsOpen by remember { mutableStateOf(false) }
     LaunchedEffect(state.isFuturePreview) {
         if (state.isFuturePreview) {
-            diversExpanded = false
+            coursesSheetOpen = false
             stickyDetailsOpen = false
         }
     }
@@ -460,6 +456,22 @@ fun HomeScreen(
             onOpenUpcoming = onOpenUpcoming
         )
     }
+    if (coursesSheetOpen && !state.isFuturePreview) {
+        HomeCoursesSheet(
+            diversSpentCents = state.diversSpentCents,
+            afterDiversCents = state.afterDiversCents,
+            input = diversInput,
+            onInputChange = {
+                diversInput = it
+                viewModel.clearDiversError()
+            },
+            error = diversError,
+            busy = diversBusy,
+            onAdd = { viewModel.addDivers(diversInput) },
+            onRemove = { viewModel.removeDivers(diversInput) },
+            onDismiss = { coursesSheetOpen = false }
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -538,7 +550,7 @@ fun HomeScreen(
                         contentDescription = "$remainingTitle : $remainingAmount"
                     }
                 )
-                // H01 : 1 chiffre + 1 ligne statut max ; H02 : Après courses seulement si > 0.
+                // H01 : 1 chiffre + 1 ligne statut ; Courses = entrée sticky (sheet unique).
                 stickyStillToPayLabel(
                     stillToPayCents = state.summary.stillToPayCents,
                     hasExpenses = state.timeline.any { it is TimelineItem.Expense },
@@ -556,20 +568,36 @@ fun HomeScreen(
                         modifier = Modifier.semantics { contentDescription = label }
                     )
                 }
-                if (!state.isFuturePreview && state.diversSpentCents > 0L) {
-                    val afterLabel =
-                        "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}"
+                stickyCoursesLabel(
+                    diversSpentCents = state.diversSpentCents,
+                    afterDiversCents = state.afterDiversCents,
+                    futurePreview = state.isFuturePreview
+                )?.let { coursesLabel ->
                     Text(
-                        text = afterLabel,
+                        text = coursesLabel,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = if (state.afterDiversCents < 0L) {
-                            A11yTokens.DangerInk
-                        } else {
-                            A11yTokens.InkMuted
+                        color = when {
+                            state.diversSpentCents > 0L && state.afterDiversCents < 0L ->
+                                A11yTokens.DangerInk
+                            else -> A11yTokens.InkMuted
                         },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.semantics { contentDescription = afterLabel }
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Modifier les courses"
+                            ) { coursesSheetOpen = true }
+                            .padding(vertical = 4.dp)
+                            .semantics {
+                                contentDescription = if (state.diversSpentCents > 0L) {
+                                    "$coursesLabel. Modifier les courses"
+                                } else {
+                                    "Courses. Noter un montant"
+                                }
+                            }
                     )
                 }
                 // Mode aperçu = contexte, toujours visible (pas derrière « Plus »).
@@ -955,126 +983,33 @@ fun HomeScreen(
                         }
                     }
                 }
-                // Divers : total visible fermé ; formulaire au tap (jamais en aperçu futur).
-                val showDivers = !state.isFuturePreview &&
+                // Rappel discret InkMuted : même sheet que le sticky (pas de lien teal).
+                val showCoursesHint = !state.isFuturePreview &&
                     !state.loading &&
-                    (state.timeline.isNotEmpty() ||
-                        state.diversSpentCents > 0L ||
-                        diversExpanded)
-                if (showDivers) {
-                    item(key = "divers-controls") {
-                        val diversShape = MaterialTheme.shapes.medium
-                        val diversPad = if (fit.compactHomeChrome) 10.dp else 14.dp
-                        Column(
+                    (state.timeline.isNotEmpty() || state.diversSpentCents > 0L)
+                if (showCoursesHint) {
+                    item(key = "divers-hint") {
+                        val hint = if (state.diversSpentCents > 0L) {
+                            "Courses ${MoneyFormat.formatCents(state.diversSpentCents)} · modifier"
+                        } else {
+                            "Courses · noter en haut"
+                        }
+                        Text(
+                            text = hint,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, A11yTokens.PaperBorder, diversShape)
-                                .background(A11yTokens.PaperCard, diversShape)
-                                .padding(diversPad),
-                            verticalArrangement = Arrangement.spacedBy(
-                                if (fit.compactHomeChrome) 4.dp else 6.dp
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = A11yTokens.minTouchHeight)
-                                    .clickable(
-                                        role = Role.Button,
-                                        onClickLabel = if (diversExpanded) {
-                                            "Fermer courses"
-                                        } else {
-                                            "Ouvrir courses"
-                                        }
-                                    ) { diversExpanded = !diversExpanded },
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "Courses",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = A11yTokens.Ink
-                                )
-                                Text(
-                                    text = if (diversExpanded) "Fermer" else "Ouvrir",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.InkMuted
-                                )
-                            }
-                            Text(
-                                text = if (state.diversSpentCents > 0L) {
-                                    "Noté ${MoneyFormat.formatCents(state.diversSpentCents)} · hors du Reste"
-                                } else {
-                                    "Aucune course notée · hors du Reste"
-                                },
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted
-                            )
-                            AnimatedVisibility(visible = diversExpanded) {
-                                Column {
-                                    Spacer(modifier = Modifier.height(6.dp))
-                                    OutlinedTextField(
-                                        value = diversInput,
-                                        onValueChange = {
-                                            diversInput = it
-                                            viewModel.clearDiversError()
-                                        },
-                                        label = { Text("Montant (€)") },
-                                        singleLine = true,
-                                        shape = MaterialTheme.shapes.medium,
-                                        keyboardOptions = KeyboardOptions(
-                                            keyboardType = KeyboardType.Decimal,
-                                            imeAction = ImeAction.Done
-                                        ),
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .heightIn(min = A11yTokens.minTouchHeight)
-                                            .then(diversBring),
-                                        textStyle = MaterialTheme.typography.bodyLarge
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        SecondaryA11yButton(
-                                            text = "J’ai dépensé",
-                                            onClick = { viewModel.addDivers(diversInput) },
-                                            enabled = !diversBusy,
-                                            modifier = Modifier.weight(1f)
-                                        )
-                                        SecondaryA11yButton(
-                                            text = "Corriger",
-                                            onClick = { viewModel.removeDivers(diversInput) },
-                                            enabled = !diversBusy,
-                                            modifier = Modifier.weight(1f)
-                                        )
-                                    }
-                                    diversError?.let { err ->
-                                        Spacer(modifier = Modifier.height(6.dp))
-                                        val errShape = MaterialTheme.shapes.medium
-                                        Text(
-                                            text = err,
-                                            color = A11yTokens.DangerInk,
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .border(
-                                                    1.dp,
-                                                    A11yTokens.DangerInk.copy(alpha = 0.4f),
-                                                    errShape
-                                                )
-                                                .background(A11yTokens.PaperWarm, errShape)
-                                                .padding(12.dp)
-                                                .semantics {
-                                                    liveRegion = LiveRegionMode.Assertive
-                                                    contentDescription = err
-                                                }
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .clickable(
+                                    role = Role.Button,
+                                    onClickLabel = "Modifier les courses"
+                                ) { coursesSheetOpen = true }
+                                .padding(top = 4.dp, bottom = 2.dp)
+                                .semantics { contentDescription = hint }
+                        )
                     }
                 }
             }
