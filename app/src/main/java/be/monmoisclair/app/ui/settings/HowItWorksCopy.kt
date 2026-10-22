@@ -92,7 +92,7 @@ object HowItWorksCopy {
                 "« courrier sans plan · Voir » s’affiche s’il y en a. " +
                 "« Préparer un résumé » (Mes dossiers, ou Réglages si déficit) " +
                 "écrit un texte à envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
-                "« PDF du résumé » envoie le même contenu en feuille, pour imprimer ou joindre."
+                "« PDF du résumé » envoie le même contenu en feuille, en gros caractères, pour imprimer ou joindre."
         ),
         Section(
             title = "Mettre de côté",
@@ -122,7 +122,7 @@ object HowItWorksCopy {
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
                 "Dans Réglages → Apparence : Clair, Sombre, ou comme le téléphone. " +
                 "Un widget sur l’écran d’accueil montre le Reste et la prochaine facture. " +
-                "Il suit le mode nuit du téléphone (One UI). " +
+                "Il suit le choix Apparence (pas seulement le mode nuit du téléphone). " +
                 "Avec l’empreinte, il ne montre pas les chiffres. " +
                 "Aide, alertes et restauration : tout est dans Réglages."
         ),

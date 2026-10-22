@@ -9,15 +9,44 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.49** (widget + PDF à l’ajout) |
+| Dernière étape terminée | **6.51** (PDF résumé gros caractères) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke Galaxy 6.43–6.49 — ou S26 maman |
-| Audit premium | Benchmark clos · widget · PDF résumé · **273/273** |
+| Prochaine sous-étape | Smoke Galaxy 6.43–6.51 — ou S26 maman |
+| Audit premium | Benchmark clos · PDF 18/22 pt · **276/276** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.51 PDF résumé à gros caractères
+
+**Vu :** le PDF résumé était en 11/14 pt, polices système, fond blanc — illisible pour maman / impression.
+
+**Codé :**
+- `MonthSummaryPdfWriter` : papier `#F6F3E8`, encre, Source Sans 3 / Serif 4 via `ResourcesCompat.getFont`
+- Corps **18 pt**, titre doc **22 pt**, pied 14 pt (« Mon Mois Clair » + n° page) — pas tout le texte à 18
+- Rubriques (Revenus, mois, Déficit…) en semibold ; puces / versements indentés exclus
+- Aide : « gros caractères ». **Pas de smoke device affirmé** (adb voit un appareil ; aucun parcours doigt ici).
+
+**Finition chasse d’erreurs :**
+- Aide : widget suit Apparence (plus « One UI seul »)
+- Ajout : passer en revenu vide le PDF en attente ; pas de succès trompeur si le PDF n’est lié à rien
+- Fond widget crème fixe (déjà 6.50) + comment PDF ajout
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **276/276** (66 fichiers).  
+**Version :** `0.1.0-6.51` · `versionCode` 56.
+
+### 2026-10-22 — 6.50 Partage PDF résumé + fond widget
+
+**Vu :** le PDF résumé partait sans `ClipData` (permission URI fragile). Un fond widget branché sur la couleur de nuit du téléphone rendait Clair illisible.
+
+**Codé :**
+- `ShareFileIntents.pdf` (même pattern que la sauvegarde ZIP) branché Mes dossiers / Réglages
+- Fond widget : crème `#F6F3E8` et encre `#1E1B18` **fixes**, choisis selon Apparence (un `@color` nuit du téléphone inversait Clair)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **274/274** (66 fichiers).  
+**Version :** `0.1.0-6.50` · `versionCode` 55.
 
 ### 2026-10-22 — 6.49 Widget + PDF dès l’ajout
 
@@ -25,6 +54,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Codé :**
 - Widget accueil : Reste + prochaine ligne non FAIT ; refresh après mutate / restore ; montants masqués si biométrie
+- Le widget suit Apparence (Clair, Sombre, ou comme le téléphone)
 - « Joindre un PDF » aussi sur **Ajouter** (mêmes règles que l’édition)
 - Doc / charte / benchmark alignés ; charte OCR « plus tard » corrigée
 

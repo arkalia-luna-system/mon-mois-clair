@@ -124,8 +124,18 @@ class AddEntryViewModel @Inject constructor(
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
     fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null) }
-    fun setExpense(v: Boolean) = _state.update {
-        it.copy(isExpense = v, isAutoDebit = if (v) it.isAutoDebit else false)
+    fun setExpense(v: Boolean) {
+        if (!v) {
+            pendingPdfBytes = null
+        }
+        _state.update {
+            it.copy(
+                isExpense = v,
+                isAutoDebit = if (v) it.isAutoDebit else false,
+                hasPendingPdf = if (v) it.hasPendingPdf else false,
+                error = null
+            )
+        }
     }
     fun setRecurrence(v: RecurrenceChoice) = _state.update { it.copy(recurrence = v) }
     fun setNextDueMonth(m: Int) = _state.update { it.copy(nextDueMonth = m.coerceIn(1, 12)) }
@@ -509,13 +519,20 @@ class AddEntryViewModel @Inject constructor(
         val pdf = pendingPdfBytes ?: return true
         return try {
             val expense = instanceDao.getExpenseById(instanceId)
+            val templateOnly = if (expense == null && recurring) {
+                templateDao.getExpenseById(instanceId)
+            } else {
+                null
+            }
+            if (expense == null && templateOnly == null) return false
             val ownerId = expense?.templateId
                 ?: expense?.id
-                ?: instanceId
+                ?: templateOnly!!.id
             val saved = receiptPhotos.savePdfBytes(
                 "$ownerId-pdf-${AppClock.nowEpochMs()}",
                 pdf
             )
+            var linked = false
             mutatingRepository.mutate {
                 if (expense != null && expense.templateId != null) {
                     templateDao.getExpenseById(expense.templateId)?.let { tpl ->
@@ -527,6 +544,7 @@ class AddEntryViewModel @Inject constructor(
                                 )
                             )
                         )
+                        linked = true
                     }
                 } else if (expense != null) {
                     val merged = ReceiptPathList.encode(
@@ -536,20 +554,20 @@ class AddEntryViewModel @Inject constructor(
                         }
                     )
                     instanceDao.updateExpense(expense.copy(receiptRelativePath = merged))
-                } else if (recurring) {
-                    templateDao.getExpenseById(instanceId)?.let { tpl ->
-                        templateDao.updateExpense(
-                            tpl.copy(
-                                extraReceiptPaths = ReceiptPathList.append(
-                                    tpl.extraReceiptPaths,
-                                    saved.relativePath
-                                )
+                    linked = true
+                } else if (templateOnly != null) {
+                    templateDao.updateExpense(
+                        templateOnly.copy(
+                            extraReceiptPaths = ReceiptPathList.append(
+                                templateOnly.extraReceiptPaths,
+                                saved.relativePath
                             )
                         )
-                    }
+                    )
+                    linked = true
                 }
             }
-            true
+            linked
         } catch (_: BackupFailure.Io) {
             false
         } catch (_: Exception) {

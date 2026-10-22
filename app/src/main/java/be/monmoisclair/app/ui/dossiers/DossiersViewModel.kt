@@ -1,6 +1,5 @@
 package be.monmoisclair.app.ui.dossiers
 
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
@@ -8,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
+import be.monmoisclair.app.domain.ShareFileIntents
 import be.monmoisclair.app.domain.usecase.DossiersSnapshot
 import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListPendingLettersUseCase
@@ -108,13 +108,7 @@ class DossiersViewModel @Inject constructor(
                 "${appContext.packageName}.fileprovider",
                 file
             )
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "application/pdf"
-                putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
-                putExtra(Intent.EXTRA_STREAM, uri)
-                clipData = ClipData.newRawUri("", uri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
+            val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
             _shareIntents.emit(
                 Intent.createChooser(intent, "Envoyer le PDF")
             )

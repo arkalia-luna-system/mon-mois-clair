@@ -81,7 +81,7 @@ import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
 
-/** Sélecteur PDF (courrier mail) — fiche seulement, pas sur l’accueil. */
+/** Sélecteur PDF (courrier mail) — ajout et édition, pas sur l’accueil. */
 @Composable
 private fun rememberPdfPicker(
     onBytes: (ByteArray) -> Unit,

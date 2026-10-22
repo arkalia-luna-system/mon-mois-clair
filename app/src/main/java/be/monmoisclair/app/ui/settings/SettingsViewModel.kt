@@ -1,6 +1,5 @@
 package be.monmoisclair.app.ui.settings
 
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -14,6 +13,7 @@ import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.ShareFileIntents
 import be.monmoisclair.app.domain.SupportMailComposer
 import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.model.ThemePreference
@@ -376,13 +376,7 @@ class SettingsViewModel @Inject constructor(
                 "${appContext.packageName}.fileprovider",
                 file
             )
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "application/pdf"
-                putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
-                putExtra(Intent.EXTRA_STREAM, uri)
-                clipData = ClipData.newRawUri("", uri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
+            val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
             _shareIntents.emit(
                 Intent.createChooser(intent, "Envoyer le PDF")
             )

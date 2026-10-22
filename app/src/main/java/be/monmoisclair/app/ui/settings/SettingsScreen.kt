@@ -614,7 +614,7 @@ fun SettingsScreen(
                 Text(
                     text = "À envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
                         "Utile si le mois est en déficit, ou s’il y a un dossier. " +
-                        "Texte ou PDF — même contenu.",
+                        "Texte ou PDF (gros caractères) — même contenu.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier

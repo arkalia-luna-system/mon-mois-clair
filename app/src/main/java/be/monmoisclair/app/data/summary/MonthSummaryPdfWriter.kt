@@ -1,8 +1,13 @@
 package be.monmoisclair.app.data.summary
 
+import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
+import androidx.core.content.res.ResourcesCompat
+import be.monmoisclair.app.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -10,48 +15,91 @@ import javax.inject.Singleton
 
 /**
  * Même texte que [be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase],
- * en feuille A4 pour imprimer ou envoyer. Pas un formulaire CPAS.
+ * en feuille A4 à gros caractères (charte 18 / 22 pt). Pas un formulaire CPAS.
+ *
+ * Les titres de section (Revenus, mois, Déficit…) sont en semibold ;
+ * le corps n’est pas entièrement à 18 pt (pied 14 pt, titre doc 22 pt).
  */
 @Singleton
-class MonthSummaryPdfWriter @Inject constructor() {
+class MonthSummaryPdfWriter @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     fun write(text: String, outFile: File): File {
         outFile.parentFile?.mkdirs()
         if (outFile.exists()) outFile.delete()
+
+        val bodyFace = fontOr(R.font.source_sans3_regular, Typeface.SANS_SERIF)
+        val sectionFace = fontOr(R.font.source_sans3_semibold, Typeface.DEFAULT_BOLD)
+        val titleFace = fontOr(R.font.source_serif4_semibold, Typeface.SERIF)
+
+        val paperPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.FILL
+            color = PAPER
+        }
+        val bodyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = INK
+            textSize = BODY_PT
+            typeface = bodyFace
+        }
+        val sectionPaint = Paint(bodyPaint).apply {
+            textSize = BODY_PT
+            typeface = sectionFace
+        }
+        val titlePaint = Paint(bodyPaint).apply {
+            textSize = TITLE_PT
+            typeface = titleFace
+        }
+        val footerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = MUTED
+            textSize = FOOTER_PT
+            typeface = bodyFace
+        }
+
         val doc = PdfDocument()
         try {
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = 0xFF1E1B18.toInt()
-                textSize = BODY_SP
-                typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
-            }
-            val titlePaint = Paint(paint).apply {
-                textSize = TITLE_SP
-                typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-            }
             var pageIndex = 1
             var page = doc.startPage(pageInfo(pageIndex))
             var canvas = page.canvas
+            drawPaper(canvas, paperPaint)
             var y = MARGIN_TOP
+
+            fun newPage() {
+                drawFooter(canvas, footerPaint, pageIndex)
+                doc.finishPage(page)
+                pageIndex++
+                page = doc.startPage(pageInfo(pageIndex))
+                canvas = page.canvas
+                drawPaper(canvas, paperPaint)
+                y = MARGIN_TOP
+            }
+
+            fun ensureRoom(needed: Float) {
+                if (y + needed > PAGE_HEIGHT - MARGIN_BOTTOM) {
+                    newPage()
+                }
+            }
+
             val lines = text.replace("\r\n", "\n").lines()
             for ((i, raw) in lines.withIndex()) {
-                val linePaint = if (i == 0) titlePaint else paint
-                val wrapped = wrapForWidth(
-                    raw.ifEmpty { " " },
-                    CONTENT_WIDTH
-                ) { s -> linePaint.measureText(s) }
+                if (raw.isEmpty()) {
+                    ensureRoom(BODY_PT * EMPTY_GAP_FACTOR)
+                    y += BODY_PT * EMPTY_GAP_FACTOR
+                    continue
+                }
+                val linePaint = when {
+                    i == 0 -> titlePaint
+                    isSectionHeading(raw) -> sectionPaint
+                    else -> bodyPaint
+                }
+                val wrapped = wrapForWidth(raw, CONTENT_WIDTH) { s -> linePaint.measureText(s) }
                 for (chunk in wrapped) {
-                    if (y + linePaint.textSize > PAGE_HEIGHT - MARGIN_BOTTOM) {
-                        doc.finishPage(page)
-                        pageIndex++
-                        page = doc.startPage(pageInfo(pageIndex))
-                        canvas = page.canvas
-                        y = MARGIN_TOP
-                    }
-                    canvas.drawText(chunk, MARGIN_LEFT, y, linePaint)
+                    ensureRoom(linePaint.textSize)
+                    canvas.drawText(chunk, MARGIN_LEFT, y + linePaint.textSize, linePaint)
                     y += linePaint.textSize + LINE_GAP
                 }
             }
+            drawFooter(canvas, footerPaint, pageIndex)
             doc.finishPage(page)
             FileOutputStream(outFile).use { doc.writeTo(it) }
         } finally {
@@ -60,27 +108,78 @@ class MonthSummaryPdfWriter @Inject constructor() {
         return outFile
     }
 
+    private fun fontOr(resId: Int, fallback: Typeface): Typeface =
+        ResourcesCompat.getFont(context, resId) ?: fallback
+
     private fun pageInfo(index: Int): PdfDocument.PageInfo =
         PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, index).create()
+
+    private fun drawPaper(canvas: Canvas, paint: Paint) {
+        canvas.drawRect(0f, 0f, PAGE_WIDTH.toFloat(), PAGE_HEIGHT.toFloat(), paint)
+    }
+
+    private fun drawFooter(canvas: Canvas, paint: Paint, pageIndex: Int) {
+        val baseline = PAGE_HEIGHT - FOOTER_FROM_BOTTOM
+        canvas.drawText("Mon Mois Clair", MARGIN_LEFT, baseline, paint)
+        val pageLabel = pageIndex.toString()
+        val x = PAGE_WIDTH - MARGIN_RIGHT - paint.measureText(pageLabel)
+        canvas.drawText(pageLabel, x, baseline, paint)
+    }
 
     companion object {
         /** A4 en points PDF (~72 dpi). */
         const val PAGE_WIDTH = 595
         const val PAGE_HEIGHT = 842
-        private const val MARGIN_LEFT = 48f
+
+        /** Corps = charte a11y [be.monmoisclair.app.ui.theme.A11yTokens.minBodySp]. */
+        const val BODY_PT = 18f
+
+        /** Titre document = charte [be.monmoisclair.app.ui.theme.A11yTokens.minTitleSp]. */
+        const val TITLE_PT = 22f
+
+        const val FOOTER_PT = 14f
+        const val LINE_GAP = 6f
+        const val EMPTY_GAP_FACTOR = 0.6f
+
+        private const val MARGIN_LEFT = 56f
+        private const val MARGIN_RIGHT = 56f
         private const val MARGIN_TOP = 56f
-        private const val MARGIN_BOTTOM = 48f
-        private val CONTENT_WIDTH = PAGE_WIDTH - MARGIN_LEFT - 48f
-        private const val BODY_SP = 11f
-        private const val TITLE_SP = 14f
-        private const val LINE_GAP = 4f
+        /** Contenu au-dessus du pied (pied à 36 pt du bas). */
+        private const val MARGIN_BOTTOM = 64f
+        private const val FOOTER_FROM_BOTTOM = 36f
+
+        private val CONTENT_WIDTH = PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT
+
+        private const val PAPER = 0xFFF6F3E8.toInt()
+        private const val INK = 0xFF1E1B18.toInt()
+        private const val MUTED = 0xFF4A453C.toInt()
 
         const val FILE_NAME = "mon-mois-clair-resume.pdf"
 
+        private val MONTH_TITLE =
+            Regex("""^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\- ]+ \d{4}$""")
+
         /**
-         * Découpe une ligne pour une largeur max.
-         * [measure] = largeur d’une chaîne (Paint.measureText en prod).
+         * Rubriques et titre de mois en semibold.
+         * Ignore lignes vides, puces et suites indentées (versements).
          */
+        fun isSectionHeading(line: String): Boolean {
+            if (line.isEmpty()) return false
+            if (line.startsWith(" ") || line.startsWith("\t")) return false
+            val t = line.trim()
+            if (t.isEmpty()) return false
+            if (t.startsWith("•") || t.startsWith("—") || t.startsWith("(")) return false
+            return when {
+                t == "Revenus" -> true
+                t == "Factures du mois" -> true
+                t == "Dossiers (accords)" -> true
+                t == "Mis de côté" -> true
+                t.startsWith("Déficit ce mois") -> true
+                MONTH_TITLE.matches(t) -> true
+                else -> false
+            }
+        }
+
         fun wrapForWidth(
             line: String,
             maxWidth: Float,

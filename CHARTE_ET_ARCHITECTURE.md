@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.49** — widget Reste + prochaine ligne).
+Mise à jour : 2026-10-22 (lot **6.51** — PDF résumé gros caractères).
 
 ## 1. Vision
 
@@ -99,6 +99,8 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.47** | OCR « Lire +++ sur la photo » (jamais le montant) | ✅ |
 | **6.48** | PDF du résumé (même texte, Mes dossiers / Réglages) | ✅ |
 | **6.49** | Widget accueil : Reste + prochaine ligne non FAIT · PDF aussi à l’ajout | ✅ |
+| **6.50** | ClipData sur PDF résumé · fonds widget crème / encre fixes | ✅ |
+| **6.51** | PDF résumé : 18/22 pt, Source Sans/Serif, pied de page | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -246,7 +248,7 @@ Décisions du [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md)
 | PDF à côté de la photo | **Fait (6.44 + 6.49).** Ajout **et** édition, toute facture. Même dossier `receipts/`. « Voir le courrier » ouvre le fichier |
 | Encre de nuit | **Fait (6.44 + 6.46).** Fond `#1E1B18`, texte papier, **même** teal. Choix en Réglages → Apparence (Clair / Sombre / Comme le téléphone). Pas Copilot, pas la couleur du fond d’écran |
 | Ombre sticky + fondu ligne FAIT | **Fait (6.45)** |
-| Widget | **Fait (6.49).** Un seul : Reste + prochaine ligne non FAIT. Masque les montants si biométrie. Couleurs = nuit One UI (pas le choix Clair forcé dans l’app) |
+| Widget | **Fait (6.49).** Un seul : Reste + prochaine ligne non FAIT. Masque les montants si biométrie. Suit Apparence (Clair / Sombre / comme le téléphone). Fonds crème et encre fixes, pas la couleur de nuit du lanceur |
 | OCR de la communication | **Fait (6.47).** « Lire +++ sur la photo » — jamais le montant |
-| PDF du résumé | **Fait (6.48).** Même texte que « Préparer un résumé », bouton « PDF du résumé ». Pas un formulaire CPAS |
+| PDF du résumé | **Fait (6.48 + 6.51).** Même texte, gros caractères (18/22 pt). Pas un formulaire CPAS |
 | Grille calendrier, catégories, banque, graphiques, synchro | Non |
