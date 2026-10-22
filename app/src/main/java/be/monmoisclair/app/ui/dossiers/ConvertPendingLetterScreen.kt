@@ -124,34 +124,25 @@ fun ConvertPendingLetterScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val tipShape = MaterialTheme.shapes.medium
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(tipPad),
-            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 4.dp else 6.dp)
-        ) {
+        Text(
+            text = state.who.ifBlank { "Courrier" },
+            style = MaterialTheme.typography.titleLarge,
+            color = A11yTokens.Ink
+        )
+        if (state.what.isNotBlank()) {
             Text(
-                text = state.who.ifBlank { "Courrier" },
-                style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.Ink
-            )
-            if (state.what.isNotBlank()) {
-                Text(
-                    text = state.what,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.InkMuted
-                )
-            }
-            Text(
-                text = "Le courrier devient un accord : le versement entre dans le Reste du mois. " +
-                    "IBAN et e-mail se remplissent ensuite dans la fiche.",
+                text = state.what,
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted
             )
         }
+        Text(
+            text = "Le courrier devient un accord : le versement entre dans le Reste du mois. " +
+                "IBAN et e-mail se remplissent ensuite dans la fiche.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         OutlinedTextField(
             value = state.openingRemainingText,

@@ -85,7 +85,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.MainActivity
-import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
@@ -377,10 +376,11 @@ fun HomeScreen(
     }
 
     if (state.pendingPastToggleId != null) {
+        // H14 : même papier que le dialog photo (PaperCream).
         AlertDialog(
             onDismissRequest = viewModel::dismissPastToggle,
             shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperWarm,
+            containerColor = A11yTokens.PaperCream,
             title = {
                 Text(
                     text = "Mois passé",
@@ -765,46 +765,27 @@ fun HomeScreen(
                                     if (fit.compactHomeChrome) 12.dp else 16.dp
                                 )
                             ) {
-                                val loadShape = MaterialTheme.shapes.medium
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .border(1.dp, A11yTokens.PaperBorder, loadShape)
-                                        .background(A11yTokens.PaperCard, loadShape)
-                                        .padding(if (fit.compactHomeChrome) 12.dp else 14.dp)
-                                ) {
-                                    BrandMark(height = 32.dp)
-                                    CircularProgressIndicator(
-                                        color = A11yTokens.Link,
-                                        strokeWidth = 3.dp,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                    Text(
-                                        text = "Chargement du mois…",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = A11yTokens.InkMuted
-                                    )
-                                }
+                                // LOAD01 : brand + texte, sans carte ni gros spinner.
+                                BrandMark(height = 32.dp)
+                                Text(
+                                    text = "Chargement du mois…",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = A11yTokens.InkMuted
+                                )
                             }
                         }
                     }
                     state.timeline.isEmpty() -> {
                         item {
-                            val emptyShape = MaterialTheme.shapes.medium
+                            // H08 : empty sans carte tip ni BrandMark.
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = if (fit.compactHomeChrome) 16.dp else 24.dp)
-                                    .border(1.dp, A11yTokens.PaperBorder, emptyShape)
-                                    .background(A11yTokens.PaperCard, emptyShape)
-                                    .padding(if (fit.compactHomeChrome) 12.dp else 16.dp),
+                                    .padding(vertical = if (fit.compactHomeChrome) 16.dp else 24.dp),
                                 verticalArrangement = Arrangement.spacedBy(
                                     if (fit.compactHomeChrome) 6.dp else 8.dp
                                 )
                             ) {
-                                BrandMark(height = 36.dp)
                                 Text(
                                     text = if (state.isFuturePreview) {
                                         "Rien de prévu ce mois-là"
@@ -864,7 +845,6 @@ fun HomeScreen(
                                     // Message vide juste sous le champ (au-dessus du tip) :
                                     // sinon clavier Samsung masque le Lazy item suivant (C7).
                                     if (searchQuery.isNotBlank() && filteredTimeline.isEmpty()) {
-                                        val searchEmptyShape = MaterialTheme.shapes.medium
                                         val emptySearch =
                                             "Rien pour « ${searchQuery.trim()} ». " +
                                                 "Les totaux du haut restent ceux du mois."
@@ -874,24 +854,18 @@ fun HomeScreen(
                                             color = A11yTokens.InkMuted,
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .border(1.dp, A11yTokens.PaperBorder, searchEmptyShape)
-                                                .background(A11yTokens.PaperCard, searchEmptyShape)
-                                                .padding(if (fit.compactHomeChrome) 12.dp else 14.dp)
+                                                .padding(vertical = 8.dp)
                                                 .semantics {
                                                     liveRegion = LiveRegionMode.Polite
                                                 }
                                         )
                                     } else if (searchQuery.isNotBlank()) {
-                                        val searchTipShape = MaterialTheme.shapes.medium
+                                        // H09 : tip une ligne sans carte.
                                         Text(
                                             text = "Le reste en haut est celui de tout le mois.",
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = A11yTokens.InkMuted,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .border(1.dp, A11yTokens.PaperBorder, searchTipShape)
-                                                .background(A11yTokens.PaperCard, searchTipShape)
-                                                .padding(10.dp)
+                                            modifier = Modifier.fillMaxWidth()
                                         )
                                     }
                                 }
@@ -1107,8 +1081,10 @@ fun HomeScreen(
 
             if (!keyboardOpen) {
                 HorizontalDivider(color = A11yTokens.PaperBorder)
+                // H11 : socle ≥ 8 dp vertical + léger relief haut.
                 Surface(
                     color = A11yTokens.PaperWarm,
+                    shadowElevation = 2.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -1116,7 +1092,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .padding(
                                 horizontal = A11yTokens.screenPadding,
-                                vertical = if (fit.compactHomeChrome) 6.dp else 8.dp
+                                vertical = 8.dp
                             ),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -1156,13 +1132,14 @@ fun HomeScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = if (keyboardOpen) 8.dp else 88.dp)
         ) { data ->
-            val verify = data.visuals.message == BelgianStructuredCommunication.VERIFY_ON_MAIL
+            // H12 : snackbar papier (pas barre noire Material).
             Snackbar(
                 snackbarData = data,
                 shape = MaterialTheme.shapes.medium,
-                containerColor = if (verify) A11yTokens.PaperWarm else A11yTokens.Ink,
-                contentColor = if (verify) A11yTokens.Ink else A11yTokens.ButtonText,
-                actionColor = if (verify) A11yTokens.Ink else A11yTokens.ButtonText
+                containerColor = A11yTokens.PaperCard,
+                contentColor = A11yTokens.Ink,
+                actionColor = A11yTokens.Link,
+                modifier = Modifier.border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
             )
         }
     }
@@ -1321,8 +1298,9 @@ private fun ExpenseRow(
         animationSpec = tween(150),
         label = "expenseRowBg"
     )
+    // H10 : highlight notif = 2 dp doux (pas 3 dp « debug »).
     val borderMod = when {
-        highlighted -> Modifier.border(3.dp, A11yTokens.Link, shape)
+        highlighted -> Modifier.border(2.dp, A11yTokens.Link.copy(alpha = 0.55f), shape)
         item.isOverdue && !item.isDone ->
             Modifier.border(2.dp, A11yTokens.DangerInk, shape)
         else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
@@ -1416,41 +1394,67 @@ private fun ExpenseRow(
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
-                // Hors zone « Modifier » : Copier / photo ne doivent pas ouvrir l’édition.
-                AnimatedVisibility(
-                    visible = item.paymentNote.isNotBlank(),
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = item.paymentNote,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = if (compact) 1 else 2,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                        SecondaryA11yButton(
-                            text = "Copier",
-                            onClick = onCopyNote,
-                            fillMaxWidth = false,
-                            modifier = Modifier
-                                .widthIn(min = if (compact) 88.dp else 96.dp)
-                                .semantics {
-                                    contentDescription = "Copier la communication"
-                                }
-                        )
-                    }
-                }
                 ExpenseStatusLine(
                     item = item,
-                    onOpenReceipt = onOpenReceipt,
                     hideAgreementChip = compact && item.isAgreement
                 )
+                // H05 : Copier / Photo en 2ᵉ rangée légère (liens), pas au niveau FAIT.
+                val showNote = item.paymentNote.isNotBlank()
+                val showPhoto = item.hasReceipt
+                if (showNote || showPhoto) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (showNote) {
+                            Text(
+                                text = item.paymentNote,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "Copier",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.Link,
+                                modifier = Modifier
+                                    .heightIn(min = A11yTokens.minTouchHeight)
+                                    .clickable(
+                                        role = Role.Button,
+                                        onClickLabel = "Copier la communication",
+                                        onClick = onCopyNote
+                                    )
+                                    .padding(horizontal = 4.dp, vertical = 10.dp)
+                                    .semantics {
+                                        contentDescription = "Copier la communication"
+                                    }
+                            )
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                        if (showPhoto) {
+                            Text(
+                                text = if (compact) "Photo" else "Voir la photo",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.Link,
+                                modifier = Modifier
+                                    .heightIn(min = A11yTokens.minTouchHeight)
+                                    .clickable(
+                                        role = Role.Button,
+                                        onClickLabel = "Voir la photo de la facture",
+                                        onClick = onOpenReceipt
+                                    )
+                                    .padding(horizontal = 4.dp, vertical = 10.dp)
+                                    .semantics {
+                                        contentDescription = "Voir la photo de la facture"
+                                    }
+                            )
+                        }
+                    }
+                }
             }
             if (!readOnlyPreview) {
                 val faitModifier = Modifier
@@ -1487,64 +1491,44 @@ private fun ExpenseRow(
 @Composable
 private fun ExpenseStatusLine(
     item: TimelineItem.Expense,
-    onOpenReceipt: () -> Unit,
     hideAgreementChip: Boolean = false
 ) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
-    val showAuto = item.isAutoDebit
-    val showAgreement = item.isAgreement && !hideAgreementChip
-    val showDone = item.isDone
-    val showLate = item.isOverdue && !item.isDone
-    val showReceipt = item.hasReceipt
-    if (!showAuto && !showAgreement && !showDone && !showLate && !showReceipt) return
+    // H06 : ordre critique → Auto → Accord ; max 2 pastilles (photo = lien 2ᵉ rangée).
+    data class Chip(val text: String, val bg: Color, val fg: Color, val outlined: Boolean = false)
+    val chips = buildList {
+        when {
+            item.isOverdue && !item.isDone ->
+                add(Chip("En retard", A11yTokens.AccentDanger, A11yTokens.ButtonText))
+            item.isDone ->
+                add(
+                    Chip(
+                        item.doneLabel ?: "FAIT ✓",
+                        A11yTokens.AccentOk,
+                        A11yTokens.ButtonText
+                    )
+                )
+        }
+        if (item.isAutoDebit) {
+            add(Chip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.OnGold))
+        }
+        if (item.isAgreement && !hideAgreementChip && size < 2) {
+            add(Chip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true))
+        }
+    }.take(2)
+    if (chips.isEmpty()) return
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
         verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)
     ) {
-        if (showAgreement) {
-            // Contour FieldLine : pastille discrète mais lisible sur papier court / texte large.
+        chips.forEach { chip ->
             StatusChip(
-                "Accord",
-                A11yTokens.PaperWarm,
-                A11yTokens.Ink,
-                outlined = true,
+                chip.text,
+                chip.bg,
+                chip.fg,
+                outlined = chip.outlined,
                 compact = compact
-            )
-        }
-        if (showAuto) {
-            StatusChip(
-                "Prélèvement",
-                A11yTokens.AccentAuto,
-                A11yTokens.OnGold,
-                compact = compact
-            )
-        }
-        if (showDone) {
-            StatusChip(
-                item.doneLabel ?: "FAIT ✓",
-                A11yTokens.AccentOk,
-                A11yTokens.ButtonText,
-                compact = compact
-            )
-        }
-        if (showLate) {
-            StatusChip(
-                "En retard",
-                A11yTokens.AccentDanger,
-                A11yTokens.ButtonText,
-                compact = compact
-            )
-        }
-        if (showReceipt) {
-            // Bouton réel (pas pastille Text) : le tap ouvre bien la photo.
-            SecondaryA11yButton(
-                text = if (compact) "Photo" else "Voir la photo",
-                onClick = onOpenReceipt,
-                fillMaxWidth = false,
-                modifier = Modifier
-                    .widthIn(min = if (compact) 80.dp else 96.dp)
-                    .semantics { contentDescription = "Voir la photo de la facture" }
             )
         }
     }

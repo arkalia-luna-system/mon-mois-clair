@@ -86,31 +86,23 @@ fun PermissionsSetupScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +
                 "le réveil à l’heure, et laissez la batterie non limitée pour cette application.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(tipPad)
+            modifier = Modifier.fillMaxWidth()
         )
 
         if (report != null) {
             HealthChecklist(report)
         } else {
-            val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
-                    .padding(12.dp)
+                    .padding(vertical = 8.dp)
                     .semantics {
                         contentDescription = "Vérification des alertes"
                         liveRegion = LiveRegionMode.Polite
@@ -147,54 +139,45 @@ fun PermissionsSetupScreen(
             )
         }
 
-        // Corrections = secondaires ; une seule primaire = Continuer (épinglé).
-        if (report != null && !report.notificationsGranted && Build.VERSION.SDK_INT >= 33) {
-            SecondaryA11yButton(
-                text = "Autoriser les notifications",
-                onClick = { notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
-            )
-        } else if (report != null && !report.notificationsGranted) {
-            SecondaryA11yButton(
-                text = "Ouvrir les réglages notifications",
-                onClick = { context.startActivity(viewModel.intentNotifications()) }
-            )
-        }
-
-        if (report != null && !report.exactAlarmGranted) {
-            SecondaryA11yButton(
-                text = "Autoriser le réveil à l’heure",
-                onClick = { context.startActivity(viewModel.intentExactAlarm()) }
-            )
-        }
-
-        if (report != null && !report.batteryOptimizationIgnored) {
-            SecondaryA11yButton(
-                text = "Laisser la batterie non limitée",
-                onClick = { context.startActivity(viewModel.intentIgnoreBattery()) }
-            )
+        // ONB02 : un seul Secondary « corriger » à la fois (priorité notif → réveil → batterie).
+        when {
+            report != null && !report.notificationsGranted && Build.VERSION.SDK_INT >= 33 ->
+                SecondaryA11yButton(
+                    text = "Autoriser les notifications",
+                    onClick = { notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+                )
+            report != null && !report.notificationsGranted ->
+                SecondaryA11yButton(
+                    text = "Ouvrir les réglages notifications",
+                    onClick = { context.startActivity(viewModel.intentNotifications()) }
+                )
+            report != null && !report.exactAlarmGranted ->
+                SecondaryA11yButton(
+                    text = "Autoriser le réveil à l’heure",
+                    onClick = { context.startActivity(viewModel.intentExactAlarm()) }
+                )
+            report != null && !report.batteryOptimizationIgnored ->
+                SecondaryA11yButton(
+                    text = "Laisser la batterie non limitée",
+                    onClick = { context.startActivity(viewModel.intentIgnoreBattery()) }
+                )
+            else ->
+                SecondaryA11yButton(
+                    text = "Actualiser l’état",
+                    onClick = { viewModel.refresh() }
+                )
         }
 
         if (report?.samsungDeviceCareHintNeeded == true) {
-            val warnShape = MaterialTheme.shapes.medium
             Text(
                 text = DeviceCareCopy.HINT,
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.AccentWarn,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), warnShape)
-                    .background(A11yTokens.PaperWarm, warnShape)
-                    .padding(12.dp)
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
-        SecondaryA11yButton(
-            text = "Actualiser l’état",
-            onClick = { viewModel.refresh() }
-        )
-
         if (report != null && !report.isFullyHealthy) {
-            val softShape = MaterialTheme.shapes.medium
             Text(
                 text = "Vous pouvez continuer, mais les rappels risquent de ne pas sonner " +
                     "tant que tous les points ne sont pas prêts.",
@@ -202,9 +185,6 @@ fun PermissionsSetupScreen(
                 color = A11yTokens.AccentWarn,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), softShape)
-                    .background(A11yTokens.PaperWarm, softShape)
-                    .padding(12.dp)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
                         contentDescription =

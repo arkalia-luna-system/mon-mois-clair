@@ -100,44 +100,24 @@ fun BiometricLockScreen(
         verticalArrangement = Arrangement.spacedBy(lockGap)
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 12.dp else 32.dp))
-        val brandShape = MaterialTheme.shapes.medium
-        val brandPad = if (fit.compactHomeChrome) 12.dp else 14.dp
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, brandShape)
-                .background(A11yTokens.PaperCard, brandShape)
-                .padding(brandPad),
-            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
-        ) {
-            AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 260.dp)
-            Text(
-                text = "Application verrouillée",
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
-        }
-        val tipShape = MaterialTheme.shapes.medium
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(brandPad),
-            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 6.dp else 8.dp)
-        ) {
-            Text(
-                text = "Posez votre doigt sur le lecteur d’empreinte, " +
-                    "ou utilisez le code / visage du téléphone.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
-            )
-            Text(
-                text = "Si rien ne s’ouvre : touchez « Déverrouiller maintenant ».",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
-        }
+        // LOCK01 : une composition, pas deux cartes empilées.
+        AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 260.dp)
+        Text(
+            text = "Application verrouillée",
+            style = MaterialTheme.typography.headlineMedium,
+            color = A11yTokens.Ink
+        )
+        Text(
+            text = "Posez votre doigt sur le lecteur d’empreinte, " +
+                "ou utilisez le code / visage du téléphone.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted
+        )
+        Text(
+            text = "Si rien ne s’ouvre : touchez « Déverrouiller maintenant ».",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
         message?.let {
             val errShape = MaterialTheme.shapes.medium
             Text(

@@ -40,7 +40,8 @@ private fun colorScheme(palette: CarnetPalette, night: Boolean) = run {
             surfaceContainerLowest = palette.paperCream,
             error = palette.dangerInk,
             onError = palette.ink,
-            outline = palette.fieldLine
+            // SYS03 : contour champs = PaperBorder ; focus = primary teal.
+            outline = palette.paperBorder
         )
     } else {
         lightColorScheme(
@@ -59,7 +60,7 @@ private fun colorScheme(palette: CarnetPalette, night: Boolean) = run {
             surfaceContainerLowest = palette.paperCream,
             error = palette.dangerInk,
             onError = palette.ink,
-            outline = palette.fieldLine
+            outline = palette.paperBorder
         )
     }
 }

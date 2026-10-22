@@ -92,16 +92,11 @@ fun PendingLetterFormScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Qui, pour quoi, photo — pas de montant. Rien dans le Reste.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(tipPad)
+            modifier = Modifier.fillMaxWidth()
         )
         Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
             OutlinedTextField(

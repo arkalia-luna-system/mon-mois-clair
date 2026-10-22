@@ -34,7 +34,6 @@ fun SafSetupScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -60,30 +59,22 @@ fun SafSetupScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val tipShape = MaterialTheme.shapes.medium
+        // ONB01 : 2 phrases.
         Text(
-            text = "Choisissez un dossier dans Documents (pas Téléchargements / Download). " +
-                "À chaque modification, une copie de sécurité y sera écrite automatiquement " +
-                "(3 versions). Sans ce dossier, vos données peuvent être perdues.",
+            text = "Choisissez un dossier dans Documents (pas Téléchargements). " +
+                "Trois copies y seront écrites à chaque changement.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(tipPad)
+            modifier = Modifier.fillMaxWidth()
         )
         if (state.saving) {
-            val busyShape = MaterialTheme.shapes.medium
             Text(
                 text = "Enregistrement du dossier…",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
-                    .padding(12.dp)
+                    .padding(vertical = 8.dp)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
                         contentDescription = "Enregistrement du dossier"

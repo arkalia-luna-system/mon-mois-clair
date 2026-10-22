@@ -56,17 +56,12 @@ fun UpcomingScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Aperçu des trois prochains mois (lecture seule). " +
                 "Rien n’est coché FAIT ici — le mois en cours reste sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(tipPad)
+            modifier = Modifier.fillMaxWidth()
         )
         if (state.loading && state.months.isEmpty()) {
             Row(
@@ -93,7 +88,8 @@ fun UpcomingScreen(
             Text(
                 text = "Rien de prévu sur les trois prochains mois pour l’instant.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
             )
             return@PinnedBackScaffold
         }

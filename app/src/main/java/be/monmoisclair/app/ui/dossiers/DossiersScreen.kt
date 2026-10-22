@@ -156,37 +156,7 @@ fun DossiersScreen(
         }
 
         if (snap.items.isNotEmpty()) {
-            val heroCount = snap.items.count { !it.isSettled }
-            val heroLabel = when {
-                heroCount == 0 -> "Tout est soldé"
-                snap.monthTotalCents > 0L ->
-                    "$heroCount dossier${if (heroCount > 1) "s" else ""} · " +
-                        MoneyFormat.formatCents(snap.monthTotalCents) + " ce mois"
-                else ->
-                    "$heroCount dossier${if (heroCount > 1) "s" else ""}"
-            }
-            val heroShape = MaterialTheme.shapes.medium
-            Text(
-                text = heroLabel,
-                style = MaterialTheme.typography.titleLarge,
-                color = if (heroCount == 0) A11yTokens.AccentOkInk else A11yTokens.Ink,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        1.dp,
-                        if (heroCount == 0) A11yTokens.AccentOkInk.copy(alpha = 0.35f)
-                        else A11yTokens.PaperBorder,
-                        heroShape
-                    )
-                    .background(
-                        if (heroCount == 0) A11yTokens.AccentOkSoft else A11yTokens.PaperCard,
-                        heroShape
-                    )
-                    .padding(horizontal = 14.dp, vertical = 12.dp)
-                    // liveRegion seul : contentDescription = texte → TalkBack lisait 2×.
-                    .semantics { liveRegion = LiveRegionMode.Polite }
-            )
-
+            // DOS02 : pas de bandeau KPI — titre page + liste (soldé = pastille ligne).
             val openItems = snap.items.filter { !it.isSettled }
             val settledItems = snap.items.filter { it.isSettled }
             if (openItems.isNotEmpty()) {
@@ -317,13 +287,9 @@ fun DossiersScreen(
             onClick = onAddPending
         )
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
-        val summaryShape = MaterialTheme.shapes.medium
+        // DOS03 : résumé sans boîte clone Réglages.
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, summaryShape)
-                .background(A11yTokens.PaperCard, summaryShape)
-                .padding(tipPad),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
         ) {
             Text(

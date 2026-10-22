@@ -47,10 +47,11 @@ data class DisplayFit(
                 screenPadding = A11yTokens.screenPadding,
                 // Sticky léger : le montant « Reste » domine ; la marque est une légende.
                 // Court (~S26) : encore un cran pour laisser la liste + FAIT lisibles.
-                stickyPaddingVertical = if (compact) 6.dp else 12.dp,
+                // H11 : un peu plus d’air sous le chiffre, sans re-gonfler le sticky Ultra.
+                stickyPaddingVertical = if (compact) 8.dp else 14.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
-                bannerPadding = if (compact) 6.dp else 10.dp,
-                sectionGap = if (compact) 2.dp else 4.dp,
+                bannerPadding = if (compact) 8.dp else 12.dp,
+                sectionGap = if (compact) 4.dp else 6.dp,
                 remainingAmountSp = if (compact) 32f else 36f
             )
         }

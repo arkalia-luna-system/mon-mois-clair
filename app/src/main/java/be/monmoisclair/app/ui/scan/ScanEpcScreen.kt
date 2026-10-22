@@ -80,8 +80,8 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
     var status by remember { mutableStateOf("Placez le QR dans le cadre.") }
     var flash by remember { mutableStateOf(false) }
     val flashAlpha by animateFloatAsState(
-        targetValue = if (flash) 0.55f else 0f,
-        animationSpec = tween(180),
+        targetValue = if (flash) 0.28f else 0f,
+        animationSpec = tween(220),
         label = "scanFlash"
     )
     val handled = remember { AtomicBoolean(false) }
@@ -289,21 +289,21 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     modifier = Modifier.fillMaxSize()
                 )
                 // SCAN01 : cadre ivoire seul, sans croix « scanner bancaire ».
-                val frameStroke = A11yTokens.PaperCard.copy(alpha = 0.92f)
+                val frameStroke = A11yTokens.PaperCream.copy(alpha = 0.95f)
                 Canvas(modifier = Modifier.fillMaxSize()) {
-                    val frame = size.minDimension * 0.62f
+                    val frame = size.minDimension * 0.58f
                     val left = (size.width - frame) / 2f
                     val top = (size.height - frame) / 2f
                     drawRoundRect(
                         color = frameStroke,
                         topLeft = Offset(left, top),
                         size = Size(frame, frame),
-                        cornerRadius = CornerRadius(24f, 24f),
-                        style = Stroke(width = 4f)
+                        cornerRadius = CornerRadius(28f, 28f),
+                        style = Stroke(width = 3f)
                     )
                 }
                 if (flashAlpha > 0.01f) {
-                    // Flash crème (pas vert notification).
+                    // Flash crème discret (pas flash banque / vert notif).
                     Box(
                         Modifier
                             .fillMaxSize()
@@ -313,21 +313,26 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             }
         } else {
             Spacer(Modifier.weight(1f))
-            val denyShape = MaterialTheme.shapes.medium
-            Text(
-                text = if (permanentlyDenied) {
-                    "Caméra refusée. Ouvrez les réglages du téléphone pour l’autoriser."
-                } else {
-                    "Autorisez la caméra pour cadrer le QR de la facture."
-                },
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, denyShape)
-                    .background(A11yTokens.PaperCard, denyShape)
-                    .padding(tipPad)
-            )
+            if (permanentlyDenied) {
+                val denyShape = MaterialTheme.shapes.medium
+                Text(
+                    text = "Caméra refusée. Ouvrez les réglages du téléphone pour l’autoriser.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.AccentWarn,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), denyShape)
+                        .background(A11yTokens.PaperWarm, denyShape)
+                        .padding(tipPad)
+                )
+            } else {
+                Text(
+                    text = "Autorisez la caméra pour cadrer le QR de la facture.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
             if (permanentlyDenied) {
                 SecondaryA11yButton(

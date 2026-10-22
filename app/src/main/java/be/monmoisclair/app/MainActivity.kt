@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.tappableElement
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -182,15 +181,12 @@ class MainActivity : AppCompatActivity() {
                             },
                             contentAlignment = Alignment.Center
                         ) {
+                            // LOAD01 : wordmark + texte, sans gros spinner Material.
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 AppWordmark(width = 220.dp, announce = false)
-                                CircularProgressIndicator(
-                                    color = A11yTokens.Link,
-                                    strokeWidth = 3.dp
-                                )
                                 Text(
                                     text = "Chargement…",
                                     style = MaterialTheme.typography.bodyLarge,

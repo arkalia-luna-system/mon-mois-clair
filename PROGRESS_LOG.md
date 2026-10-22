@@ -9,15 +9,31 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.56** (quick wins audit + menu/capsule) |
+| Dernière étape terminée | **6.57** (suite audit H05–WDG01) |
 | Étape en cours | — |
-| Prochaine sous-étape | Suite audit (SCAN01, FORM05, SET01 profond, widget…) — ou S26 |
-| Audit premium | Quick wins partiels · **284/284** |
+| Prochaine sous-étape | Smoke S26 / doigt — ou FORM01 regroupement profond |
+| Audit premium | Quick wins + pass micro · **284/284** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.57 Suite audit (Accueil / Réglages / micro)
+
+**Vu :** quick wins 6.56 OK ; restaient H05–H14, SET02–05, LOCK/LOAD/ONB, DOS02/03, UP01, AID01, WDG01, SYS03.
+
+**Codé :**
+- H05/H06 : FAIT à droite ; Copier/Photo = liens 2ᵉ rangée ; max 2 pastilles (critique → Auto → Accord)
+- H08–H12/H14 : empty sans BrandMark ; tip recherche sans boîte ; highlight 2 dp ; socle 8 dp + ombre ; snackbar PaperCard ; dialog mois passé PaperCream
+- SET02–05 : tip Mettre de côté 1 phrase ; Restaurer Danger ; wordmark pied petit ; Radio teal
+- LOCK01 / LOAD01 : une composition verrou ; chargement sans spinner
+- ONB01/02 : tip SAF court ; un seul Secondary corriger
+- DOS02/03 : plus de bandeau KPI ; résumé sans boîte clone
+- UP01 empty PaperCard ; AID01 alternance ; HLTH sans wordmark ; WDG01 32 sp / padding 20 ; outline champs = PaperBorder
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **284/284** (67 fichiers).  
+**Version :** `0.1.0-6.57` · `versionCode` 62.
 
 ### 2026-10-22 — 6.56 Mois du menu + capsule gauche
 

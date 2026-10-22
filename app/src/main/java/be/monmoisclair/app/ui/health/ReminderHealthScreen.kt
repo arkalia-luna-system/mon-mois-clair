@@ -29,7 +29,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.settings.DeviceCareCopy
@@ -57,36 +56,28 @@ fun ReminderHealthScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
-        AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
+        // HLTH01 : pas de wordmark (déjà Menu → Réglages).
         Text(
             text = "Alertes",
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val introShape = MaterialTheme.shapes.medium
         Text(
             text = "3 jours avant à 10 h, le jour à 9 h, puis chaque matin à 10 h tant que ce n’est pas payé. " +
                 "Les lignes ci-dessous disent si le téléphone laisse vraiment sonner.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, introShape)
-                .background(A11yTokens.PaperCard, introShape)
-                .padding(tipPad)
+            modifier = Modifier.fillMaxWidth()
         )
 
         val r = report
         if (r == null) {
-            val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
-                    .padding(12.dp)
+                    .padding(vertical = 8.dp)
                     .semantics {
                         contentDescription = "Vérification des alertes"
                         liveRegion = LiveRegionMode.Polite
@@ -110,16 +101,11 @@ fun ReminderHealthScreen(
                 HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
             }
             if (!r.safBackupOk) {
-                val safShape = MaterialTheme.shapes.medium
                 Text(
                     text = "La sauvegarde se vérifie dans Réglages.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, safShape)
-                        .background(A11yTokens.PaperCard, safShape)
-                        .padding(12.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
             if (r.samsungDeviceCareHintNeeded) {

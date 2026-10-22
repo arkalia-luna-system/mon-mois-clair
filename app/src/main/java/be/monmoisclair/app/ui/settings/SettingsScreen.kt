@@ -17,9 +17,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import be.monmoisclair.app.domain.model.ThemePreference
@@ -203,16 +205,12 @@ fun SettingsScreen(
             color = A11yTokens.Ink
         )
         if (state.busy) {
-            val busyShape = MaterialTheme.shapes.medium
             Text(
                 text = "Préparation de la copie…",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
-                    .padding(tipPad)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
                         contentDescription = "Préparation de la copie"
@@ -290,9 +288,9 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Mettre de côté") {
+            // SET02 : tip 1 phrase.
             Text(
-                text = "Facture mensuelle vers un autre compte ; compte dans le Reste dès le 1er. " +
-                    "Pas d’argent stocké ici.",
+                text = "Chaque mois, ce montant compte dans le Reste (autre compte).",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()
@@ -437,7 +435,12 @@ fun SettingsScreen(
                         if (state.busy) return@Checkbox
                         if (checked) requestEnable() else viewModel.disableBiometric()
                     },
-                    enabled = !state.busy && canToggle
+                    enabled = !state.busy && canToggle,
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = A11yTokens.ButtonFill,
+                        uncheckedColor = A11yTokens.FieldLine,
+                        checkmarkColor = A11yTokens.ButtonText
+                    )
                 )
                 Text(
                     text = "Verrouiller avec empreinte ou code",
@@ -642,7 +645,8 @@ fun SettingsScreen(
                 onClick = viewModel::shareSecurityCopy,
                 enabled = !state.busy
             )
-            SecondaryA11yButton(
+            // SET04 : restaurer = Danger (destructif), pas Secondary calme.
+            DangerA11yButton(
                 text = "Restaurer une sauvegarde",
                 onClick = onOpenRestore,
                 enabled = !state.busy
@@ -700,8 +704,9 @@ fun SettingsScreen(
                 },
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // SET05 : wordmark discret hors « carte marketing ».
             AppWordmark(
-                width = if (fit.compactHomeChrome) 200.dp else 240.dp,
+                width = if (fit.compactHomeChrome) 140.dp else 160.dp,
                 announce = false
             )
             if (stepLabel != null) {
@@ -745,10 +750,15 @@ private fun ThemeOptionRow(
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // SET03 : radio teal carnet.
         RadioButton(
             selected = selected,
             onClick = onSelect,
-            enabled = enabled
+            enabled = enabled,
+            colors = RadioButtonDefaults.colors(
+                selectedColor = A11yTokens.ButtonFill,
+                unselectedColor = A11yTokens.FieldLine
+            )
         )
         Text(
             text = label,
