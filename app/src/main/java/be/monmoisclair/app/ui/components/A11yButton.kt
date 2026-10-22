@@ -130,12 +130,12 @@ fun DangerA11yButton(
         shape = MaterialTheme.shapes.small,
         border = BorderStroke(
             1.dp,
-            if (enabled) A11yTokens.AccentDanger else A11yTokens.AccentDanger.copy(alpha = 0.4f)
+            if (enabled) A11yTokens.DangerInk else A11yTokens.DangerInk.copy(alpha = 0.4f)
         ),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = A11yTokens.AccentDanger,
-            disabledContentColor = A11yTokens.AccentDanger.copy(alpha = 0.45f)
+            contentColor = A11yTokens.DangerInk,
+            disabledContentColor = A11yTokens.DangerInk.copy(alpha = 0.45f)
         )
     ) {
         Text(

@@ -234,16 +234,16 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         )
         Spacer(Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
         val statusColor = when (status) {
-            "Facture reconnue." -> A11yTokens.AccentOk
+            "Facture reconnue." -> A11yTokens.AccentOkInk
             "Ce QR n’est pas une facture belge.",
             "Lecture du QR impossible. Recadrez ou réessayez.",
             "Caméra indisponible.",
-            "Autorisez la caméra pour scanner la facture." -> A11yTokens.AccentDanger
+            "Autorisez la caméra pour scanner la facture." -> A11yTokens.DangerInk
             else -> A11yTokens.Ink
         }
         val statusBorder = when (statusColor) {
-            A11yTokens.AccentOk -> A11yTokens.AccentOk.copy(alpha = 0.4f)
-            A11yTokens.AccentDanger -> A11yTokens.AccentDanger.copy(alpha = 0.4f)
+            A11yTokens.AccentOkInk -> A11yTokens.AccentOkInkInk.copy(alpha = 0.4f)
+            A11yTokens.DangerInk -> A11yTokens.DangerInk.copy(alpha = 0.4f)
             else -> A11yTokens.PaperBorder
         }
         val statusShape = MaterialTheme.shapes.medium
@@ -257,7 +257,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 .background(
                     when (statusColor) {
                         A11yTokens.Ink -> A11yTokens.PaperCard
-                        A11yTokens.AccentOk -> A11yTokens.AccentOkSoft
+                        A11yTokens.AccentOkInk -> A11yTokens.AccentOkInkSoft
                         else -> A11yTokens.PaperWarm
                     },
                     statusShape
@@ -284,12 +284,15 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     factory = { previewView },
                     modifier = Modifier.fillMaxSize()
                 )
+                // Couleurs hors DrawScope : A11yTokens.* est @Composable (palette jour/nuit).
+                val frameStroke = A11yTokens.PaperCard.copy(alpha = 0.92f)
+                val crosshair = A11yTokens.Link.copy(alpha = 0.9f)
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val frame = size.minDimension * 0.62f
                     val left = (size.width - frame) / 2f
                     val top = (size.height - frame) / 2f
                     drawRoundRect(
-                        color = A11yTokens.PaperCard.copy(alpha = 0.92f),
+                        color = frameStroke,
                         topLeft = Offset(left, top),
                         size = Size(frame, frame),
                         cornerRadius = CornerRadius(24f, 24f),
@@ -298,13 +301,13 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     val cx = size.width / 2f
                     val cy = size.height / 2f
                     drawLine(
-                        color = A11yTokens.ButtonFill.copy(alpha = 0.9f),
+                        color = crosshair,
                         start = Offset(cx - 28f, cy),
                         end = Offset(cx + 28f, cy),
                         strokeWidth = 3f
                     )
                     drawLine(
-                        color = A11yTokens.ButtonFill.copy(alpha = 0.9f),
+                        color = crosshair,
                         start = Offset(cx, cy - 28f),
                         end = Offset(cx, cy + 28f),
                         strokeWidth = 3f
@@ -314,7 +317,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     Box(
                         Modifier
                             .fillMaxSize()
-                            .background(A11yTokens.AccentOk.copy(alpha = flashAlpha))
+                            .background(A11yTokens.AccentOkInk.copy(alpha = flashAlpha))
                     )
                 }
             }

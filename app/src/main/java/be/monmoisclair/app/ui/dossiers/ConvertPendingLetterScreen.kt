@@ -71,7 +71,7 @@ fun ConvertPendingLetterScreen(
                         }
                 ) {
                     CircularProgressIndicator(
-                        color = A11yTokens.ButtonFill,
+                        color = A11yTokens.Link,
                         strokeWidth = 3.dp,
                         modifier = Modifier.size(28.dp)
                     )
@@ -195,10 +195,10 @@ fun ConvertPendingLetterScreen(
             Text(
                 err,
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.AccentDanger,
+                color = A11yTokens.DangerInk,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
                     .background(A11yTokens.PaperWarm, errShape)
                     .padding(tipPad)
                     .semantics {

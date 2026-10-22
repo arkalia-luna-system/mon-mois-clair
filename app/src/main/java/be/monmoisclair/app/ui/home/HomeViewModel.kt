@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.home
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,11 +19,13 @@ import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.MonthSummary
 import be.monmoisclair.app.domain.MonthSummaryCalculator
+import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.AdjustDiversResult
 import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
 import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
+import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneResult
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
 import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.DayLabelFormat
@@ -146,7 +149,8 @@ class HomeViewModel @Inject constructor(
                                 ),
                                 isAutoDebit = exp.isAutoDebit,
                                 paymentNote = exp.paymentNote,
-                                hasReceipt = exp.receiptRelativePath.isNotBlank(),
+                                hasReceipt = exp.receiptRelativePath.isNotBlank() &&
+                                    !exp.receiptRelativePath.endsWith(".pdf", ignoreCase = true),
                                 receiptRelativePath = exp.receiptRelativePath,
                                 causeLabel = tpl?.causeLabel.orEmpty(),
                                 isAgreement = DossierRemaining.isDossier(tpl?.openingRemainingCents),
@@ -316,9 +320,21 @@ class HomeViewModel @Inject constructor(
         toggleInFlight.add(expenseId)
         viewModelScope.launch {
             try {
-                toggleDone.invoke(expenseId)
+                when (toggleDone.invoke(expenseId)) {
+                    is ToggleExpenseDoneResult.FuturePreviewBlocked ->
+                        _userMessages.tryEmit(
+                            "Aperçu seulement — on ne coche pas FAIT sur un mois à venir."
+                        )
+                    else -> Unit
+                }
                 if (toggleUndoQueued.remove(expenseId)) {
-                    toggleDone.invoke(expenseId)
+                    when (toggleDone.invoke(expenseId)) {
+                        is ToggleExpenseDoneResult.FuturePreviewBlocked ->
+                            _userMessages.tryEmit(
+                                "Aperçu seulement — on ne coche pas FAIT sur un mois à venir."
+                            )
+                        else -> Unit
+                    }
                 }
             } finally {
                 toggleInFlight.remove(expenseId)
@@ -418,6 +434,20 @@ class HomeViewModel @Inject constructor(
     /** Décode la photo **dans l’app** (S01) — pas via `ACTION_VIEW` externe. */
     suspend fun loadReceiptBitmap(relativePath: String): Bitmap? =
         receiptPhotos.decodeBitmap(relativePath)
+
+    fun isPdfReceipt(relativePath: String): Boolean = receiptPhotos.isPdf(relativePath)
+
+    /** Photo d’abord si présente, sinon premier fichier (PDF seul). */
+    fun primaryReceiptPath(raw: String): String =
+        ReceiptPathList.primaryPhotoOrFirst(raw.trim(), receiptPhotos::isPdf)
+
+    /** PDF (et repli photo) : lecteur système. */
+    suspend fun viewReceiptIntent(relativePath: String): Intent? {
+        val path = relativePath.trim()
+        if (path.isEmpty()) return null
+        val uri = receiptPhotos.viewUri(path) ?: return null
+        return receiptPhotos.viewIntent(uri, path)
+    }
 
     fun refreshCurrentMonth() {
         viewModelScope.launch {

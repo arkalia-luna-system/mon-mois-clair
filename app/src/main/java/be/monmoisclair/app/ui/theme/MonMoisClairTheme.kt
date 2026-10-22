@@ -8,9 +8,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -19,25 +22,47 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import be.monmoisclair.app.R
 
-private val ColorScheme = lightColorScheme(
-    primary = A11yTokens.ButtonFill,
-    onPrimary = A11yTokens.ButtonText,
-    secondary = A11yTokens.AccentOk,
-    onSecondary = A11yTokens.ButtonText,
-    background = A11yTokens.PaperCream,
-    onBackground = A11yTokens.Ink,
-    surface = A11yTokens.PaperWarm,
-    onSurface = A11yTokens.Ink,
-    // AlertDialog / sheets Material3 (évite le lavande par défaut)
-    surfaceContainerHigh = A11yTokens.PaperWarm,
-    surfaceContainerHighest = A11yTokens.PaperWarm,
-    surfaceContainer = A11yTokens.PaperCream,
-    surfaceContainerLow = A11yTokens.PaperCream,
-    surfaceContainerLowest = A11yTokens.PaperCream,
-    error = A11yTokens.AccentDanger,
-    onError = A11yTokens.ButtonText,
-    outline = A11yTokens.FieldLine
-)
+private fun colorScheme(palette: CarnetPalette, night: Boolean) = run {
+    if (night) {
+        darkColorScheme(
+            primary = palette.buttonFill,
+            onPrimary = palette.buttonText,
+            secondary = palette.accentOk,
+            onSecondary = palette.buttonText,
+            background = palette.paperCream,
+            onBackground = palette.ink,
+            surface = palette.paperWarm,
+            onSurface = palette.ink,
+            surfaceContainerHigh = palette.paperWarm,
+            surfaceContainerHighest = palette.paperWarm,
+            surfaceContainer = palette.paperCream,
+            surfaceContainerLow = palette.paperCream,
+            surfaceContainerLowest = palette.paperCream,
+            error = palette.dangerInk,
+            onError = palette.ink,
+            outline = palette.fieldLine
+        )
+    } else {
+        lightColorScheme(
+            primary = palette.buttonFill,
+            onPrimary = palette.buttonText,
+            secondary = palette.accentOk,
+            onSecondary = palette.buttonText,
+            background = palette.paperCream,
+            onBackground = palette.ink,
+            surface = palette.paperWarm,
+            onSurface = palette.ink,
+            surfaceContainerHigh = palette.paperWarm,
+            surfaceContainerHighest = palette.paperWarm,
+            surfaceContainer = palette.paperCream,
+            surfaceContainerLow = palette.paperCream,
+            surfaceContainerLowest = palette.paperCream,
+            error = palette.dangerInk,
+            onError = palette.ink,
+            outline = palette.fieldLine
+        )
+    }
+}
 
 /**
  * Trois rayons, pas un seul.
@@ -75,38 +100,38 @@ private const val TabularFigures = "tnum"
 
 private fun TextStyle.tabular(): TextStyle = copy(fontFeatureSettings = TabularFigures)
 
-private val AppTypography = Typography(
+private fun appTypography(ink: Color, muted: Color) = Typography(
     displayLarge = TextStyle(
         fontFamily = BrandSerif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 34.sp,
-        color = A11yTokens.Ink
+        color = ink
     ).tabular(),
     headlineMedium = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 30.sp,
-        color = A11yTokens.Ink
+        color = ink
     ).tabular(),
     titleLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minTitleSp.value.sp,
         lineHeight = 28.sp,
-        color = A11yTokens.Ink
+        color = ink
     ).tabular(),
     bodyLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.Normal,
         fontSize = A11yTokens.minBodySp,
-        color = A11yTokens.Ink,
+        color = ink,
         lineHeight = 26.sp
     ).tabular(),
     bodyMedium = TextStyle(
         fontFamily = UiSans,
         fontSize = A11yTokens.minBodySp,
-        color = A11yTokens.InkMuted,
+        color = muted,
         lineHeight = 24.sp
     ).tabular(),
     // Pas de couleur figée : les boutons Primary doivent hériter de
@@ -121,28 +146,30 @@ private val AppTypography = Typography(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minBodySp,
-        color = A11yTokens.Ink
+        color = ink
     ).tabular(),
     bodySmall = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.Normal,
         fontSize = A11yTokens.minBodySp,
-        color = A11yTokens.InkMuted,
+        color = muted,
         lineHeight = 24.sp
     ).tabular(),
     labelSmall = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.Medium,
         fontSize = A11yTokens.minBodySp,
-        color = A11yTokens.InkMuted
+        color = muted
     ).tabular()
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonMoisClairTheme(content: @Composable () -> Unit) {
+    val night = isSystemInDarkTheme()
+    val palette = if (night) A11yTokens.Night else A11yTokens.Day
     val ripple = RippleConfiguration(
-        color = A11yTokens.ButtonFill,
+        color = palette.buttonFill,
         rippleAlpha = RippleAlpha(
             draggedAlpha = 0.16f,
             focusedAlpha = 0.12f,
@@ -150,13 +177,15 @@ fun MonMoisClairTheme(content: @Composable () -> Unit) {
             pressedAlpha = 0.16f
         )
     )
-    MaterialTheme(
-        colorScheme = ColorScheme,
-        typography = AppTypography,
-        shapes = AppShapes
-    ) {
-        CompositionLocalProvider(LocalRippleConfiguration provides ripple) {
-            content()
+    CompositionLocalProvider(LocalCarnetPalette provides palette) {
+        MaterialTheme(
+            colorScheme = colorScheme(palette, night),
+            typography = appTypography(palette.ink, palette.inkMuted),
+            shapes = AppShapes
+        ) {
+            CompositionLocalProvider(LocalRippleConfiguration provides ripple) {
+                content()
+            }
         }
     }
 }

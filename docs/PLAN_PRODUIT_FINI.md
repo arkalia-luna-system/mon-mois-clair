@@ -2,7 +2,7 @@
 
 Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37–**6.42** clos (`0.1.0-6.42`, schéma Room **8**, **245/245**).  
+Lots **A à F** + 6.37–**6.44** clos (`0.1.0-6.44`, schéma Room **8**, **251/251**).  
 Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -214,12 +214,12 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37–6.42** clos (`0.1.0-6.42`, schéma **8**, **245/245**). Feedback famille + sync mois futurs + dist (voir [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md)).
+**A–F + 6.37–6.44** clos (`0.1.0-6.44`, schéma **8**, **251/251**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md).
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;
 - tests d’écran instrumentés.
 
-**Prochain geste** : S26 en main.
+**Prochain geste** : encre de nuit (même carnet, fond encre). Le S26 de maman en main reste à part.
 
 Risques C : photos extras = voir / enlever ; frais = historique daté (6.38).

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,14 +61,41 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         pendingHighlightExpenseId = intent?.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
-        // Statut + nav crème (même teinte que colors.xml / themes.xml).
         val paperCream = ContextCompat.getColor(this, R.color.paper_cream)
+        val nightWindow = (resources.configuration.uiMode and
+            android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(paperCream, paperCream),
-            navigationBarStyle = SystemBarStyle.light(paperCream, paperCream)
+            statusBarStyle = if (nightWindow) {
+                SystemBarStyle.dark(paperCream)
+            } else {
+                SystemBarStyle.light(paperCream, paperCream)
+            },
+            navigationBarStyle = if (nightWindow) {
+                SystemBarStyle.dark(paperCream)
+            } else {
+                SystemBarStyle.light(paperCream, paperCream)
+            }
         )
         setContent {
             MonMoisClairTheme {
+                val night = isSystemInDarkTheme()
+                val bar = if (night) 0xFF1E1B18.toInt() else 0xFFF6F3E8.toInt()
+                DisposableEffect(night) {
+                    enableEdgeToEdge(
+                        statusBarStyle = if (night) {
+                            SystemBarStyle.dark(bar)
+                        } else {
+                            SystemBarStyle.light(bar, bar)
+                        },
+                        navigationBarStyle = if (night) {
+                            SystemBarStyle.dark(bar)
+                        } else {
+                            SystemBarStyle.light(bar, bar)
+                        }
+                    )
+                    onDispose { }
+                }
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val state by mainViewModel.uiState.collectAsStateWithLifecycle()
                 val navController = rememberNavController()
@@ -133,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                             ) {
                                 AppWordmark(width = 220.dp, announce = false)
                                 CircularProgressIndicator(
-                                    color = A11yTokens.ButtonFill,
+                                    color = A11yTokens.Link,
                                     strokeWidth = 3.dp
                                 )
                                 Text(

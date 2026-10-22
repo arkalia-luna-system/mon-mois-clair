@@ -116,8 +116,8 @@ object AgreementFuturesSync {
             tpl.addedFeesCents
         ) ?: return
 
-        // TODO : réserver ce mois avant les suivants.
-        // DONE : déjà dans [paid] — ne pas soustraire une seconde fois.
+        // Si ce mois est encore TODO, réserver son versement avant les suivants.
+        // Les FAIT sont déjà dans [paid] — ne pas soustraire une seconde fois.
         val reserveCurrent = expense.status == ExpenseStatus.TODO
         var pocket = if (reserveCurrent) {
             (remaining - expense.amountCents).coerceAtLeast(0L)

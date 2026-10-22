@@ -58,6 +58,30 @@ class BackupSecurityArchiveTest {
         assertThat(BackupSecurityArchive.sanitizeReceiptPath("receipts/../secret.webp")).isNull()
         assertThat(BackupSecurityArchive.sanitizeReceiptPath("receipts/ok.webp"))
             .isEqualTo("receipts/ok.webp")
+        assertThat(BackupSecurityArchive.sanitizeReceiptPath("receipts/lettre.pdf"))
+            .isEqualTo("receipts/lettre.pdf")
+        assertThat(BackupSecurityArchive.sanitizeReceiptPath("receipts/secret.bin")).isNull()
+        assertThat(BackupSecurityArchive.isPdfReceiptPath("receipts/lettre.pdf")).isTrue()
+        assertThat(BackupSecurityArchive.isPdfReceiptPath("receipts/ok.webp")).isFalse()
+        assertThat(BackupSecurityArchive.mimeForReceiptPath("receipts/lettre.pdf"))
+            .isEqualTo("application/pdf")
+        assertThat(BackupSecurityArchive.mimeForReceiptPath("receipts/ok.webp"))
+            .isEqualTo("image/webp")
+    }
+
+    @Test
+    fun pack_then_unpack_includes_pdf() {
+        val json = """{"schemaVersion":8,"ok":true}"""
+        val receipts = mapOf(
+            "receipts/exp-a.webp" to byteArrayOf(1, 2, 3),
+            "receipts/exp-b.pdf" to "%PDF-1.4".toByteArray()
+        )
+        val out = tmp.newFile("with-pdf.zip")
+        val packed = BackupSecurityArchive.packToFile(out, json, receipts)
+        assertThat(packed.photoCount).isEqualTo(2)
+        val unpacked = BackupSecurityArchive.unpack(out.readBytes())
+        assertThat(unpacked.receipts).hasSize(2)
+        assertThat(unpacked.receipts["receipts/exp-b.pdf"]).isEqualTo("%PDF-1.4".toByteArray())
     }
 
     @Test

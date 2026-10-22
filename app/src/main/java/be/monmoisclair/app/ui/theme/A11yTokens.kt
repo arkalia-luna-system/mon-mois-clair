@@ -1,8 +1,48 @@
 package be.monmoisclair.app.ui.theme
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+/**
+ * Couleurs du carnet. Le jour est le papier. La nuit est la même encre,
+ * pas la couleur du fond d’écran et pas un thème fluo.
+ * Les champs se lisent dans un composable : ils suivent [LocalCarnetPalette].
+ * Les tests lisent [A11yTokens.Day] et [A11yTokens.Night].
+ */
+@Immutable
+data class CarnetPalette(
+    val paperCream: Color,
+    val paperCard: Color,
+    val paperWarm: Color,
+    val paperBorder: Color,
+    val fieldLine: Color,
+    val ink: Color,
+    val inkMuted: Color,
+    val accentOkSoft: Color,
+    /** Plein FAIT / pastille. Reste forêt, jour et nuit. */
+    val accentOk: Color,
+    /** Texte « c’est bon » sur le fond. */
+    val accentOkInk: Color,
+    val accentWarn: Color,
+    /** Plein retard. Reste brique, jour et nuit. */
+    val accentDanger: Color,
+    /** Texte retard / déficit sur le fond. */
+    val dangerInk: Color,
+    val accentAuto: Color,
+    /** Mot sur la pastille or. Toujours l’encre, jamais le texte de page. */
+    val onGold: Color,
+    val buttonFill: Color,
+    val buttonText: Color,
+    /** Lien et indicateur. Le jour = le teal du bouton. La nuit, un teal lisible sur l’encre. */
+    val link: Color
+)
+
+val LocalCarnetPalette = staticCompositionLocalOf { A11yTokens.Day }
 
 object A11yTokens {
     val minBodySp = 18.sp
@@ -18,40 +58,73 @@ object A11yTokens {
      */
     val bottomSystemClearance = 28.dp
 
+    /** Papier du jour. Brique sur le fond ≥ 7:1. */
+    val Day = CarnetPalette(
+        paperCream = Color(0xFFF6F3E8),
+        paperCard = Color(0xFFFFFDF9),
+        paperWarm = Color(0xFFEDE8DC),
+        paperBorder = Color(0xFFE2DDD2),
+        fieldLine = Color(0xFF8A8278),
+        ink = Color(0xFF1E1B18),
+        inkMuted = Color(0xFF4A453C),
+        accentOkSoft = Color(0xFFE3EFE6),
+        accentOk = Color(0xFF1E5631),
+        accentOkInk = Color(0xFF1E5631),
+        accentWarn = Color(0xFF8A5A1E),
+        accentDanger = Color(0xFF8E3418),
+        dangerInk = Color(0xFF8E3418),
+        accentAuto = Color(0xFFD99B26),
+        onGold = Color(0xFF1E1B18),
+        buttonFill = Color(0xFF1B4D4E),
+        buttonText = Color(0xFFFFFDF9),
+        link = Color(0xFF1B4D4E)
+    )
+
     /**
-     * Wax Paper — fond principal (AMOLED sans halo blanc pur).
-     * Un cran plus soutenu que les cartes `#FFFDF9`, pour que la liste se détache.
+     * Encre de nuit. Le bouton reste le teal `#1B4D4E`.
+     * Le texte « retard » et le lien sont éclaircis : la brique du jour
+     * disparaîtrait sur ce fond.
      */
-    val PaperCream = Color(0xFFF3EDE0)
-    /** Warm Ivory — cartes factures. */
-    val PaperCard = Color(0xFFFFFDF9)
-    /** Ancien PaperWarm → surface sticky / champs (ivoire un peu plus marqué). */
-    val PaperWarm = Color(0xFFEDE8DC)
-    val PaperBorder = Color(0xFFE2DDD2)
-    /**
-     * Trait des champs / outline Material : teinte **intermédiaire**
-     * (entre PaperBorder clair et InkMuted), visible sans durcir le papier.
-     */
-    val FieldLine = Color(0xFF8A8278)
-    /** Deep Espresso. */
-    val Ink = Color(0xFF1E1B18)
-    val InkMuted = Color(0xFF4A453C)
-    /** Soft Sage / forêt — FAIT. */
-    val AccentOkSoft = Color(0xFFE3EFE6)
-    val AccentOk = Color(0xFF1E5631)
-    val AccentWarn = Color(0xFF8A5A1E)
-    /**
-     * Brique automne — retard / erreur.
-     * #B84A27 de l’étude ne fait que ~4,7:1 sur le papier : trop juste.
-     * #8E3418 reste terre cuite (pas rouge sang) et passe ~7:1.
-     */
-    val AccentDanger = Color(0xFF8E3418)
-    /**
-     * Or doux — **fond** de pastille « Prélèvement » seulement.
-     * En texte sur le papier il tombe à ~2,2:1. Le mot s’écrit en [Ink].
-     */
-    val AccentAuto = Color(0xFFD99B26)
-    /** Transformative Teal — boutons / stabilité. */
-    val ButtonFill = Color(0xFF1B4D4E)
-    val ButtonText = Color(0xFFFFFDF9)
+    val Night = CarnetPalette(
+        paperCream = Color(0xFF1E1B18),
+        paperCard = Color(0xFF2C2824),
+        paperWarm = Color(0xFF3A342E),
+        paperBorder = Color(0xFF6E6458),
+        fieldLine = Color(0xFFC4B8A8),
+        ink = Color(0xFFF6F3E8),
+        inkMuted = Color(0xFFD4C7B4),
+        accentOkSoft = Color(0xFF1C3326),
+        accentOk = Color(0xFF1E5631),
+        accentOkInk = Color(0xFF9AD9B6),
+        accentWarn = Color(0xFFE2C08A),
+        accentDanger = Color(0xFF8E3418),
+        dangerInk = Color(0xFFF4C4B6),
+        accentAuto = Color(0xFFD99B26),
+        onGold = Color(0xFF1E1B18),
+        buttonFill = Color(0xFF1B4D4E),
+        buttonText = Color(0xFFFFFDF9),
+        link = Color(0xFF9AD8D8)
+    )
+
+    private val palette: CarnetPalette
+        @Composable @ReadOnlyComposable get() = LocalCarnetPalette.current
+
+    val PaperCream: Color @Composable @ReadOnlyComposable get() = palette.paperCream
+    val PaperCard: Color @Composable @ReadOnlyComposable get() = palette.paperCard
+    val PaperWarm: Color @Composable @ReadOnlyComposable get() = palette.paperWarm
+    val PaperBorder: Color @Composable @ReadOnlyComposable get() = palette.paperBorder
+    val FieldLine: Color @Composable @ReadOnlyComposable get() = palette.fieldLine
+    val Ink: Color @Composable @ReadOnlyComposable get() = palette.ink
+    val InkMuted: Color @Composable @ReadOnlyComposable get() = palette.inkMuted
+    val AccentOkSoft: Color @Composable @ReadOnlyComposable get() = palette.accentOkSoft
+    val AccentOk: Color @Composable @ReadOnlyComposable get() = palette.accentOk
+    val AccentOkInk: Color @Composable @ReadOnlyComposable get() = palette.accentOkInk
+    val AccentWarn: Color @Composable @ReadOnlyComposable get() = palette.accentWarn
+    val AccentDanger: Color @Composable @ReadOnlyComposable get() = palette.accentDanger
+    val DangerInk: Color @Composable @ReadOnlyComposable get() = palette.dangerInk
+    val AccentAuto: Color @Composable @ReadOnlyComposable get() = palette.accentAuto
+    val OnGold: Color @Composable @ReadOnlyComposable get() = palette.onGold
+    val ButtonFill: Color @Composable @ReadOnlyComposable get() = palette.buttonFill
+    val ButtonText: Color @Composable @ReadOnlyComposable get() = palette.buttonText
+    val Link: Color @Composable @ReadOnlyComposable get() = palette.link
 }

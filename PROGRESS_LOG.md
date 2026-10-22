@@ -9,15 +9,46 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.42** (sync futurs + Soldés + dist famille) |
+| Dernière étape terminée | **6.44** (PDF + finition thème jour/nuit) |
 | Étape en cours | — |
-| Prochaine sous-étape | — S26 maman optionnel |
-| Audit premium | Feedback 6.39–6.42 · **245/245** |
+| Prochaine sous-étape | S26 maman optionnel |
+| Audit premium | Benchmark 2026 · PDF · nuit · **251/251** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.44 PDF à côté de la photo
+
+**Vu :** un courrier reçu par mail est souvent un PDF. Le chemin commencé le mettait à la place de la photo, et le bouton n’était pas fiable.
+
+**Codé :**
+- « Joindre un PDF » sur la fiche de **toute** facture (mensuelle, une fois, accord…) — pas l’accueil
+- Le fichier va dans `receipts/…pdf`, à côté des WebP, et dans l’archive
+- Il ne remplace pas la photo. « Voir le courrier » ouvre le lecteur du téléphone
+- Facture « une fois » : photo + PDF dans le même champ instance ; facture qui revient : PDF dans les courriers du modèle
+
+**Finition (derrière agents) :** compile cassée — `A11yTokens.*` @Composable dans `Canvas` (scan QR) + tests contraste hors Composition. Couleurs lues **avant** le DrawScope ; `WcagContrastTest` sur `Day`/`Night` (palette agents **conservée**).  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **251/251** (61 fichiers).  
+**Version :** `0.1.0-6.44` · `versionCode` 49.
+
+### 2026-10-22 — 6.43 Forme de l’objet (benchmark 2026)
+
+**Vu :** les cartes se confondaient avec la page, pastilles et boutons avaient le même coin, « FAIT ✓ » avait le même trait que « Copier », les montants n’avaient pas la même chasse.
+
+**Codé :**
+- Chiffres `tnum` sur les styles de l’app
+- Fond `#F6F3E8` (brique toujours ≥ 7:1). Cartes 16 dp, ombre courte. Pastilles en capsule. Boutons 12 dp
+- Barre Menu / + Ajouter sur `PaperWarm`
+- « FAIT ✓ » plein forêt ; « Remettre » reste en trait
+- Fondu 180 ms de la liste au changement de mois
+- Décisions dans la charte et `docs/BENCHMARK_QUALITE_2026.md`. Pas encore : PDF, nuit, widget, OCR
+- Aperçu : Mes dossiers n’ouvre plus une ligne future ; AddEntry avertit si `ym` futur ; fiche édition lecture seule ; undo FAIT feedback
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **247/247** (61 fichiers).  
+**Version :** `0.1.0-6.43` · `versionCode` 48.  
+**Pas de smoke device** pour ce lot.
 
 ### 2026-10-22 — 6.42 Sync mois futurs + Soldés + dist
 
@@ -30,7 +61,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 - CI/SECURITY : procédure Dependabot Security (pas de faux fix yml)
 - Aperçu 6.41 durci : sticky « Prévu », sheet Courses fermée, pas d’« En retard » futur, gardes Update/Delete, highlight borné
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **245/245** (61 fichiers).  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **247/247** (61 fichiers).  
 **Version :** `0.1.0-6.42` · `versionCode` 47.
 
 ### 2026-10-22 — 6.41 Aperçu mois futurs (feedback §4)
@@ -45,7 +76,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Suite (trous aperçu) :** voir durcissement listé sous **6.42** (même passe).
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **240/240** à la livraison nav ; **245/245** après gardes (journal 6.42).  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **240/240** à la livraison nav ; **247/247** après gardes (journal 6.42).  
 **Version :** `0.1.0-6.41` · `versionCode` 46.
 
 ### 2026-10-22 — 6.40 Polish sticky (smoke 6.39)

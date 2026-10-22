@@ -120,15 +120,33 @@ object BackupSecurityArchive {
             bytes[2] == 0x03.toByte() &&
             bytes[3] == 0x04.toByte()
 
-    /** Accepte seulement `receipts/<nom>.webp` sans `..`. */
+    /**
+     * Accepte `receipts/<nom>.webp` ou `.pdf` sans `..`.
+     * Le PDF reste dans le même dossier que les photos (charte / benchmark).
+     */
     fun sanitizeReceiptPath(relative: String): String? {
         val name = relative.trimStart('/')
         if (!name.startsWith("receipts/")) return null
-        if (!name.endsWith(".webp", ignoreCase = true)) return null
+        val lower = name.lowercase()
+        if (!lower.endsWith(".webp") && !lower.endsWith(".pdf")) return null
         val parts = name.split('/')
         if (parts.size != 2) return null
         if (parts.any { it.isEmpty() || it == "." || it == ".." }) return null
         return "receipts/${parts[1]}"
+    }
+
+    fun isPdfReceiptPath(relative: String): Boolean {
+        val safe = sanitizeReceiptPath(relative) ?: return false
+        return safe.endsWith(".pdf", ignoreCase = true)
+    }
+
+    fun mimeForReceiptPath(relative: String): String? {
+        val safe = sanitizeReceiptPath(relative) ?: return null
+        return if (safe.endsWith(".pdf", ignoreCase = true)) {
+            "application/pdf"
+        } else {
+            "image/webp"
+        }
     }
 
     /**

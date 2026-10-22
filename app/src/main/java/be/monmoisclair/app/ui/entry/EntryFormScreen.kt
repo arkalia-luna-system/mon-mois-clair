@@ -41,7 +41,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,10 +74,47 @@ import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.ReceiptPathList
+import be.monmoisclair.app.data.backup.BackupFailure
+import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
+
+/** Sélecteur PDF (courrier mail) — fiche seulement, pas sur l’accueil. */
+@Composable
+private fun rememberPdfPicker(
+    onBytes: (ByteArray) -> Unit,
+    onFailed: (String) -> Unit
+): () -> Unit {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        runCatching {
+            val bytes = context.contentResolver.openInputStream(uri)?.use {
+                be.monmoisclair.app.data.backup.BackupSecurityArchive.readBounded(
+                    it,
+                    ReceiptPhotoStore.MAX_PDF_BYTES.toLong()
+                )
+            } ?: throw BackupFailure.Io("Impossible de lire le PDF")
+            if (!ReceiptPhotoStore.looksLikePdf(bytes)) {
+                throw BackupFailure.Io("Ce fichier n’est pas un PDF lisible.")
+            }
+            onBytes(bytes)
+        }.onFailure { e ->
+            val raw = e.message.orEmpty()
+            val shown = if (raw.contains("trop lourde") || raw.contains("trop lourd")) {
+                "Ce courrier est trop lourd."
+            } else {
+                raw.ifBlank { "Ce PDF n’a pas pu être lu. Réessayez." }
+            }
+            onFailed(shown)
+        }
+    }
+    return { launcher.launch(arrayOf("application/pdf")) }
+}
 
 /** Capture plein cadre (pas la miniature TakePicturePreview). */
 @Composable
@@ -323,6 +362,7 @@ fun EditEntryScreen(
         onEpcRawConsumed()
     }
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     LaunchedEffect(state.mailDraft) {
         val draft = state.mailDraft ?: return@LaunchedEffect
         // Gmail ignore souvent EXTRA_* sur SENDTO : tout va dans l’URI mailto.
@@ -352,6 +392,7 @@ fun EditEntryScreen(
             state.feeAddText != b.feeAddText ||
             state.feeNoteText != b.feeNoteText ||
             state.hasPendingPhoto ||
+            state.hasPendingPdf ||
             state.receiptRelativePath != b.receiptRelativePath ||
             state.extraReceiptPaths != b.extraReceiptPaths
     } == true
@@ -393,7 +434,7 @@ fun EditEntryScreen(
                     }
             ) {
                 CircularProgressIndicator(
-                    color = A11yTokens.ButtonFill,
+                    color = A11yTokens.Link,
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(28.dp)
                 )
@@ -497,14 +538,32 @@ fun EditEntryScreen(
         },
         onDecodeFailed = { viewModel.setPhotoDecodeError() }
     )
+    val pickPdf = rememberPdfPicker(
+        onBytes = { bytes ->
+            pendingPreview = null
+            viewModel.attachPendingPdf(bytes)
+        },
+        onFailed = viewModel::setPdfReadError
+    )
     var receiptBitmap by remember { mutableStateOf<Bitmap?>(null) }
     /** null = fermé ; "" = aperçu en attente / photo principale ; sinon chemin d’un courrier en plus. */
     var dialogPath by remember { mutableStateOf<String?>(null) }
     var dialogBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var dialogLoading by remember { mutableStateOf(false) }
-    LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto) {
-        if (state.hasPendingPhoto) return@LaunchedEffect
-        if (state.receiptRelativePath.isBlank()) {
+    suspend fun openExternalReceipt(path: String) {
+        val intent = viewModel.viewReceiptIntent(path)
+        if (intent == null) {
+            viewModel.setPdfReadError("Impossible d’ouvrir ce courrier.")
+            return
+        }
+        val ok = runCatching {
+            context.startActivity(Intent.createChooser(intent, "Voir le courrier"))
+        }.isSuccess
+        if (!ok) viewModel.setPdfReadError("Aucune app pour ouvrir ce PDF.")
+    }
+    LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto, state.hasPendingPdf) {
+        if (state.hasPendingPhoto || state.hasPendingPdf) return@LaunchedEffect
+        if (state.receiptRelativePath.isBlank() || viewModel.isPdfPath(state.receiptRelativePath)) {
             receiptBitmap = null
             return@LaunchedEffect
         }
@@ -573,7 +632,7 @@ fun EditEntryScreen(
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator(color = A11yTokens.ButtonFill)
+                                CircularProgressIndicator(color = A11yTokens.Link)
                             }
                         }
                         bmp != null -> {
@@ -598,12 +657,12 @@ fun EditEntryScreen(
                             Text(
                                 text = photoErr,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.AccentDanger,
+                                color = A11yTokens.DangerInk,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .border(
                                         1.dp,
-                                        A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                                        A11yTokens.DangerInk.copy(alpha = 0.4f),
                                         photoErrShape
                                     )
                                     .background(A11yTokens.PaperWarm, photoErrShape)
@@ -643,12 +702,26 @@ fun EditEntryScreen(
         onPaymentNote = viewModel::setPaymentNote,
         showPaymentAssist = state.isExpense,
         hasPendingPhoto = state.hasPendingPhoto,
+        hasPendingPdf = state.hasPendingPdf,
         hasReceiptPhoto = state.receiptRelativePath.isNotBlank(),
+        receiptIsPdf = state.receiptRelativePath.isNotBlank() &&
+            viewModel.isPdfPath(state.receiptRelativePath),
         receiptPreview = pendingPreview ?: receiptBitmap,
         onScanEpc = onScanEpc,
-        onTakePhoto = takePhoto,
+        onTakePhoto = if (!state.futurePreviewReadOnly) takePhoto else null,
+        onPickPdf = if (
+            !state.futurePreviewReadOnly &&
+            state.isExpense &&
+            !state.isSavingsLine
+        ) {
+            pickPdf
+        } else {
+            null
+        },
+        onClearPendingPdf = if (!state.futurePreviewReadOnly) viewModel::clearPendingPdf else null,
         onClearReceipt = if (
-            state.receiptRelativePath.isNotBlank() || state.hasPendingPhoto
+            !state.futurePreviewReadOnly &&
+            (state.receiptRelativePath.isNotBlank() || state.hasPendingPhoto)
         ) {
             {
                 pendingPreview = null
@@ -661,14 +734,30 @@ fun EditEntryScreen(
             state.receiptRelativePath.isNotBlank() || pendingPreview != null
         ) {
             {
-                dialogPath = if (pendingPreview != null) "" else state.receiptRelativePath
+                when {
+                    pendingPreview != null -> dialogPath = ""
+                    viewModel.isPdfPath(state.receiptRelativePath) ->
+                        scope.launch { openExternalReceipt(state.receiptRelativePath) }
+                    else -> dialogPath = state.receiptRelativePath
+                }
             }
         } else {
             null
         },
         extraReceiptPaths = ReceiptPathList.parse(state.extraReceiptPaths),
-        onViewExtraReceipt = { path -> dialogPath = path },
-        onRemoveExtraReceipt = viewModel::removeExtraReceipt,
+        isPdfPath = viewModel::isPdfPath,
+        onViewExtraReceipt = { path ->
+            if (viewModel.isPdfPath(path)) {
+                scope.launch { openExternalReceipt(path) }
+            } else {
+                dialogPath = path
+            }
+        },
+        onRemoveExtraReceipt = if (!state.futurePreviewReadOnly) {
+            viewModel::removeExtraReceipt
+        } else {
+            null
+        },
         onCopyPaymentNote = viewModel::copyPaymentNote,
         showApplyFollowing = state.hasTemplate && !state.isSavingsLine,
         applyFollowing = state.applyToFollowing,
@@ -702,7 +791,7 @@ fun EditEntryScreen(
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
-        primaryEnabled = !state.saving,
+        primaryEnabled = !state.saving && !state.futurePreviewReadOnly,
         deleteLabel = if (state.isSavingsLine) "Retirer la ligne" else "Supprimer",
         onLabel = viewModel::setLabel,
         onAmount = viewModel::setAmount,
@@ -712,7 +801,9 @@ fun EditEntryScreen(
         onApplyFollowing = viewModel::setApplyToFollowing,
         onPrimary = viewModel::save,
         onCancel = { requestLeave() },
-        onDelete = { if (!state.saving) confirmDelete = true }
+        onDelete = {
+            if (!state.saving && !state.futurePreviewReadOnly) confirmDelete = true
+        }
     )
 }
 
@@ -781,13 +872,18 @@ private fun EntryFormScaffold(
     onPaymentNote: (String) -> Unit = {},
     showPaymentAssist: Boolean = false,
     hasPendingPhoto: Boolean = false,
+    hasPendingPdf: Boolean = false,
     hasReceiptPhoto: Boolean = false,
+    receiptIsPdf: Boolean = false,
     onScanEpc: (() -> Unit)? = null,
     onTakePhoto: (() -> Unit)? = null,
+    onPickPdf: (() -> Unit)? = null,
+    onClearPendingPdf: (() -> Unit)? = null,
     onClearReceipt: (() -> Unit)? = null,
     onViewReceipt: (() -> Unit)? = null,
     /** Courriers en plus (dossier) — chemins relatifs déjà parsés. */
     extraReceiptPaths: List<String> = emptyList(),
+    isPdfPath: (String) -> Boolean = { false },
     onViewExtraReceipt: ((String) -> Unit)? = null,
     onRemoveExtraReceipt: ((String) -> Unit)? = null,
     onCopyPaymentNote: (() -> Unit)? = null,
@@ -971,7 +1067,7 @@ private fun EntryFormScaffold(
                         Text(
                             text = "Soldé",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.AccentOk
+                            color = A11yTokens.AccentOkInk
                         )
                     } else {
                         remainingCents?.let { rem ->
@@ -1134,10 +1230,10 @@ private fun EntryFormScaffold(
                         Text(
                             text = "Soldé",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.AccentOk,
+                            color = A11yTokens.AccentOkInk,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), settledShape)
+                                .border(1.dp, A11yTokens.AccentOkInk.copy(alpha = 0.35f), settledShape)
                                 .background(A11yTokens.PaperWarm, settledShape)
                                 .padding(tipPad)
                         )
@@ -1393,22 +1489,36 @@ private fun EntryFormScaffold(
                 if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
                     SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
                 }
-                if (onTakePhoto != null) {
-                    val appendOnAgreement = isAgreement && hasReceiptPhoto && !hasPendingPhoto
-                    SecondaryA11yButton(
-                        text = when {
-                            hasPendingPhoto -> "Reprendre la photo"
-                            appendOnAgreement -> "Ajouter un courrier (photo)"
-                            hasReceiptPhoto -> "Reprendre la photo de la facture"
-                            else -> "Photo de la facture papier"
-                        },
-                        onClick = onTakePhoto
-                    )
+                if (onTakePhoto != null || onPickPdf != null) {
+                    val appendOnAgreement =
+                        isAgreement && hasReceiptPhoto && !hasPendingPhoto && !hasPendingPdf
+                    if (onTakePhoto != null) {
+                        SecondaryA11yButton(
+                            text = when {
+                                hasPendingPhoto -> "Reprendre la photo"
+                                appendOnAgreement -> "Ajouter un courrier (photo)"
+                                hasReceiptPhoto && !receiptIsPdf -> "Reprendre la photo de la facture"
+                                else -> "Photo de la facture papier"
+                            },
+                            onClick = onTakePhoto
+                        )
+                    }
+                    if (onPickPdf != null) {
+                        SecondaryA11yButton(
+                            text = when {
+                                hasPendingPdf -> "Changer le PDF"
+                                appendOnAgreement -> "Joindre un PDF"
+                                hasReceiptPhoto && receiptIsPdf -> "Remplacer le PDF"
+                                else -> "Joindre un PDF"
+                            },
+                            onClick = onPickPdf
+                        )
+                    }
                     if (appendOnAgreement) {
                         val appendTipShape = MaterialTheme.shapes.medium
                         Text(
-                            text = "La nouvelle photo s’ajoute aux courriers. " +
-                                "La première reste.",
+                            text = "Une nouvelle photo ou un PDF s’ajoute aux courriers. " +
+                                "La première pièce reste.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted,
                             modifier = Modifier
@@ -1427,7 +1537,9 @@ private fun EntryFormScaffold(
                                 !isSavingsLine &&
                                 (isAgreement || hasTemplate)
                             ) {
-                                "Enlever la photo de ce mois"
+                                if (receiptIsPdf) "Enlever le PDF de ce mois" else "Enlever la photo de ce mois"
+                            } else if (receiptIsPdf) {
+                                "Enlever le PDF"
                             } else {
                                 "Enlever la photo"
                             },
@@ -1444,12 +1556,12 @@ private fun EntryFormScaffold(
                         Text(
                             text = photoOkText,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.AccentOk,
+                            color = A11yTokens.AccentOkInk,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(
                                     1.dp,
-                                    A11yTokens.AccentOk.copy(alpha = 0.35f),
+                                    A11yTokens.AccentOkInk.copy(alpha = 0.35f),
                                     photoOkShape
                                 )
                                 .background(A11yTokens.AccentOkSoft, photoOkShape)
@@ -1460,9 +1572,49 @@ private fun EntryFormScaffold(
                                 }
                         )
                     }
-                    if (hasReceiptPhoto && receiptPreview == null && onViewReceipt != null) {
+                    if (hasPendingPdf) {
+                        val pdfOkShape = MaterialTheme.shapes.medium
+                        val pdfOkText = if (hasReceiptPhoto) {
+                            "PDF prêt. Il s’ajoute à côté de la photo quand vous enregistrerez."
+                        } else {
+                            "PDF prêt. Touchez Enregistrer pour le garder."
+                        }
+                        Text(
+                            text = pdfOkText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.AccentOkInk,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    1.dp,
+                                    A11yTokens.AccentOkInk.copy(alpha = 0.35f),
+                                    pdfOkShape
+                                )
+                                .background(A11yTokens.AccentOkSoft, pdfOkShape)
+                                .padding(10.dp)
+                                .semantics {
+                                    liveRegion = LiveRegionMode.Polite
+                                    contentDescription = pdfOkText
+                                }
+                        )
+                        if (onClearPendingPdf != null) {
+                            SecondaryA11yButton(
+                                text = "Enlever ce courrier",
+                                onClick = onClearPendingPdf
+                            )
+                        }
+                    }
+                    if (
+                        hasReceiptPhoto &&
+                        receiptPreview == null &&
+                        onViewReceipt != null
+                    ) {
                         SecondaryA11yButton(
-                            text = "Voir la photo de la facture",
+                            text = if (receiptIsPdf) {
+                                "Voir le courrier (PDF)"
+                            } else {
+                                "Voir la photo de la facture"
+                            },
                             onClick = onViewReceipt
                         )
                     }
@@ -1500,7 +1652,8 @@ private fun EntryFormScaffold(
                                 )
                         )
                     }
-                    if (isAgreement && extraReceiptPaths.isNotEmpty()) {
+                    // Une seule liste de courriers (photo ou PDF) — toute facture.
+                    if (extraReceiptPaths.isNotEmpty()) {
                         Text(
                             text = if (hasReceiptPhoto) "Autres courriers" else "Courriers",
                             style = MaterialTheme.typography.bodyLarge,
@@ -1508,6 +1661,7 @@ private fun EntryFormScaffold(
                         )
                         extraReceiptPaths.forEachIndexed { index, path ->
                             val n = if (hasReceiptPhoto) index + 2 else index + 1
+                            val pdf = isPdfPath(path)
                             @OptIn(ExperimentalLayoutApi::class)
                             FlowRow(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -1515,7 +1669,11 @@ private fun EntryFormScaffold(
                             ) {
                                 if (onViewExtraReceipt != null) {
                                     SecondaryA11yButton(
-                                        text = "Voir le courrier $n",
+                                        text = if (pdf) {
+                                            "Voir le courrier $n (PDF)"
+                                        } else {
+                                            "Voir le courrier $n"
+                                        },
                                         onClick = { onViewExtraReceipt(path) },
                                         fillMaxWidth = false
                                     )
@@ -1558,18 +1716,18 @@ private fun EntryFormScaffold(
                 val warn = it == BelgianStructuredCommunication.VERIFY_ON_MAIL
                 Text(
                     text = it,
-                    color = if (warn) A11yTokens.AccentWarn else A11yTokens.AccentOk,
+                    color = if (warn) A11yTokens.AccentWarn else A11yTokens.AccentOkInk,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
                             1.dp,
                             if (warn) A11yTokens.AccentWarn.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
                             infoShape
                         )
                         .background(
-                            if (warn) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            if (warn) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
                             infoShape
                         )
                         .padding(tipPad)
@@ -1588,11 +1746,11 @@ private fun EntryFormScaffold(
             val errShape = MaterialTheme.shapes.medium
             Text(
                 text = it,
-                color = A11yTokens.AccentDanger,
+                color = A11yTokens.DangerInk,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
                     .background(A11yTokens.PaperWarm, errShape)
                     .padding(tipPad)
                     .semantics {

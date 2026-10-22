@@ -147,10 +147,10 @@ fun PendingLetterFormScreen(
                 Text(
                     text = "Photo prête. Touchez Ranger pour la garder.",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.AccentOk,
+                    color = A11yTokens.AccentOkInk,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), okShape)
+                        .border(1.dp, A11yTokens.AccentOkInk.copy(alpha = 0.35f), okShape)
                         .background(A11yTokens.AccentOkSoft, okShape)
                         .padding(tipPad)
                         .semantics {
@@ -175,10 +175,10 @@ fun PendingLetterFormScreen(
                 Text(
                     err,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.AccentDanger,
+                    color = A11yTokens.DangerInk,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                        .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
                         .background(A11yTokens.PaperWarm, errShape)
                         .padding(tipPad)
                         .semantics {

@@ -1,9 +1,11 @@
 package be.monmoisclair.app.data.receipt
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.core.content.FileProvider
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.backup.BackupSecurityArchive
 import be.monmoisclair.app.data.backup.SafBackupStore
@@ -19,6 +21,11 @@ class ReceiptPhotoStore @Inject constructor(
     private val safBackupStore: SafBackupStore
 ) {
     fun relativePathFor(expenseId: String) = "receipts/$expenseId.webp"
+
+    fun relativePdfPathFor(ownerId: String) = "receipts/$ownerId.pdf"
+
+    fun isPdf(relativePath: String): Boolean =
+        BackupSecurityArchive.isPdfReceiptPath(relativePath)
 
     suspend fun saveFromUri(expenseId: String, source: Uri): PhotoSaveResult {
         val bytes = context.contentResolver.openInputStream(source)?.use {
@@ -44,12 +51,62 @@ class ReceiptPhotoStore @Inject constructor(
         return PhotoSaveResult(relativePath = relative, documentsCopyOk = documentsOk)
     }
 
+    /**
+     * Copie un PDF (courrier reçu par mail) dans `receipts/…pdf`.
+     * Pas d’aperçu in-app : [viewIntent] ouvre le lecteur du téléphone.
+     */
+    suspend fun savePdfBytes(ownerId: String, bytes: ByteArray): PhotoSaveResult {
+        if (bytes.isEmpty()) throw BackupFailure.Io("PDF vide")
+        if (bytes.size > MAX_PDF_BYTES) {
+            throw BackupFailure.Io("Ce PDF est trop lourd (max ${MAX_PDF_BYTES / (1024 * 1024)} Mo).")
+        }
+        if (!looksLikePdf(bytes)) {
+            throw BackupFailure.Io("Ce fichier n’est pas un PDF lisible.")
+        }
+        val relative = relativePdfPathFor(ownerId)
+        writeLocal(relative, bytes)
+        val documentsOk = runCatching {
+            safBackupStore.writeBinaryRelative(relative, bytes)
+        }.isSuccess
+        return PhotoSaveResult(relativePath = relative, documentsCopyOk = documentsOk)
+    }
+
+    suspend fun savePdfFromUri(ownerId: String, source: Uri): PhotoSaveResult {
+        val bytes = context.contentResolver.openInputStream(source)?.use {
+            BackupSecurityArchive.readBounded(it, MAX_PDF_BYTES.toLong())
+        } ?: throw BackupFailure.Io("Impossible de lire le PDF")
+        return savePdfBytes(ownerId, bytes)
+    }
+
     suspend fun openUri(relativePath: String): Uri? =
         if (relativePath.isBlank()) null else safBackupStore.uriForRelative(relativePath)
 
-    /** Décode dans l’app : Documents d’abord, sinon copie locale. */
-    suspend fun decodeBitmap(relativePath: String): Bitmap? {
+    /**
+     * URI pour [Intent.ACTION_VIEW] : Documents si présent, sinon FileProvider local.
+     */
+    suspend fun viewUri(relativePath: String): Uri? {
         if (relativePath.isBlank()) return null
+        openUri(relativePath)?.let { return it }
+        val file = localFile(relativePath) ?: return null
+        if (!file.isFile) return null
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+    }
+
+    fun viewIntent(uri: Uri, relativePath: String): Intent {
+        val mime = BackupSecurityArchive.mimeForReceiptPath(relativePath) ?: "*/*"
+        return Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, mime)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+    }
+
+    /** Décode dans l’app : Documents d’abord, sinon copie locale. Pas pour un PDF. */
+    suspend fun decodeBitmap(relativePath: String): Bitmap? {
+        if (relativePath.isBlank() || isPdf(relativePath)) return null
         openUri(relativePath)?.let { uri ->
             runCatching {
                 context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
@@ -85,6 +142,17 @@ class ReceiptPhotoStore @Inject constructor(
 
         /** Au-dessus de ~400 Ko : baisser la qualité, sans viser 80 Ko. */
         const val SOFT_MAX_BYTES = 400 * 1024
+
+        /** Plafond PDF (mail énergie / huissier) — hors ZIP 45 Mo. */
+        const val MAX_PDF_BYTES = 12 * 1024 * 1024
+
+        fun looksLikePdf(bytes: ByteArray): Boolean =
+            bytes.size >= 5 &&
+                bytes[0] == '%'.code.toByte() &&
+                bytes[1] == 'P'.code.toByte() &&
+                bytes[2] == 'D'.code.toByte() &&
+                bytes[3] == 'F'.code.toByte() &&
+                bytes[4] == '-'.code.toByte()
 
         data class PhotoSaveResult(
             val relativePath: String,

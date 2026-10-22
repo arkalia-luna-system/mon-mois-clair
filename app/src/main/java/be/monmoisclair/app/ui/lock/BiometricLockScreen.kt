@@ -116,11 +116,11 @@ fun BiometricLockScreen(
             val errShape = MaterialTheme.shapes.medium
             Text(
                 text = it,
-                color = A11yTokens.AccentDanger,
+                color = A11yTokens.DangerInk,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.AccentDanger.copy(alpha = 0.4f), errShape)
+                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
                     .background(A11yTokens.PaperWarm, errShape)
                     .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
                     .semantics {

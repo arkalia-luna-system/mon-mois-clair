@@ -81,7 +81,7 @@ fun UpcomingScreen(
                     }
             ) {
                 CircularProgressIndicator(
-                    color = A11yTokens.ButtonFill,
+                    color = A11yTokens.Link,
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(28.dp)
                 )
@@ -148,7 +148,7 @@ private fun UpcomingLineRow(line: UpcomingLine) {
             Text(
                 text = signed,
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (line.isIncome) A11yTokens.AccentOk else A11yTokens.Ink
+                color = if (line.isIncome) A11yTokens.AccentOkInk else A11yTokens.Ink
             )
         }
         Text(

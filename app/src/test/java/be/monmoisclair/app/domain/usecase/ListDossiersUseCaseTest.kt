@@ -112,6 +112,99 @@ class ListDossiersUseCaseTest {
     }
 
     @Test
+    fun openInstance_prefersCurrentOverFuturePreview() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-acc2",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                active = true,
+                causeLabel = "Hôpital",
+                openingRemainingCents = 20_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-11", "2026-11", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-10:tpl-acc2",
+                ledgerId = "2026-10",
+                templateId = "tpl-acc2",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-11:tpl-acc2",
+                ledgerId = "2026-11",
+                templateId = "tpl-acc2",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val item = list().items.single()
+        assertThat(item.openInstanceId).isEqualTo("exp:2026-10:tpl-acc2")
+    }
+
+    @Test
+    fun openInstance_skipsFutureOnly_fallsBackToNull() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-fut",
+                label = "Futur",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                active = true,
+                causeLabel = "X",
+                openingRemainingCents = 20_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-11", "2026-11", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-11:tpl-fut",
+                ledgerId = "2026-11",
+                templateId = "tpl-fut",
+                label = "Futur",
+                amountCents = 5_000L,
+                dayOfMonth = 12,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val item = list().items.single()
+        assertThat(item.openInstanceId).isNull()
+        assertThat(item.dueThisMonth).isFalse()
+    }
+
+    @Test
     fun offMonthDossier_doesNotCountInThisMonthTotal() = runBlocking {
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(

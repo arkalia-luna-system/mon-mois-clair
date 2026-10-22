@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.home
 
+import android.content.Intent
 import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -301,7 +302,7 @@ fun HomeScreen(
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator(color = A11yTokens.ButtonFill)
+                                CircularProgressIndicator(color = A11yTokens.Link)
                             }
                         }
                         receiptBitmap != null -> {
@@ -324,12 +325,12 @@ fun HomeScreen(
                                 text = "Impossible d’ouvrir cette photo. " +
                                     "Ouvrez la ligne pour en reprendre une.",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.AccentDanger,
+                                color = A11yTokens.DangerInk,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .border(
                                         1.dp,
-                                        A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                                        A11yTokens.DangerInk.copy(alpha = 0.4f),
                                         photoErrShape
                                     )
                                     .background(A11yTokens.PaperWarm, photoErrShape)
@@ -519,7 +520,7 @@ fun HomeScreen(
                         letterSpacing = (-0.02).em
                     ),
                     color = when {
-                        state.summary.remainingCents < 0L -> A11yTokens.AccentDanger
+                        state.summary.remainingCents < 0L -> A11yTokens.DangerInk
                         else -> A11yTokens.Ink
                     },
                     modifier = Modifier.semantics {
@@ -535,7 +536,7 @@ fun HomeScreen(
                         text = label,
                         style = MaterialTheme.typography.bodyLarge,
                         color = when {
-                            state.summary.stillToPayCents == 0L -> A11yTokens.AccentOk
+                            state.summary.stillToPayCents == 0L -> A11yTokens.AccentOkInk
                             else -> A11yTokens.InkMuted
                         },
                         maxLines = 1,
@@ -564,7 +565,7 @@ fun HomeScreen(
                         text = afterLabel,
                         style = MaterialTheme.typography.bodyLarge,
                         color = if (state.afterDiversCents < 0L) {
-                            A11yTokens.AccentDanger
+                            A11yTokens.DangerInk
                         } else {
                             A11yTokens.InkMuted
                         },
@@ -602,7 +603,7 @@ fun HomeScreen(
                     Text(
                         text = coursesLabel,
                         style = MaterialTheme.typography.titleLarge,
-                        color = A11yTokens.ButtonFill,
+                        color = A11yTokens.Link,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -785,7 +786,7 @@ fun HomeScreen(
                                 ) {
                                     BrandMark(height = 32.dp)
                                     CircularProgressIndicator(
-                                        color = A11yTokens.ButtonFill,
+                                        color = A11yTokens.Link,
                                         strokeWidth = 3.dp,
                                         modifier = Modifier.size(28.dp)
                                     )
@@ -854,7 +855,7 @@ fun HomeScreen(
                                                 Text(
                                                     text = "Effacer",
                                                     style = MaterialTheme.typography.bodyLarge,
-                                                    color = A11yTokens.ButtonFill,
+                                                    color = A11yTokens.Link,
                                                     modifier = Modifier
                                                         .heightIn(min = A11yTokens.minTouchHeight)
                                                         .clickable(
@@ -948,12 +949,36 @@ fun HomeScreen(
                                         viewModel.copyPaymentNote(item.paymentNote)
                                     },
                                     onOpenReceipt = {
-                                        val path = item.receiptRelativePath.trim()
+                                        val raw = item.receiptRelativePath.trim()
+                                        val path = viewModel.primaryReceiptPath(raw)
                                         if (path.isEmpty()) {
                                             scope.launch {
                                                 snackbarHostState.showSnackbar(
                                                     "Aucune photo liée à cette facture."
                                                 )
+                                            }
+                                        } else if (viewModel.isPdfReceipt(path)) {
+                                            scope.launch {
+                                                val intent = viewModel.viewReceiptIntent(path)
+                                                if (intent == null) {
+                                                    snackbarHostState.showSnackbar(
+                                                        "Impossible d’ouvrir ce courrier."
+                                                    )
+                                                } else {
+                                                    val ok = runCatching {
+                                                        context.startActivity(
+                                                            Intent.createChooser(
+                                                                intent,
+                                                                "Voir le courrier"
+                                                            )
+                                                        )
+                                                    }.isSuccess
+                                                    if (!ok) {
+                                                        snackbarHostState.showSnackbar(
+                                                            "Aucune app pour ouvrir ce PDF."
+                                                        )
+                                                    }
+                                                }
                                             }
                                         } else {
                                             receiptTitle = item.label.trim().ifBlank { "Facture" }
@@ -1010,7 +1035,7 @@ fun HomeScreen(
                                 Text(
                                     text = if (diversExpanded) "Fermer" else "Ouvrir",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.ButtonFill
+                                    color = A11yTokens.Link
                                 )
                             }
                             Text(
@@ -1067,13 +1092,13 @@ fun HomeScreen(
                                         val errShape = MaterialTheme.shapes.medium
                                         Text(
                                             text = err,
-                                            color = A11yTokens.AccentDanger,
+                                            color = A11yTokens.DangerInk,
                                             style = MaterialTheme.typography.bodyLarge,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .border(
                                                     1.dp,
-                                                    A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                                                    A11yTokens.DangerInk.copy(alpha = 0.4f),
                                                     errShape
                                                 )
                                                 .background(A11yTokens.PaperWarm, errShape)
@@ -1295,15 +1320,15 @@ private fun ExpenseRow(
     val rowPad = if (compact) 6.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
     val bg = when {
-        item.isDone -> A11yTokens.AccentOkSoft
+        item.isDone -> A11yTokens.AccentOkInkSoft
         // Lavis discret : le contour 2 dp porte déjà l’alerte (pas un fond « criard »).
-        item.isOverdue -> A11yTokens.AccentDanger.copy(alpha = 0.10f)
+        item.isOverdue -> A11yTokens.DangerInk.copy(alpha = 0.10f)
         else -> A11yTokens.PaperCard
     }
     val borderMod = when {
-        highlighted -> Modifier.border(3.dp, A11yTokens.ButtonFill, shape)
+        highlighted -> Modifier.border(3.dp, A11yTokens.Link, shape)
         item.isOverdue && !item.isDone ->
-            Modifier.border(2.dp, A11yTokens.AccentDanger, shape)
+            Modifier.border(2.dp, A11yTokens.DangerInk, shape)
         else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
     }
     val lineGap = if (compact) 2.dp else 4.dp
@@ -1495,7 +1520,7 @@ private fun ExpenseStatusLine(
             StatusChip(
                 "Prélèvement",
                 A11yTokens.AccentAuto,
-                A11yTokens.Ink,
+                A11yTokens.OnGold,
                 compact = compact
             )
         }
@@ -1593,7 +1618,7 @@ private fun DiversCoursesSheet(
                 Text(
                     text = err,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.AccentDanger,
+                    color = A11yTokens.DangerInk,
                     modifier = Modifier.semantics {
                         liveRegion = LiveRegionMode.Assertive
                         contentDescription = err

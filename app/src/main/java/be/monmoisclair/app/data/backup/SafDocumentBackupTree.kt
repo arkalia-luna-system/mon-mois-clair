@@ -100,7 +100,9 @@ class SafDocumentBackupTree(
         }
         val fileName = parts.last()
         dir.findFile(fileName)?.delete()
-        val created = dir.createFile("image/webp", fileName)
+        val mime = BackupSecurityArchive.mimeForReceiptPath(safe)
+            ?: throw BackupFailure.Io("Chemin photo invalide.")
+        val created = dir.createFile(mime, fileName)
             ?: throw BackupFailure.Io("Impossible d’enregistrer la photo dans Documents.")
         val pfd = context.contentResolver.openFileDescriptor(created.uri, "w")
             ?: throw BackupFailure.Io("Impossible d’enregistrer la photo dans Documents.")
@@ -123,7 +125,7 @@ class SafDocumentBackupTree(
         return current.uri
     }
 
-    /** Photos webp du dossier receipts, pour l’archive de sécurité (S04). */
+    /** Photos webp + PDF du dossier receipts, pour l’archive de sécurité (S04). */
     fun listReceiptBinaries(): Map<String, ByteArray> {
         val dir = root.findFile("receipts") ?: return emptyMap()
         if (!dir.isDirectory) return emptyMap()
@@ -131,7 +133,9 @@ class SafDocumentBackupTree(
         var running = 0L
         for (child in dir.listFiles()) {
             val name = child.name ?: continue
-            if (!child.isFile || !name.endsWith(".webp", ignoreCase = true)) continue
+            if (!child.isFile) continue
+            val lower = name.lowercase()
+            if (!lower.endsWith(".webp") && !lower.endsWith(".pdf")) continue
             if (name.contains("..") || name.contains('/')) continue
             val remaining = BackupSecurityArchive.MAX_ZIP_BYTES - running
             val bytes = context.contentResolver.openInputStream(child.uri)?.use {

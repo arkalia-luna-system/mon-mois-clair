@@ -116,7 +116,7 @@ fun DossiersScreen(
                     }
             ) {
                 CircularProgressIndicator(
-                    color = A11yTokens.ButtonFill,
+                    color = A11yTokens.Link,
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(28.dp)
                 )
@@ -175,17 +175,17 @@ fun DossiersScreen(
             Text(
                 text = heroLabel,
                 style = MaterialTheme.typography.titleLarge,
-                color = if (heroCount == 0) A11yTokens.AccentOk else A11yTokens.Ink,
+                color = if (heroCount == 0) A11yTokens.AccentOkInk else A11yTokens.Ink,
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
                         1.dp,
-                        if (heroCount == 0) A11yTokens.AccentOk.copy(alpha = 0.35f)
+                        if (heroCount == 0) A11yTokens.AccentOkInkInk.copy(alpha = 0.35f)
                         else A11yTokens.PaperBorder,
                         heroShape
                     )
                     .background(
-                        if (heroCount == 0) A11yTokens.AccentOkSoft else A11yTokens.PaperCard,
+                        if (heroCount == 0) A11yTokens.AccentOkInkSoft else A11yTokens.PaperCard,
                         heroShape
                     )
                     .padding(horizontal = 14.dp, vertical = 12.dp)
@@ -359,7 +359,7 @@ fun DossiersScreen(
                         }
                 ) {
                     CircularProgressIndicator(
-                        color = A11yTokens.ButtonFill,
+                        color = A11yTokens.Link,
                         strokeWidth = 3.dp,
                         modifier = Modifier.size(28.dp)
                     )
@@ -427,10 +427,10 @@ private fun DossierRow(
             Text(
                 text = "Soldé",
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.AccentOk,
+                color = A11yTokens.AccentOkInk,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.35f), soldShape)
+                    .border(1.dp, A11yTokens.AccentOkInk.copy(alpha = 0.35f), soldShape)
                     .background(A11yTokens.AccentOkSoft, soldShape)
                     .padding(horizontal = 10.dp, vertical = 8.dp)
             )
@@ -446,7 +446,7 @@ private fun DossierRow(
                             "Déjà versé ${MoneyFormat.formatCents(item.paidCents)} " +
                                 "sur ${MoneyFormat.formatCents(item.totalDueCents)}"
                     },
-                color = A11yTokens.ButtonFill,
+                color = A11yTokens.Link,
                 trackColor = A11yTokens.PaperWarm
             )
             Row(

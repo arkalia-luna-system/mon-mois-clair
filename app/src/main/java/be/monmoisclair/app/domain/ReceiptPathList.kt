@@ -1,8 +1,10 @@
 package be.monmoisclair.app.domain
 
 /**
- * Lot C — plusieurs photos sur un dossier.
- * Stockage : chemins `receipts/….webp` séparés par `\n` (le premier = pastille accueil).
+ * Plusieurs pièces jointes (photos WebP + PDF).
+ * Stockage : chemins `receipts/…` séparés par `\n`.
+ * Sur un modèle : [extraReceiptPaths] = courriers en plus (la photo principale est à part).
+ * Sur une facture « une fois » : tout peut vivre dans `receiptRelativePath` (photo d’abord, PDF ensuite).
  */
 object ReceiptPathList {
 
@@ -17,6 +19,18 @@ object ReceiptPathList {
         paths.map { it.trim() }.filter { it.isNotEmpty() }.distinct().joinToString("\n")
 
     fun primary(raw: String): String = parse(raw).firstOrNull().orEmpty()
+
+    /** Photo (webp) en premier si présente, sinon premier chemin (souvent un PDF seul). */
+    fun primaryPhotoOrFirst(raw: String, isPdf: (String) -> Boolean): String {
+        val all = parse(raw)
+        return all.firstOrNull { !isPdf(it) } ?: all.firstOrNull().orEmpty()
+    }
+
+    fun extrasBesidesPrimary(raw: String, isPdf: (String) -> Boolean): List<String> {
+        val primary = primaryPhotoOrFirst(raw, isPdf)
+        if (primary.isEmpty()) return emptyList()
+        return parse(raw).filter { it != primary }
+    }
 
     fun append(raw: String, newPath: String): String {
         val path = newPath.trim()

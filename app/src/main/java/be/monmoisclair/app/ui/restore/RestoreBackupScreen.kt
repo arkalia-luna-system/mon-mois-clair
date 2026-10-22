@@ -190,18 +190,18 @@ fun RestoreBackupScreen(
                 val err = state.isError
                 Text(
                     text = msg,
-                    color = if (err) A11yTokens.AccentDanger else A11yTokens.AccentOk,
+                    color = if (err) A11yTokens.DangerInk else A11yTokens.AccentOkInk,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
                             1.dp,
-                            if (err) A11yTokens.AccentDanger.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            if (err) A11yTokens.DangerInk.copy(alpha = 0.4f)
+                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
                             msgShape
                         )
                         .background(
-                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
                             msgShape
                         )
                         .padding(12.dp)
@@ -234,7 +234,7 @@ fun RestoreBackupScreen(
                     }
             ) {
                 CircularProgressIndicator(
-                    color = A11yTokens.ButtonFill,
+                    color = A11yTokens.Link,
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(28.dp)
                 )

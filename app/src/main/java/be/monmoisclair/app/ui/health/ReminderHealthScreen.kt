@@ -104,7 +104,7 @@ fun ReminderHealthScreen(
                     }
             ) {
                 CircularProgressIndicator(
-                    color = A11yTokens.ButtonFill,
+                    color = A11yTokens.Link,
                     strokeWidth = 3.dp,
                     modifier = Modifier.size(28.dp)
                 )
@@ -149,11 +149,11 @@ fun ReminderHealthScreen(
                 val okShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Tout est prêt pour les alertes.",
-                    color = A11yTokens.AccentOk,
+                    color = A11yTokens.AccentOkInk,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.AccentOk.copy(alpha = 0.4f), okShape)
+                        .border(1.dp, A11yTokens.AccentOkInk.copy(alpha = 0.4f), okShape)
                         .background(A11yTokens.AccentOkSoft, okShape)
                         .padding(12.dp)
                         .semantics {

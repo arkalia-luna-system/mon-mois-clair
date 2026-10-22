@@ -343,18 +343,18 @@ fun SettingsScreen(
                 val err = state.savingsMessageError
                 Text(
                     text = msg,
-                    color = if (err) A11yTokens.AccentDanger else A11yTokens.AccentOk,
+                    color = if (err) A11yTokens.DangerInk else A11yTokens.AccentOkInk,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
                             1.dp,
-                            if (err) A11yTokens.AccentDanger.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            if (err) A11yTokens.DangerInk.copy(alpha = 0.4f)
+                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
                             msgShape
                         )
                         .background(
-                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
                             msgShape
                         )
                         .padding(tipPad)
@@ -460,18 +460,18 @@ fun SettingsScreen(
                 val err = state.isError
                 Text(
                     text = msg,
-                    color = if (err) A11yTokens.AccentDanger else A11yTokens.AccentOk,
+                    color = if (err) A11yTokens.DangerInk else A11yTokens.AccentOkInk,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
                             1.dp,
-                            if (err) A11yTokens.AccentDanger.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOk.copy(alpha = 0.35f),
+                            if (err) A11yTokens.DangerInk.copy(alpha = 0.4f)
+                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
                             msgShape
                         )
                         .background(
-                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
                             msgShape
                         )
                         .padding(tipPad)
@@ -633,17 +633,17 @@ fun SettingsScreen(
                 Text(
                     text = healthLine,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = if (healthOk) A11yTokens.AccentOk else A11yTokens.AccentDanger,
+                    color = if (healthOk) A11yTokens.AccentOkInk else A11yTokens.DangerInk,
                     modifier = Modifier
                         .fillMaxWidth()
                         .border(
                             1.dp,
-                            if (healthOk) A11yTokens.AccentOk.copy(alpha = 0.35f)
-                            else A11yTokens.AccentDanger.copy(alpha = 0.4f),
+                            if (healthOk) A11yTokens.AccentOkInkInk.copy(alpha = 0.35f)
+                            else A11yTokens.DangerInk.copy(alpha = 0.4f),
                             healthShape
                         )
                         .background(
-                            if (healthOk) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
+                            if (healthOk) A11yTokens.AccentOkInkSoft else A11yTokens.PaperWarm,
                             healthShape
                         )
                         .padding(tipPad)

@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.42** — sync futurs + Soldés ; 6.39–6.41 tenus).
+Mise à jour : 2026-10-22 (lot **6.44** — PDF à côté de la photo ; 6.43 tenu).
 
 ## 1. Vision
 
@@ -92,6 +92,8 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.40** | Polish sticky : Après courses danger + Courses en lien compact | ✅ |
 | **6.41** | Aperçu mois futurs (flèche › / Menu, M+1…M+3, lecture seule) | ✅ |
 | **6.42** | Sync templates sur mois déjà ouverts · Soldés repliés · dist famille | ✅ |
+| **6.43** | Forme : `tnum`, cartes 16 dp, pastilles capsule, FAIT forêt, socle barre, fondu mois | ✅ |
+| **6.44** | PDF à côté de la photo (fiche, facture qui revient, même dossier `receipts/`) | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -219,7 +221,7 @@ Un reste négatif et le bandeau « à prévoir » restent en brun `#8A5A1E` (~5,
 
 | Rôle | Hex | Token | Contraste utile |
 |------|-----|--------|-----------------|
-| Fond | `#F3EDE0` | `PaperCream` | Encre dessus (test ≥ 7:1). Un cran plus soutenu que la carte, pour que la liste se détache |
+| Fond | `#F6F3E8` | `PaperCream` | Brique dessus ≥ 7:1 (plancher du danger). Un cran plus soutenu que `#F7F4EB`, le relief vient surtout de l’ombre |
 | Cartes | `#FFFDF9` | `PaperCard` | Encre dessus ~16,9:1 |
 | Encre | `#1E1B18` | `Ink` | |
 | Boutons | `#1B4D4E` | `ButtonFill` | Ivoire `#FFFDF9` dessus ~9,3:1 |
@@ -231,11 +233,11 @@ Un reste négatif et le bandeau « à prévoir » restent en brun `#8A5A1E` (~5,
 
 ### Suite visuelle (pas dans ce lot)
 
-Décisions du [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md). On ne les code pas tant que l’étape formes / FAIT / chiffres n’est pas verte.
+Décisions du [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md). Formes = **6.43**. PDF courrier = **6.44**. Ce qui suit n’est pas encore codé.
 
 | Suite | Décision |
 |-------|----------|
-| PDF à côté de la photo | Oui, sur la fiche seulement. Même dossier que les WebP. Pas d’aperçu lecteur : « Voir le courrier » ouvre le fichier |
+| PDF à côté de la photo | **Fait (6.44).** Fiche d’une facture qui revient. Même dossier que les WebP. « Voir le courrier » ouvre le fichier |
 | Encre de nuit | Oui, plus tard, si on la veut le soir. Fond encre `#1E1B18`, texte papier, **même** teal. Pas le minuit fluo de Copilot. Pas la couleur du fond d’écran |
 | Widget | Un seul, plus tard : Reste + prochaine ligne non FAIT. Pas de camembert |
 | OCR de la communication | Plus tard. Jamais le montant |

@@ -4,8 +4,9 @@ Date : 2026-10-22.
 App lue au départ : `0.1.0-6.41`, puis le dépôt a avancé (6.42 en parallèle).  
 Les décisions de ce fichier sont reprises dans [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) (forme de l’objet + suite visuelle) et dans [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
 
-**En code (cette passe) :** chiffres `tnum`, fond `#F3EDE0`, cartes 16 dp + ombre courte, pastilles capsule, boutons 12 dp, socle `PaperWarm`, « FAIT ✓ » plein forêt, « Remettre » en trait, fondu 180 ms au changement de mois.  
-**Pas encore codé :** PDF, encre de nuit, widget, OCR de la communication, PDF du résumé.
+**En code (cette passe) :** chiffres `tnum`, fond `#F6F3E8` (plancher 7:1 de la brique), cartes 16 dp + ombre courte, pastilles capsule, boutons 12 dp, socle `PaperWarm`, « FAIT ✓ » plein forêt, « Remettre » en trait, fondu 180 ms au changement de mois.  
+**En code aussi (6.44) :** PDF à côté de la photo, sur la fiche de **toute** facture (pas seulement les accords / récurrences).  
+**Pas encore codé :** encre de nuit, widget, OCR de la communication, PDF du résumé.
 
 Ce n’est pas un plan à coder. Les lots A→F et le feedback 6.39–6.41 restent dans [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) et [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md). L’audit dossiers reste dans [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md). La recherche dettes du 21 octobre est figée dans [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md) : on ne la rouvre pas.
 

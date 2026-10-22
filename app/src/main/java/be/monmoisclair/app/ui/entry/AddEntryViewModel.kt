@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
@@ -68,6 +69,7 @@ class AddEntryViewModel @Inject constructor(
     private val createPendingLetter: CreatePendingLetterUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
     private val instanceDao: InstanceDao,
+    private val templateDao: TemplateDao,
     private val mutatingRepository: MutatingRepository
 ) : ViewModel() {
     private val targetYm: YearMonth

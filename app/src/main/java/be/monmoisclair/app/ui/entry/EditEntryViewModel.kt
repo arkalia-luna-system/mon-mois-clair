@@ -1,10 +1,12 @@
 package be.monmoisclair.app.ui.entry
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.ExpenseFeeEventDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
@@ -16,6 +18,7 @@ import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.EpcQrParser
+import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
@@ -35,6 +38,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.YearMonth
 import javax.inject.Inject
 
 /** Ligne d’historique frais pour la fiche (pas d’Android dans le domaine). */
@@ -57,6 +61,8 @@ data class EditEntryState(
     /** L’utilisateur a touché « Enlever la photo ». */
     val receiptCleared: Boolean = false,
     val hasPendingPhoto: Boolean = false,
+    /** PDF en attente (courrier mail) — pas d’aperçu bitmap. */
+    val hasPendingPdf: Boolean = false,
     val copyMessage: String? = null,
     val recurrenceInfo: String? = null,
     val recurrence: RecurrenceChoice = RecurrenceChoice.Once,
@@ -121,6 +127,7 @@ class EditEntryViewModel @Inject constructor(
     private val _state = MutableStateFlow(EditEntryState(id = entryId, isExpense = isExpenseArg))
     val state: StateFlow<EditEntryState> = _state.asStateFlow()
     @Volatile private var pendingBitmap: Bitmap? = null
+    @Volatile private var pendingPdfBytes: ByteArray? = null
 
     init { viewModelScope.launch { load() } }
 
@@ -132,6 +139,7 @@ class EditEntryViewModel @Inject constructor(
                 }
                 return
             }
+            val futureRo = isFuturePreviewLedger(e.ledgerId)
             _state.update {
                 it.copy(
                     loading = false, label = e.label,
@@ -139,7 +147,13 @@ class EditEntryViewModel @Inject constructor(
                     dayText = e.dayOfMonth.toString(),
                     recurrenceInfo = if (e.templateId != null) RecurrenceLabel.forIntervalMonths(1) else RecurrenceLabel.oneOff(),
                     recurrence = if (e.templateId != null) RecurrenceChoice.Monthly else RecurrenceChoice.Once,
-                    hasTemplate = e.templateId != null
+                    hasTemplate = e.templateId != null,
+                    futurePreviewReadOnly = futureRo,
+                    error = if (futureRo) {
+                        "Aperçu seulement — ouvrez le mois en cours pour modifier."
+                    } else {
+                        null
+                    }
                 )
             }
             return
@@ -196,12 +210,26 @@ class EditEntryViewModel @Inject constructor(
             ?.takeIf { isSavings }
             ?.let { instanceDao.sumAmountCentsByTemplateAndStatus(it, ExpenseStatus.DONE) }
             ?: 0L
+        val futureRo = isFuturePreviewLedger(e.ledgerId)
+        // Modèle : extras sur le template. Une fois : photo + PDF dans receiptRelativePath.
+        val isPdf: (String) -> Boolean = receiptPhotos::isPdf
+        val primaryPath: String
+        val extrasRaw: String
+        if (tpl != null) {
+            primaryPath = e.receiptRelativePath
+            extrasRaw = tpl.extraReceiptPaths
+        } else {
+            primaryPath = ReceiptPathList.primaryPhotoOrFirst(e.receiptRelativePath, isPdf)
+            extrasRaw = ReceiptPathList.encode(
+                ReceiptPathList.extrasBesidesPrimary(e.receiptRelativePath, isPdf)
+            )
+        }
         _state.update {
             it.copy(
                 loading = false, label = e.label,
                 amountText = MoneyFormat.centsToEditable(e.amountCents),
                 dayText = e.dayOfMonth.toString(), isAutoDebit = e.isAutoDebit,
-                paymentNote = e.paymentNote, receiptRelativePath = e.receiptRelativePath,
+                paymentNote = e.paymentNote, receiptRelativePath = primaryPath,
                 recurrenceInfo = recurrenceInfo, recurrence = choice,
                 hasTemplate = e.templateId != null,
                 causeLabel = tpl?.causeLabel.orEmpty(),
@@ -214,8 +242,14 @@ class EditEntryViewModel @Inject constructor(
                 creditorEmail = tpl?.creditorEmail.orEmpty(),
                 addedFeesCents = fees,
                 addedFeesNote = tpl?.addedFeesNote.orEmpty(),
+                futurePreviewReadOnly = futureRo,
+                error = if (futureRo) {
+                    "Aperçu seulement — ouvrez le mois en cours pour modifier."
+                } else {
+                    null
+                },
                 feeEvents = feeRows,
-                extraReceiptPaths = tpl?.extraReceiptPaths.orEmpty(),
+                extraReceiptPaths = extrasRaw,
                 isSavingsLine = isSavings,
                 savingsTransferredCents = transferred,
                 savingsMonthDone = isSavings && e.status == ExpenseStatus.DONE
@@ -263,12 +297,32 @@ class EditEntryViewModel @Inject constructor(
     }
     fun attachPreviewBitmap(b: Bitmap) {
         pendingBitmap = b
-        _state.update { it.copy(hasPendingPhoto = true, receiptCleared = false, error = null) }
+        _state.update {
+            it.copy(
+                hasPendingPhoto = true,
+                receiptCleared = false,
+                error = null
+            )
+        }
+    }
+
+    fun attachPendingPdf(bytes: ByteArray) {
+        pendingPdfBytes = bytes
+        _state.update {
+            it.copy(
+                hasPendingPdf = true,
+                error = null
+            )
+        }
     }
 
     fun setPhotoDecodeError() = _state.update {
         it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
     }
+
+    fun setPdfReadError(message: String = "Ce PDF n’a pas pu être lu. Réessayez.") =
+        _state.update { it.copy(error = message) }
+
     fun clearReceiptPhoto() {
         pendingBitmap = null
         _state.update {
@@ -279,6 +333,21 @@ class EditEntryViewModel @Inject constructor(
                 error = null
             )
         }
+    }
+
+    fun clearPendingPdf() {
+        pendingPdfBytes = null
+        _state.update { it.copy(hasPendingPdf = false, error = null) }
+    }
+
+    fun isPdfPath(relativePath: String): Boolean = receiptPhotos.isPdf(relativePath)
+
+    /** Ouvre photo ou PDF hors de l’app (lecteur système). Null si introuvable. */
+    suspend fun viewReceiptIntent(relativePath: String): Intent? {
+        val path = relativePath.trim()
+        if (path.isEmpty()) return null
+        val uri = receiptPhotos.viewUri(path) ?: return null
+        return receiptPhotos.viewIntent(uri, path)
     }
 
     /** Retire un courrier en plus (persisté à l’enregistrement). */
@@ -393,6 +462,14 @@ class EditEntryViewModel @Inject constructor(
 
     fun save() {
         if (_state.value.saving || _state.value.done) return
+        if (_state.value.futurePreviewReadOnly) {
+            _state.update {
+                it.copy(
+                    error = "Aperçu seulement — ouvrez le mois en cours pour modifier."
+                )
+            }
+            return
+        }
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
@@ -473,12 +550,12 @@ class EditEntryViewModel @Inject constructor(
                 }
                 return@launch
             }
+            val owner = if (s.applyToFollowing || s.isSavingsLine) {
+                instanceDao.getExpenseById(s.id)?.templateId ?: s.id
+            } else {
+                s.id
+            }
             pendingBitmap?.let { bmp ->
-                val owner = if (s.applyToFollowing || s.isSavingsLine) {
-                    instanceDao.getExpenseById(s.id)?.templateId ?: s.id
-                } else {
-                    s.id
-                }
                 if (s.isAgreement && path.isNotBlank() && !cleared) {
                     val saved = receiptPhotos.saveBitmap(
                         "$owner-extra-${AppClock.nowEpochMs()}",
@@ -497,6 +574,58 @@ class EditEntryViewModel @Inject constructor(
                             "Photo enregistrée. La copie dans Documents a échoué — elle sera retentée."
                     }
                 }
+            }
+            // PDF = courrier en plus sur toute facture. Jamais à la place de la photo seule
+            // (sauf facture « une fois » sans photo : le PDF est alors la seule pièce).
+            var extrasReplace: String? = when {
+                s.hasTemplate -> s.extraReceiptPaths
+                s.isAgreement -> s.extraReceiptPaths
+                else -> null
+            }
+            pendingPdfBytes?.let { pdf ->
+                val expenseRow = instanceDao.getExpenseById(s.id)
+                val ownerId = expenseRow?.templateId ?: s.id
+                try {
+                    val saved = receiptPhotos.savePdfBytes(
+                        "$ownerId-pdf-${AppClock.nowEpochMs()}",
+                        pdf
+                    )
+                    if (s.hasTemplate) {
+                        extrasReplace = ReceiptPathList.append(
+                            extrasReplace.orEmpty(),
+                            saved.relativePath
+                        )
+                    } else {
+                        // Une fois : photo (+ PDF) dans le même champ instance.
+                        extrasReplace = null
+                        extraAppend = ""
+                        path = ReceiptPathList.encode(
+                            buildList {
+                                if (path.isNotBlank() && !cleared) add(path)
+                                addAll(ReceiptPathList.parse(s.extraReceiptPaths))
+                                add(saved.relativePath)
+                            }
+                        )
+                    }
+                    if (!saved.documentsCopyOk && documentsHint == null) {
+                        documentsHint =
+                            "PDF enregistré. La copie dans Documents a échoué — elle sera retentée."
+                    }
+                } catch (e: BackupFailure.Io) {
+                    _state.update {
+                        it.copy(saving = false, error = e.message ?: "PDF impossible à enregistrer.")
+                    }
+                    return@launch
+                }
+            }
+            // Facture une fois : recomposer photo + courriers déjà en state (sans nouveau PDF).
+            if (!s.hasTemplate && pendingPdfBytes == null) {
+                path = ReceiptPathList.encode(
+                    buildList {
+                        if (path.isNotBlank() && !cleared) add(path)
+                        addAll(ReceiptPathList.parse(s.extraReceiptPaths))
+                    }
+                )
             }
             val syncCreditor = s.isExpense && (s.isAgreement || s.dossierExpanded)
             when (
@@ -525,14 +654,21 @@ class EditEntryViewModel @Inject constructor(
                     feeAddCents = feeAdd ?: 0L,
                     feeNote = s.feeNoteText,
                     extraReceiptAppend = extraAppend,
-                    extraReceiptPathsReplace = if (s.isAgreement) s.extraReceiptPaths else null,
+                    extraReceiptPathsReplace = extrasReplace,
                     keepDoneAmount = s.isSavingsLine
                 )
             ) {
                 UpdateInstanceResult.Success -> {
                     pendingBitmap = null
+                    pendingPdfBytes = null
                     _state.update {
-                        it.copy(saving = false, done = true, copyMessage = documentsHint)
+                        it.copy(
+                            saving = false,
+                            done = true,
+                            hasPendingPhoto = false,
+                            hasPendingPdf = false,
+                            copyMessage = documentsHint
+                        )
                     }
                 }
                 UpdateInstanceResult.NotFound ->
@@ -545,6 +681,14 @@ class EditEntryViewModel @Inject constructor(
 
     fun delete() {
         if (_state.value.saving || _state.value.done) return
+        if (_state.value.futurePreviewReadOnly) {
+            _state.update {
+                it.copy(
+                    error = "Aperçu seulement — on ne supprime pas sur un mois à venir."
+                )
+            }
+            return
+        }
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             if (_state.value.isSavingsLine) {
@@ -574,5 +718,10 @@ class EditEntryViewModel @Inject constructor(
                     }
             }
         }
+    }
+
+    private fun isFuturePreviewLedger(ledgerId: String): Boolean {
+        val ym = runCatching { YearMonth.parse(ledgerId) }.getOrNull() ?: return false
+        return MonthNavigation.isFuturePreview(ym, AppClock.currentYearMonth())
     }
 }

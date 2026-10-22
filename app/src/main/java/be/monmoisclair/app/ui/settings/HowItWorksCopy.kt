@@ -61,6 +61,8 @@ object HowItWorksCopy {
                 "À l’ajout, la photo d’une facture qui revient est reprise les mois suivants. " +
                 "Dans la fiche, elle ne suit que si vous cochez « Aussi les mois suivants ». " +
                 "Sur le mois, « Voir la photo » (ou « Photo » sur petit écran) ouvre le papier. " +
+                "Sur n’importe quelle facture, « Joindre un PDF » range le courrier à côté de la photo " +
+                "(il ne la remplace pas). « Voir le courrier » l’ouvre dans l’app du téléphone. " +
                 "Dans la fiche, touchez la vignette pour l’agrandir. " +
                 "Vous pouvez reprendre la photo sans tout recréer. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."

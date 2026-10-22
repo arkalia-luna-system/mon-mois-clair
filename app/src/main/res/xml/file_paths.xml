@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pas tout le cache : seulement partage ZIP + photos caméra temporaires. -->
+<!-- Partage ZIP, photos caméra temporaires, courriers locaux (webp / PDF). -->
 <paths>
     <cache-path name="share" path="share/" />
     <cache-path name="camera" path="camera/" />
+    <files-path name="receipts" path="receipts/" />
 </paths>
