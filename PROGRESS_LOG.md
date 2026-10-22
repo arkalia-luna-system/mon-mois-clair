@@ -21,19 +21,23 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ### 2026-10-22 — 6.57 Suite audit (Accueil / Réglages / micro)
 
-**Vu :** quick wins 6.56 OK ; restaient H05–H14, SET02–05, LOCK/LOAD/ONB, DOS02/03, UP01, AID01, WDG01, SYS03.
+**Vu :** quick wins 6.56 OK ; restaient tips tip-box, SCAN calme, SET radio/case, H11/H12, LOCK/LOAD, widget, DOS KPI.
 
 **Codé :**
 - H05/H06 : FAIT à droite ; Copier/Photo = liens 2ᵉ rangée ; max 2 pastilles (critique → Auto → Accord)
-- H08–H12/H14 : empty sans BrandMark ; tip recherche sans boîte ; highlight 2 dp ; socle 8 dp + ombre ; snackbar PaperCard ; dialog mois passé PaperCream
-- SET02–05 : tip Mettre de côté 1 phrase ; Restaurer Danger ; wordmark pied petit ; Radio teal
-- LOCK01 / LOAD01 : une composition verrou ; chargement sans spinner
-- ONB01/02 : tip SAF court ; un seul Secondary corriger
-- DOS02/03 : plus de bandeau KPI ; résumé sans boîte clone
-- UP01 empty PaperCard ; AID01 alternance ; HLTH sans wordmark ; WDG01 32 sp / padding 20 ; outline champs = PaperBorder
+- H08–H12/H14 : empty Accueil sans carte ; tip recherche sans boîte ; highlight 2 dp ; sticky + socle plus d’air ; snackbar PaperCard ; dialog mois passé PaperCream
+- Tips courants → InkMuted (onboarding SAF/Alertes, Alertes santé, À venir, HowItWorks, courrier/versement) ; boîtes = erreur/ok/warn seulement
+- SET : Radio + Checkbox teal ; tip Mettre de côté 1 phrase ; Restaurer Danger ; wordmark pied petit
+- LOCK01 / LOAD01 : verrou une composition ; chargement brand+texte (pas spinner/carte)
+- SCAN01 : cadre ivoire plus calme ; flash crème 0,28 ; deny permanent = warn box
+- DOS02 : plus de bandeau KPI dossiers
+- WDG01 : padding 20 ; titre/ligne 16 sp, montant 32 sp — **limite RemoteViews** : police système seulement
+- SYS03 : outline champs = PaperBorder
+- DisplayFit : stickyPaddingVertical 8/14 dp
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **284/284** (67 fichiers).  
-**Version :** `0.1.0-6.57` · `versionCode` 62.
+**Version :** `0.1.0-6.57` · `versionCode` 62.  
+**Pas un claim « premium terminé »** : polish ; smoke doigt / S26 / FORM01 restent ouverts.
 
 ### 2026-10-22 — 6.56 Mois du menu + capsule gauche
 

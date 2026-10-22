@@ -6,8 +6,8 @@ Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · 6.56 menu/sticky · **6.57** H05–H14, SET02–05, LOCK/LOAD/ONB, DOS02, WDG01, SYS03 |
-| **Pas fait** | S26 en main · smoke doigt · FORM01 regroupement profond · SET01 filets carnet |
+| **Fait** | … · 6.56 menu/sticky · **6.57** tips sans tip-box, H05–H14, SET radio/case, LOCK/LOAD, SCAN calme, DOS02, WDG01, SYS03 |
+| **Pas fait** | S26 en main · smoke doigt · FORM01 regroupement profond |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 
