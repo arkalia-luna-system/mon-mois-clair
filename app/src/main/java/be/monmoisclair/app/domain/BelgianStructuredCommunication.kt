@@ -54,8 +54,59 @@ object BelgianStructuredCommunication {
         return check == expected
     }
 
+    /** Affichage écran : `+++XXX/XXXX/XXXXX+++` (12 chiffres valides). */
+    fun formatDisplay(twelveDigits: String): String? {
+        if (!isValidMod97(twelveDigits)) return null
+        return "+++${twelveDigits.substring(0, 3)}/" +
+            "${twelveDigits.substring(3, 7)}/" +
+            "${twelveDigits.substring(7, 12)}+++"
+    }
+
+    /**
+     * Cherche une communication structurée **valide** dans un texte OCR.
+     * Ne lit jamais un montant : seulement 12 chiffres + modulo 97 (ou forme +++).
+     * Null = rien de fiable à proposer.
+     */
+    fun findInOcrText(raw: String): String? {
+        if (raw.isBlank()) return null
+        // Forme +++XXX/XXXX/XXXXX+++ (espaces OCR tolérés).
+        val plusForm = Regex(
+            """\+{3}\s*(\d{3})\s*/\s*(\d{4})\s*/\s*(\d{5})\s*\+{3}"""
+        )
+        for (m in plusForm.findAll(raw)) {
+            val digits = m.groupValues[1] + m.groupValues[2] + m.groupValues[3]
+            formatDisplay(digits)?.let { return it }
+        }
+        // Variante ***…*** (certains courriers).
+        val starForm = Regex(
+            """\*{3}\s*(\d{3})\s*/\s*(\d{4})\s*/\s*(\d{5})\s*\*{3}"""
+        )
+        for (m in starForm.findAll(raw)) {
+            val digits = m.groupValues[1] + m.groupValues[2] + m.groupValues[3]
+            formatDisplay(digits)?.let { return it }
+        }
+        // Douze chiffres d’affilée (OCR a perdu les +++ /).
+        for (m in Regex("""\d{12}""").findAll(raw)) {
+            formatDisplay(m.value)?.let { return it }
+        }
+        // Fenêtre glissante sur tous les chiffres (espaces / ponctuation OCR).
+        val allDigits = raw.filter { it.isDigit() }
+        var i = 0
+        while (i + 12 <= allDigits.length) {
+            formatDisplay(allDigits.substring(i, i + 12))?.let { return it }
+            i++
+        }
+        return null
+    }
+
     /** Exemple canonique du plan : base 0 → contrôle 97. */
     const val EXAMPLE_VALID_DISPLAY = "+++000/0000/00097+++"
+
+    const val OCR_FOUND = "Communication lue sur la photo — vérifiez avant d’enregistrer."
+    const val OCR_NOT_FOUND =
+        "Aucune communication +++ valide sur cette photo. Saisissez-la ou scannez le QR."
+    const val OCR_NO_PHOTO = "Prenez d’abord une photo de la facture."
+    const val OCR_BUSY = "Lecture de la photo…"
 
     /**
      * Presse-papiers banque : lettres et chiffres, majuscules.

@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
+import be.monmoisclair.app.data.backup.BackupFailure
+import be.monmoisclair.app.data.receipt.ReceiptCommunicationOcr
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.EpcQrParser
+import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
@@ -43,6 +46,7 @@ data class EntryFormState(
     val isAutoDebit: Boolean = false,
     val paymentNote: String = "",
     val hasPendingPhoto: Boolean = false,
+    val hasPendingPdf: Boolean = false,
     /** Lot B — bloc replié « retard ou accord ». */
     val dossierExpanded: Boolean = false,
     val causeLabel: String = "",
@@ -54,6 +58,7 @@ data class EntryFormState(
     val error: String? = null,
     val saved: Boolean = false,
     val saving: Boolean = false,
+    val ocrBusy: Boolean = false,
     val formTitle: String = "Nouvelle facture ou revenu",
     val targetYearMonth: YearMonth = AppClock.currentYearMonth()
 ) {
@@ -68,6 +73,7 @@ class AddEntryViewModel @Inject constructor(
     private val addEntry: AddEntryUseCase,
     private val createPendingLetter: CreatePendingLetterUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
+    private val receiptOcr: ReceiptCommunicationOcr,
     private val instanceDao: InstanceDao,
     private val templateDao: TemplateDao,
     private val mutatingRepository: MutatingRepository
@@ -111,6 +117,7 @@ class AddEntryViewModel @Inject constructor(
     )
     val state: StateFlow<EntryFormState> = _state.asStateFlow()
     @Volatile private var pendingBitmap: Bitmap? = null
+    @Volatile private var pendingPdfBytes: ByteArray? = null
     /** Évite un 2ᵉ insert si la photo a échoué après un 1ᵉr enregistrement OK. */
     @Volatile private var createdInstanceId: String? = null
 
@@ -148,9 +155,22 @@ class AddEntryViewModel @Inject constructor(
         _state.update { it.copy(hasPendingPhoto = true, error = null) }
     }
 
+    fun attachPendingPdf(bytes: ByteArray) {
+        pendingPdfBytes = bytes
+        _state.update { it.copy(hasPendingPdf = true, error = null) }
+    }
+
+    fun clearPendingPdf() {
+        pendingPdfBytes = null
+        _state.update { it.copy(hasPendingPdf = false, error = null) }
+    }
+
     fun setPhotoDecodeError() = _state.update {
         it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
     }
+
+    fun setPdfReadError(message: String = "Ce PDF n’a pas pu être lu. Réessayez.") =
+        _state.update { it.copy(error = message) }
 
     fun copyPaymentNote() {
         val prepared = BelgianStructuredCommunication.prepareCopy(_state.value.paymentNote)
@@ -163,6 +183,42 @@ class AddEntryViewModel @Inject constructor(
         SensitiveClipboard.setPlainText(appContext, "Communication", prepared.clipboardText)
         _state.update {
             it.copy(copyMessage = prepared.userMessage, error = null)
+        }
+    }
+
+    /** OCR +++ sur la photo en attente — jamais le montant. */
+    fun readCommunicationFromPhoto() {
+        if (_state.value.ocrBusy || !_state.value.isExpense) return
+        val bmp = pendingBitmap
+        if (bmp == null) {
+            _state.update {
+                it.copy(error = BelgianStructuredCommunication.OCR_NO_PHOTO, copyMessage = null)
+            }
+            return
+        }
+        viewModelScope.launch {
+            _state.update {
+                it.copy(ocrBusy = true, error = null, copyMessage = BelgianStructuredCommunication.OCR_BUSY)
+            }
+            val found = runCatching { receiptOcr.findStructuredCommunication(bmp) }.getOrNull()
+            if (found.isNullOrBlank()) {
+                _state.update {
+                    it.copy(
+                        ocrBusy = false,
+                        copyMessage = null,
+                        error = BelgianStructuredCommunication.OCR_NOT_FOUND
+                    )
+                }
+            } else {
+                _state.update {
+                    it.copy(
+                        ocrBusy = false,
+                        paymentNote = found,
+                        copyMessage = BelgianStructuredCommunication.OCR_FOUND,
+                        error = null
+                    )
+                }
+            }
         }
     }
 
@@ -349,16 +405,24 @@ class AddEntryViewModel @Inject constructor(
                     createdInstanceId = result.instanceId
                     // documentsOk : la copie SAF peut échouer ; la photo locale suffit pour rester.
                     val (photoOk, _) = attachPendingPhoto(result.instanceId)
+                    val pdfOk = attachPendingPdf(result.instanceId, recurring = s.recurrence != RecurrenceChoice.Once)
                     pendingBitmap = null
+                    pendingPdfBytes = null
+                    val attachOk = photoOk && pdfOk
                     _state.update {
                         it.copy(
                             saving = false,
-                            saved = photoOk,
-                            error = if (photoOk) {
-                                null
-                            } else {
-                                "Facture enregistrée. La photo n’a pas suivi — " +
-                                    "reprenez-en une, puis Enregistrer."
+                            saved = attachOk,
+                            hasPendingPhoto = false,
+                            hasPendingPdf = false,
+                            error = when {
+                                attachOk -> null
+                                !photoOk ->
+                                    "Facture enregistrée. La photo n’a pas suivi — " +
+                                        "reprenez-en une, puis Enregistrer."
+                                else ->
+                                    "Facture enregistrée. Le PDF n’a pas suivi — " +
+                                        "rouvez la fiche pour le joindre."
                             }
                         )
                     }
@@ -435,5 +499,61 @@ class AddEntryViewModel @Inject constructor(
             }
             true to documentsOk
         }.getOrElse { false to false }
+    }
+
+    /**
+     * PDF à côté de la photo dès l’ajout (même règle que l’édition) :
+     * facture qui revient → courriers du modèle ; une fois → même champ instance.
+     */
+    private suspend fun attachPendingPdf(instanceId: String, recurring: Boolean): Boolean {
+        val pdf = pendingPdfBytes ?: return true
+        return try {
+            val expense = instanceDao.getExpenseById(instanceId)
+            val ownerId = expense?.templateId
+                ?: expense?.id
+                ?: instanceId
+            val saved = receiptPhotos.savePdfBytes(
+                "$ownerId-pdf-${AppClock.nowEpochMs()}",
+                pdf
+            )
+            mutatingRepository.mutate {
+                if (expense != null && expense.templateId != null) {
+                    templateDao.getExpenseById(expense.templateId)?.let { tpl ->
+                        templateDao.updateExpense(
+                            tpl.copy(
+                                extraReceiptPaths = ReceiptPathList.append(
+                                    tpl.extraReceiptPaths,
+                                    saved.relativePath
+                                )
+                            )
+                        )
+                    }
+                } else if (expense != null) {
+                    val merged = ReceiptPathList.encode(
+                        buildList {
+                            addAll(ReceiptPathList.parse(expense.receiptRelativePath))
+                            add(saved.relativePath)
+                        }
+                    )
+                    instanceDao.updateExpense(expense.copy(receiptRelativePath = merged))
+                } else if (recurring) {
+                    templateDao.getExpenseById(instanceId)?.let { tpl ->
+                        templateDao.updateExpense(
+                            tpl.copy(
+                                extraReceiptPaths = ReceiptPathList.append(
+                                    tpl.extraReceiptPaths,
+                                    saved.relativePath
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+            true
+        } catch (_: BackupFailure.Io) {
+            false
+        } catch (_: Exception) {
+            false
+        }
     }
 }

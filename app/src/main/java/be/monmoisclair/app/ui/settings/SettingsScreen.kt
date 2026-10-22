@@ -19,8 +19,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import be.monmoisclair.app.domain.model.ThemePreference
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -249,6 +251,38 @@ fun SettingsScreen(
             )
         }
 
+        SettingsCard(title = "Apparence") {
+            val appearanceTipShape = MaterialTheme.shapes.medium
+            Text(
+                text = "Clair ou sombre, ou comme le téléphone.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.PaperBorder, appearanceTipShape)
+                    .background(A11yTokens.PaperWarm, appearanceTipShape)
+                    .padding(tipPad)
+            )
+            ThemeOptionRow(
+                label = "Comme le téléphone",
+                selected = state.themePreference == ThemePreference.System,
+                enabled = !state.busy,
+                onSelect = { viewModel.setThemePreference(ThemePreference.System) }
+            )
+            ThemeOptionRow(
+                label = "Clair",
+                selected = state.themePreference == ThemePreference.Light,
+                enabled = !state.busy,
+                onSelect = { viewModel.setThemePreference(ThemePreference.Light) }
+            )
+            ThemeOptionRow(
+                label = "Sombre",
+                selected = state.themePreference == ThemePreference.Dark,
+                enabled = !state.busy,
+                onSelect = { viewModel.setThemePreference(ThemePreference.Dark) }
+            )
+        }
+
         SettingsCard(title = "Mettre de côté") {
             val savingsTipShape = MaterialTheme.shapes.medium
             Text(
@@ -350,11 +384,11 @@ fun SettingsScreen(
                         .border(
                             1.dp,
                             if (err) A11yTokens.DangerInk.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
+                            else A11yTokens.AccentOkInk.copy(alpha = 0.35f),
                             msgShape
                         )
                         .background(
-                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
                             msgShape
                         )
                         .padding(tipPad)
@@ -467,11 +501,11 @@ fun SettingsScreen(
                         .border(
                             1.dp,
                             if (err) A11yTokens.DangerInk.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
+                            else A11yTokens.AccentOkInk.copy(alpha = 0.35f),
                             msgShape
                         )
                         .background(
-                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
                             msgShape
                         )
                         .padding(tipPad)
@@ -579,7 +613,8 @@ fun SettingsScreen(
                 val tipShape = MaterialTheme.shapes.medium
                 Text(
                     text = "À envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
-                        "Utile si le mois est en déficit, ou s’il y a un dossier.",
+                        "Utile si le mois est en déficit, ou s’il y a un dossier. " +
+                        "Texte ou PDF — même contenu.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier
@@ -607,6 +642,11 @@ fun SettingsScreen(
                 SecondaryA11yButton(
                     text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
                     onClick = viewModel::shareMonthSummary,
+                    enabled = !state.busy && !state.summaryBusy
+                )
+                SecondaryA11yButton(
+                    text = if (state.summaryBusy) "Préparation…" else "PDF du résumé",
+                    onClick = viewModel::shareMonthSummaryPdf,
                     enabled = !state.busy && !state.summaryBusy
                 )
             }
@@ -638,12 +678,12 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .border(
                             1.dp,
-                            if (healthOk) A11yTokens.AccentOkInkInk.copy(alpha = 0.35f)
+                            if (healthOk) A11yTokens.AccentOkInk.copy(alpha = 0.35f)
                             else A11yTokens.DangerInk.copy(alpha = 0.4f),
                             healthShape
                         )
                         .background(
-                            if (healthOk) A11yTokens.AccentOkInkSoft else A11yTokens.PaperWarm,
+                            if (healthOk) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
                             healthShape
                         )
                         .padding(tipPad)
@@ -711,6 +751,44 @@ fun SettingsScreen(
                 color = A11yTokens.InkMuted
             )
         }
+    }
+}
+
+@Composable
+private fun ThemeOptionRow(
+    label: String,
+    selected: Boolean,
+    enabled: Boolean,
+    onSelect: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = A11yTokens.minTouchHeight)
+            .clickable(
+                enabled = enabled,
+                role = Role.RadioButton,
+                onClick = onSelect
+            )
+            .semantics {
+                contentDescription = if (selected) {
+                    "$label, sélectionné"
+                } else {
+                    label
+                }
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onSelect,
+            enabled = enabled
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.Ink
+        )
     }
 }
 

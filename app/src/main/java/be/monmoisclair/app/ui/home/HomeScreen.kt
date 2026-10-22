@@ -3,6 +3,7 @@ package be.monmoisclair.app.ui.home
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -461,9 +462,16 @@ fun HomeScreen(
                 .background(A11yTokens.PaperCream)
                 .imePadding()
         ) {
+            // Ombre courte sous le Reste (benchmark V01) — un seul relief hero.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .shadow(
+                        elevation = 2.dp,
+                        ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
+                        spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
+                    )
+                    .background(A11yTokens.PaperCream)
                     .padding(horizontal = fit.stickyPaddingHorizontal)
                     .padding(vertical = fit.stickyPaddingVertical)
             ) {
@@ -1231,8 +1239,9 @@ private fun StatusChip(
     compact: Boolean = false
 ) {
     val shape = StampShape
+    // Tampon plus serré que le corps (benchmark V03) — reste ≥ 18 sp.
     val hPad = if (compact) 6.dp else 8.dp
-    val vPad = if (compact) 2.dp else 4.dp
+    val vPad = if (compact) 1.dp else 2.dp
     Text(
         text = text,
         color = content,
@@ -1319,12 +1328,17 @@ private fun ExpenseRow(
     val compact = fit.compactHomeChrome
     val rowPad = if (compact) 6.dp else 12.dp
     val shape = MaterialTheme.shapes.medium
-    val bg = when {
-        item.isDone -> A11yTokens.AccentOkInkSoft
+    val targetBg = when {
+        item.isDone -> A11yTokens.AccentOkSoft
         // Lavis discret : le contour 2 dp porte déjà l’alerte (pas un fond « criard »).
         item.isOverdue -> A11yTokens.DangerInk.copy(alpha = 0.10f)
         else -> A11yTokens.PaperCard
     }
+    val bg by animateColorAsState(
+        targetValue = targetBg,
+        animationSpec = tween(150),
+        label = "expenseRowBg"
+    )
     val borderMod = when {
         highlighted -> Modifier.border(3.dp, A11yTokens.Link, shape)
         item.isOverdue && !item.isDone ->

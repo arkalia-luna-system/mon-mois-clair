@@ -6,10 +6,10 @@ Index des notes **actives**. Le reste est en [`archive/`](archive/README.md).
 
 | Fichier | Rôle |
 |---------|------|
-| [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | Lots A→F + rythme + feedback (**6.42**) |
+| [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | Lots A→F + rythme + feedback (**clos → 6.49**) |
 | [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) | Constats. **Décider via §8** |
-| [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md) | Retours doigt Athalia + pistes (**6.39–6.42**) |
-| [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Apps 2026 : manques, visuel, ce qu’on ne copie pas |
+| [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md) | Retours doigt Athalia (historique **6.38→6.42**) |
+| [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Apps 2026 : état réel **6.49** (widget / PDF / OCR / nuit) |
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Envoi / MAJ APK **sans USB** (Drive / WA) |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy |
 | [`CI.md`](CI.md) | Feuille de route CI (+ Dependabot Security) |

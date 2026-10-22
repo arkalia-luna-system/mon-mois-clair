@@ -3,8 +3,9 @@
 Source : Athalia après usage doigt de `0.1.0-6.38` (SM-S938B).  
 But de ce fichier : **ne rien perdre**, croiser chaque demande avec le **code actuel**, et noter **comment** corriger / améliorer **sans casser** maman (accueil simple) ni Alex (dossiers).
 
-État à la rédaction : **6.38**.  
-**Livré en 6.39** (`0.1.0-6.39`) ; polish sticky **6.40** ; aperçu + PDF **6.44** (`0.1.0-6.44`, **251/251**) — les pistes « Comment faire » ci-dessous décrivent ce qui a été codé.
+État à la rédaction : **6.38** (historique).  
+**Livré ensuite :** 6.39–6.42 (feedback) · 6.43–6.49 (formes, PDF, nuit, OCR, résumé PDF, widget).  
+Ce fichier reste une **trace de décisions** — l’état produit actuel est dans `PROGRESS_LOG.md` / `BENCHMARK_QUALITE_2026.md`.
 
 ---
 

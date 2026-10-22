@@ -197,11 +197,11 @@ fun RestoreBackupScreen(
                         .border(
                             1.dp,
                             if (err) A11yTokens.DangerInk.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
+                            else A11yTokens.AccentOkInk.copy(alpha = 0.35f),
                             msgShape
                         )
                         .background(
-                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
+                            if (err) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
                             msgShape
                         )
                         .padding(12.dp)

@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.domain.model.ThemePreference
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
 import be.monmoisclair.app.domain.usecase.ObserveOnboardingStateUseCase
 import be.monmoisclair.app.domain.usecase.StartDestination
+import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +23,8 @@ data class MainUiState(
     val biometricEnabled: Boolean = false,
     val biometricAvailability: BiometricAvailability = BiometricAvailability.Unsupported,
     val unlocked: Boolean = true,
-    val lockMessage: String? = null
+    val lockMessage: String? = null,
+    val themePreference: ThemePreference = ThemePreference.System
 ) {
     /** Verrou affiché seulement si préféré + prêt matériellement + pas encore déverrouillé. */
     val needsUnlock: Boolean
@@ -34,6 +37,7 @@ data class MainUiState(
 class MainViewModel @Inject constructor(
     private val observeOnboarding: ObserveOnboardingStateUseCase,
     private val biometricPreference: BiometricPreferenceUseCase,
+    private val themePreference: ThemePreferenceUseCase,
     val biometricAuth: BiometricAuthGateway
 ) : ViewModel() {
 
@@ -41,6 +45,14 @@ class MainViewModel @Inject constructor(
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            themePreference.hydrate()
+        }
+        viewModelScope.launch {
+            themePreference.preference.collect { pref ->
+                _uiState.update { it.copy(themePreference = pref) }
+            }
+        }
         refreshStart()
     }
 
@@ -51,14 +63,17 @@ class MainViewModel @Inject constructor(
             val availability = biometricAuth.availability()
             // Si biométrie activée mais plus utilisable → ne pas bloquer l’accès (décision E).
             val mustLock = enabled && availability == BiometricAvailability.Ready
-            _uiState.value = MainUiState(
-                loading = false,
-                startDestination = dest,
-                biometricEnabled = enabled,
-                biometricAvailability = availability,
-                unlocked = !mustLock,
-                lockMessage = null
-            )
+            _uiState.update {
+                it.copy(
+                    loading = false,
+                    startDestination = dest,
+                    biometricEnabled = enabled,
+                    biometricAvailability = availability,
+                    unlocked = !mustLock,
+                    lockMessage = null,
+                    themePreference = themePreference.preference.value
+                )
+            }
         }
     }
 

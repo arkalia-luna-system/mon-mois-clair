@@ -1,8 +1,8 @@
 # Plan — du carnet fini à un outil qui tient aussi les retards
 
-Date : 2026-10-21.  
+Date : 2026-10-21 (état code mis à jour **2026-10-22**).  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37–**6.44** clos (`0.1.0-6.44`, schéma Room **8**, **251/251**).  
+Lots **A à F** + 6.37–**6.49** clos (`0.1.0-6.49`, schéma Room **8**). Benchmark : formes / PDF / nuit / OCR / résumé PDF / widget.  
 Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -142,15 +142,15 @@ Réglages : montant + jour, facture mensuelle « Mettre de côté », alerte dé
 
 ### Lot F — Texte à montrer ou à envoyer — clos au journal 6.36
 
-`PrepareMonthSummaryUseCase` · bouton Mes dossiers · Réglages si déficit ou dossier · partage Android · **226/226**. Pas de PDF CPAS.
+`PrepareMonthSummaryUseCase` · boutons Mes dossiers · Réglages si déficit ou dossier · partage texte + **PDF (6.48)** · Pas de PDF CPAS.
 
 **Problème.** Un mois négatif ou un rendez-vous médiation demande une liste propre. Le formulaire CPAS de Liège demande créancier, nature, solde, arrangement, plus les revenus et les charges.
 
 **Comportement.**
 
-- Bouton **« Préparer un résumé »** dans Mes dossiers.
+- Bouton **« Préparer un résumé »** (texte) et **« PDF du résumé »** dans Mes dossiers.
 - Aussi dans Réglages si le mois affiché est en déficit ou s’il existe un dossier. Pas sur l’accueil.
-- Texte brut, partage Android (mail, WhatsApp) :
+- Même contenu en texte ou PDF, partage Android (mail, WhatsApp, imprimer) :
 
   - mois ;
   - revenus (nom, montant) ;
@@ -159,7 +159,7 @@ Réglages : montant + jour, facture mensuelle « Mettre de côté », alerte dé
   - mis de côté, à part ;
   - une ligne : les photos des courriers sont dans l’application.
 
-- Pas de PDF imitant un CPAS. Pas de numéro national. Pas de pièce d’identité.
+- Le PDF est la même feuille de texte, pas un formulaire CPAS. Pas de numéro national. Pas de pièce d’identité.
 
 **Tests.** Le texte contient les quatre colonnes dette et **ne** contient pas le chemin fichier ni un total de dettes en titre. Déficit : le mot « déficit » et le montant du Reste, sans consigne du genre « payez d’abord… ».
 
@@ -169,12 +169,12 @@ Réglages : montant + jour, facture mensuelle « Mettre de côté », alerte dé
 
 | Envie possible | Décision |
 |----------------|----------|
-| Widget « à payer aujourd’hui » | Plus tard. S’il arrive : un seul, Reste + prochaine ligne non FAIT. Voir la charte, suite visuelle |
+| Widget « à payer aujourd’hui » | **Fait (6.49).** Un seul : Reste + prochaine ligne non FAIT |
 | Lire les mails des créanciers | Non. On ouvre un nouveau message |
 | Calculer les intérêts | Non. Ils saisissent les frais quand la lettre arrive |
 | Dire quel accord payer en premier | Non. L’ordre reste le calendrier. La pastille distingue, elle ne commande pas |
 | Graphique annuel | Hors charte |
-| Encre de nuit, PDF courrier, widget, OCR `+++` | Décidés dans la charte (suite visuelle) et [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). Pas avant la finition formes / FAIT / chiffres |
+| OCR +++ / PDF résumé / PDF courrier / nuit | **Faits** (6.44–6.48). Voir la charte |
 | Compte Play Store | Hors sujet (sideload familial) |
 
 ---
@@ -214,12 +214,13 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37–6.44** clos (`0.1.0-6.44`, schéma **8**, **251/251**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md).
+**A–F + 6.37–6.49** clos (`0.1.0-6.49`, schéma **8**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md).
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;
+- smoke device dédié 6.43–6.49 ;
 - tests d’écran instrumentés.
 
-**Prochain geste** : encre de nuit (même carnet, fond encre). Le S26 de maman en main reste à part.
+**Prochain geste** : smoke Galaxy des lots 6.43–6.49, ou le S26 de maman en main.
 
 Risques C : photos extras = voir / enlever ; frais = historique daté (6.38).

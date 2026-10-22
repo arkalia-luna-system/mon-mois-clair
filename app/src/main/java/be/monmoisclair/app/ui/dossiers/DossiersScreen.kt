@@ -180,12 +180,12 @@ fun DossiersScreen(
                     .fillMaxWidth()
                     .border(
                         1.dp,
-                        if (heroCount == 0) A11yTokens.AccentOkInkInk.copy(alpha = 0.35f)
+                        if (heroCount == 0) A11yTokens.AccentOkInk.copy(alpha = 0.35f)
                         else A11yTokens.PaperBorder,
                         heroShape
                     )
                     .background(
-                        if (heroCount == 0) A11yTokens.AccentOkInkSoft else A11yTokens.PaperCard,
+                        if (heroCount == 0) A11yTokens.AccentOkSoft else A11yTokens.PaperCard,
                         heroShape
                     )
                     .padding(horizontal = 14.dp, vertical = 12.dp)
@@ -339,7 +339,7 @@ fun DossiersScreen(
             )
             Text(
                 text = "À envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
-                    "Texte simple : revenus, factures, dossiers, mis de côté.",
+                    "Même contenu en texte ou en PDF : revenus, factures, dossiers, mis de côté.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )
@@ -373,6 +373,11 @@ fun DossiersScreen(
             SecondaryA11yButton(
                 text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
                 onClick = viewModel::shareSummary,
+                enabled = !state.summaryBusy && !state.loading
+            )
+            SecondaryA11yButton(
+                text = if (state.summaryBusy) "Préparation…" else "PDF du résumé",
+                onClick = viewModel::shareSummaryPdf,
                 enabled = !state.summaryBusy && !state.loading
             )
         }

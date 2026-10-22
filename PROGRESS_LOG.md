@@ -9,15 +9,78 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.44** (PDF + finition thème jour/nuit) |
+| Dernière étape terminée | **6.49** (widget + PDF à l’ajout) |
 | Étape en cours | — |
-| Prochaine sous-étape | S26 maman optionnel |
-| Audit premium | Benchmark 2026 · PDF · nuit · **251/251** |
+| Prochaine sous-étape | Smoke Galaxy 6.43–6.49 — ou S26 maman |
+| Audit premium | Benchmark clos · widget · PDF résumé · **273/273** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.49 Widget + PDF dès l’ajout
+
+**Vu :** widget agents presque prêt (WIP) ; « Joindre un PDF » manquait à la **création** (seulement en édition) — claim 6.44 incomplet.
+
+**Codé :**
+- Widget accueil : Reste + prochaine ligne non FAIT ; refresh après mutate / restore ; montants masqués si biométrie
+- « Joindre un PDF » aussi sur **Ajouter** (mêmes règles que l’édition)
+- Doc / charte / benchmark alignés ; charte OCR « plus tard » corrigée
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **273/273** (65 fichiers).  
+**Version :** `0.1.0-6.49` · `versionCode` 54.
+
+### 2026-10-22 — 6.48 PDF du résumé
+
+**Vu :** le texte « Préparer un résumé » existe ; pour imprimer / joindre il manquait une feuille.
+
+**Codé :**
+- `MonthSummaryPdfWriter` (A4, même texte que `PrepareMonthSummaryUseCase`)
+- Bouton « PDF du résumé » à côté du partage texte (Mes dossiers + Réglages)
+- FileProvider `cache/share/` · Aide à jour. **Aucun fichier widget touché.**
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **273/273** (65 fichiers).  
+**Version :** `0.1.0-6.48` · `versionCode` 53.
+
+### 2026-10-22 — 6.47 OCR communication +++ sur la photo
+
+**Vu :** resaisir `+++…+++` depuis une photo est pénible ; un OCR de montant fausserait le Reste.
+
+**Codé :**
+- `findInOcrText` (mod 97 seulement) + tests
+- ML Kit text-recognition emballé · `ReceiptCommunicationOcr`
+- Fiche ajout/édition : « Lire +++ sur la photo » — remplit la communication, **jamais** le montant
+- Aide à jour. **Aucun fichier widget touché.**
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **269/269** (64 fichiers).  
+**Version :** `0.1.0-6.47` · `versionCode` 52.
+
+### 2026-10-22 — 6.46 Apparence Clair / Sombre (Réglages)
+
+**Vu :** la nuit suivait seulement One UI ; pas de choix dans l’app.
+
+**Codé :**
+- Réglages → Apparence : Comme le téléphone / Clair / Sombre
+- Préférence en `app_meta` (suit la sauvegarde), défaut = système
+- Thème et barres système appliqués tout de suite depuis `MainActivity`
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **269/269** (64 fichiers).  
+**Version :** `0.1.0-6.46` · `versionCode` 51.
+
+### 2026-10-22 — 6.45 Polish sticky + FAIT (benchmark V01 / V07)
+
+**Vu :** le Reste n’avait pas d’ombre (V01 réservait le relief au sticky) ; cocher FAIT changeait la ligne d’un coup (V07).
+
+**Codé :**
+- Ombre courte sous le bloc sticky (Reste)
+- Fond de ligne FAIT / overdue animé ~150 ms
+- Pastilles un cran plus serrées (V03)
+- Doc : `BENCHMARK_QUALITE_2026.md` + charte alignés (nuit et PDF déjà faits en 6.44 — plus de fausse promesse « pas encore »)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **259/259** (63 fichiers). Nuit : texte, lien, brique et vert ≥ 7:1 sur la page, la carte et le socle.  
+**Version :** `0.1.0-6.45` · `versionCode` 50.  
+**Pas de smoke device** pour 6.43–6.45.
 
 ### 2026-10-22 — 6.44 PDF à côté de la photo
 
@@ -30,7 +93,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 - Facture « une fois » : photo + PDF dans le même champ instance ; facture qui revient : PDF dans les courriers du modèle
 
 **Finition (derrière agents) :** compile cassée — `A11yTokens.*` @Composable dans `Canvas` (scan QR) + tests contraste hors Composition. Couleurs lues **avant** le DrawScope ; `WcagContrastTest` sur `Day`/`Night` (palette agents **conservée**).  
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **251/251** (61 fichiers).  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **251/251** à la livraison ; suite **259/259** après 6.45.  
 **Version :** `0.1.0-6.44` · `versionCode` 49.
 
 ### 2026-10-22 — 6.43 Forme de l’objet (benchmark 2026)

@@ -78,8 +78,11 @@ class MainActivity : AppCompatActivity() {
             }
         )
         setContent {
-            MonMoisClairTheme {
-                val night = isSystemInDarkTheme()
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val state by mainViewModel.uiState.collectAsStateWithLifecycle()
+            val systemDark = isSystemInDarkTheme()
+            val night = state.themePreference.resolveNight(systemDark)
+            MonMoisClairTheme(darkTheme = night) {
                 val bar = if (night) 0xFF1E1B18.toInt() else 0xFFF6F3E8.toInt()
                 DisposableEffect(night) {
                     enableEdgeToEdge(
@@ -96,8 +99,6 @@ class MainActivity : AppCompatActivity() {
                     )
                     onDispose { }
                 }
-                val mainViewModel: MainViewModel = hiltViewModel()
-                val state by mainViewModel.uiState.collectAsStateWithLifecycle()
                 val navController = rememberNavController()
                 val lifecycleOwner = LocalLifecycleOwner.current
 

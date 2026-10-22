@@ -6,13 +6,16 @@ import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.core.content.FileProvider
 import be.monmoisclair.app.data.backup.BackupHealthStore
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.SupportMailComposer
 import be.monmoisclair.app.domain.model.BackupHealth
+import be.monmoisclair.app.domain.model.ThemePreference
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsResult
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
@@ -22,10 +25,13 @@ import be.monmoisclair.app.domain.usecase.OffMonthPeriodic
 import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
 import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
+import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,10 +41,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class SettingsUiState(
     val loading: Boolean = true,
+    val themePreference: ThemePreference = ThemePreference.System,
     val biometricEnabled: Boolean = false,
     val availability: BiometricAvailability = BiometricAvailability.Unsupported,
     val backupHealth: BackupHealth = BackupHealth.NOT_CONFIGURED,
@@ -64,13 +72,15 @@ data class SettingsUiState(
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val preference: BiometricPreferenceUseCase,
+    private val themePreference: ThemePreferenceUseCase,
     val biometricAuth: BiometricAuthGateway,
     private val healthStore: BackupHealthStore,
     private val listOffMonth: ListOffMonthPeriodicsUseCase,
     private val shareBackup: ShareBackupUseCase,
     private val configureSavings: ConfigureSavingsUseCase,
     private val prepareMonthSummary: PrepareMonthSummaryUseCase,
-    private val listDossiers: ListDossiersUseCase
+    private val listDossiers: ListDossiersUseCase,
+    private val summaryPdfWriter: MonthSummaryPdfWriter
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -102,6 +112,7 @@ class SettingsViewModel @Inject constructor(
                 }
                 cur.copy(
                     loading = false,
+                    themePreference = themePreference.read(),
                     biometricEnabled = preference.isEnabled(),
                     availability = biometricAuth.availability(),
                     backupHealth = healthStore.read(),
@@ -120,6 +131,14 @@ class SettingsViewModel @Inject constructor(
                     showSummaryButton = summary.isDeficit || dossierCount > 0
                 )
             }
+        }
+    }
+
+    fun setThemePreference(preference: ThemePreference) {
+        if (_uiState.value.themePreference == preference) return
+        viewModelScope.launch {
+            themePreference.set(preference)
+            _uiState.update { it.copy(themePreference = preference) }
         }
     }
 
@@ -335,6 +354,35 @@ class SettingsViewModel @Inject constructor(
             }
             _shareIntents.emit(
                 Intent.createChooser(intent, "Envoyer le résumé")
+            )
+            _uiState.update { it.copy(summaryBusy = false) }
+        }
+    }
+
+    /** Même texte en PDF (imprimer / joindre). */
+    fun shareMonthSummaryPdf() {
+        if (_uiState.value.busy || _uiState.value.summaryBusy) return
+        _uiState.update { it.copy(summaryBusy = true, message = null, isError = false) }
+        viewModelScope.launch {
+            val result = prepareMonthSummary()
+            val file = withContext(Dispatchers.IO) {
+                val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
+                val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
+                summaryPdfWriter.write(result.text, out)
+            }
+            val uri = FileProvider.getUriForFile(
+                appContext,
+                "${appContext.packageName}.fileprovider",
+                file
+            )
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/pdf"
+                putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            _shareIntents.emit(
+                Intent.createChooser(intent, "Envoyer le PDF")
             )
             _uiState.update { it.copy(summaryBusy = false) }
         }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="paper_cream">#1E1B18</color>
+    <color name="widget_ink">#F6F3E8</color>
+    <color name="widget_muted">#D4C7B4</color>
+    <color name="widget_danger">#F4C4B6</color>
 </resources>

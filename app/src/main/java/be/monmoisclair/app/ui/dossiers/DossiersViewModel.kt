@@ -1,14 +1,20 @@
 package be.monmoisclair.app.ui.dossiers
 
+import android.content.Context
 import android.content.Intent
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.entity.PendingLetterEntity
+import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.usecase.DossiersSnapshot
 import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListPendingLettersUseCase
 import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -17,6 +23,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class DossiersUiState(
@@ -28,9 +35,11 @@ data class DossiersUiState(
 
 @HiltViewModel
 class DossiersViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val listDossiers: ListDossiersUseCase,
     private val listPendingLetters: ListPendingLettersUseCase,
-    private val prepareMonthSummary: PrepareMonthSummaryUseCase
+    private val prepareMonthSummary: PrepareMonthSummaryUseCase,
+    private val summaryPdfWriter: MonthSummaryPdfWriter
 ) : ViewModel() {
     private val _state = MutableStateFlow(DossiersUiState())
     val state: StateFlow<DossiersUiState> = _state.asStateFlow()
@@ -77,6 +86,35 @@ class DossiersViewModel @Inject constructor(
             }
             _shareIntents.emit(
                 Intent.createChooser(intent, "Envoyer le résumé")
+            )
+            _state.value = _state.value.copy(summaryBusy = false)
+        }
+    }
+
+    /** Même texte en PDF (imprimer / joindre). */
+    fun shareSummaryPdf() {
+        if (_state.value.summaryBusy || _state.value.loading) return
+        _state.value = _state.value.copy(summaryBusy = true)
+        viewModelScope.launch {
+            val result = prepareMonthSummary()
+            val file = withContext(Dispatchers.IO) {
+                val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
+                val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
+                summaryPdfWriter.write(result.text, out)
+            }
+            val uri = FileProvider.getUriForFile(
+                appContext,
+                "${appContext.packageName}.fileprovider",
+                file
+            )
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/pdf"
+                putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            _shareIntents.emit(
+                Intent.createChooser(intent, "Envoyer le PDF")
             )
             _state.value = _state.value.copy(summaryBusy = false)
         }

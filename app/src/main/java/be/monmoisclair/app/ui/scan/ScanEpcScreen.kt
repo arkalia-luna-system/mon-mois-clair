@@ -242,7 +242,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             else -> A11yTokens.Ink
         }
         val statusBorder = when (statusColor) {
-            A11yTokens.AccentOkInk -> A11yTokens.AccentOkInkInk.copy(alpha = 0.4f)
+            A11yTokens.AccentOkInk -> A11yTokens.AccentOkInk.copy(alpha = 0.4f)
             A11yTokens.DangerInk -> A11yTokens.DangerInk.copy(alpha = 0.4f)
             else -> A11yTokens.PaperBorder
         }
@@ -257,7 +257,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 .background(
                     when (statusColor) {
                         A11yTokens.Ink -> A11yTokens.PaperCard
-                        A11yTokens.AccentOkInk -> A11yTokens.AccentOkInkSoft
+                        A11yTokens.AccentOkInk -> A11yTokens.AccentOkSoft
                         else -> A11yTokens.PaperWarm
                     },
                     statusShape

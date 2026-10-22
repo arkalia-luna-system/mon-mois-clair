@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 49
-        versionName = "0.1.0-6.44"
+        versionCode = 54
+        versionName = "0.1.0-6.49"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -145,6 +145,8 @@ dependencies {
     ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
+    // OCR latin emballé (hors Play Services) — lecture +++ sur photo, pas le montant.
+    implementation("com.google.mlkit:text-recognition:16.0.1")
     val cameraVersion = "1.4.1"
     implementation("androidx.camera:camera-camera2:$cameraVersion")
     implementation("androidx.camera:camera-lifecycle:$cameraVersion")

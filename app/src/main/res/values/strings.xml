@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mon Mois Clair</string>
+    <string name="widget_description">Le Reste du mois et la prochaine facture</string>
     <string name="notification_channel_payments_name">Rappels de factures</string>
     <string name="notification_channel_payments_desc">3 jours avant, le jour même, puis chaque matin tant que ce n’est pas payé</string>
     <string name="notification_action_done">FAIT ✓</string>

@@ -64,4 +64,38 @@ class BelgianStructuredCommunicationTest {
         assertThat(copy.clipboardText).isEmpty()
         assertThat(copy.userMessage).contains("Aucune communication")
     }
+
+    @Test
+    fun findInOcrText_findsPlusForm_amidNoise_ignoresAmount() {
+        val ocr = """
+            FACTURE ÉNERGIE
+            Montant : 45,67 EUR
+            +++000/0000/00097+++
+            Merci
+        """.trimIndent()
+        assertThat(BelgianStructuredCommunication.findInOcrText(ocr))
+            .isEqualTo("+++000/0000/00097+++")
+    }
+
+    @Test
+    fun findInOcrText_twelveDigitsAlone_whenValid() {
+        val ocr = "Réf bancaire 000000000097 à coller"
+        assertThat(BelgianStructuredCommunication.findInOcrText(ocr))
+            .isEqualTo("+++000/0000/00097+++")
+    }
+
+    @Test
+    fun findInOcrText_ignoresInvalidTwelve_andAmountNoise() {
+        assertThat(
+            BelgianStructuredCommunication.findInOcrText("À payer 45,67 EUR — 000000000098")
+        ).isNull()
+        assertThat(BelgianStructuredCommunication.findInOcrText("pas de chiffres")).isNull()
+    }
+
+    @Test
+    fun formatDisplay_rejectsInvalid() {
+        assertThat(BelgianStructuredCommunication.formatDisplay("000000000098")).isNull()
+        assertThat(BelgianStructuredCommunication.formatDisplay("000000000097"))
+            .isEqualTo("+++000/0000/00097+++")
+    }
 }

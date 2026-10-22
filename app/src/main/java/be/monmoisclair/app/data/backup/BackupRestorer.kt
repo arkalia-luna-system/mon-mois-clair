@@ -8,6 +8,7 @@ import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
 import be.monmoisclair.app.data.reminder.ReminderScheduler
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.BackupHealth
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,7 +34,8 @@ class BackupRestorer @Inject constructor(
     private val codec: BackupJsonCodec,
     private val reminderScheduler: ReminderScheduler,
     private val backupScheduler: BackupScheduler,
-    private val healthStore: BackupHealthStore
+    private val healthStore: BackupHealthStore,
+    private val widgetSink: CarnetWidgetSink = CarnetWidgetSink.Noop
 ) {
 
     suspend fun restoreFromLatest(): RestoreResult {
@@ -164,6 +166,11 @@ class BackupRestorer @Inject constructor(
 
         reminderScheduler.reconcileAll()
         backupScheduler.enqueueImmediate()
+        try {
+            widgetSink.refresh()
+        } catch (e: Exception) {
+            Log.e("BackupRestorer", "widget non rafraîchi", e)
+        }
         return RestoreResult.Success(document.checksumSha256)
     }
 

@@ -11,6 +11,7 @@ import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.ExpenseFeeEventDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
+import be.monmoisclair.app.data.receipt.ReceiptCommunicationOcr
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
@@ -106,7 +107,9 @@ data class EditEntryState(
     /** Ledger d’aperçu futur : lecture seule (pas d’Enregistrer / Supprimer). */
     val futurePreviewReadOnly: Boolean = false,
     /** Intent mail à lancer une fois (consommé par l’UI). */
-    val mailDraft: CreditorMailComposer.Draft? = null
+    val mailDraft: CreditorMailComposer.Draft? = null,
+    /** OCR +++ en cours (jamais le montant). */
+    val ocrBusy: Boolean = false
 )
 
 @HiltViewModel
@@ -119,6 +122,7 @@ class EditEntryViewModel @Inject constructor(
     private val updateInstance: UpdateInstanceUseCase,
     private val deleteInstance: DeleteInstanceUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
+    private val receiptOcr: ReceiptCommunicationOcr,
     private val appMetaDao: AppMetaDao,
     private val configureSavings: ConfigureSavingsUseCase
 ) : ViewModel() {
@@ -457,6 +461,57 @@ class EditEntryViewModel @Inject constructor(
         SensitiveClipboard.setPlainText(appContext, "Communication", prepared.clipboardText)
         _state.update {
             it.copy(copyMessage = prepared.userMessage, error = null)
+        }
+    }
+
+    /**
+     * Lit une communication +++ sur la photo (OCR hors ligne).
+     * Ne touche jamais au montant.
+     */
+    fun readCommunicationFromPhoto() {
+        if (_state.value.ocrBusy || _state.value.futurePreviewReadOnly) return
+        if (!_state.value.isExpense || _state.value.isSavingsLine) return
+        viewModelScope.launch {
+            _state.update {
+                it.copy(ocrBusy = true, error = null, copyMessage = BelgianStructuredCommunication.OCR_BUSY)
+            }
+            val fromPending = pendingBitmap
+            val path = _state.value.receiptRelativePath
+            val bmp = fromPending
+                ?: if (receiptPhotos.isPdf(path)) {
+                    null
+                } else {
+                    receiptPhotos.decodeBitmap(path)
+                }
+            if (bmp == null) {
+                _state.update {
+                    it.copy(
+                        ocrBusy = false,
+                        copyMessage = null,
+                        error = BelgianStructuredCommunication.OCR_NO_PHOTO
+                    )
+                }
+                return@launch
+            }
+            val found = runCatching { receiptOcr.findStructuredCommunication(bmp) }.getOrNull()
+            if (found.isNullOrBlank()) {
+                _state.update {
+                    it.copy(
+                        ocrBusy = false,
+                        copyMessage = null,
+                        error = BelgianStructuredCommunication.OCR_NOT_FOUND
+                    )
+                }
+            } else {
+                _state.update {
+                    it.copy(
+                        ocrBusy = false,
+                        paymentNote = found,
+                        copyMessage = BelgianStructuredCommunication.OCR_FOUND,
+                        error = null
+                    )
+                }
+            }
         }
     }
 

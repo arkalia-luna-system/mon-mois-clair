@@ -9,7 +9,9 @@ import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
+import android.util.Log
 import be.monmoisclair.app.data.reminder.ReminderScheduler
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,7 +31,8 @@ import javax.inject.Singleton
 class MutatingRepository @Inject constructor(
     private val db: AppDatabase,
     private val backupScheduler: BackupScheduler,
-    private val reminderScheduler: ReminderScheduler
+    private val reminderScheduler: ReminderScheduler,
+    private val widgetSink: CarnetWidgetSink = CarnetWidgetSink.Noop
 ) {
 
     suspend fun <T> mutate(
@@ -53,6 +56,11 @@ class MutatingRepository @Inject constructor(
             if (rescheduleReminders) {
                 reminderScheduler.reconcileAll()
             }
+        }
+        try {
+            widgetSink.refresh()
+        } catch (e: Exception) {
+            Log.e("MutatingRepository", "widget non rafraîchi", e)
         }
         return result
     }

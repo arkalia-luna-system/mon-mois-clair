@@ -185,6 +185,12 @@ fun AddEntryScreen(
             viewModel.setPhotoDecodeError()
         }
     )
+    val pickPdf = rememberPdfPicker(
+        onBytes = { bytes ->
+            viewModel.attachPendingPdf(bytes)
+        },
+        onFailed = viewModel::setPdfReadError
+    )
     var showReceiptDialog by remember { mutableStateOf(false) }
     // Déplier « retard ou accord » sans rien saisir ≠ sale (C6 / Senior :
     // curiosité puis Annuler ne doit pas ouvrir « quitter sans sauver »).
@@ -192,6 +198,7 @@ fun AddEntryScreen(
         state.amountText.isNotBlank() ||
         state.paymentNote.isNotBlank() ||
         state.hasPendingPhoto ||
+        state.hasPendingPdf ||
         pendingPreview != null ||
         state.recurrence != RecurrenceChoice.Once ||
         state.isAutoDebit ||
@@ -292,15 +299,24 @@ fun AddEntryScreen(
         onPaymentNote = viewModel::setPaymentNote,
         showPaymentAssist = state.isExpense,
         hasPendingPhoto = state.hasPendingPhoto,
+        hasPendingPdf = state.hasPendingPdf,
         receiptPreview = pendingPreview,
         onScanEpc = onScanEpc,
         onTakePhoto = takePhoto,
+        onPickPdf = if (state.isExpense) pickPdf else null,
+        onClearPendingPdf = if (state.hasPendingPdf) viewModel::clearPendingPdf else null,
         onViewReceipt = if (pendingPreview != null) {
             { showReceiptDialog = true }
         } else {
             null
         },
         onCopyPaymentNote = viewModel::copyPaymentNote,
+        onReadCommFromPhoto = if (state.isExpense && (state.hasPendingPhoto || pendingPreview != null)) {
+            viewModel::readCommunicationFromPhoto
+        } else {
+            null
+        },
+        ocrBusy = state.ocrBusy,
         showApplyFollowing = false,
         applyFollowing = false,
         hasTemplate = false,
@@ -759,6 +775,20 @@ fun EditEntryScreen(
             null
         },
         onCopyPaymentNote = viewModel::copyPaymentNote,
+        onReadCommFromPhoto = if (
+            !state.futurePreviewReadOnly &&
+            state.isExpense &&
+            !state.isSavingsLine &&
+            (
+                state.hasPendingPhoto ||
+                    (state.receiptRelativePath.isNotBlank() && !viewModel.isPdfPath(state.receiptRelativePath))
+                )
+        ) {
+            viewModel::readCommunicationFromPhoto
+        } else {
+            null
+        },
+        ocrBusy = state.ocrBusy,
         showApplyFollowing = state.hasTemplate && !state.isSavingsLine,
         applyFollowing = state.applyToFollowing,
         hasTemplate = state.hasTemplate,
@@ -887,6 +917,9 @@ private fun EntryFormScaffold(
     onViewExtraReceipt: ((String) -> Unit)? = null,
     onRemoveExtraReceipt: ((String) -> Unit)? = null,
     onCopyPaymentNote: (() -> Unit)? = null,
+    /** OCR +++ sur la photo — jamais le montant. */
+    onReadCommFromPhoto: (() -> Unit)? = null,
+    ocrBusy: Boolean = false,
     showApplyFollowing: Boolean,
     applyFollowing: Boolean,
     hasTemplate: Boolean,
@@ -1489,6 +1522,13 @@ private fun EntryFormScaffold(
                 if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
                     SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
                 }
+                if (onReadCommFromPhoto != null) {
+                    SecondaryA11yButton(
+                        text = if (ocrBusy) "Lecture de la photo…" else "Lire +++ sur la photo",
+                        onClick = onReadCommFromPhoto,
+                        enabled = !ocrBusy
+                    )
+                }
                 if (onTakePhoto != null || onPickPdf != null) {
                     val appendOnAgreement =
                         isAgreement && hasReceiptPhoto && !hasPendingPhoto && !hasPendingPdf
@@ -1723,11 +1763,11 @@ private fun EntryFormScaffold(
                         .border(
                             1.dp,
                             if (warn) A11yTokens.AccentWarn.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOkInkInk.copy(alpha = 0.35f),
+                            else A11yTokens.AccentOkInk.copy(alpha = 0.35f),
                             infoShape
                         )
                         .background(
-                            if (warn) A11yTokens.PaperWarm else A11yTokens.AccentOkInkSoft,
+                            if (warn) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
                             infoShape
                         )
                         .padding(tipPad)

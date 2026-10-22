@@ -63,6 +63,8 @@ object HowItWorksCopy {
                 "Sur le mois, « Voir la photo » (ou « Photo » sur petit écran) ouvre le papier. " +
                 "Sur n’importe quelle facture, « Joindre un PDF » range le courrier à côté de la photo " +
                 "(il ne la remplace pas). « Voir le courrier » l’ouvre dans l’app du téléphone. " +
+                "« Lire +++ sur la photo » cherche seulement la communication structurée belge " +
+                "(jamais le montant — le Reste reste sous votre contrôle). " +
                 "Dans la fiche, touchez la vignette pour l’agrandir. " +
                 "Vous pouvez reprendre la photo sans tout recréer. " +
                 "Une copie reste dans Documents. « Envoyer une copie » l’emporte aussi dans l’archive."
@@ -89,7 +91,8 @@ object HowItWorksCopy {
                 "le courrier n’entre pas dans le Reste. Une ligne sur l’accueil " +
                 "« courrier sans plan · Voir » s’affiche s’il y en a. " +
                 "« Préparer un résumé » (Mes dossiers, ou Réglages si déficit) " +
-                "écrit un texte à envoyer à un créancier ou à un conseiller — pas à tout le monde."
+                "écrit un texte à envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
+                "« PDF du résumé » envoie le même contenu en feuille, pour imprimer ou joindre."
         ),
         Section(
             title = "Mettre de côté",
@@ -117,6 +120,10 @@ object HowItWorksCopy {
                 "Courses : lien sous le Reste (pas seulement en bas de liste). " +
                 "Un souci : Réglages → « Un souci avec l’app ? » (mail à Athalia, capture possible). " +
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
+                "Dans Réglages → Apparence : Clair, Sombre, ou comme le téléphone. " +
+                "Un widget sur l’écran d’accueil montre le Reste et la prochaine facture. " +
+                "Il suit le mode nuit du téléphone (One UI). " +
+                "Avec l’empreinte, il ne montre pas les chiffres. " +
                 "Aide, alertes et restauration : tout est dans Réglages."
         ),
         Section(

@@ -16,8 +16,8 @@ import javax.inject.Singleton
 
 /**
  * Lot F — texte brut à montrer ou envoyer (médiation / créancier).
- * Pas de PDF, pas de chemin fichier, pas de total « dettes » en titre.
- * « Mettre de côté » est à part, pas sous les dossiers.
+ * Le même texte peut partir en PDF via [be.monmoisclair.app.data.summary.MonthSummaryPdfWriter].
+ * Pas de total « dettes » en titre. « Mettre de côté » est à part, pas sous les dossiers.
  */
 @Singleton
 class PrepareMonthSummaryUseCase @Inject constructor(

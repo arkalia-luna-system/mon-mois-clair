@@ -41,7 +41,7 @@ fun HealthStatusRow(label: String, ok: Boolean) {
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier
                 .background(
-                    if (ok) A11yTokens.AccentOkInkSoft else A11yTokens.PaperWarm,
+                    if (ok) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
                     chipShape
                 )
                 .then(

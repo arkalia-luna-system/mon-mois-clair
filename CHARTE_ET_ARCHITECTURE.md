@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.44** — PDF à côté de la photo ; 6.43 tenu).
+Mise à jour : 2026-10-22 (lot **6.49** — widget Reste + prochaine ligne).
 
 ## 1. Vision
 
@@ -93,7 +93,12 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.41** | Aperçu mois futurs (flèche › / Menu, M+1…M+3, lecture seule) | ✅ |
 | **6.42** | Sync templates sur mois déjà ouverts · Soldés repliés · dist famille | ✅ |
 | **6.43** | Forme : `tnum`, cartes 16 dp, pastilles capsule, FAIT forêt, socle barre, fondu mois | ✅ |
-| **6.44** | PDF à côté de la photo (fiche, facture qui revient, même dossier `receipts/`) | ✅ |
+| **6.44** | PDF (toute facture, fiche) + encre de nuit (système) | ✅ |
+| **6.45** | Polish : ombre sticky Reste + fondu couleur ligne FAIT ~150 ms | ✅ |
+| **6.46** | Apparence : Clair / Sombre / Comme le téléphone (Réglages) | ✅ |
+| **6.47** | OCR « Lire +++ sur la photo » (jamais le montant) | ✅ |
+| **6.48** | PDF du résumé (même texte, Mes dossiers / Réglages) | ✅ |
+| **6.49** | Widget accueil : Reste + prochaine ligne non FAIT · PDF aussi à l’ajout | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -210,7 +215,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 | Fiche intermédiaire Modifier / Supprimer / Fermer | Un tap de plus. La ligne ouvre déjà l’édition, avec Annuler et Supprimer écrits |
 | Menu hamburger icône seule | Toujours le mot « Menu » |
 | Rouge `#FF0000` / blanc `#FFFFFF` | Anxiété + halo AMOLED |
-| Photo / dictée IA type Moneko qui remplit le montant | Hors scope — un OCR qui invente un euro fausse le Reste. Le QR EPC reste le geste sûr. Lire seulement une communication `+++` valide sur une photo : plus tard, hors ligne |
+| Photo / dictée IA type Moneko qui remplit le montant | Hors scope — un OCR qui invente un euro fausse le Reste. Le QR EPC reste le geste sûr. « Lire +++ sur la photo » (6.47) lit **seulement** une communication `+++` valide, jamais le montant |
 | Ocre `#D99B26` **en texte** | Mesuré à **~2,2:1** sur le papier : illisible. L’or est le **fond** de la pastille « Auto », le mot est en encre |
 | Russet `#B84A27` tel quel | Mesuré à **~4,7:1** sur le papier, pas les ~7:1 annoncés. Remplacé par `#8E3418` (toujours brique, pas rouge sang) |
 
@@ -231,15 +236,17 @@ Un reste négatif et le bandeau « à prévoir » restent en brun `#8A5A1E` (~5,
 | Auto (fond de pastille) | `#D99B26` | `AccentAuto` | Encre dessus ~7,1:1 — jamais ce doré comme couleur de lettres |
 | Socle barre basse | `#EDE8DC` | `PaperWarm` | Déjà le fond des champs. Sous Menu / + Ajouter, pour que la barre ne se confonde pas avec la page |
 
-### Suite visuelle (pas dans ce lot)
+### Suite visuelle
 
-Décisions du [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md). Formes = **6.43**. PDF courrier = **6.44**. Ce qui suit n’est pas encore codé.
+Décisions du [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md).
 
 | Suite | Décision |
 |-------|----------|
-| PDF à côté de la photo | **Fait (6.44).** Fiche d’une facture qui revient. Même dossier que les WebP. « Voir le courrier » ouvre le fichier |
-| Encre de nuit | Oui, plus tard, si on la veut le soir. Fond encre `#1E1B18`, texte papier, **même** teal. Pas le minuit fluo de Copilot. Pas la couleur du fond d’écran |
-| Widget | Un seul, plus tard : Reste + prochaine ligne non FAIT. Pas de camembert |
-| OCR de la communication | Plus tard. Jamais le montant |
-| PDF du résumé | Plus tard. Le texte partagé existe déjà. Pas un faux formulaire CPAS |
+| Formes / FAIT / `tnum` / fondu mois | **Fait (6.43)** |
+| PDF à côté de la photo | **Fait (6.44 + 6.49).** Ajout **et** édition, toute facture. Même dossier `receipts/`. « Voir le courrier » ouvre le fichier |
+| Encre de nuit | **Fait (6.44 + 6.46).** Fond `#1E1B18`, texte papier, **même** teal. Choix en Réglages → Apparence (Clair / Sombre / Comme le téléphone). Pas Copilot, pas la couleur du fond d’écran |
+| Ombre sticky + fondu ligne FAIT | **Fait (6.45)** |
+| Widget | **Fait (6.49).** Un seul : Reste + prochaine ligne non FAIT. Masque les montants si biométrie. Couleurs = nuit One UI (pas le choix Clair forcé dans l’app) |
+| OCR de la communication | **Fait (6.47).** « Lire +++ sur la photo » — jamais le montant |
+| PDF du résumé | **Fait (6.48).** Même texte que « Préparer un résumé », bouton « PDF du résumé ». Pas un formulaire CPAS |
 | Grille calendrier, catégories, banque, graphiques, synchro | Non |

@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 /**
- * Contrastes sur la palette **jour** ([A11yTokens.Day]).
+ * Contrastes jour ([A11yTokens.Day]) et nuit ([A11yTokens.Night]).
  * Les getters Compose de [A11yTokens] ne sont pas utilisables hors @Composable.
  */
 class WcagContrastTest {
@@ -35,10 +35,27 @@ class WcagContrastTest {
     }
 
     @Test
-    fun night_dangerAndLink_readableOnInk() {
+    fun nightInk_meetsAaaOnPageCardAndWarm() {
         val night = A11yTokens.Night
-        assertThat(WcagContrast.ratio(night.dangerInk, night.paperCream)).isAtLeast(4.5)
-        assertThat(WcagContrast.ratio(night.link, night.paperCream)).isAtLeast(4.5)
+        val surfaces = listOf(night.paperCream, night.paperCard, night.paperWarm)
+        val inks = listOf(
+            night.ink,
+            night.inkMuted,
+            night.dangerInk,
+            night.accentOkInk,
+            night.link,
+            night.accentWarn
+        )
+        for (surface in surfaces) {
+            for (ink in inks) {
+                assertThat(WcagContrast.ratio(ink, surface)).isAtLeast(7.0)
+            }
+        }
         assertThat(WcagContrast.ratio(night.buttonText, night.buttonFill)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(night.buttonText, night.accentOk)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(night.buttonText, night.accentDanger)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(night.onGold, night.accentAuto)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(night.ink, night.accentOkSoft)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(night.accentOkInk, night.accentOkSoft)).isAtLeast(7.0)
     }
 }

@@ -165,8 +165,11 @@ private fun appTypography(ink: Color, muted: Color) = Typography(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MonMoisClairTheme(content: @Composable () -> Unit) {
-    val night = isSystemInDarkTheme()
+fun MonMoisClairTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val night = darkTheme
     val palette = if (night) A11yTokens.Night else A11yTokens.Day
     val ripple = RippleConfiguration(
         color = palette.buttonFill,
