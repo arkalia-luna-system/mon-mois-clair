@@ -105,15 +105,20 @@ class ReceiptPhotoStore @Inject constructor(
         }
     }
 
-    /** Décode dans l’app : Documents d’abord, sinon copie locale. Pas pour un PDF. */
+    /**
+     * Décode dans l’app : **copie locale d’abord** (fiable), puis Documents.
+     * Évite un fichier SAF tronqué / non rewindable qui masquait une bonne copie locale.
+     * Pas pour un PDF.
+     */
     suspend fun decodeBitmap(relativePath: String): Bitmap? {
         if (relativePath.isBlank() || isPdf(relativePath)) return null
+        readLocal(relativePath)?.let { return it }
         openUri(relativePath)?.let { uri ->
             runCatching {
                 context.contentResolver.openInputStream(uri)?.use { decodeImageStream(it) }
             }.getOrNull()?.let { return it }
         }
-        return readLocal(relativePath)
+        return null
     }
 
     private fun localFile(relativePath: String): File? {

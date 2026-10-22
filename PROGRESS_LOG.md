@@ -9,28 +9,45 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.52** (finitions ajout PDF / thème / ZIP / docs) |
+| Dernière étape terminée | **6.53** (copy Réglages / Aide resserrée) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke Galaxy 6.43–6.52 — ou S26 maman |
-| Audit premium | Benchmark clos · finitions 6.52 · **280/280** |
+| Prochaine sous-étape | Reprendre la photo de loyer3 — ou S26 maman |
+| Audit premium | Benchmark clos · copy premium 6.53 · **280/280** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
 
+### 2026-10-22 — 6.53 Copy premium (Réglages / Aide / Alertes)
+
+**Vu :** trop de tip boxes qui répétaient le titre ou le bouton (Apparence, Aide, Alertes, biometrie « Disponible… », sauvegarde longue, aide « Guide court… », Alertes en 2 blocs, restauration en 2 phrases). Smoke : photo loyer3 « Impossible d’ouvrir ».
+
+**Codé :**
+- Textes raccourcis / retirés là où le contrôle suffit ; Aide plus dense ; ton aligné Mes dossiers / aperçu / Menu / restauration
+- Photo : décodage **local d’abord** (puis Documents) ; si échec in-app → « Ouvrir à part »
+- Sécurité revue OK (pas d’INTERNET, allowBackup false, ClipData, zip-slip, FLAG_SECURE, clipboard sensible)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **280/280** (66 fichiers).  
+**Version :** `0.1.0-6.53` · `versionCode` 58.
+
 ### 2026-10-22 — 6.52 Finitions chasse d’erreurs + rangement docs
 
 **Vu :** PDF en échec à l’ajout non retriable (bytes vidés) ; flash thème au cold start ; ZIP de sauvegarde hors `ShareFileIntents` ; couleurs widget inversées en `values-night` ; audits historiques encore « actifs » ; AppleDouble T7.
 
 **Codé :**
-- Ajout : retry photo **et** PDF (`retryAttachments`) ; garder bitmap/PDF si échec ; passer en revenu vide aussi la photo
-- `ThemePreferenceCache` (SharedPreferences) + peek boot `MainActivity` — moins de flash Clair/Sombre
+- Ajout : retry photo **et** PDF (`retryAttachments`) ; garder bitmap/PDF si échec ; revenu vide aussi la photo (+ aperçu Compose) ; édition : photo seulement si dépense (comme PDF)
+- `ThemePreferenceCache` + peek boot `MainActivity` + `MainViewModel` init depuis le cache — moins de flash Clair/Sombre
 - `ShareFileIntents.zip` branché sauvegarde ; strip `widget_*` nuit (crème/encre fixes)
-- Aide KDoc Menu à jour ; archive `AUDIT_ALEX` + `FEEDBACK` ; index docs
+- `MutatingRepository` / `BackupRestorer` : plus de défaut `Noop` (tests passent Noop explicitement)
+- Decode photo : flux non rewindable (WebP Documents) via `decodeImageStream` / `decodeImageBytes`
+- Aide KDoc Menu ; charte Menu = Réglages · À venir · Mes dossiers · calendrier
+- Archive `AUDIT_ALEX` + `FEEDBACK` ; index docs / liens
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **280/280** (66 fichiers).  
 **Version :** `0.1.0-6.52` · `versionCode` 57.
+
+**Smoke S25 (`SM-S938B`), même jour, sans cocher FAIT ni enregistrer :** widget posé sur la page 4 (Reste + ligne en retard, tap ouvre le carnet, fond encre). « Lire +++ sur la photo » sur une facture du 31 : photo ouverte, aucune communication valide. « Joindre un PDF » : message « à côté de la photo », courrier retiré, Annuler. Dossier `receipts/` : seulement des webp. Photo de loyer3 : boutons présents, image impossible à ouvrir.
 
 ### 2026-10-22 — 6.51 PDF résumé à gros caractères
 

@@ -65,7 +65,8 @@ fun ReminderHealthScreen(
         )
         val introShape = MaterialTheme.shapes.medium
         Text(
-            text = "Vérifiez que Mon Mois Clair peut vraiment vous prévenir sur ce téléphone.",
+            text = "3 jours avant à 10 h, le jour à 9 h, puis chaque matin à 10 h tant que ce n’est pas payé. " +
+                "Les lignes ci-dessous disent si le téléphone laisse vraiment sonner.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier
@@ -73,18 +74,6 @@ fun ReminderHealthScreen(
                 .border(1.dp, A11yTokens.PaperBorder, introShape)
                 .background(A11yTokens.PaperCard, introShape)
                 .padding(tipPad)
-        )
-        val scheduleShape = MaterialTheme.shapes.medium
-        Text(
-            text = "3 jours avant à 10 h, le jour même à 9 h, puis chaque matin à 10 h " +
-                "tant que ce n’est pas payé.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, scheduleShape)
-                .background(A11yTokens.PaperCard, scheduleShape)
-                .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
         )
 
         val r = report

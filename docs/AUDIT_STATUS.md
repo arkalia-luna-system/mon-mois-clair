@@ -1,7 +1,7 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit fermé : **6.52** (`0.1.0-6.52`, schéma Room **8**, unitaires **280/280**).  
+Journal produit fermé : **6.53** (`0.1.0-6.53`, schéma Room **8**, unitaires **280/280**).  
 Phrase rythme : domaine + UI fiche / Mes dossiers (pas de smoke device dédié pour cette phrase seule).  
 Dossiers / accords (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
@@ -17,7 +17,7 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 6.33 install + EuroFormat + Menu | ✅ smoke retour 2026-10-21 |
 | 6.36 + hauteur Accord / FAIT | ✅ smoke Ultra 2026-10-21 |
 | Hauteur courte type S26 | ✅ sim. 360×780 dp + texte 1,3 (2026-10-21) |
-| 6.43–6.52 | ✅ code. Smoke **partiel** S25 le 2026-10-22 (accueil nuit, étape 6.51, partage du PDF résumé). OCR, widget posé, PDF facture, S26 : pas encore |
+| 6.43–6.53 | ✅ code. Smoke S25 du 2026-10-22 : accueil nuit, widget posé, OCR `+++`, PDF en attente à côté d’une photo. Photo loyer3 illisible (à corriger). S26 : pas encore |
 
 ## Smoke SM-S938B — 2026-10-21
 
@@ -64,17 +64,19 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 1 | Accueil octobre, nuit (téléphone sombre, Apparence = comme le téléphone) | ✅ Reste, lignes, FAIT forêt, pastille « En retard » |
 | 2 | Réglages → pied de page | ✅ « étape 6.51 » |
 | 3 | « PDF du résumé » | ✅ feuille `mon-mois-clair-resume.pdf` dans le partage. Rien envoyé |
-| 4 | Widget | Fournisseur installé. Pas posé sur l’accueil |
-| 5 | OCR `+++`, PDF à côté d’une photo, S26 | Pas faits dans ce passage |
+| 4 | Widget page 4 | ✅ Posé. « Reste » + montant + ligne en retard. Le tap ouvre le carnet. Fond encre (téléphone sombre) |
+| 5 | « Lire +++ sur la photo » | ✅ Sur une facture du 31 : la photo s’ouvre, l’OCR répond qu’il n’y a pas de `+++` valide. Rien enregistré |
+| 6 | PDF à côté de la photo | ✅ « Joindre un PDF » puis « PDF prêt. Il s’ajoute à côté de la photo ». Courrier retiré, Annuler. Aucun PDF dans `receipts/` (seulement des webp) |
+| 7 | Photo de loyer3 | Le formulaire propose la photo, l’image ne s’ouvre pas. Aucun montant touché |
+| 8 | S26, fondu FAIT, bascule Clair à la main | Pas faits |
 
 ## Pas encore fumés au doigt
 
 | Lot | À vérifier sur Galaxy |
 |-----|------------------------|
-| 6.43–6.45 | Fondu FAIT et ombre sticky (les formes de l’accueil nuit ont été vues, pas le fondu) |
-| 6.46 | Basculer Clair / Sombre à la main (le mode « comme le téléphone » était déjà sombre) |
-| 6.47 | « Lire +++ sur la photo » |
-| 6.49 | Poser le widget + PDF dès Ajouter |
-| 6.50 | Ouvrir le PDF résumé dans Mail ; widget en nuit sur l’accueil |
+| 6.43–6.45 | Fondu FAIT (les formes de l’accueil nuit ont été vues, pas le fondu) |
+| 6.46 | Basculer Clair à la main (le mode « comme le téléphone » était déjà sombre) |
+| 6.49 | PDF dès Ajouter (le PDF à l’édition a été vu, puis retiré) |
+| S26 | Pas en main |
 
 Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.

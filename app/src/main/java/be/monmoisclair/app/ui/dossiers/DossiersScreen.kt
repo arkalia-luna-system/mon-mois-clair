@@ -338,9 +338,8 @@ fun DossiersScreen(
                 color = A11yTokens.Ink
             )
             Text(
-                text = "À envoyer à un créancier ou à un conseiller — pas à tout le monde. " +
-                    "Même contenu en texte ou en PDF (gros caractères) : " +
-                    "revenus, factures, dossiers, mis de côté.",
+                text = "Pour un créancier ou un conseiller — pas à tout le monde. " +
+                    "Texte ou PDF (gros caractères), même contenu.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )

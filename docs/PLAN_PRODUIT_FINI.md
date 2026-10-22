@@ -2,7 +2,7 @@
 
 Date : 2026-10-21 (état code mis à jour **2026-10-22**).  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37–**6.52** clos (`0.1.0-6.52`, schéma Room **8**). Benchmark : formes / PDF / nuit / OCR / résumé PDF (18/22 pt) / widget / finitions.  
+Lots **A à F** + 6.37–**6.53** clos (`0.1.0-6.53`, schéma Room **8**). Benchmark : formes / PDF / nuit / OCR / résumé PDF (18/22 pt) / widget / finitions / copy.  
 Détail (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -214,13 +214,13 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37–6.52** clos (`0.1.0-6.52`, schéma **8**, unitaires **280/280**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). La feuille résumé est le même texte, en **18/22 pt**, papier crème, polices du carnet.
+**A–F + 6.37–6.53** clos (`0.1.0-6.53`, schéma **8**, unitaires **280/280**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). La feuille résumé est le même texte, en **18/22 pt**, papier crème, polices du carnet.
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;
-- smoke doigt encore incomplet (S25 : accueil nuit + PDF résumé partagés le 2026-10-22 ; widget posé, OCR, PDF facture, S26 : non) ;
+- smoke doigt encore incomplet (S25 le 2026-10-22 : widget, OCR `+++`, PDF à côté d’une photo vus puis annulés ; S26, fondu FAIT, Clair à la main : non ; photo loyer3 illisible) ;
 - tests d’écran instrumentés (ajout, FAIT, widget, PDF).
 
-**Prochain geste** : au doigt, poser le widget, ouvrir « Lire +++ sur la photo », et le PDF à côté d’une facture. Le S26 de maman n’est pas encore en main.
+**Prochain geste** : reprendre la photo de loyer3 (elle ne s’ouvre plus), puis le S26 de maman. Le widget, l’OCR et le PDF à côté d’une photo ont été vus sur le S25, sans enregistrer.
 
 Risques C : photos extras = voir / enlever ; frais = historique daté (6.38).

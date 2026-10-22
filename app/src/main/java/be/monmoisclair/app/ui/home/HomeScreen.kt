@@ -323,8 +323,8 @@ fun HomeScreen(
                         else -> {
                             val photoErrShape = MaterialTheme.shapes.medium
                             Text(
-                                text = "Impossible d’ouvrir cette photo. " +
-                                    "Ouvrez la ligne pour en reprendre une.",
+                                text = "Impossible d’afficher cette photo ici. " +
+                                    "Essayez « Ouvrir à part », ou rouvrez la ligne pour en reprendre une.",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = A11yTokens.DangerInk,
                                 modifier = Modifier
@@ -339,9 +339,35 @@ fun HomeScreen(
                                     .semantics {
                                         liveRegion = LiveRegionMode.Assertive
                                         contentDescription =
-                                            "Impossible d’ouvrir cette photo. " +
-                                                "Ouvrez la ligne pour en reprendre une."
+                                            "Impossible d’afficher cette photo. " +
+                                                "Essayez ouvrir à part, ou reprenez-en une."
                                     }
+                            )
+                            SecondaryA11yButton(
+                                text = "Ouvrir à part",
+                                onClick = {
+                                    val path = receiptPathToShow
+                                    if (path.isNullOrBlank()) return@SecondaryA11yButton
+                                    scope.launch {
+                                        val intent = viewModel.viewReceiptIntent(path)
+                                        if (intent == null) {
+                                            snackbarHostState.showSnackbar(
+                                                "Fichier introuvable — reprenez une photo."
+                                            )
+                                        } else {
+                                            val ok = runCatching {
+                                                context.startActivity(
+                                                    Intent.createChooser(intent, "Voir la photo")
+                                                )
+                                            }.isSuccess
+                                            if (!ok) {
+                                                snackbarHostState.showSnackbar(
+                                                    "Aucune app pour ouvrir cette photo."
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
                             )
                         }
                     }
@@ -660,8 +686,7 @@ fun HomeScreen(
                 if (state.isFuturePreview) {
                     val previewShape = MaterialTheme.shapes.medium
                     val previewLabel =
-                        "Aperçu — pas encore ce mois. Factures et rentrées prévues ; " +
-                            "pas de FAIT ni d’ajout ici."
+                        "Aperçu — factures et rentrées prévues ; pas de FAIT ni d’ajout."
                     Text(
                         text = previewLabel,
                         style = MaterialTheme.typography.bodyMedium,

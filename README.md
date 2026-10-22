@@ -9,7 +9,7 @@
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-280%2F280-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.52-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.53-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,9 +23,9 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.52` |
-| Dernière étape | **6.52** Finitions (retry PDF ajout, cache thème, ZIP partagé, docs) — suite **6.51** |
-| Device | Smoke **6.39–6.42** puis, le 2026-10-22, **6.51** partiel sur **Galaxy S25 Ultra** (`SM-S938B`) : accueil nuit, étape affichée, partage du PDF résumé. Checklist 5.4.1 archivée. S26 maman pas encore en main. Widget posé, OCR et PDF facture : pas encore au doigt |
+| Version | `0.1.0-6.53` |
+| Dernière étape | **6.53** Copy premium Réglages / Aide (moins de doublons) — suite **6.52** |
+| Device | Smoke **6.39–6.42** puis, le 2026-10-22, **S25 Ultra** (`SM-S938B`) : accueil nuit, widget posé, OCR `+++`, PDF à côté d’une photo (retiré, rien enregistré). S26 pas en main. Photo de loyer3 illisible |
 | Distribution | Sideload familial **release signé** (hors Play Store) — voir [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **280/280** OK (`--rerun-tasks`) |
 | Schéma Room | **8** — `expense_fee_events` (+ 7 : courriers ; 6 : IBAN / e-mail / cumul frais) |

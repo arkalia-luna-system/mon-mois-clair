@@ -172,14 +172,9 @@ fun RestoreBackupScreen(
             verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 6.dp else 8.dp)
         ) {
             Text(
-                text = "Pour retrouver vos mois après une réinstallation ou un nouveau téléphone.",
+                text = "Après réinstallation ou nouveau téléphone. " +
+                    "Remplace tout ce qui est dans l’app — confirmation demandée.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
-            )
-            Text(
-                text = "Restaurer remplace tout ce qui est dans l’app. " +
-                    "Un écran vous demandera de confirmer.",
-                style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )
         }

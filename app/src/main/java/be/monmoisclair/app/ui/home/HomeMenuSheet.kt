@@ -159,7 +159,7 @@ fun HomeMenuSheet(
                     )
             )
             Text(
-                text = "Les mois à venir (aperçu) sont en tête — factures et rentrées déjà prévues, sans cocher FAIT.",
+                text = "Mois à venir en tête (aperçu) — sans FAIT ni ajout.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.padding(top = 6.dp)

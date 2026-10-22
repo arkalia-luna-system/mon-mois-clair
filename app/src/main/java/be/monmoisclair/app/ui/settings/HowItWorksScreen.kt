@@ -32,17 +32,6 @@ fun HowItWorksScreen(onBack: () -> Unit) {
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val introShape = MaterialTheme.shapes.medium
-        Text(
-            text = "Guide court pour utiliser Mon Mois Clair sans stress.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, introShape)
-                .background(A11yTokens.PaperCard, introShape)
-                .padding(tipPad)
-        )
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         HowItWorksCopy.sections.forEach { section ->
             val shape = MaterialTheme.shapes.medium

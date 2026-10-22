@@ -1,7 +1,7 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.52**).  
-App lue au départ : `0.1.0-6.41`. Le dépôt a avancé : formes **6.43**, PDF facture **6.44/6.49**, nuit **6.44/6.46**, polish **6.45**, OCR **6.47**, PDF résumé **6.48/6.51**, widget **6.49/6.50**, finitions **6.52**.  
+Date : 2026-10-22 (état code : **6.53**).  
+App lue au départ : `0.1.0-6.41`. Le dépôt a avancé : formes **6.43**, PDF facture **6.44/6.49**, nuit **6.44/6.46**, polish **6.45**, OCR **6.47**, PDF résumé **6.48/6.51**, widget **6.49/6.50**, finitions **6.52**, copy **6.53**.  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
@@ -106,7 +106,7 @@ Pas de dégradé teal, pas d’icône seule Menu/FAIT, pas de 2ᵉ hero, pas de 
 
 ## 5. Ordre (historique)
 
-1–4 formes → **6.43**. PDF facture → **6.44**. Nuit → **6.44/6.46**. Polish sticky/FAIT → **6.45**. OCR `+++` → **6.47**. PDF résumé → **6.48**, lecture 18/22 pt → **6.51**. Widget + PDF à l’ajout → **6.49**. Partage PDF (`ClipData`) + fonds widget fixes → **6.50**. Finitions retry PDF / cache thème / ZIP / docs → **6.52**.
+1–4 formes → **6.43**. PDF facture → **6.44**. Nuit → **6.44/6.46**. Polish sticky/FAIT → **6.45**. OCR `+++` → **6.47**. PDF résumé → **6.48**, lecture 18/22 pt → **6.51**. Widget + PDF à l’ajout → **6.49**. Partage PDF (`ClipData`) + fonds widget fixes → **6.50**. Finitions retry PDF / cache thème / ZIP / docs → **6.52**. Copy Réglages / Aide → **6.53**.
 
 ---
 
@@ -116,7 +116,7 @@ Le carnet a les fonctions des bons carnets 2026 (rappel, FAIT, photo, PDF, widge
 
 | Reste | Pourquoi ça compte |
 |-------|--------------------|
-| Smoke Galaxy encore incomplet | S25 (`SM-S938B`) : accueil nuit, étape 6.51 et partage du PDF résumé vus le 2026-10-22 (code actuel 6.52). Pas encore : widget posé, OCR `+++`, PDF sur une facture, S26 de maman |
+| Smoke Galaxy encore incomplet | S25 (`SM-S938B`), 2026-10-22 : widget posé (nuit), OCR `+++` sans inventer de communication, PDF proposé à côté d’une photo puis retiré. Pas encore : S26, fondu FAIT, bascule Clair à la main. La photo de loyer3 ne s’ouvre pas |
 | Tests d’écran | Pas de parcours instrumenté (ajout, FAIT, widget, PDF) |
 
 Volontairement dehors : banque, catégories, graphiques, grille calendrier, OCR du montant, synchro, thème fluo.
