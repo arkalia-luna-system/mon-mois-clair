@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.62** (fiche pratique : grille, Paiement fermé, EXIF) |
+| Dernière étape terminée | **6.66** (polish écrans hors Accueil/Réglages/fiche) |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke doigt manuel (biométrie, widget home, scan caméra) · S26 |
 | Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **291/291** |
@@ -19,6 +19,36 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 ## Journal
 
+### 2026-10-22 — 6.66 Polish écrans secondaires (dossiers / à venir / scan / widget)
+
+**Zone :** Mes dossiers, À venir, courrier/versement, Scan QR, Lock, HowItWorks, Alertes, widget XML — **pas** Accueil / Réglages / fiche.
+
+**Vu :** tips longs ; dossiers sans filets de section ; « Reste » noyé dans la ligne versé ; Soldé en bande ; widget titre/montant trop proches (16/32) ; Annuler doublon sur courrier.
+
+**Codé (visuel / copy seulement) :**
+- Dossiers : sections En cours / Soldés / Courriers / Résumé + filets ; Reste en `titleLarge` ; Soldé = StampShape ; copy courte
+- À venir / Convert / Pending / Scan / Lock / Alertes / Aide : tips raccourcis ; busy sans tip-box ; filets Aide
+- Widget : titre 13 sp, montant **36 sp bold**, ligne 14 sp
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **291/291** (69 fichiers).  
+**Version :** `0.1.0-6.66` · `versionCode` 71.  
+**Reste manuel :** widget home, scan caméra, biométrie au doigt.
+
+### 2026-10-22 — 6.65 Accueil Courses sticky + Menu allégé
+
+**Vu :** Courses / divers trop bas ; Menu empilé (textes) ; besoin montant divers visible + édition depuis la bannière.
+
+**Décisions UX :**
+- Sticky : 1 hero Reste ; ligne **Courses** (tap ≥48) → sheet unique ; si divers > 0 : `Courses X € · après Y €`
+- Pas de lien teal « Noter des courses » ; bas de liste = rappel InkMuted (même sheet)
+- Menu : titre + outils + Mois (puces) ; plus de sous-textes ; pas Alertes/Aide/Restore
+
+**Codé (zone Accueil seulement) :** `HomeCoursesSheet` · `stickyCoursesLabel` · sticky tappable · Menu allégé · charte Accueil alignée
+
+**Tests :** à confirmer `./gradlew :app:testDebugUnitTest --rerun-tasks` → **287/287** (+3 StickyCoursesLabel).  
+**Version :** `0.1.0-6.65` · `versionCode` 70.  
+**Pas un claim « premium parfait »** : smoke doigt Courses sur S25/S26.
+
 ### 2026-10-22 — 6.62 Fiche pratique (grille / Paiement / EXIF)
 
 **Vu (S25 smoke + code 6.61) :** jours 25–31 coupés par sticky Enregistrer ; « Paiement & preuve » ouvert à vide = cockpit Secondary ; tips redondants ; JPEG caméra sans rotation EXIF (Samsung).
@@ -27,10 +57,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 - Ordre qui → combien → jour → Paiement (prélèvement dedans) → Accord ; Paiement **fermé** sauf pièce en attente
 - Spacer sous grille + marge bas sticky (Primary+Annuler[+Delete]) ; tip grille retiré ; titres `titleMedium`
 - Tips raccourcis / absents ; QuietLink / 1 Primary inchangés ; pas d’OCR montant
-- EXIF : `ReceiptPhotoStore.applyExifOrientation` + decode caméra fiche (`exifinterface`)
+- EXIF : `ReceiptPhotoStore.applyExifOrientation` + decode caméra fiche ; dep `exifinterface`
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **291/291** (69 fichiers, 0 failure).  
-**Version :** claim journal **6.62**.  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **291/291** (69 fichiers, 0 failure) au moment de la passe fiche.  
+**Version associée :** claim journal **6.62** (versionName peut être plus haut si lots parallèles Accueil/Réglages).  
 **Pas un claim « premium parfait »** : smoke doigt photo orientation.
 
 ### 2026-10-22 — 6.61 Smoke S25 Ultra + polish Accueil / fiche

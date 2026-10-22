@@ -92,7 +92,7 @@ fun ConvertPendingLetterScreen(
                         color = A11yTokens.Ink
                     )
                     Text(
-                        text = "Il a peut-être déjà été converti ou retiré.",
+                        text = "Déjà converti ou retiré.",
                         style = MaterialTheme.typography.bodyLarge,
                         color = A11yTokens.InkMuted,
                         modifier = Modifier.fillMaxWidth()
@@ -131,8 +131,7 @@ fun ConvertPendingLetterScreen(
             )
         }
         Text(
-            text = "Le courrier devient un accord : le versement entre dans le Reste du mois. " +
-                "IBAN et e-mail se remplissent ensuite dans la fiche.",
+            text = "Le versement entre dans le Reste. IBAN et e-mail : ensuite dans la fiche.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -141,7 +140,7 @@ fun ConvertPendingLetterScreen(
         OutlinedTextField(
             value = state.openingRemainingText,
             onValueChange = viewModel::setOpeningRemaining,
-            label = { Text("Combien reste-t-il aujourd’hui ?") },
+            label = { Text("Reste dû aujourd’hui") },
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = A11yTokens.minTouchHeight),

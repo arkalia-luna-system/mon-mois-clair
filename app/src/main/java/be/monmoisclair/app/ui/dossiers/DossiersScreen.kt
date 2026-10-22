@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +46,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import kotlinx.coroutines.flow.collectLatest
 
@@ -64,7 +67,7 @@ fun DossiersScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
-    val sectionGap = if (fit.compactHomeChrome) 10.dp else 16.dp
+    val sectionGap = if (fit.compactHomeChrome) 10.dp else 14.dp
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) viewModel.refresh()
@@ -85,7 +88,7 @@ fun DossiersScreen(
             color = A11yTokens.Ink
         )
         Text(
-            text = "Accords et retards — le reste dû est ici, pas sur l’accueil.",
+            text = "Reste dû des accords — pas sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -128,15 +131,14 @@ fun DossiersScreen(
                 color = A11yTokens.Ink
             )
             Text(
-                text = "Sur une facture, ouvrez « Retard ou accord » " +
-                    "et indiquez combien il reste aujourd’hui. " +
-                    "Sans montant encore : « Ranger sans plan ».",
+                text = "Sur une facture : « Retard ou accord », puis le reste dû. " +
+                    "Sans montant : « Ranger sans plan ».",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()
             )
             SecondaryA11yButton(
-                text = "Ranger un courrier sans plan",
+                text = "Ranger un courrier",
                 onClick = onAddPending
             )
             return@PinnedBackScaffold
@@ -147,11 +149,7 @@ fun DossiersScreen(
             val openItems = snap.items.filter { !it.isSettled }
             val settledItems = snap.items.filter { it.isSettled }
             if (openItems.isNotEmpty()) {
-                Text(
-                    text = "En cours",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.Ink
-                )
+                DossierSectionHeader("En cours")
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                     openItems.forEach { item ->
                         DossierRow(
@@ -174,6 +172,7 @@ fun DossiersScreen(
                     } else {
                         "Soldés (${settledItems.size}) ▾"
                     }
+                HorizontalDivider(color = A11yTokens.PaperBorder)
                 Text(
                     text = settledHeaderLabel,
                     style = MaterialTheme.typography.titleLarge,
@@ -193,16 +192,8 @@ fun DossiersScreen(
                         .semantics { contentDescription = settledHeaderLabel }
                 )
                 if (settledExpanded) {
-                    Text(
-                        text = "Terminés — les mois déjà payés restent dans le calendrier. " +
-                            "Touchez une ligne pour revoir la fiche.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap),
-                        modifier = Modifier.padding(top = 8.dp)
+                        verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)
                     ) {
                         settledItems.forEach { item ->
                             DossierRow(
@@ -221,18 +212,15 @@ fun DossiersScreen(
 
         Spacer(modifier = Modifier.height(sectionGap))
         // SYS01 / PEN01 : titre + tip InkMuted, sans tip-box.
+        HorizontalDivider(color = A11yTokens.PaperBorder)
+        DossierSectionHeader("Courriers sans plan")
         Text(
-            text = "Courriers sans plan",
-            style = MaterialTheme.typography.titleLarge,
-            color = A11yTokens.Ink
-        )
-        Text(
-            text = "Reçus, sans versement fixé — rien dans le Reste.",
+            text = "Reçus, sans versement — hors Reste.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = if (fit.compactHomeChrome) 4.dp else 6.dp)
+                .padding(bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
         )
         if (pending.isEmpty()) {
             Text(
@@ -241,7 +229,7 @@ fun DossiersScreen(
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = if (fit.compactHomeChrome) 8.dp else 10.dp)
+                    .padding(vertical = if (fit.compactHomeChrome) 6.dp else 8.dp)
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
@@ -254,63 +242,64 @@ fun DossiersScreen(
             }
         }
         SecondaryA11yButton(
-            text = "Ranger un courrier sans plan",
+            text = "Ranger un courrier",
             onClick = onAddPending
         )
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
+        Spacer(modifier = Modifier.height(sectionGap))
         // DOS03 : résumé sans boîte clone Réglages.
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
-        ) {
-            Text(
-                text = "Résumé à montrer",
-                style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.Ink
-            )
-            Text(
-                text = "Pour un créancier ou un conseiller — pas à tout le monde. " +
-                    "Texte ou PDF (gros caractères), même contenu.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
-            if (state.summaryBusy) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .semantics {
-                            contentDescription = "Préparation du résumé"
-                            liveRegion = LiveRegionMode.Polite
-                        }
-                ) {
-                    CircularProgressIndicator(
-                        color = A11yTokens.Link,
-                        strokeWidth = 3.dp,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Text(
-                        text = "Préparation…",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = A11yTokens.InkMuted
-                    )
-                }
+        HorizontalDivider(color = A11yTokens.PaperBorder)
+        DossierSectionHeader("Résumé à montrer")
+        Text(
+            text = "Créancier ou conseiller — texte ou PDF, même contenu.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
+        if (state.summaryBusy) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .semantics {
+                        contentDescription = "Préparation du résumé"
+                        liveRegion = LiveRegionMode.Polite
+                    }
+            ) {
+                CircularProgressIndicator(
+                    color = A11yTokens.Link,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(28.dp)
+                )
+                Text(
+                    text = "Préparation…",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
             }
-            SecondaryA11yButton(
-                text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
-                onClick = viewModel::shareSummary,
-                enabled = !state.summaryBusy && !state.loading
-            )
-            SecondaryA11yButton(
-                text = if (state.summaryBusy) "Préparation…" else "PDF du résumé",
-                onClick = viewModel::shareSummaryPdf,
-                enabled = !state.summaryBusy && !state.loading
-            )
         }
+        SecondaryA11yButton(
+            text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
+            onClick = viewModel::shareSummary,
+            enabled = !state.summaryBusy && !state.loading
+        )
+        SecondaryA11yButton(
+            text = if (state.summaryBusy) "Préparation…" else "PDF du résumé",
+            onClick = viewModel::shareSummaryPdf,
+            enabled = !state.summaryBusy && !state.loading
+        )
         Spacer(modifier = Modifier.height(8.dp))
     }
+}
+
+@Composable
+private fun DossierSectionHeader(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        color = A11yTokens.Ink,
+        modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+    )
 }
 
 @Composable
@@ -358,32 +347,29 @@ private fun DossierRow(
             )
         }
         if (item.isSettled) {
-            val soldShape = MaterialTheme.shapes.medium
             Text(
                 text = "Soldé",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.labelLarge,
                 color = A11yTokens.AccentOkInk,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.AccentOkInk.copy(alpha = 0.35f), soldShape)
-                    .background(A11yTokens.AccentOkSoft, soldShape)
-                    .padding(horizontal = 10.dp, vertical = 8.dp)
+                    .widthIn(min = 48.dp)
+                    .background(A11yTokens.AccentOkSoft, StampShape)
+                    .border(1.dp, A11yTokens.AccentOkInk.copy(alpha = 0.35f), StampShape)
+                    .padding(horizontal = 10.dp, vertical = 4.dp)
             )
         } else {
-            // DOS01 : typo seule — pas de barre de progression.
+            // DOS01 : reste commande — pas de barre de progression.
             Text(
-                text = "Déjà versé ${MoneyFormat.formatCents(item.paidCents)} · " +
-                    "reste ${MoneyFormat.formatCents(item.remainingCents)}",
-                style = MaterialTheme.typography.bodyLarge,
+                text = "Reste ${MoneyFormat.formatCents(item.remainingCents)}",
+                style = MaterialTheme.typography.titleLarge,
                 color = A11yTokens.Ink
             )
-            if (item.cadenceLabel.isNotBlank()) {
-                Text(
-                    text = item.cadenceLabel,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
-            }
+            Text(
+                text = "Déjà versé ${MoneyFormat.formatCents(item.paidCents)}" +
+                    if (item.cadenceLabel.isNotBlank()) " · ${item.cadenceLabel}" else "",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
             if (!item.pacePhrase.isNullOrBlank()) {
                 Text(
                     text = item.pacePhrase,
@@ -443,9 +429,9 @@ private fun PendingLetterRow(
         }
         Text(
             text = if (letter.receiptRelativePath.isNotBlank()) {
-                "Sans montant · photo · toucher pour fixer un versement"
+                "Sans montant · photo"
             } else {
-                "Sans montant · toucher pour fixer un versement"
+                "Sans montant"
             },
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted

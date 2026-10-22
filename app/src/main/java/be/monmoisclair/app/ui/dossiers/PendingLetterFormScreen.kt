@@ -93,7 +93,7 @@ fun PendingLetterFormScreen(
             color = A11yTokens.Ink
         )
         Text(
-            text = "Qui, pour quoi, photo — pas de montant. Rien dans le Reste.",
+            text = "Qui, pour quoi, photo — pas de montant, hors Reste.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -140,7 +140,7 @@ fun PendingLetterFormScreen(
             pendingPreview?.let { bmp ->
                 val okShape = MaterialTheme.shapes.medium
                 Text(
-                    text = "Photo prête. Touchez Ranger pour la garder.",
+                    text = "Photo prête — touchez Ranger.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.AccentOkInk,
                     modifier = Modifier
@@ -150,7 +150,7 @@ fun PendingLetterFormScreen(
                         .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
-                            contentDescription = "Photo prête. Touchez Ranger pour la garder."
+                            contentDescription = "Photo prête — touchez Ranger."
                         }
                 )
                 Image(
@@ -183,16 +183,12 @@ fun PendingLetterFormScreen(
                 )
             }
             if (state.saving) {
-                val busyShape = MaterialTheme.shapes.medium
                 Text(
-                    text = "Enregistrement du courrier…",
+                    text = "Enregistrement…",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                        .background(A11yTokens.PaperCard, busyShape)
-                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = "Enregistrement du courrier"
@@ -202,11 +198,6 @@ fun PendingLetterFormScreen(
             PrimaryA11yButton(
                 text = if (state.saving) "Enregistrement…" else "Ranger",
                 onClick = viewModel::save,
-                enabled = !state.saving
-            )
-            SecondaryA11yButton(
-                text = "Annuler",
-                onClick = onBack,
                 enabled = !state.saving
             )
         }

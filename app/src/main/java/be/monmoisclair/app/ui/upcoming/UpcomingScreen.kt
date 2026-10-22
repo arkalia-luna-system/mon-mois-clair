@@ -58,8 +58,7 @@ fun UpcomingScreen(
             color = A11yTokens.Ink
         )
         Text(
-            text = "Aperçu des trois prochains mois (lecture seule). " +
-                "Rien n’est coché FAIT ici — le mois en cours reste sur l’accueil.",
+            text = "Trois prochains mois, lecture seule. Le mois en cours reste sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -87,7 +86,7 @@ fun UpcomingScreen(
         }
         if (state.months.isEmpty()) {
             Text(
-                text = "Rien de prévu sur les trois prochains mois pour l’instant.",
+                text = "Rien de prévu sur les trois prochains mois.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()

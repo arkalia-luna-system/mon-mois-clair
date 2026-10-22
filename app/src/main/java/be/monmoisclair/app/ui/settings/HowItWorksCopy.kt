@@ -12,20 +12,18 @@ object HowItWorksCopy {
     val sections: List<Section> = listOf(
         Section(
             title = "Le chiffre en haut",
-            body = "Le « Reste après factures » = revenus − toutes les factures du mois (FAIT ou non). " +
-                "Ce n’est pas le solde bancaire. « À payer » = encore à régler. " +
-                "« Après les FAIT » (brun) = si on ne comptait que les factures déjà cochées. " +
-                "Pas de report auto : pour noter ce qui restait, un revenu « Reste du mois passé », une fois."
+            body = "« Reste après factures » = revenus − factures du mois (FAIT ou non) — pas le solde bancaire. " +
+                "« À payer » = encore à régler. « Après les FAIT » (brun) = seulement les cochées. " +
+                "Pas de report auto : un revenu « Reste du mois passé », une fois."
         ),
         Section(
             title = "Courses",
-            body = "Lien sous le Reste : notez courses / pharmacie. " +
+            body = "Lien sous le Reste : courses / pharmacie. " +
                 "Le gros Reste ne bouge pas ; « Après courses » montre le solde (brique s’il est négatif)."
         ),
         Section(
             title = "Marquer FAIT",
-            body = "Quand c’est payé (ou le prélèvement vérifié), touchez « FAIT ✓ ». " +
-                "La ligne affiche « FAIT le … ». « Remettre » si erreur. " +
+            body = "Payé (ou prélèvement vérifié) : « FAIT ✓ », puis « FAIT le … ». « Remettre » si erreur. " +
                 "Montant différent ce mois : ouvrez la ligne — seul ce mois change, " +
                 "sauf si « Aussi les mois suivants » est coché."
         ),
@@ -44,16 +42,16 @@ object HowItWorksCopy {
         Section(
             title = "Facture papier",
             body = "À l’ajout, « Scanner une facture » lit le QR belge (nom, montant, référence). " +
-                "« Copier » / « Copier la communication » pour la banque. " +
-                "Photo et « Joindre un PDF » vont à côté (le PDF ne remplace pas la photo). " +
+                "« Copier » pour la banque. Photo et « Joindre un PDF » à côté " +
+                "(le PDF ne remplace pas la photo). " +
                 "« Lire +++ sur la photo » lit seulement la communication — jamais le montant."
         ),
         Section(
             title = "Retard ou accord",
-            body = "Ouvrez « C’est un retard ou un accord ? » pour un plan (à qui, pour quoi, reste dû). " +
+            body = "« C’est un retard ou un accord ? » pour un plan (à qui, pour quoi, reste dû). " +
                 "L’accueil montre le versement et une pastille « Accord », pas le total de la dette. " +
                 "Chaque FAIT baisse le reste. S’il y a un accord : Menu → « Mes dossiers ». " +
-                "Un résumé (texte ou PDF) sert si besoin — créancier ou conseiller, pas tout le monde."
+                "Résumé (texte ou PDF) pour créancier ou conseiller, pas tout le monde."
         ),
         Section(
             title = "Mettre de côté",

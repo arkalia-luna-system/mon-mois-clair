@@ -50,7 +50,7 @@ fun BiometricLockScreen(
         gateway.authenticate(
             activity = activity,
             title = "Mon Mois Clair",
-            subtitle = "Déverrouillez avec votre empreinte ou le code du téléphone.",
+            subtitle = "Empreinte ou code du téléphone.",
             negativeButton = "Annuler",
             onResult = { result ->
                 when (result) {
@@ -108,14 +108,8 @@ fun BiometricLockScreen(
             color = A11yTokens.Ink
         )
         Text(
-            text = "Posez votre doigt sur le lecteur d’empreinte, " +
-                "ou utilisez le code / visage du téléphone.",
+            text = "Empreinte, code ou visage. Si rien ne s’ouvre : le bouton ci-dessous.",
             style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
-        )
-        Text(
-            text = "Si rien ne s’ouvre : touchez « Déverrouiller maintenant ».",
-            style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
         )
         message?.let {

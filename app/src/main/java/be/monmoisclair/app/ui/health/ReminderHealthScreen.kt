@@ -63,8 +63,8 @@ fun ReminderHealthScreen(
             color = A11yTokens.Ink
         )
         Text(
-            text = "3 jours avant à 10 h, le jour à 9 h, puis chaque matin à 10 h tant que ce n’est pas payé. " +
-                "Les lignes ci-dessous disent si le téléphone laisse vraiment sonner.",
+            text = "3 j avant · jour J · chaque matin si impayé. " +
+                "Les pastilles disent si le téléphone laisse sonner.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -123,7 +123,7 @@ fun ReminderHealthScreen(
             if (r.isFullyHealthy) {
                 val okShape = MaterialTheme.shapes.medium
                 Text(
-                    text = "Tout est prêt pour les alertes.",
+                    text = "Tout est prêt.",
                     color = A11yTokens.AccentOkInk,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier

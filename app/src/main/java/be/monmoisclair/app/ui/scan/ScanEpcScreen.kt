@@ -103,7 +103,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 activity,
                 Manifest.permission.CAMERA
             )
-        if (!granted) status = "Autorisez la caméra pour scanner la facture."
+        if (!granted) status = "Autorisez la caméra pour scanner."
     }
 
     LaunchedEffect(pendingRaw) {
@@ -222,7 +222,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             color = A11yTokens.Ink
         )
         Text(
-            text = "Cadrez le QR belge de la facture. La lampe aide dans le noir.",
+            text = "QR belge · lampe si besoin.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -233,7 +233,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             "Ce QR n’est pas une facture belge.",
             "Lecture du QR impossible. Recadrez ou réessayez.",
             "Caméra indisponible.",
-            "Autorisez la caméra pour scanner la facture." -> A11yTokens.DangerInk
+            "Autorisez la caméra pour scanner." -> A11yTokens.DangerInk
             else -> A11yTokens.InkMuted
         }
         // SCAN02 : status neutre = une ligne ; ok/erreur = boîte d’état.
@@ -316,7 +316,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             if (permanentlyDenied) {
                 val denyShape = MaterialTheme.shapes.medium
                 Text(
-                    text = "Caméra refusée. Ouvrez les réglages du téléphone pour l’autoriser.",
+                    text = "Caméra refusée — ouvrez les réglages du téléphone.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.AccentWarn,
                     modifier = Modifier
@@ -327,7 +327,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 )
             } else {
                 Text(
-                    text = "Autorisez la caméra pour cadrer le QR de la facture.",
+                    text = "Autorisez la caméra pour cadrer le QR.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()

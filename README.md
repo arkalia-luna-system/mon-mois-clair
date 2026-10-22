@@ -9,7 +9,7 @@
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-291%2F291-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.62-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.66-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,8 +23,8 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.62` |
-| Dernière étape | **6.62** fiche pratique (grille / Paiement / EXIF) — suite **6.61** |
+| Version | `0.1.0-6.66` |
+| Dernière étape | **6.66** polish écrans secondaires (dossiers / à venir / scan / widget) |
 | Device | Smoke **6.39–6.42** puis S25 Ultra (`SM-S938B`) 2026-10-22 : widget, OCR, PDF. Correctif photo+PDF **6.54** à revalider. S26 pas en main |
 | Distribution | Sideload familial **release signé** (hors Play Store) — voir [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **291/291** OK (`--rerun-tasks`) |
