@@ -28,7 +28,7 @@ sealed class ToggleExpenseDoneResult {
 /**
  * Bascule FAIT : TODO ↔ DONE.
  * Autorisé sur mois courant ou passé déjà généré (oubli de cocher le 28).
- * Refusé sur mois futur d’aperçu (M+1…M+[FUTURE_MONTHS]).
+ * Refusé sur mois futur d’aperçu (M+1…M+[MonthNavigation.FUTURE_MONTHS]).
  *
  * Passe par [MutatingRepository] → backup SAF + reconcile rappels
  * uniquement si une mutation réelle a lieu.

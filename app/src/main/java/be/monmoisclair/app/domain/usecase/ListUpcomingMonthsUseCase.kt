@@ -36,9 +36,10 @@ class ListUpcomingMonthsUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         from: YearMonth = AppClock.currentYearMonth(),
-        horizonMonths: Int = MonthNavigation.FUTURE_MONTHS
+        horizonMonths: Int = MonthNavigation.UPCOMING_PREVIEW_MONTHS
     ): List<UpcomingMonth> {
-        val horizon = horizonMonths.coerceIn(1, 6)
+        // Cap volontaire : À venir ≠ calendrier Accueil (horizon ~2 ans).
+        val horizon = horizonMonths.coerceIn(1, MonthNavigation.UPCOMING_PREVIEW_MONTHS)
         val expenseTemplates = db.templateDao().activeExpenseTemplates()
         val incomeTemplates = db.templateDao().activeIncomeTemplates()
         val result = mutableListOf<UpcomingMonth>()

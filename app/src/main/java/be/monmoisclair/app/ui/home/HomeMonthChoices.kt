@@ -4,15 +4,18 @@ import be.monmoisclair.app.domain.MonthNavigation
 import java.time.YearMonth
 
 /**
- * Mois proposés dans le Menu (sélection calme, pas un mur de pastilles).
- * Futur proche (aperçu) + courant + passé dans l’horizon [MonthNavigation].
+ * Mois proposés au calendrier Accueil (filets + pastilles, pas grille 31 jours).
+ * Horizon = [MonthNavigation] (~2 ans passé + futur).
  */
 object HomeMonthChoices {
     /** 24 mois passés + courant (sans compter le futur). */
     const val DEFAULT_COUNT = MonthNavigation.HISTORY_MONTHS
 
-    /** Bande « Mois récents » : passés proches + courant + aperçus. */
+    /** Bande courte éventuelle : passés proches (hors calendrier plein). */
     const val RECENT_PAST = 2
+
+    /** Futur proche dans une bande courte — pas tout [MonthNavigation.FUTURE_MONTHS]. */
+    const val RECENT_STRIP_FUTURE = 3
 
     /**
      * Liste complète sélectionnable : M+[FUTURE] … M+1, puis M, M−1, … (horizon passé).
@@ -29,13 +32,13 @@ object HomeMonthChoices {
     }
 
     /**
-     * Bande courte pour le Menu : ordre chronologique (ancien → futur).
-     * Ex. août, sept, oct (courant), nov, déc, jan.
+     * Bande courte chronologique (ancien → futur), pour tests / usages légers.
+     * Le Menu n’affiche plus cette bande : calendrier dédié.
      */
     fun recentStrip(
         current: YearMonth,
         pastCount: Int = RECENT_PAST,
-        futureCount: Int = MonthNavigation.FUTURE_MONTHS
+        futureCount: Int = RECENT_STRIP_FUTURE
     ): List<YearMonth> {
         val past = (pastCount downTo 1).map { current.minusMonths(it.toLong()) }
         val future = (1..futureCount).map { current.plusMonths(it.toLong()) }
@@ -44,7 +47,6 @@ object HomeMonthChoices {
 
     /**
      * Mois hors bande récente, groupés par année (récent → ancien).
-     * Sert la section « Autres mois ».
      */
     fun otherMonthsByYear(
         current: YearMonth,
@@ -54,7 +56,18 @@ object HomeMonthChoices {
         val all = recentMonths(current)
         return yearsInOrder(all).mapNotNull { year ->
             val months = all.filter { it.year == year && it !in recentSet }
-            if (months.isEmpty()) null else year to months
+            if (months.isEmpty()) null else year to months.sorted()
+        }
+    }
+
+    /**
+     * Calendrier « Choisir un mois » : toutes les années de l’horizon,
+     * mois Jan→Déc dans chaque année, années du plus récent au plus ancien.
+     */
+    fun calendarByYear(current: YearMonth): List<Pair<Int, List<YearMonth>>> {
+        val all = recentMonths(current)
+        return yearsInOrder(all).map { year ->
+            year to all.filter { it.year == year }.sorted()
         }
     }
 

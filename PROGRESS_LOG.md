@@ -9,15 +9,44 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.70** (Menu mois compact · À venir liste→détail · hub Réglages 3 groupes) |
+| Dernière étape terminée | **6.71** (calendrier mois Accueil · Menu allégé · widget carnet · horizon ~2 ans) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Menu/À venir/Réglages sur S25 · S26 · claim premium non |
-| Audit premium | Matrice audits **FAIT** code (6.68–6.69) + UX rangement **6.70** · **pas** « premium parfait » · **297/297** |
+| Prochaine sous-étape | Smoke doigt calendrier / Menu / widget sur S25 · S26 · claim premium non |
+| Audit premium | Matrice audits **FAIT** code (6.68–6.69) + UX **6.70–6.71** · **pas** « premium parfait » · **299/299** |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.71 Calendrier mois · Menu allégé · widget
+
+**Décisions DA appliquées :**
+1. Accueil : ‹ mois › + icône calendrier → feuille **Choisir un mois** (années + pastilles carnet, pas grille 31 / pas agenda Google). Horizon **24+24** mois.
+2. Menu : plus de mur de mois ; lien **Choisir un mois ›** ; titre « Menu » = **InkMuted** non cliquable ; Réglages / Dossiers / À venir / Alertes badge inchangés.
+3. Sticky : **pas** de logo / wordmark — air + contraste mois + calendrier discret.
+4. À venir : liste courte (max 6) + renvoi calendrier Accueil (pas doublon).
+5. Widget XML : padding 20–22, Reste medium 34 sp, filet, moins « bold store », nuit/jour.
+
+**Avis logo (expert, court) :** le carnet ouvert (encre, filet or, coche) **tient** le positionnement belge « registre papier » — lisible en launcher / splash / lock / Aide. Ce n’est pas un sticker finance US. Ne pas le coller sur le sticky Accueil (vole le Reste). Micro-fix : aucun asset mort (`book_*` tous référencés) ; pas de redesign cette passe.
+
+**Matrice demandes précédentes :**
+| Demande | OK ? |
+|---------|------|
+| Audits V-01…V-13 / typo Source Sans | OK (inchangé) |
+| Menu badge Alertes `!` | OK |
+| Courses sticky + sheet | OK |
+| Hub Réglages 3 groupes | OK |
+| À venir liste→détail | OK (copy alignée) |
+| Menu mois compact 6.70 | Remplacé par calendrier (DA 6.71) |
+| Pas Aide/Restore dans Menu Accueil | OK |
+| Pas logo sticky | OK (renforcé) |
+
+**Cleanup :** `/tmp/` smoke déjà absent ; `.gitignore` + `/tmp/` pour ne plus versionner. Pas d’asset logo mort.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **299/299** (70 fichiers, 0 failure).  
+**Version :** `0.1.0-6.71` · `versionCode` 76.  
+**Pas un claim « premium parfait ».**
 
 ### 2026-10-22 — 6.70 UX rangement Menu / À venir / Réglages
 

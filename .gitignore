@@ -36,3 +36,5 @@ keystore.properties
 /dist/verify/**/RAPPORT_*.md
 # Scripts / scrap adb des agents (locaux)
 /dist/verify/campagne-*/
+# Captures smoke / dumps locaux (jamais versionnés)
+/tmp/

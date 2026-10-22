@@ -77,6 +77,7 @@ class CarnetWidgetRefresher @Inject constructor(
             val ink = if (night) 0xFFF6F3E8.toInt() else 0xFF1E1B18.toInt()
             val muted = if (night) 0xFFD4C7B4.toInt() else 0xFF4A453C.toInt()
             val danger = if (night) 0xFFF4C4B6.toInt() else 0xFF8E3418.toInt()
+            val rule = if (night) 0xFF3A342E.toInt() else 0xFFD9D2C3.toInt()
             val views = RemoteViews(context.packageName, R.layout.widget_carnet)
             views.setInt(
                 R.id.widget_root,
@@ -85,12 +86,15 @@ class CarnetWidgetRefresher @Inject constructor(
             )
             views.setTextViewText(R.id.widget_title, text.title)
             views.setTextColor(R.id.widget_title, muted)
+            views.setInt(R.id.widget_rule, "setBackgroundColor", rule)
             views.setTextViewText(R.id.widget_line, text.line)
             views.setTextColor(R.id.widget_line, if (text.lineOverdue) danger else muted)
             if (text.locked || text.amount.isEmpty()) {
                 views.setViewVisibility(R.id.widget_amount, View.GONE)
+                views.setViewVisibility(R.id.widget_rule, View.GONE)
             } else {
                 views.setViewVisibility(R.id.widget_amount, View.VISIBLE)
+                views.setViewVisibility(R.id.widget_rule, View.VISIBLE)
                 views.setTextViewText(R.id.widget_amount, text.amount)
                 views.setTextColor(
                     R.id.widget_amount,

@@ -2,7 +2,7 @@ package be.monmoisclair.app.ui.settings
 
 /**
  * Aide « Comment ça marche » — textes figés, testables, ton familial.
- * Affiché depuis Réglages (Menu = mois récents / autres mois, À venir, dossiers).
+ * Affiché depuis Réglages (Menu = outils + lien calendrier ; À venir ; dossiers).
  */
 object HowItWorksCopy {
     const val TITLE = "Comment ça marche"
@@ -61,7 +61,7 @@ object HowItWorksCopy {
         Section(
             title = "Sur une année",
             body = "« 1× par an » ou « tous les 3 mois » : créées une fois, réapparaissent le bon mois. " +
-                "Aperçu : flèche ›, Menu → mois à venir, ou Menu → « À venir ». " +
+                "Aperçu : flèche ›, calendrier Accueil, ou Menu → « À venir ». " +
                 "Hors ce mois : Réglages → « Échéances hors ce mois ». " +
                 "Fréquence erronée : ouvrez la ligne et changez-la."
         ),

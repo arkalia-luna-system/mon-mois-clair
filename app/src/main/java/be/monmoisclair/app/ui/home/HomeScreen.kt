@@ -141,6 +141,7 @@ fun HomeScreen(
         }
     }
     var menuOpen by remember { mutableStateOf(false) }
+    var monthPickerOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     /** S02 : ne pas chasser le snackbar « Annuler » FAIT. */
     var faitUndoActive by remember { mutableStateOf(false) }
@@ -446,11 +447,10 @@ fun HomeScreen(
 
     if (menuOpen) {
         HomeMenuSheet(
-            selectedYearMonth = state.selectedYearMonth,
             isPastMonth = state.isPastMonth,
             isFuturePreview = state.isFuturePreview,
             onDismiss = { menuOpen = false },
-            onSelectMonth = viewModel::goToMonth,
+            onOpenMonthPicker = { monthPickerOpen = true },
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
             onOpenSettings = onOpenSettings,
             dossierCount = state.dossierCount,
@@ -459,6 +459,14 @@ fun HomeScreen(
             onOpenUpcoming = onOpenUpcoming,
             remindersBlocked = remindersBlocked,
             onOpenHealth = onOpenHealth
+        )
+    }
+    if (monthPickerOpen) {
+        HomeMonthPickerSheet(
+            selectedYearMonth = state.selectedYearMonth,
+            onDismiss = { monthPickerOpen = false },
+            onSelectMonth = viewModel::goToMonth,
+            onGoToCurrentMonth = viewModel::goToCurrentMonth
         )
     }
     if (coursesSheetOpen && !state.isFuturePreview) {
@@ -495,6 +503,7 @@ fun HomeScreen(
                         .padding(horizontal = fit.stickyPaddingHorizontal)
                         .padding(vertical = fit.stickyPaddingVertical)
                 ) {
+                // ‹ mois › + calendrier discret — pas de logo / wordmark (charte sticky ledger).
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -507,7 +516,7 @@ fun HomeScreen(
                     )
                     Text(
                         text = state.monthLabel,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.headlineMedium,
                         color = A11yTokens.Ink,
                         textAlign = TextAlign.Center,
                         maxLines = 1,
@@ -515,10 +524,17 @@ fun HomeScreen(
                         modifier = Modifier
                             .weight(1f)
                             .defaultMinSize(minHeight = A11yTokens.minTouchHeight)
-                            .clickable(role = Role.Button, onClickLabel = "Ouvrir le menu des mois") {
-                                menuOpen = true
-                            }
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Choisir un mois"
+                            ) { monthPickerOpen = true }
                             .padding(horizontal = 4.dp, vertical = 8.dp)
+                    )
+                    MonthStep(
+                        iconRes = R.drawable.ic_calendar_month,
+                        description = "Choisir un mois",
+                        enabled = true,
+                        onClick = { monthPickerOpen = true }
                     )
                     MonthStep(
                         iconRes = R.drawable.ic_chevron_right,

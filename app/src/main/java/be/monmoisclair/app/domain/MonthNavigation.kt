@@ -5,16 +5,25 @@ import java.time.YearMonth
 /**
  * Règles de navigation Home entre mois.
  *
- * - Passé : jusqu’à 24 mois (menu compris) ; le ledger est créé au tap, pas au cold start.
+ * - Passé : jusqu’à [HISTORY_MONTHS] (calendrier compris) ; le ledger est créé au tap.
  * - Futur : jusqu’à [FUTURE_MONTHS] en **aperçu** (factures / revenus matérialisés,
- *   sans FAIT ni ajout — le mois calendaire reste la source de vérité).
+ *   sans FAIT ni ajout — assez pour vérifier une facture annuelle l’année suivante).
  */
 object MonthNavigation {
-    /** Même horizon que le menu : mois courant inclus. */
+    /** ~2 ans passés (mois courant inclus). */
     const val HISTORY_MONTHS = 24
 
-    /** Mois futurs sélectionnables (Menu + flèche ›). */
-    const val FUTURE_MONTHS = 3
+    /**
+     * ~2 ans futurs sélectionnables (‹ › + calendrier Accueil).
+     * Aperçu lecture seule tant que [isFuturePreview].
+     */
+    const val FUTURE_MONTHS = 24
+
+    /**
+     * Horizon « À venir » (liste utile, pas doublon du calendrier).
+     * Capacité max aussi dans [be.monmoisclair.app.domain.usecase.ListUpcomingMonthsUseCase].
+     */
+    const val UPCOMING_PREVIEW_MONTHS = 6
 
     fun oldestSelectable(current: YearMonth): YearMonth =
         current.minusMonths((HISTORY_MONTHS - 1).toLong())
@@ -28,7 +37,7 @@ object MonthNavigation {
     fun canGoNext(selected: YearMonth, current: YearMonth): Boolean =
         selected.isBefore(farthestSelectable(current))
 
-    /** Saut calendrier Menu : passé, mois courant, ou futur dans l’horizon. */
+    /** Saut calendrier : passé, mois courant, ou futur dans l’horizon. */
     fun canSelect(target: YearMonth, current: YearMonth): Boolean =
         !target.isBefore(oldestSelectable(current)) &&
             !target.isAfter(farthestSelectable(current))

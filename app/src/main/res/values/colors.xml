@@ -6,4 +6,5 @@
     <color name="widget_ink">#1E1B18</color>
     <color name="widget_muted">#4A453C</color>
     <color name="widget_danger">#8E3418</color>
+    <color name="widget_rule">#D9D2C3</color>
 </resources>

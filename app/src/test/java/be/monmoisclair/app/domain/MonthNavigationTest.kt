@@ -21,19 +21,31 @@ class MonthNavigationTest {
         assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 9), current)).isTrue()
         assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 10), current)).isTrue()
         assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 11), current)).isTrue()
-        assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 12), current)).isTrue()
-        assertThat(MonthNavigation.canGoNext(YearMonth.of(2027, 1), current)).isFalse()
+        // Année suivante (facture annuelle) + jusqu’à M+24
+        assertThat(MonthNavigation.canGoNext(YearMonth.of(2027, 10), current)).isTrue()
+        assertThat(MonthNavigation.canGoNext(YearMonth.of(2028, 9), current)).isTrue()
+        assertThat(MonthNavigation.canGoNext(YearMonth.of(2028, 10), current)).isFalse()
     }
 
     @Test
-    fun canSelect_allowsPastCurrentAndNearFuture() {
+    fun canSelect_allowsPastCurrentAndFarFuture() {
         val current = YearMonth.of(2026, 10)
         assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 10), current)).isTrue()
         assertThat(MonthNavigation.canSelect(YearMonth.of(2025, 1), current)).isTrue()
         assertThat(MonthNavigation.canSelect(YearMonth.of(2024, 1), current)).isFalse()
         assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 11), current)).isTrue()
-        assertThat(MonthNavigation.canSelect(YearMonth.of(2027, 1), current)).isTrue()
-        assertThat(MonthNavigation.canSelect(YearMonth.of(2027, 2), current)).isFalse()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2027, 10), current)).isTrue()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2028, 10), current)).isTrue()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2028, 11), current)).isFalse()
+    }
+
+    @Test
+    fun farthestSelectable_coversYearPlusOne() {
+        val current = YearMonth.of(2026, 10)
+        assertThat(MonthNavigation.farthestSelectable(current))
+            .isEqualTo(YearMonth.of(2028, 10))
+        assertThat(MonthNavigation.FUTURE_MONTHS).isEqualTo(24)
+        assertThat(MonthNavigation.HISTORY_MONTHS).isEqualTo(24)
     }
 
     @Test

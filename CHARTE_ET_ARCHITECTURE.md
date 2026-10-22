@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.70** — Menu mois compact · À venir liste→détail · hub Réglages 3 groupes).
+Mise à jour : 2026-10-22 (lot **6.71** — calendrier mois Accueil · Menu allégé · widget carnet).
 
 ## 1. Vision
 
@@ -25,9 +25,11 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
-| Mois ‹ › puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
-| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Mes dossiers** (si N>0) · **Mois récents** + **Autres mois** (pas mur de pastilles ; passé + **3 mois à venir**) |
+| ‹ **mois** › + icône **calendrier** (tap → « Choisir un mois ») puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
+| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Mes dossiers** (si N>0) · **Choisir un mois ›** (même feuille calendrier) · Alertes badge si bloqué. Titre « Menu » = InkMuted non cliquable |
 | Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
+
+**Calendrier mois (6.71)** : feuille carnet (années + pastilles), **pas** agenda Google ni grille 31 jours. Horizon ~**24 mois** passé + **24 mois** futur (assez pour une facture annuelle l’année suivante). Futur = aperçu. **Pas** de logo / wordmark / nom d’app sur le sticky Accueil.
 
 **Sticky (verrouillé 6.27, densité 6.56) — maman lit sans calculer :**
 
@@ -88,6 +90,7 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.67** | Hub Réglages + sous-pages · Courses sticky branché · Menu allégé · une version | ✅ |
 | **6.68–6.69** | Audits typo/Menu/Courses/a11y · CarnetStateBanner · tipPad | ✅ |
 | **6.70** | Menu mois récents/autres · À venir liste→détail · hub 3 groupes | ✅ |
+| **6.71** | Calendrier mois Accueil · Menu lien calendrier · widget carnet · horizon ~2 ans | ✅ |
 
 ## 5. Branches Git (verrouillé)
 
@@ -164,7 +167,7 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomC
 |--------|-----|-----------------------------|
 | Loyer, salaire, courses | Home mois courant | OK (liste + reste + divers) |
 | Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
-| Feuilleter 12 mois passés | Menu → Mois récents / Autres mois + ‹ › | **Revenir au mois en cours** (Menu) |
+| Feuilleter / sauter un mois | Accueil ‹ › + **calendrier** (ou Menu → Choisir un mois) | **Mois en cours** (Menu / calendrier) |
 | Rappels qui ne sonnent pas | Réglages → Confort → Alertes | Un seul hub (pas de doublon Menu) |
 | Aide / restore | Réglages → Aide / Compte & données → Sauvegarde | Menu ne liste plus Comment ça marche ni Restaurer |
 
