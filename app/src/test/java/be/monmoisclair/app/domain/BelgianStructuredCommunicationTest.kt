@@ -85,6 +85,22 @@ class BelgianStructuredCommunicationTest {
     }
 
     @Test
+    fun findInOcrText_doesNotGlueSpacedDigits() {
+        // 123456789002 est valide, mais séparateurs / sans forme +++ → refusé.
+        assertThat(
+            BelgianStructuredCommunication.findInOcrText("montant 1234 5678 9002 EUR")
+        ).isNull()
+    }
+
+    @Test
+    fun findInOcrText_twelveDigitsWithoutContext_ignored() {
+        assertThat(BelgianStructuredCommunication.findInOcrText("000000000097")).isNull()
+        assertThat(
+            BelgianStructuredCommunication.findInOcrText("Total 1.234,56 puis 000000000097")
+        ).isNull()
+    }
+
+    @Test
     fun findInOcrText_ignoresInvalidTwelve_andAmountNoise() {
         assertThat(
             BelgianStructuredCommunication.findInOcrText("À payer 45,67 EUR — 000000000098")

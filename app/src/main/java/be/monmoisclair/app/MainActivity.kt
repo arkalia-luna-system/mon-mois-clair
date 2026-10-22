@@ -1,6 +1,7 @@
 package be.monmoisclair.app
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.SystemBarStyle
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -44,6 +46,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import be.monmoisclair.app.data.widget.CarnetWidgetSink
+import be.monmoisclair.app.domain.BiometricFlagCache
 import be.monmoisclair.app.ui.MainViewModel
 import be.monmoisclair.app.ui.lock.BiometricLockScreen
 import be.monmoisclair.app.ui.navigation.AppNavHost
@@ -74,6 +77,14 @@ class MainActivity : AppCompatActivity() {
             .peek(this)
             .resolveNight(systemDarkBoot)
         val barBoot = if (nightBoot) 0xFF1E1B18.toInt() else 0xFFF6F3E8.toInt()
+        // 1er frame = Apparence choisie, pas la nuit du thème XML.
+        window.setBackgroundDrawable(ColorDrawable(barBoot))
+        if (BiometricFlagCache.peek(this)) {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
+        }
         enableEdgeToEdge(
             statusBarStyle = if (nightBoot) {
                 SystemBarStyle.dark(barBoot)
@@ -202,7 +213,12 @@ class MainActivity : AppCompatActivity() {
                             AppNavHost(
                                 navController = navController,
                                 startDestination = state.startDestination,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = if (state.needsUnlock) {
+                                    // TalkBack ne doit pas atteindre FAIT sous le verrou.
+                                    Modifier.fillMaxSize().clearAndSetSemantics { }
+                                } else {
+                                    Modifier.fillMaxSize()
+                                }
                             )
                             if (state.needsUnlock) {
                                 BiometricLockScreen(

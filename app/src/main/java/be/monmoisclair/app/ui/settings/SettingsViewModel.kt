@@ -362,16 +362,26 @@ class SettingsViewModel @Inject constructor(
             it.copy(summaryBusy = true, flashMessage = null, flashMessageError = false)
         }
         viewModelScope.launch {
-            val result = prepareMonthSummary()
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
-                putExtra(Intent.EXTRA_TEXT, result.text)
+            try {
+                val result = prepareMonthSummary()
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
+                    putExtra(Intent.EXTRA_TEXT, result.text)
+                }
+                _shareIntents.emit(
+                    Intent.createChooser(intent, "Envoyer le résumé")
+                )
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(
+                        flashMessage = "Le résumé n’a pas pu être préparé. Réessayez.",
+                        flashMessageError = true
+                    )
+                }
+            } finally {
+                _uiState.update { it.copy(summaryBusy = false) }
             }
-            _shareIntents.emit(
-                Intent.createChooser(intent, "Envoyer le résumé")
-            )
-            _uiState.update { it.copy(summaryBusy = false) }
         }
     }
 

@@ -1,7 +1,7 @@
 # Recherche — affichage, dettes, épargne, outils comparables
 
 Date : 2026-10-21.  
-Sert l’audit [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) et le plan [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
+Sert l’audit [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) et le plan archivé [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Règle : une affirmation « les gens font X » a une source. Un blog marketing n’est pas une preuve. Quand la source est un retour produit, c’est marqué comme tel.
 
 ---

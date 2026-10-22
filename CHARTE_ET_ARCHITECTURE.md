@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.54** — photo+PDF / verrou / PDF busy).
+Mise à jour : 2026-10-22 (lot **6.55** — premier frame, empreinte, OCR).
 
 ## 1. Vision
 
@@ -62,50 +62,21 @@ Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Br
 
 Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expense_fee_events` (frais datés). Reste dû = départ + cumul frais − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros ; bandeau « courrier sans plan · Voir » seulement s’il y en a. Sur la fiche d’un accord : Copier l’IBAN, Écrire (brouillon mail), ajouter/voir/enlever des courriers, **liste datée des frais**.
 
-## 4. Plan
+## 4. Plan (étapes)
+
+Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRODUIT_FINI.md). État vivant : [`docs/PLAN_PRODUIT_FINI.md`](docs/PLAN_PRODUIT_FINI.md). Journal : `PROGRESS_LOG.md`.
 
 | Étape | Contenu | État |
 |-------|---------|------|
-| **6.0–6.3.1** | Assistant papiers + fiabilité | ✅ |
-| **6.4–6.5** | Affichage S26 / Ultra + UX smoke | ✅ |
-| **6.6** | Hub Réglages utile + navigation année | ✅ |
-| **6.7** | Home ledger + Menu (fin du fourre-tout) | ✅ |
-| **6.8** | Fidélité outil (étude 2026) : FAIT daté, palette, barre pouce | ✅ |
-| **6.9** | Relecture étude : contraste réel, grille des jours, cartes, alertes | ✅ |
-| **6.10** | Calme visuel : en-tête court, clavier qui laisse voir le champ | ✅ |
-| **6.11** | Rythme visuel : serif au chiffre, mois en toutes lettres, écrans allégés | ✅ |
-| **6.12** | Parcours fini : Continuer épinglé, un seul bouton plein, cartes échéances | ✅ |
-| **6.13** | Marque : icône M, rappel blanc, ouverture papier | ✅ |
-| **6.14–6.26** | Audit premium, archive photos, menu années, mois vide, CI | ✅ |
-| **6.27** | Sticky Sans les futures · Menu = Réglages · photo + fréquence éditables | ✅ |
-| **6.28–6.29** | Punch list premium (photo au doigt, Copier hors Modifier, Alertes) | ✅ |
-| **6.30** | Lot A : note/photo sur modèle · matérialisation · Copier 12 chiffres (mod 97) | ✅ |
-| **6.31** | Lot B : dossier replié · reste calculé · pastille Accord · arrêt si soldé | ✅ |
-| **6.32** | Lot C : IBAN · e-mail · frais · photos extras visibles (voir/enlever) | ✅ |
-| **6.33** | Mes dossiers (Menu si N>0) · EuroFormat · mailto URI · garde IBAN ajout | ✅ |
-| **6.34** | Courriers sans plan (`pending_letters`) · bandeau accueil · conversion → accord | ✅ lot D |
-| **6.35** | Mettre de côté (Réglages, facture mensuelle, alerte déficit) | ✅ lot E |
-| **6.36** | Résumé texte (Mes dossiers / Réglages si déficit ou dossier) | ✅ lot F |
-| **6.37** | Phrase rythme (« encore environ N… si… ») fiche / Mes dossiers | ✅ |
-| **6.38** | Historique daté des frais (`expense_fee_events`, schéma 8) | ✅ |
-| **6.39** | Feedback famille (mail, soldés, Vers, À venir, courses, épargne) | ✅ |
-| **6.40** | Polish sticky : Après courses danger + Courses en lien compact | ✅ |
-| **6.41** | Aperçu mois futurs (flèche › / Menu, M+1…M+3, lecture seule) | ✅ |
-| **6.42** | Sync templates sur mois déjà ouverts · Soldés repliés · dist famille | ✅ |
-| **6.43** | Forme : `tnum`, cartes 16 dp, pastilles capsule, FAIT forêt, socle barre, fondu mois | ✅ |
-| **6.44** | PDF (toute facture, fiche) + encre de nuit (système) | ✅ |
-| **6.45** | Polish : ombre sticky Reste + fondu couleur ligne FAIT ~150 ms | ✅ |
-| **6.46** | Apparence : Clair / Sombre / Comme le téléphone (Réglages) | ✅ |
-| **6.47** | OCR « Lire +++ sur la photo » (jamais le montant) | ✅ |
-| **6.48** | PDF du résumé (même texte, Mes dossiers / Réglages) | ✅ |
-| **6.49** | Widget accueil : Reste + prochaine ligne non FAIT · PDF aussi à l’ajout | ✅ |
-| **6.50** | ClipData sur PDF résumé · fonds widget crème / encre fixes | ✅ |
-| **6.51** | PDF résumé : 18/22 pt, Source Sans/Serif, pied de page | ✅ |
-| **6.52** | Retry PDF à l’ajout · cache thème · ZIP `ShareFileIntents` · docs archivés | ✅ |
-| **6.53** | Copy Réglages / Aide / Alertes / restauration — moins de phrases inutiles | ✅ |
-| **6.54** | hasReceipt photo+PDF · verrou consomme taps · PDF `finally` · VIEW ClipData · widget nuit | ✅ |
-
-Journal : `PROGRESS_LOG.md`.
+| **6.0–6.29** | Carnet, hub Réglages, home ledger, audit premium, sticky / Menu | ✅ |
+| **6.30–6.36** | Lots A→F (papier, dossier, IBAN/frais, Mes dossiers, épargne, résumé) | ✅ |
+| **6.37–6.42** | Rythme, frais datés (schéma 8), feedback famille, aperçu futurs, sync | ✅ |
+| **6.43** | Forme : `tnum`, cartes 16 dp, pastilles, FAIT forêt, fondu mois | ✅ |
+| **6.44–6.46** | PDF facture · nuit · Apparence Clair/Sombre/téléphone | ✅ |
+| **6.47–6.51** | OCR `+++` · PDF résumé · widget · ClipData · 18/22 pt | ✅ |
+| **6.52–6.53** | Retry PDF · cache thème · docs · copy Réglages/Aide | ✅ |
+| **6.54** | hasReceipt photo+PDF · verrou anti-tap · PDF `finally` · VIEW ClipData · widget nuit | ✅ |
+| **6.55** | 1er frame Apparence · cache empreinte · OCR sans collage · widget si le processus vit | ✅ |
 
 ## 5. Branches Git (verrouillé)
 

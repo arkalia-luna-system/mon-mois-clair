@@ -9,15 +9,36 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.54** (photo+PDF bouton · verrou taps · PDF busy) |
+| Dernière étape terminée | **6.55** (1er frame, empreinte, OCR, widget) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke photo loyer3 / verrou — ou S26 maman |
-| Audit premium | Benchmark clos · P0 audit 6.54 · **281/281** |
+| Prochaine sous-étape | Reprendre la photo de loyer3 — ou S26 maman |
+| Audit premium | Benchmark · inspection visuelle · **282/282** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.55 Premier frame, empreinte, OCR, widget
+
+**Vu :** le splash n’était pas le papier du carnet (`#F8F1DE`). Le fond de fenêtre suivait encore la nuit du système avant Compose. `FLAG_SECURE` attendait Room. L’OCR collait des chiffres séparés en une fausse `+++`. TalkBack pouvait encore lire FAIT sous le verrou. Le widget ne se rafraîchissait pas si l’app n’était pas ouverte au changement de nuit.
+
+**Codé :**
+- Splash et fond de fenêtre = `#F6F3E8` / encre selon le cache d’apparence
+- `BiometricFlagCache` posé avant le premier frame ; `MainViewModel` init depuis le cache (sinon `LaunchedEffect` effaçait `FLAG_SECURE`)
+- OCR : forme `+++`/`***`, ou 12 chiffres isolés **avec** contexte (réf / OGM…) — plus de fenêtre glissante
+- Verrou : `pointerInput` consomme les gestes ; sous le verrou, `clearAndSetSemantics` sur le NavHost
+- Processus vivant : `CONFIGURATION_CHANGED` dynamique (pas le manifeste — broadcast protégé) → refresh widget
+- Partage résumé texte **et** PDF : `try/finally` sur `summaryBusy`
+
+**Inspection visuelle (S25, accueil jour) :** un seul chiffre, un seul teal (« + Ajouter »), FAIT forêt, retard brique, cartes papier. Pas de page Téléchargements ni de page Mise à jour dans l’app : le dossier est « Dossier de sauvegarde », les alertes sont « Alertes fiables ». Même papier, mêmes boutons. Rien à redessiner.
+
+**Limite assumée :** widget nuit hors process mort (Android bloque `CONFIGURATION_CHANGED` au manifeste).
+
+**Tests :** *(à recalculer après `--rerun-tasks`)*  
+**Version :** `0.1.0-6.55` · `versionCode` 60.
+
+**Docs (même lot) :** plan détaillé A→F → `docs/archive/` ; plan vivant court ; charte §4 condensée ; index anti-doublon ; `DeviceCareCopy.BODY` retiré ; purge locale `dist/verify/smoke-*`.
 
 ### 2026-10-22 — 6.54 Correctifs P0 audit (photo / verrou / PDF)
 

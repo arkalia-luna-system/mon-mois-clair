@@ -64,7 +64,9 @@ object BelgianStructuredCommunication {
 
     /**
      * Cherche une communication structurée **valide** dans un texte OCR.
-     * Ne lit jamais un montant : seulement 12 chiffres + modulo 97 (ou forme +++).
+     * Exige la forme `+++` / `***`, ou 12 chiffres isolés **avec** un contexte
+     * (réf / communication / OGM…). Jamais de fenêtre glissante sur tous les chiffres
+     * (les séparateurs de milliers d’un montant fabriqueraient une fausse ref).
      * Null = rien de fiable à proposer.
      */
     fun findInOcrText(raw: String): String? {
@@ -85,19 +87,24 @@ object BelgianStructuredCommunication {
             val digits = m.groupValues[1] + m.groupValues[2] + m.groupValues[3]
             formatDisplay(digits)?.let { return it }
         }
-        // Douze chiffres d’affilée (OCR a perdu les +++ /).
-        for (m in Regex("""\d{12}""").findAll(raw)) {
-            formatDisplay(m.value)?.let { return it }
-        }
-        // Fenêtre glissante sur tous les chiffres (espaces / ponctuation OCR).
-        val allDigits = raw.filter { it.isDigit() }
-        var i = 0
-        while (i + 12 <= allDigits.length) {
-            formatDisplay(allDigits.substring(i, i + 12))?.let { return it }
-            i++
+        if (!hasOcrCommunicationContext(raw)) return null
+        // Douze chiffres isolés seulement si le texte parle déjà d’une référence.
+        for (m in Regex("""(?<!\d)(\d{12})(?!\d)""").findAll(raw)) {
+            formatDisplay(m.groupValues[1])?.let { return it }
         }
         return null
     }
+
+    /** Mots / marques qui indiquent une communication, pas un montant OCR. */
+    internal fun hasOcrCommunicationContext(raw: String): Boolean {
+        if (raw.contains("+++") || raw.contains("***")) return true
+        // Limites de mot : « refusé » ne doit pas ouvrir la porte aux 12 chiffres.
+        return OCR_CONTEXT_MARKER.containsMatchIn(raw)
+    }
+
+    private val OCR_CONTEXT_MARKER = Regex(
+        """(?i)(\br[ée]f\.?\b|\bcommunication\b|\bogm\b|\bvcs\b|\bstructured\b|\bbancaire\b|\bvirement\b)"""
+    )
 
     /** Exemple canonique du plan : base 0 → contrôle 97. */
     const val EXAMPLE_VALID_DISPLAY = "+++000/0000/00097+++"

@@ -7,6 +7,7 @@ import be.monmoisclair.app.data.backup.BackupScheduler
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
+import be.monmoisclair.app.domain.BiometricFlagCache
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
@@ -21,13 +22,14 @@ import be.monmoisclair.app.data.widget.CarnetWidgetSink
 @RunWith(RobolectricTestRunner::class)
 class BiometricPreferenceUseCaseTest {
 
+    private lateinit var context: Context
     private lateinit var db: AppDatabase
     private lateinit var useCase: BiometricPreferenceUseCase
     private val backupCalls = AtomicInteger(0)
 
     @Before
     fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
@@ -45,7 +47,7 @@ class BiometricPreferenceUseCaseTest {
             },
             widgetSink = CarnetWidgetSink.Noop
         )
-        useCase = BiometricPreferenceUseCase(db.appMetaDao(), mutating)
+        useCase = BiometricPreferenceUseCase(context, db.appMetaDao(), mutating)
     }
 
     @After
@@ -62,6 +64,7 @@ class BiometricPreferenceUseCaseTest {
     fun setEnabled_true_persists_and_backups() = runBlocking {
         useCase.setEnabled(true)
         assertThat(useCase.isEnabled()).isTrue()
+        assertThat(BiometricFlagCache.peek(context)).isTrue()
         assertThat(db.appMetaDao().get(AppMetaKeys.BIOMETRIC_ENABLED)?.value).isEqualTo("true")
         assertThat(backupCalls.get()).isEqualTo(1)
     }
@@ -71,6 +74,8 @@ class BiometricPreferenceUseCaseTest {
         useCase.setEnabled(true)
         useCase.setEnabled(false)
         assertThat(useCase.isEnabled()).isFalse()
+        assertThat(BiometricFlagCache.peek(context)).isFalse()
+        assertThat(useCase.cachedEnabled()).isFalse()
         assertThat(backupCalls.get()).isEqualTo(2)
     }
 }

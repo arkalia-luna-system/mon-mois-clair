@@ -4,16 +4,8 @@ package be.monmoisclair.app.ui.settings
 object DeviceCareCopy {
     const val TITLE = "Batterie Samsung"
 
-    /** Bandeau court (onboarding / santé alertes). */
+    /** Bandeau (santé alertes / Aide). */
     const val HINT =
         "Dans Samsung, retirez Mon Mois Clair de la mise en veille " +
             "(Paramètres → Batterie → Limites d’utilisation en arrière-plan)."
-
-    /** Aide détaillée (Réglages / comment ça marche). */
-    const val BODY =
-        "Dans Samsung, retirez Mon Mois Clair de la mise en veille.\n\n" +
-            "1. Ouvrez le bouton « Liste optimisation batterie » ci-dessous.\n" +
-            "2. Trouvez Mon Mois Clair.\n" +
-            "3. Retirez-la de la mise en veille.\n\n" +
-            "Chemin : Paramètres → Batterie → Limites d’utilisation en arrière-plan."
 }

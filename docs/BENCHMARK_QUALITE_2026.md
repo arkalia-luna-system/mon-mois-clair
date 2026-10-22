@@ -1,19 +1,15 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.53**).  
-App lue au départ : `0.1.0-6.41`. Le dépôt a avancé : formes **6.43**, PDF facture **6.44/6.49**, nuit **6.44/6.46**, polish **6.45**, OCR **6.47**, PDF résumé **6.48/6.51**, widget **6.49/6.50**, finitions **6.52**, copy **6.53**.  
-Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
+Date : 2026-10-22 (état code : **6.55**).  
+Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
+Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | `tnum`, fond `#F6F3E8`, cartes 16 dp + ombre, pastilles capsule, boutons 12 dp, socle `PaperWarm`, FAIT forêt, fondu mois 180 ms, ombre sticky, fondu couleur ligne FAIT ~150 ms |
-| **Fait** | PDF à côté de la photo — **toute** facture (ajout + édition, retry si échec) |
-| **Fait** | Encre de nuit + choix Clair / Sombre / téléphone (Réglages) + cache 1er frame |
-| **Fait** | OCR `+++` sur la photo — jamais le montant |
-| **Fait** | PDF du résumé (même texte, gros caractères 18/22 pt — 6.51) |
-| **Fait** | Widget : Reste + prochaine ligne non FAIT (crème/encre fixes) |
+| **Fait** | Formes 6.43 · PDF facture · nuit / Apparence · OCR `+++` · PDF résumé 18/22 pt · widget · copy 6.53 · photo/verrou 6.54 · 1er frame 6.55 |
+| **Pas fait** | S26 en main · smoke doigt complet · tests instrumentés |
 
-Ce n’est pas un plan à coder. Lots A→F et feedback 6.39+ : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md), [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md). Audit dossiers (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md). Recherche figée : [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md).
+Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 
 ---
 
@@ -21,108 +17,66 @@ Ce n’est pas un plan à coder. Lots A→F et feedback 6.39+ : [`PLAN_PRODUIT_F
 
 Deux familles d’apps, pas une.
 
-| Famille | À quoi elles servent | Exemples lus | Rapport avec nous |
-|---------|----------------------|--------------|-------------------|
-| **Argent complet** | Banque branchée, catégories, patrimoine, souvent un abonnement | Monarch, YNAB, Copilot, Origin | Barème **visuel** et « objet fini ». Mauvais modèle de fonctions |
-| **Carnet de factures** | Rappels, récurrence, payé, souvent hors banque | Smart Bill Reminder, Billiary, Flying Bills, Bills Reminder & Organizer, AllPaid | Vrais pairs. C’est ici qu’un manque compte |
+| Famille | À quoi elles servent | Exemples | Rapport avec nous |
+|---------|----------------------|----------|-------------------|
+| **Argent complet** | Banque, catégories, patrimoine | Monarch, YNAB, Copilot, Origin | Barème **visuel** seulement |
+| **Carnet de factures** | Rappels, récurrence, payé | Smart Bill Reminder, Billiary, Flying Bills, AllPaid | Vrais pairs |
 
-« Premium » pour maman sur un Galaxy n’est pas le look Copilot. Le bon barème : **un objet papier qui a l’air terminé**, calme, avec un seul chiffre qui commande.
-
-Sources (pages publiques, octobre 2026) : NerdWallet / WalletHub best budget apps 2026 ; Origin bill apps guide ; Copilot design ; Smart Bill Reminder ; Billiary ; Flying Bills ; Bills Reminder & Organizer. Mint et Prism sont morts.
+« Premium » pour maman sur Galaxy = **objet papier terminé**, calme, un chiffre qui commande — pas le look Copilot.
 
 ---
 
-## 2. Ce que les meilleures font — et ce qu’on a déjà
+## 2. Pairs — ce qu’on a
 
-### Argent complet (à ne pas copier comme produit)
-
-| App | Ce qui fait sa note en 2026 | Ici |
-|-----|------------------------------|-----|
-| **Monarch / YNAB / Copilot / Origin** | Banque, catégories, patrimoine, coach | Hors charte. On garde « ouvrir = que reste-t-il ? » |
-
-### Carnets de factures (pairs réels)
-
-| Fonction des pairs | Eux | Mon Mois Clair |
-|--------------------|-----|----------------|
-| Sans compte, hors ligne | Oui | Oui, **sans pub** |
-| Récurrence mois / N / an | Oui | Oui. Pas de semaine |
-| FAIT depuis la notification | Oui | Oui + Remettre ~10 s |
-| Photo de facture | Oui | Oui, WebP, suit le modèle |
-| **PDF** collé à la facture | Oui | **Oui (6.44 + 6.49)** — ajout + édition, ouverture externe |
-| Vue calendrier grille | Oui | Non — liste + Menu (volontaire) |
-| Widget | Souvent premium | **Oui (6.49)** — Reste + prochaine ligne |
-| OCR montant | Smart Bill | Non — on lit seulement `+++` (6.47) |
-| Mode sombre | Oui | **Oui (6.44 + 6.46)** — encre de nuit ; choix Clair / Sombre / téléphone |
+| Fonction | Pairs | Mon Mois Clair |
+|----------|-------|----------------|
+| Hors ligne, sans compte | Oui | Oui, **sans pub** |
+| Récurrence mois / N / an | Oui | Oui (pas de semaine) |
+| FAIT + Remettre | Oui | Oui |
+| Photo + **PDF** | Souvent | Oui (ajout + édition) |
+| Widget | Souvent payant | Oui — Reste + prochaine ligne |
+| OCR montant | Parfois | Non — seulement `+++` |
+| Mode sombre | Oui | Oui + choix Apparence |
 | Catégories / graphiques | Premium | Refusé |
-| Export | JSON / CSV / PDF | JSON + ZIP photos ; résumé = texte **et** PDF (6.48) |
 
-### Déjà au-dessus des carnets Android (belge)
-
-Communication `+++` + mod 97 · QR → IBAN · reste d’accord aux centimes FAIT · courrier sans montant hors Reste · Mettre de côté · résumé texte/PDF · biométrie / `FLAG_SECURE` · contraste ≥ 7:1 · cibles ≥ 48 dp · widget local.
+Déjà au-dessus des carnets belges : `+++` mod 97 · QR EPC · reste d’accord · courrier hors Reste · Mettre de côté · résumé texte/PDF · biométrie / `FLAG_SECURE` · contraste ≥ 7:1 · cibles ≥ 48 dp.
 
 ---
 
-## 3. Fonctions — état réel
+## 3. Visuel — V01–V08 (clos)
 
-### Fait
+Fond jour `#F6F3E8`, cartes `#FFFDF9`, encre `#1E1B18`, teal `#1B4D4E`. Nuit : fond encre, texte papier, **même** teal.
 
-| # | Sujet | Lot |
-|---|--------|-----|
-| 1 | PDF à côté de la photo (toute facture, ajout + édition) | **6.44 + 6.49** |
-| 2 | OCR seulement la communication `+++` (jamais le montant) | **6.47** |
-| 3 | Chiffres tabulaires `tnum` | **6.43** |
-| 4 | Fondu ~180 ms au changement de mois | **6.43** |
-| 5 | Widget : Reste + prochaine ligne non FAIT | **6.49** |
-| 6 | PDF du résumé (même texte, gros caractères) | **6.48 + 6.51** |
-| — | Encre de nuit | **6.44** |
-| — | Choix Clair / Sombre / téléphone (Réglages) | **6.46** |
+| Id | État |
+|----|------|
+| V01–V08 | **Fait** (cartes/ombre, rayons, pastilles, socle, FAIT forêt, `tnum`, fondus, nuit) |
 
-### Laisser dehors
-
-Banque, catégories, graphiques, synchro cloud, thèmes fluo, OCR montant, snowball, grille calendrier.
+Pas de dégradé teal, pas d’icône seule Menu/FAIT, pas de 2ᵉ hero, pas de rouge sang.
 
 ---
 
-## 4. Le visuel — état réel
+## 4. Ce qui reste au doigt
 
-Fond jour `#F6F3E8`, cartes `#FFFDF9`, encre `#1E1B18`, teal `#1B4D4E`. Nuit : fond encre, texte papier, **même** teal (`A11yTokens.Night`).
+| Reste | Note |
+|-------|------|
+| Smoke Galaxy | S25 partiel 2026-10-22. Photo de loyer3 à revalider (correctif `hasReceipt` 6.54). S26 : non |
+| Widget nuit process mort | Si l’app n’est plus en mémoire, Android ne livre pas `CONFIGURATION_CHANGED` au manifeste — refresh au prochain réveil |
+| Tests d’écran | Pas de parcours instrumenté |
 
-| Id | Constat d’origine | État code |
-|----|-------------------|-----------|
-| **V01** | Cartes = page | **Fait** — ombre 2 dp sur cartes + ombre sticky Reste |
-| **V02** | Tout en 12 dp | **Fait** — boutons 12, cartes 16, pastilles `StampShape` |
-| **V03** | Pastille = phrase | **Fait** — `labelLarge` + padding serré ; **18 sp mini** (a11y, pas plus petit) |
-| **V04** | Barre = page | **Fait** — socle `PaperWarm` |
-| **V05** | FAIT = secondaire | **Fait** — plein forêt ; Remettre en trait |
-| **V06** | Chiffres qui dansent | **Fait** — `tnum` sur la typo |
-| **V07** | Pas de mouvement | **Fait** — fondu mois 180 ms + couleur ligne FAIT ~150 ms |
-| **V08** | Nuit = feuille allumée | **Fait** — encre de nuit + préférence app |
+## 5. Inspection des pages — 2026-10-22
 
-### Ne pas « embellir »
+Accueil vu sur le S25 (jour). Les autres pages lues dans le Compose.
 
-Pas de dégradé teal, pas d’icône seule Menu/FAIT, pas de 2ᵉ hero, pas de rouge sang, compact S26 = contrainte hauteur.
+| Page | À modifier ? |
+|------|----------------|
+| Accueil | Non. Un chiffre, un teal, FAIT forêt, retard brique, cartes papier, recherche en contour |
+| Menu | Non. Réglages, dossiers, mois |
+| Réglages, Aide | Non depuis le raccourci des phrases (6.53) |
+| Dossier de sauvegarde | Non. Il n’y a pas de page Téléchargements : un bouton « Choisir un dossier » |
+| Alertes fiables | Non. Un « Continuer », le reste en contour |
+| Restaurer | Non. Même papier, confirmation avant d’écraser |
+| Mise à jour | Il n’y a pas cet écran (APK familial) |
 
----
+Corrigé quand même, parce que ce n’était pas au niveau du papier : le splash n’était pas le crème du carnet, et le premier frame suivait la nuit du téléphone même si Apparence est Clair.
 
-## 5. Ordre (historique)
-
-1–4 formes → **6.43**. PDF facture → **6.44**. Nuit → **6.44/6.46**. Polish sticky/FAIT → **6.45**. OCR `+++` → **6.47**. PDF résumé → **6.48**, lecture 18/22 pt → **6.51**. Widget + PDF à l’ajout → **6.49**. Partage PDF (`ClipData`) + fonds widget fixes → **6.50**. Finitions retry PDF / cache thème / ZIP / docs → **6.52**. Copy Réglages / Aide → **6.53**.
-
----
-
-## 6. Ce qui reste pour le tenir en main
-
-Le carnet a les fonctions des bons carnets 2026 (rappel, FAIT, photo, PDF, widget, nuit, `+++`). Ce qui n’est **pas** encore au niveau « objet fini dans la main » :
-
-| Reste | Pourquoi ça compte |
-|-------|--------------------|
-| Smoke Galaxy encore incomplet | S25 (`SM-S938B`), 2026-10-22 : widget posé (nuit), OCR `+++` sans inventer de communication, PDF proposé à côté d’une photo puis retiré. Pas encore : S26, fondu FAIT, bascule Clair à la main. La photo de loyer3 ne s’ouvre pas |
-| Tests d’écran | Pas de parcours instrumenté (ajout, FAIT, widget, PDF) |
-
-Volontairement dehors : banque, catégories, graphiques, grille calendrier, OCR du montant, synchro, thème fluo.
-
----
-
-## 7. Limite
-
-Pas de nouvelle session doigt pour cette note. Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Les apps citées peuvent avoir bougé ; les décisions tiennent aux mécanismes, pas aux notes d’étoiles.
+Volontairement dehors : banque, catégories, graphiques, grille calendrier, OCR montant, synchro, thème fluo.

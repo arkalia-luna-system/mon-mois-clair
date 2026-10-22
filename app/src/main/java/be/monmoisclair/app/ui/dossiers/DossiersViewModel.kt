@@ -79,16 +79,19 @@ class DossiersViewModel @Inject constructor(
         if (_state.value.summaryBusy || _state.value.loading) return
         _state.value = _state.value.copy(summaryBusy = true)
         viewModelScope.launch {
-            val result = prepareMonthSummary()
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
-                putExtra(Intent.EXTRA_TEXT, result.text)
+            try {
+                val result = prepareMonthSummary()
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
+                    putExtra(Intent.EXTRA_TEXT, result.text)
+                }
+                _shareIntents.emit(
+                    Intent.createChooser(intent, "Envoyer le résumé")
+                )
+            } finally {
+                _state.value = _state.value.copy(summaryBusy = false)
             }
-            _shareIntents.emit(
-                Intent.createChooser(intent, "Envoyer le résumé")
-            )
-            _state.value = _state.value.copy(summaryBusy = false)
         }
     }
 

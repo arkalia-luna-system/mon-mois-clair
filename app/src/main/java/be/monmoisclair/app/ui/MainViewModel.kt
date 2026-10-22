@@ -42,7 +42,11 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        MainUiState(themePreference = themePreference.preference.value)
+        MainUiState(
+            themePreference = themePreference.preference.value,
+            // Miroir sync : évite que LaunchedEffect FLAG_SECURE efface le flag posé au boot.
+            biometricEnabled = biometricPreference.cachedEnabled()
+        )
     )
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
