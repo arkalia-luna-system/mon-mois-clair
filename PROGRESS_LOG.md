@@ -9,15 +9,27 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.60** (passe premium densité / typo / rythme crème) |
+| Dernière étape terminée | **6.61** (smoke S25 + polish Accueil/fiche) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt S25 Ultra + S26 (checklist retour) |
+| Prochaine sous-étape | Smoke doigt manuel (biométrie, widget home, scan caméra) · S26 |
 | Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **284/284** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.61 Smoke S25 Ultra + polish Accueil / fiche
+
+**Vu (captures adb S25 Ultra `SM-S938B`, 0.1.0-6.60) :** cartes retard = contour brique 2 dp + pastille (double cri) ; « Voir la photo » seule poussée à droite ; fiche Annuler en `titleLarge` (concurrence titres) ; libellé « Ouvert » redondant sous sections ; socle Enregistrer sans filet papier.
+
+**Codé (visuel seulement) :**
+- Accueil : retard = pastille + lavis, contour PaperBorder 1 dp ; Copier/Photo ancrés à gauche
+- Fiche : socle PaperWarm + filet ; Annuler = bodyLarge QuietLink ; spacer + clearance 28 ; sections sans « Ouvert »
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **284/284** (67 fichiers).  
+**Version :** `0.1.0-6.61` · `versionCode` 66.  
+**Pas un claim « premium parfait »** : biométrie / widget home / scan caméra à valider au doigt ; S26 pas en main.
 
 ### 2026-10-22 — 6.60 Passe premium densité / typo / rythme
 

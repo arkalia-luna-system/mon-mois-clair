@@ -1298,11 +1298,9 @@ private fun ExpenseRow(
         animationSpec = tween(150),
         label = "expenseRowBg"
     )
-    // H10 : highlight notif = 2 dp doux (pas 3 dp « debug »).
+    // H10 : highlight notif = 2 dp doux. Retard = pastille + lavis (pas contour brique 2 dp).
     val borderMod = when {
         highlighted -> Modifier.border(2.dp, A11yTokens.Link.copy(alpha = 0.55f), shape)
-        item.isOverdue && !item.isDone ->
-            Modifier.border(2.dp, A11yTokens.DangerInk, shape)
         else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
     }
     val lineGap = if (compact) 4.dp else 6.dp
@@ -1402,6 +1400,7 @@ private fun ExpenseRow(
                 val showNote = item.paymentNote.isNotBlank()
                 val showPhoto = item.hasReceipt
                 if (showNote || showPhoto) {
+                    // H05 : liens ancrés à gauche (pas Photo flottante à droite si seule).
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -1414,7 +1413,7 @@ private fun ExpenseRow(
                                 color = A11yTokens.InkMuted,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f, fill = false)
                             )
                             Text(
                                 text = "Copier",
@@ -1432,8 +1431,6 @@ private fun ExpenseRow(
                                         contentDescription = "Copier la communication"
                                     }
                             )
-                        } else {
-                            Spacer(modifier = Modifier.weight(1f))
                         }
                         if (showPhoto) {
                             Text(

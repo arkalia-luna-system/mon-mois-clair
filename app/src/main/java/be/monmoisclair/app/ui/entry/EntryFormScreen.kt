@@ -1742,9 +1742,12 @@ private fun EntryFormScaffold(
                         }
                 )
             }
-            // Marge basse dans le scroll : le dernier rang de jours / champs
-            // ne reste pas à moitié coupé juste au-dessus d’Enregistrer.
-            Spacer(modifier = Modifier.height(A11yTokens.minTouchHeight))
+            // Marge basse + clearance 28 : dernier champ lisible au-dessus du socle CTA.
+            Spacer(
+                modifier = Modifier.height(
+                    A11yTokens.minTouchHeight + A11yTokens.bottomSystemClearance
+                )
+            )
         }
 
         error?.let {
@@ -1765,33 +1768,41 @@ private fun EntryFormScaffold(
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
-        // FORM05 : 1 seul plein (Enregistrer) ; Annuler = lien ; Supprimer = Danger.
-        PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
-        if (!keyboardOpen) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Annuler",
-                style = MaterialTheme.typography.titleLarge,
-                color = if (primaryEnabled) A11yTokens.Link else A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = A11yTokens.minTouchHeight)
-                    .clickable(
-                        enabled = primaryEnabled,
-                        role = Role.Button,
-                        onClickLabel = "Annuler sans enregistrer",
-                        onClick = onCancel
-                    )
-                    .padding(vertical = 12.dp)
-                    .semantics { contentDescription = "Annuler" }
-            )
-            if (onDelete != null) {
+        // FORM05 : socle papier (filet) ; 1 Primary ; Annuler = QuietLink (pas titleLarge).
+        HorizontalDivider(color = A11yTokens.PaperBorder)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(A11yTokens.PaperWarm)
+                .padding(top = 10.dp)
+        ) {
+            PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
+            if (!keyboardOpen) {
                 Spacer(modifier = Modifier.height(4.dp))
-                DangerA11yButton(
-                    text = deleteLabel,
-                    onClick = onDelete,
-                    enabled = primaryEnabled
+                Text(
+                    text = "Annuler",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (primaryEnabled) A11yTokens.Link else A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .clickable(
+                            enabled = primaryEnabled,
+                            role = Role.Button,
+                            onClickLabel = "Annuler sans enregistrer",
+                            onClick = onCancel
+                        )
+                        .padding(vertical = 12.dp)
+                        .semantics { contentDescription = "Annuler" }
                 )
+                if (onDelete != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    DangerA11yButton(
+                        text = deleteLabel,
+                        onClick = onDelete,
+                        enabled = primaryEnabled
+                    )
+                }
             }
         }
     }
@@ -1822,11 +1833,14 @@ private fun FormSectionToggle(
                 .padding(vertical = 10.dp)
                 .semantics { contentDescription = label }
         )
-        Text(
-            text = if (expanded) "Ouvert" else closedHint,
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
+        // Fermé : hint utile. Ouvert : le ▴ suffit (pas de « Ouvert » redondant).
+        if (!expanded) {
+            Text(
+                text = closedHint,
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
+            )
+        }
     }
 }
 
