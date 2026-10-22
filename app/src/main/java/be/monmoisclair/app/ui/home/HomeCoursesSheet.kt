@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,7 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
@@ -70,6 +72,7 @@ fun HomeCoursesSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .imePadding()
                 .padding(bottom = sheetBottom)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = A11yTokens.screenPadding)
@@ -81,36 +84,33 @@ fun HomeCoursesSheet(
                 style = MaterialTheme.typography.headlineMedium,
                 color = A11yTokens.Ink
             )
-            Text(
-                text = if (diversSpentCents > 0L) {
-                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} ce mois · hors du Reste"
-                } else {
-                    "Rien noté ce mois · hors du Reste"
-                },
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
-            if (diversSpentCents > 0L) {
-                val afterLabel =
-                    "Après courses ${MoneyFormat.formatCents(afterDiversCents)}"
-                Text(
-                    text = afterLabel,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (afterDiversCents < 0L) {
-                        A11yTokens.DangerInk
-                    } else {
-                        A11yTokens.InkMuted
-                    },
-                    modifier = Modifier.semantics { contentDescription = afterLabel }
-                )
+            val statusLine = when {
+                diversSpentCents > 0L && afterDiversCents < 0L ->
+                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · après " +
+                        "${MoneyFormat.formatCents(afterDiversCents)}"
+                diversSpentCents > 0L ->
+                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · hors Reste"
+                else -> "Hors du Reste"
             }
+            Text(
+                text = statusLine,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (diversSpentCents > 0L && afterDiversCents < 0L) {
+                    A11yTokens.DangerInk
+                } else {
+                    A11yTokens.InkMuted
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = statusLine }
+            )
             OutlinedTextField(
                 value = input,
                 onValueChange = onInputChange,
                 label = { Text("Montant (€)") },
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done

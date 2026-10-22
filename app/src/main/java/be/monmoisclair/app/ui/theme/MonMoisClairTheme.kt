@@ -101,11 +101,34 @@ private const val TabularFigures = "tnum"
 
 private fun TextStyle.tabular(): TextStyle = copy(fontFeatureSettings = TabularFigures)
 
+/**
+ * Tous les slots Material3 utilisés (dont [titleMedium]) = Source Sans ≥ 18 sp.
+ * Sans ça, Compose retombe sur Roboto pour les styles non listés.
+ */
 private fun appTypography(ink: Color, muted: Color) = Typography(
     displayLarge = TextStyle(
         fontFamily = BrandSerif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 34.sp,
+        color = ink
+    ).tabular(),
+    displayMedium = TextStyle(
+        fontFamily = BrandSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 28.sp,
+        color = ink
+    ).tabular(),
+    displaySmall = TextStyle(
+        fontFamily = BrandSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        color = ink
+    ).tabular(),
+    headlineLarge = TextStyle(
+        fontFamily = UiSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 28.sp,
+        lineHeight = 34.sp,
         color = ink
     ).tabular(),
     headlineMedium = TextStyle(
@@ -115,12 +138,34 @@ private fun appTypography(ink: Color, muted: Color) = Typography(
         lineHeight = 30.sp,
         color = ink
     ).tabular(),
+    headlineSmall = TextStyle(
+        fontFamily = UiSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        color = ink
+    ).tabular(),
     // Titres de section / page : plus présents que Secondary (body Medium).
     titleLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = 23.sp,
         lineHeight = 30.sp,
+        color = ink
+    ).tabular(),
+    // V-01 : sections fiche / grille — Source Sans ≥ 18 sp (pas Roboto).
+    titleMedium = TextStyle(
+        fontFamily = UiSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = A11yTokens.minBodySp,
+        lineHeight = 24.sp,
+        color = ink
+    ).tabular(),
+    // Libellés flottants OutlinedTextField (≥ 18 sp, charte a11y).
+    titleSmall = TextStyle(
+        fontFamily = UiSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = A11yTokens.minBodySp,
         color = ink
     ).tabular(),
     bodyLarge = TextStyle(
@@ -136,6 +181,13 @@ private fun appTypography(ink: Color, muted: Color) = Typography(
         color = muted,
         lineHeight = 24.sp
     ).tabular(),
+    bodySmall = TextStyle(
+        fontFamily = UiSans,
+        fontWeight = FontWeight.Normal,
+        fontSize = A11yTokens.minBodySp,
+        color = muted,
+        lineHeight = 24.sp
+    ).tabular(),
     // Pas de couleur figée : les boutons Primary doivent hériter de
     // LocalContentColor (crème sur vert), pas d’Ink sombre illisible.
     labelLarge = TextStyle(
@@ -143,19 +195,11 @@ private fun appTypography(ink: Color, muted: Color) = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minBodySp
     ).tabular(),
-    // Libellés flottants OutlinedTextField (≥ 18 sp, charte a11y).
-    titleSmall = TextStyle(
+    labelMedium = TextStyle(
         fontFamily = UiSans,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Medium,
         fontSize = A11yTokens.minBodySp,
-        color = ink
-    ).tabular(),
-    bodySmall = TextStyle(
-        fontFamily = UiSans,
-        fontWeight = FontWeight.Normal,
-        fontSize = A11yTokens.minBodySp,
-        color = muted,
-        lineHeight = 24.sp
+        color = muted
     ).tabular(),
     labelSmall = TextStyle(
         fontFamily = UiSans,

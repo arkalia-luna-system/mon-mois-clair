@@ -89,6 +89,7 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.StampShape
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.time.YearMonth
@@ -102,6 +103,8 @@ fun HomeScreen(
     onOpenHealth: () -> Unit = {},
     onOpenDossiers: () -> Unit = {},
     onOpenUpcoming: () -> Unit = {},
+    onOpenSavings: () -> Unit = {},
+    onOpenDeadlines: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -453,7 +456,9 @@ fun HomeScreen(
             dossierCount = state.dossierCount,
             pendingLetterCount = state.pendingLetterCount,
             onOpenDossiers = onOpenDossiers,
-            onOpenUpcoming = onOpenUpcoming
+            onOpenUpcoming = onOpenUpcoming,
+            remindersBlocked = remindersBlocked,
+            onOpenHealth = onOpenHealth
         )
     }
     if (coursesSheetOpen && !state.isFuturePreview) {
@@ -573,16 +578,7 @@ fun HomeScreen(
                     afterDiversCents = state.afterDiversCents,
                     futurePreview = state.isFuturePreview
                 )?.let { coursesLabel ->
-                    Text(
-                        text = coursesLabel,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = when {
-                            state.diversSpentCents > 0L && state.afterDiversCents < 0L ->
-                                A11yTokens.DangerInk
-                            else -> A11yTokens.InkMuted
-                        },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = A11yTokens.minTouchHeight)
@@ -597,8 +593,28 @@ fun HomeScreen(
                                 } else {
                                     "Courses. Noter un montant"
                                 }
-                            }
-                    )
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = coursesLabel,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = when {
+                                state.diversSpentCents > 0L && state.afterDiversCents < 0L ->
+                                    A11yTokens.DangerInk
+                                else -> A11yTokens.InkMuted
+                            },
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = "›",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = A11yTokens.Link
+                        )
+                    }
                 }
                 // Mode aperçu = contexte, toujours visible (pas derrière « Plus »).
                 if (state.isFuturePreview) {
@@ -631,12 +647,8 @@ fun HomeScreen(
                     state.nextMonthWarning != null ||
                     state.pendingLetterCount > 0
                 if (hasStickyExtras) {
-                    val detailsToggle = if (stickyDetailsOpen) "Moins ▴" else "Plus ▾"
-                    Text(
-                        text = detailsToggle,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
-                        maxLines = 1,
+                    val detailsLabel = if (stickyDetailsOpen) "Moins" else "Plus"
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = A11yTokens.minTouchHeight)
@@ -649,8 +661,26 @@ fun HomeScreen(
                                 }
                             ) { stickyDetailsOpen = !stickyDetailsOpen }
                             .padding(vertical = 4.dp)
-                            .semantics { contentDescription = detailsToggle }
-                    )
+                            .semantics { contentDescription = detailsLabel },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = detailsLabel,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1
+                        )
+                        Icon(
+                            painter = painterResource(
+                                if (stickyDetailsOpen) R.drawable.ic_expand_less
+                                else R.drawable.ic_expand_more
+                            ),
+                            contentDescription = null,
+                            tint = A11yTokens.InkMuted,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
                 AnimatedVisibility(visible = stickyDetailsOpen && hasStickyExtras) {
                     Column(
@@ -681,7 +711,7 @@ fun HomeScreen(
                                     .clickable(
                                         role = Role.Button,
                                         onClickLabel = "modifier l’épargne"
-                                    ) { onOpenSettings() }
+                                    ) { onOpenSavings() }
                                     .semantics { contentDescription = savLabel }
                             )
                         }
@@ -711,7 +741,7 @@ fun HomeScreen(
                                     .clickable(
                                         role = Role.Button,
                                         onClickLabel = "Voir les échéances hors ce mois"
-                                    ) { onOpenSettings() }
+                                    ) { onOpenDeadlines() }
                                     .semantics {
                                         liveRegion = LiveRegionMode.Polite
                                         contentDescription = warning
@@ -746,20 +776,8 @@ fun HomeScreen(
                     }
                 }
             }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(3.dp)
-                        .background(
-                            brush = androidx.compose.ui.graphics.Brush.verticalGradient(
-                                colors = listOf(
-                                    A11yTokens.Ink.copy(alpha = 0.08f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                )
             }
+            // Un seul filet sous le sticky (plus de double séparateur dégradé + divider).
             HorizontalDivider(color = A11yTokens.PaperBorder)
 
             LazyColumn(
@@ -846,6 +864,7 @@ fun HomeScreen(
                                         label = { Text("Chercher une facture") },
                                         singleLine = true,
                                         shape = MaterialTheme.shapes.medium,
+                                        colors = carnetOutlinedTextFieldColors(),
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .heightIn(min = A11yTokens.minTouchHeight),
@@ -983,35 +1002,6 @@ fun HomeScreen(
                         }
                     }
                 }
-                // Rappel discret InkMuted : même sheet que le sticky (pas de lien teal).
-                val showCoursesHint = !state.isFuturePreview &&
-                    !state.loading &&
-                    (state.timeline.isNotEmpty() || state.diversSpentCents > 0L)
-                if (showCoursesHint) {
-                    item(key = "divers-hint") {
-                        val hint = if (state.diversSpentCents > 0L) {
-                            "Courses ${MoneyFormat.formatCents(state.diversSpentCents)} · modifier"
-                        } else {
-                            "Courses · noter en haut"
-                        }
-                        Text(
-                            text = hint,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight)
-                                .clickable(
-                                    role = Role.Button,
-                                    onClickLabel = "Modifier les courses"
-                                ) { coursesSheetOpen = true }
-                                .padding(top = 4.dp, bottom = 2.dp)
-                                .semantics { contentDescription = hint }
-                        )
-                    }
-                }
             }
 
             if (!keyboardOpen) {
@@ -1034,12 +1024,25 @@ fun HomeScreen(
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             SecondaryA11yButton(
-                                text = if (remindersBlocked) "Menu · Alertes" else "Menu",
-                                onClick = {
-                                    if (remindersBlocked) onOpenHealth() else menuOpen = true
-                                },
+                                text = "Menu",
+                                onClick = { menuOpen = true },
                                 modifier = Modifier.fillMaxWidth()
                             )
+                            if (remindersBlocked) {
+                                Text(
+                                    text = "!",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = A11yTokens.ButtonText,
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(top = 2.dp, end = 2.dp)
+                                        .background(A11yTokens.AccentWarn, StampShape)
+                                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                                        .semantics {
+                                            contentDescription = "Alertes à régler — ouvrir le Menu"
+                                        }
+                                )
+                            }
                         }
                         Box(modifier = Modifier.weight(1.2f)) {
                             if (state.isFuturePreview) {

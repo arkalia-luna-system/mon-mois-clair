@@ -49,6 +49,7 @@ import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -255,6 +256,7 @@ fun EditTemplateScreen(
                 label = { Text("Nom") },
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = A11yTokens.minTouchHeight)
@@ -267,6 +269,7 @@ fun EditTemplateScreen(
                 label = { Text("Montant (€)") },
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier
                     .fillMaxWidth()

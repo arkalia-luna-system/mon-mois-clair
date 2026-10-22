@@ -18,7 +18,7 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Courses",
-            body = "Lien sous le Reste : courses / pharmacie. " +
+            body = "Ligne Courses sous le Reste (›) : courses / pharmacie. " +
                 "Le gros Reste ne bouge pas ; « Après courses » montre le solde (brique s’il est négatif)."
         ),
         Section(

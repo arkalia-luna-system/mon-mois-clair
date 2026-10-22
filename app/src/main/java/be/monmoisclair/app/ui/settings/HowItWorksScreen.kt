@@ -13,11 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
-fun HowItWorksScreen(onBack: () -> Unit) {
+fun HowItWorksScreen(
+    onBack: () -> Unit,
+    onOpenSupport: (() -> Unit)? = null
+) {
     val fit = rememberDisplayFit()
     val sectionGap = if (fit.compactHomeChrome) 12.dp else 16.dp
     PinnedBackScaffold(onBack = onBack) {
@@ -53,6 +57,13 @@ fun HowItWorksScreen(onBack: () -> Unit) {
                 )
             }
             Spacer(modifier = Modifier.height(sectionGap))
+        }
+        if (onOpenSupport != null) {
+            HorizontalDivider(color = A11yTokens.PaperBorder)
+            QuietLinkA11y(
+                text = "Un souci avec l’app ?",
+                onClick = onOpenSupport
+            )
         }
     }
 }

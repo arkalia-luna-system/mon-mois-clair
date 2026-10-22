@@ -35,6 +35,12 @@ class WcagContrastTest {
     }
 
     @Test
+    fun accentWarnDay_meetsAaaOnCream() {
+        // Brun warn lisible sur crème (≥ 7:1) — identité warn, pas danger.
+        assertThat(WcagContrast.ratio(day.accentWarn, day.paperCream)).isAtLeast(7.0)
+    }
+
+    @Test
     fun nightInk_meetsAaaOnPageCardAndWarm() {
         val night = A11yTokens.Night
         val surfaces = listOf(night.paperCream, night.paperCard, night.paperWarm)

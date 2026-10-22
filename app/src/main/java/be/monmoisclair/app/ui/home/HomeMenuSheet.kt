@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.ui.components.CarnetHubRow
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -39,7 +40,7 @@ import java.time.YearMonth
 
 /**
  * Hub hors ledger — outils puis calendrier.
- * Alertes / aide / restore : dans Réglages (pas de doublon).
+ * Aide / restore : dans Réglages. Alertes = signal en tête si bloquées (pas de remplacement Menu).
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -55,7 +56,9 @@ fun HomeMenuSheet(
     dossierCount: Int = 0,
     pendingLetterCount: Int = 0,
     onOpenDossiers: () -> Unit = {},
-    onOpenUpcoming: () -> Unit = {}
+    onOpenUpcoming: () -> Unit = {},
+    remindersBlocked: Boolean = false,
+    onOpenHealth: () -> Unit = {}
 ) {
     val showDossiers = dossierCount > 0 || pendingLetterCount > 0
     val menuDossierLabel = when {
@@ -96,33 +99,41 @@ fun HomeMenuSheet(
             )
             Spacer(modifier = Modifier.height(menuGap))
 
-            SecondaryA11yButton(
-                text = "Réglages",
+            if (remindersBlocked) {
+                CarnetHubRow(
+                    label = "Alertes",
+                    onClick = {
+                        onDismiss()
+                        onOpenHealth()
+                    },
+                    labelColor = A11yTokens.AccentWarn,
+                    showDivider = false
+                )
+            }
+
+            CarnetHubRow(
+                label = "Réglages",
                 onClick = {
                     onDismiss()
                     onOpenSettings()
                 },
-                modifier = Modifier.fillMaxWidth()
+                showDivider = !remindersBlocked
             )
             if (showDossiers) {
-                Spacer(modifier = Modifier.height(8.dp))
-                SecondaryA11yButton(
-                    text = menuDossierLabel,
+                CarnetHubRow(
+                    label = menuDossierLabel,
                     onClick = {
                         onDismiss()
                         onOpenDossiers()
-                    },
-                    modifier = Modifier.fillMaxWidth()
+                    }
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            SecondaryA11yButton(
-                text = "À venir",
+            CarnetHubRow(
+                label = "À venir",
                 onClick = {
                     onDismiss()
                     onOpenUpcoming()
-                },
-                modifier = Modifier.fillMaxWidth()
+                }
             )
 
             Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 16.dp else 22.dp))

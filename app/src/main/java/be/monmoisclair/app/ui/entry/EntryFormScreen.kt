@@ -80,6 +80,7 @@ import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -1034,6 +1035,7 @@ private fun EntryFormScaffold(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -1049,6 +1051,7 @@ private fun EntryFormScaffold(
                     .then(amountBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
@@ -1269,7 +1272,8 @@ private fun EntryFormScaffold(
                                 .heightIn(min = A11yTokens.minTouchHeight)
                                 .then(noteBring),
                             textStyle = MaterialTheme.typography.bodyLarge,
-                            shape = MaterialTheme.shapes.medium
+                            shape = MaterialTheme.shapes.medium,
+                            colors = carnetOutlinedTextFieldColors(),
                         )
                         if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
                             QuietLinkA11y(
@@ -1543,7 +1547,8 @@ private fun EntryFormScaffold(
                             .then(causeBring),
                         textStyle = MaterialTheme.typography.bodyLarge,
                         singleLine = true,
-                        shape = MaterialTheme.shapes.medium
+                        shape = MaterialTheme.shapes.medium,
+                        colors = carnetOutlinedTextFieldColors(),
                     )
                     if (!isAgreement) {
                         OutlinedTextField(
@@ -1557,6 +1562,7 @@ private fun EntryFormScaffold(
                             textStyle = MaterialTheme.typography.bodyLarge,
                             singleLine = true,
                             shape = MaterialTheme.shapes.medium,
+                            colors = carnetOutlinedTextFieldColors(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
                         Text(
@@ -1586,6 +1592,7 @@ private fun EntryFormScaffold(
                         textStyle = MaterialTheme.typography.bodyLarge,
                         singleLine = true,
                         shape = MaterialTheme.shapes.medium,
+                        colors = carnetOutlinedTextFieldColors(),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
@@ -1607,6 +1614,7 @@ private fun EntryFormScaffold(
                         textStyle = MaterialTheme.typography.bodyLarge,
                         singleLine = true,
                         shape = MaterialTheme.shapes.medium,
+                        colors = carnetOutlinedTextFieldColors(),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Done
@@ -1657,6 +1665,7 @@ private fun EntryFormScaffold(
                             textStyle = MaterialTheme.typography.bodyLarge,
                             singleLine = true,
                             shape = MaterialTheme.shapes.medium,
+                            colors = carnetOutlinedTextFieldColors(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
                         OutlinedTextField(
@@ -1671,7 +1680,8 @@ private fun EntryFormScaffold(
                                 .heightIn(min = A11yTokens.minTouchHeight),
                             textStyle = MaterialTheme.typography.bodyLarge,
                             singleLine = true,
-                            shape = MaterialTheme.shapes.medium
+                            shape = MaterialTheme.shapes.medium,
+                            colors = carnetOutlinedTextFieldColors(),
                         )
                     }
                     } // fin carte dossier

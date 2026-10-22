@@ -3,8 +3,10 @@ package be.monmoisclair.app.ui.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlin.math.min
 
 /**
  * Ajustement d’affichage selon la **fenêtre** (pas le modèle Samsung).
@@ -28,13 +30,16 @@ data class DisplayFit(
     val stickyPaddingHorizontal: Dp,
     val bannerPadding: Dp,
     val sectionGap: Dp,
-    /** Un seul chiffre. Assez grand pour être le signal, assez court pour laisser la liste. */
+    /**
+     * Un seul chiffre. Charte étude ~36–42 confort / ≥ 34 compact —
+     * sans gonfler le sticky (Plus plié par défaut).
+     */
     val remainingAmountSp: Float
 ) {
     companion object {
         /**
-         * Sous ~800 dp de hauteur, le sticky Ultra mange trop la liste
-         * (S26 FHD+ ≈ 780–832 dp ; Ultra @ densité élevée One UI aussi).
+         * Sous ~800 dp de hauteur, le sticky mange trop la liste
+         * (S26 FHD+ ≈ 780–832 dp ; densités élevées One UI aussi).
          */
         const val COMPACT_HEIGHT_DP = 800
 
@@ -46,13 +51,11 @@ data class DisplayFit(
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
                 // Sticky léger : le montant « Reste » domine ; la marque est une légende.
-                // Court (~S26) : encore un cran pour laisser la liste + FAIT lisibles.
-                // H11 : un peu plus d’air sous le chiffre, sans re-gonfler le sticky Ultra.
-                stickyPaddingVertical = if (compact) 8.dp else 14.dp,
+                stickyPaddingVertical = if (compact) 8.dp else 12.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
                 bannerPadding = if (compact) 8.dp else 12.dp,
                 sectionGap = if (compact) 4.dp else 6.dp,
-                remainingAmountSp = if (compact) 32f else 36f
+                remainingAmountSp = if (compact) 34f else 40f
             )
         }
     }
@@ -61,8 +64,19 @@ data class DisplayFit(
 @Composable
 fun rememberDisplayFit(): DisplayFit {
     val cfg = LocalConfiguration.current
-    return DisplayFit.from(
+    val fontScale = LocalDensity.current.fontScale
+    val base = DisplayFit.from(
         screenWidthDp = cfg.screenWidthDp,
         screenHeightDp = cfg.screenHeightDp
     )
+    // Police système agrandie : resserrer le sticky sans règle « si Ultra ».
+    if (fontScale < 1.25f) return base
+    return base.copy(
+        stickyPaddingVertical = minDp(base.stickyPaddingVertical, 8.dp),
+        bannerPadding = minDp(base.bannerPadding, 8.dp),
+        sectionGap = minDp(base.sectionGap, 4.dp),
+        remainingAmountSp = min(base.remainingAmountSp, 34f)
+    )
 }
+
+private fun minDp(a: Dp, b: Dp): Dp = if (a < b) a else b

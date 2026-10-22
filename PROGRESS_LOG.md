@@ -9,15 +9,37 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.67** (réconciliation Accueil / Réglages / fiche / secondaires) |
+| Dernière étape terminée | **6.68** (audits consolidés visuel / UX / code / a11y → carnet) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt manuel (Courses sticky, hub Réglages, biométrie, widget, scan) · S26 |
-| Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **291/291** |
+| Prochaine sous-étape | Smoke doigt (Menu badge Alertes, Courses ›, épargne/échéances sticky, Reste 34/40) · S26 |
+| Audit premium | Corrections 6.68 branchées · **pas** claim « premium terminé » · **292/292** |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.68 Audits consolidés (premium carnet, sans claim fini)
+
+**Ordre :** V-01 typo → Menu Alertes → Courses → Menu filets → raccourcis sticky → sticky S26 → AccentWarn → Résumé → champs → sp Reste.
+
+**Corrigé :**
+- **V-01** : `titleMedium` (+ slots Material manquants) = Source Sans ≥ 18 sp — plus de fuite Roboto
+- **Menu / Alertes** : bouton reste « Menu » ; badge `!` si bloqué ; ligne Alertes en tête de sheet (pas Aide/Restore)
+- **Courses** : sticky tappable + › ; hint bas de liste retiré ; sheet copy courte + `imePadding`
+- **Menu sheet** : filets `CarnetHubRow` (titre + ›), plus pile OutlinedButton
+- **Sticky** : épargne → `settings/savings` ; warning → `settings/deadlines`
+- **Sticky S26** : Plus plié défaut ; Reste 34 / 40 sp ; `fontScale` ≥ 1,25 resserre sticky (pas de règle Ultra)
+- **AccentWarn** jour `#6B4515` ≥ 7:1 sur crème (+ test WCAG)
+- **Résumé** : maison = Dossiers ; Réglages = lien court « Résumé → Mes dossiers »
+- **OutlinedTextField** : `carnetOutlinedTextFieldColors()` (PaperCard / FieldLine / focus teal)
+- **Bonus** : chevrons Plus/Moins vectoriels ; un filet sticky ; hub « Échéances hors ce mois » ; Aide hub → HowItWorks
+
+**Reporté :** extraction `CarnetStateBanner` (bannières Settings encore locales).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **292/292** (69 fichiers, 0 failure).  
+**Version :** `0.1.0-6.68` · `versionCode` 73.  
+**Pas un claim « premium parfait ».**
 
 ### 2026-10-22 — 6.67 Réconciliation (écrasements agents parallèles)
 

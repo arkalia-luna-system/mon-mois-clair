@@ -51,9 +51,11 @@ import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.model.ThemePreference
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import kotlinx.coroutines.flow.collectLatest
@@ -194,6 +196,7 @@ fun SettingsSavingsScreen(
             textStyle = MaterialTheme.typography.bodyLarge,
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
+            colors = carnetOutlinedTextFieldColors(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Done
@@ -418,40 +421,25 @@ fun SettingsDeadlinesScreen(
 @Composable
 fun SettingsSummaryScreen(
     onBack: () -> Unit,
+    onOpenDossiers: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
 
     SettingsResumeRefresh(viewModel)
-    SettingsShareEffect(viewModel)
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.SUMMARY)
         Text(
-            text = "Pour un créancier ou un conseiller. Texte ou PDF — même contenu.",
+            text = "Texte ou PDF pour un créancier ou un conseiller — dans Mes dossiers.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
         )
-        SecondaryA11yButton(
-            text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
-            onClick = viewModel::shareMonthSummary,
-            enabled = !state.busy && !state.summaryBusy
+        QuietLinkA11y(
+            text = "Ouvrir Mes dossiers",
+            onClick = onOpenDossiers
         )
-        SecondaryA11yButton(
-            text = if (state.summaryBusy) "Préparation…" else "PDF du résumé",
-            onClick = viewModel::shareMonthSummaryPdf,
-            enabled = !state.busy && !state.summaryBusy
-        )
-        state.flashMessage?.let { msg ->
-            SettingsStateBanner(
-                text = msg,
-                kind = if (state.flashMessageError) SettingsBannerKind.Error else SettingsBannerKind.Ok,
-                pad = tipPad
-            )
-        }
     }
 }
 

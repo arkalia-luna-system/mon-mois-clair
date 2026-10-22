@@ -40,7 +40,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 
 Courses : **une** sheet (`HomeCoursesSheet`) ouverte depuis la ligne sticky (et rappel InkMuted en bas de liste). Pas de 2ᵉ formulaire empilé ; pas de lien teal « Noter des courses ».
 
-Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun `#8A5A1E` ; Après courses = muted, **brique** si négatif.  
+Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun warn `#6B4515` (≥ 7:1 sur crème) ; Après courses = muted, **brique** si négatif.  
 Pas de plaque colorée, pas de nom d’app dans l’en-tête. Tips courants = texte `InkMuted` (boîtes = erreur / ok / warn seulement).
 
 **Interdit** : empiler Alertes / aide / restore dans le Menu (ils vivent dans **Réglages**) ; boutons critiques collés tout en haut.  
@@ -129,7 +129,7 @@ Appliqué **une seule fois** dans `MainActivity`.
 
 - Si `screenHeightDp ≤ 800` → **chrome Home compact** (paddings réduits) pour laisser la place à la **liste**.
 - Sinon → mode confort Ultra.
-- Montant « Reste » = signal n°1 (32 sp si l’écran est court, 36 sp sinon). Serif **seulement** pour ce chiffre.
+- Montant « Reste » = signal n°1 (34 sp si l’écran est court, ~40 sp sinon ; étude 36–42). Serif **seulement** pour ce chiffre.
 - Titres d’écran, noms de factures, boutons : sans-serif.
 - Barre du bas : un seul bouton plein **teal** (« + Ajouter »), sur un socle `PaperWarm`. Menu, Copier, Remettre restent un trait. Coins des boutons : 12 dp.
 - Sur la ligne, « FAIT ✓ » est un plein **forêt** (`AccentOk`) : c’est l’action de la facture, pas un deuxième bouton de barre. Une fois FAIT, le bouton redevient le trait « Remettre ».

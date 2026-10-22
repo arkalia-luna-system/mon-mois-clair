@@ -32,6 +32,7 @@ import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
@@ -147,6 +148,7 @@ fun ConvertPendingLetterScreen(
             textStyle = MaterialTheme.typography.bodyLarge,
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
+            colors = carnetOutlinedTextFieldColors(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Next
@@ -163,6 +165,7 @@ fun ConvertPendingLetterScreen(
             textStyle = MaterialTheme.typography.bodyLarge,
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
+            colors = carnetOutlinedTextFieldColors(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Done

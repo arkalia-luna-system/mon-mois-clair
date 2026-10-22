@@ -17,6 +17,10 @@ class DisplayFitTest {
         val compact = DisplayFit.from(360, 780)
         val tall = DisplayFit.from(412, 900)
         assertThat(compact.remainingAmountSp).isLessThan(tall.remainingAmountSp)
+        // Charte : compact ≥ 34 sp ; confort ~36–42.
+        assertThat(compact.remainingAmountSp).isAtLeast(34f)
+        assertThat(tall.remainingAmountSp).isAtLeast(36f)
+        assertThat(tall.remainingAmountSp).isAtMost(42f)
     }
 
     @Test

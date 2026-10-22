@@ -1,13 +1,13 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.67**).  
+Date : 2026-10-22 (état code : **6.68**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.62** fiche · **6.66** secondaires · **6.67** hub Réglages + Courses sticky branchés · WDG02 accepté |
-| **Pas fait** | S26 en main · biométrie / widget home / scan caméra au doigt |
+| **Fait** | … · **6.67** réconciliation · **6.68** audits (typo, Menu/Alertes, Courses ›, warn 7:1, champs carnet) · WDG02 accepté |
+| **Pas fait** | S26 en main · biométrie / widget home / scan caméra au doigt · claim premium terminé |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 

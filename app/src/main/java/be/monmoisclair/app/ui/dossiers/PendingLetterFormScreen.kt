@@ -42,6 +42,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
 
@@ -109,6 +110,7 @@ fun PendingLetterFormScreen(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 enabled = !state.saving
             )
             OutlinedTextField(
@@ -121,6 +123,7 @@ fun PendingLetterFormScreen(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 enabled = !state.saving
             )
             SecondaryA11yButton(

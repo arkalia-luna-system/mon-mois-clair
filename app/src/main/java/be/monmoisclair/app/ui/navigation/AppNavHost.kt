@@ -87,7 +87,9 @@ fun AppNavHost(
                 onOpenSettings = { navController.navigate(AppRoute.Settings) },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
                 onOpenDossiers = { navController.navigate(AppRoute.Dossiers) },
-                onOpenUpcoming = { navController.navigate(AppRoute.Upcoming) }
+                onOpenUpcoming = { navController.navigate(AppRoute.Upcoming) },
+                onOpenSavings = { navController.navigate(AppRoute.SettingsSavings) },
+                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) }
             )
         }
         composable(AppRoute.Upcoming) {
@@ -145,7 +147,8 @@ fun AppNavHost(
                 onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) },
                 onOpenSummary = { navController.navigate(AppRoute.SettingsSummary) },
                 onOpenBackup = { navController.navigate(AppRoute.SettingsBackup) },
-                onOpenHelp = { navController.navigate(AppRoute.SettingsHelp) }
+                // Aide → profondeur Comment ça marche (support reste accessible depuis Aide).
+                onOpenHelp = { navController.navigate(AppRoute.HowItWorks) }
             )
         }
         composable(AppRoute.SettingsAppearance) { entry ->
@@ -156,10 +159,14 @@ fun AppNavHost(
             )
         }
         composable(AppRoute.SettingsSavings) { entry ->
-            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            // Depuis Accueil sticky ou hub Réglages (parent si présent).
+            val owner = remember(entry) {
+                runCatching { navController.getBackStackEntry(AppRoute.Settings) }
+                    .getOrDefault(entry)
+            }
             SettingsSavingsScreen(
                 onBack = { navController.popBackStack() },
-                viewModel = hiltViewModel(parent)
+                viewModel = hiltViewModel(owner)
             )
         }
         composable(AppRoute.SettingsPrivacy) { entry ->
@@ -170,17 +177,21 @@ fun AppNavHost(
             )
         }
         composable(AppRoute.SettingsDeadlines) { entry ->
-            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            val owner = remember(entry) {
+                runCatching { navController.getBackStackEntry(AppRoute.Settings) }
+                    .getOrDefault(entry)
+            }
             SettingsDeadlinesScreen(
                 onBack = { navController.popBackStack() },
                 onEditTemplate = { id -> navController.navigate(AppRoute.editTemplate(id)) },
-                viewModel = hiltViewModel(parent)
+                viewModel = hiltViewModel(owner)
             )
         }
         composable(AppRoute.SettingsSummary) { entry ->
             val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
             SettingsSummaryScreen(
                 onBack = { navController.popBackStack() },
+                onOpenDossiers = { navController.navigate(AppRoute.Dossiers) },
                 viewModel = hiltViewModel(parent)
             )
         }
@@ -202,7 +213,10 @@ fun AppNavHost(
             )
         }
         composable(AppRoute.HowItWorks) {
-            HowItWorksScreen(onBack = { navController.popBackStack() })
+            HowItWorksScreen(
+                onBack = { navController.popBackStack() },
+                onOpenSupport = { navController.navigate(AppRoute.SettingsHelp) }
+            )
         }
         composable(AppRoute.ReminderHealth) {
             ReminderHealthScreen(onBack = { navController.popBackStack() })
