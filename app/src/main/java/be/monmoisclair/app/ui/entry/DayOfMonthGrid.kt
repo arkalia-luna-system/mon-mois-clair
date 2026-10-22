@@ -47,17 +47,12 @@ fun DayOfMonthGrid(
     // Écart serré : 31 cases doivent pouvoir défiler sans masquer Enregistrer.
     val dayGap = if (fit.compactHomeChrome) 4.dp else 6.dp
     Column(modifier = modifier) {
+        // Titre section (pas tip) — la grille parle d’elle-même.
         Text(
             text = "Jour du mois",
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
-        )
-        // GRID01 : intro 1 ligne.
-        Text(
-            text = "Touchez un jour (1 à 31).",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier.padding(top = 2.dp, bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
+            style = MaterialTheme.typography.titleMedium,
+            color = A11yTokens.Ink,
+            modifier = Modifier.padding(bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
         )
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(dayGap),
@@ -108,9 +103,9 @@ fun DayOfMonthGrid(
             }
         }
         if (selectedDay != null && selectedDay > 28) {
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(6.dp))
             Text(
-                text = "En février (et les mois courts), ce sera le dernier jour du mois.",
+                text = "Mois court : dernier jour du mois.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()

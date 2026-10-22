@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.exifinterface.media.ExifInterface
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.backup.BackupSecurityArchive
 import be.monmoisclair.app.data.backup.SafBackupStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -177,7 +180,7 @@ class ReceiptPhotoStore @Inject constructor(
             runCatching { decodeImageBytes(BackupSecurityArchive.readBounded(input, maxBytes)) }
                 .getOrNull()
 
-        /** JPEG, PNG ou WebP en mémoire, borné à [MAX_SIDE_PX]. */
+        /** JPEG, PNG ou WebP en mémoire, borné à [MAX_SIDE_PX]. JPEG : orientation EXIF appliquée. */
         fun decodeImageBytes(bytes: ByteArray, maxSide: Int = MAX_SIDE_PX): Bitmap? {
             if (bytes.isEmpty()) return null
             val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
@@ -187,12 +190,56 @@ class ReceiptPhotoStore @Inject constructor(
             var sample = 1
             while (longest / sample > maxSide) sample *= 2
             val opts = BitmapFactory.Options().apply { inSampleSize = sample }
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
+            val decoded = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts) ?: return null
+            return applyExifOrientation(decoded, bytes)
         }
 
         /** Décode un JPEG/PNG déjà lu en mémoire, borné à [MAX_SIDE_PX] (anti-OOM galerie). */
         fun decodeJpegBytesBounded(bytes: ByteArray, maxSide: Int = MAX_SIDE_PX): Bitmap? =
             decodeImageBytes(bytes, maxSide)
+
+        /**
+         * Caméra Samsung / One UI : le JPEG est souvent stocké « couché » + tag EXIF.
+         * Sans rotation ici, l’aperçu et le WebP restent à l’envers.
+         */
+        fun applyExifOrientation(bitmap: Bitmap, jpegFile: File): Bitmap {
+            val orientation = runCatching {
+                ExifInterface(jpegFile.absolutePath)
+                    .getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+            }.getOrDefault(ExifInterface.ORIENTATION_NORMAL)
+            return rotateForExif(bitmap, orientation)
+        }
+
+        fun applyExifOrientation(bitmap: Bitmap, jpegBytes: ByteArray): Bitmap {
+            val orientation = runCatching {
+                ExifInterface(ByteArrayInputStream(jpegBytes))
+                    .getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+            }.getOrDefault(ExifInterface.ORIENTATION_NORMAL)
+            return rotateForExif(bitmap, orientation)
+        }
+
+        private fun rotateForExif(bitmap: Bitmap, orientation: Int): Bitmap {
+            val matrix = Matrix()
+            when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+                ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+                ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+                ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
+                ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
+                ExifInterface.ORIENTATION_TRANSPOSE -> {
+                    matrix.postRotate(90f)
+                    matrix.postScale(-1f, 1f)
+                }
+                ExifInterface.ORIENTATION_TRANSVERSE -> {
+                    matrix.postRotate(270f)
+                    matrix.postScale(-1f, 1f)
+                }
+                else -> return bitmap
+            }
+            val out = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            if (out !== bitmap) bitmap.recycle()
+            return out
+        }
 
         fun compressWebp(source: Bitmap, maxSide: Int = MAX_SIDE_PX, quality: Int = WEBP_QUALITY): ByteArray {
             val scaled = scaleMax(source, maxSide)

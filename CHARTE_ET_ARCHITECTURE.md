@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.60** — densité Secondary / typo / rythme crème).
+Mise à jour : 2026-10-22 (lot **6.62** — fiche pratique grille / Paiement / EXIF).
 
 ## 1. Vision
 
@@ -82,6 +82,8 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.58** | Matrice audit · tip-boxes hors états retirées · dialogs PaperCream | ✅ |
 | **6.59** | FORM01 rythme fiche (Paiement & preuve) · SET01 Réglages filets | ✅ |
 | **6.60** | Densité Secondary fiche · QuietLink · typo titres · À venir / CheckRow sans boîte | ✅ |
+| **6.61** | Smoke S25 polish Accueil/fiche (socle, Annuler QuietLink) | ✅ |
+| **6.62** | Fiche : grille sous sticky · Paiement fermé · EXIF JPEG · tips courts | ✅ |
 
 ## 5. Branches Git (verrouillé)
 

@@ -156,16 +156,17 @@ private fun rememberFullPhotoCapture(
     }
 }
 
-/** Évite OOM sur un JPEG caméra très lourd (borne ~2048 px). */
+/** Évite OOM sur un JPEG caméra très lourd (borne ~2048 px) + EXIF Samsung. */
 private fun decodeCameraJpegBounded(file: File): Bitmap? {
     val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeFile(file.absolutePath, bounds)
     if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
     val longest = maxOf(bounds.outWidth, bounds.outHeight)
     var sample = 1
-    while (longest / sample > 2048) sample *= 2
+    while (longest / sample > ReceiptPhotoStore.MAX_SIDE_PX) sample *= 2
     val opts = BitmapFactory.Options().apply { inSampleSize = sample }
-    return BitmapFactory.decodeFile(file.absolutePath, opts)
+    val decoded = BitmapFactory.decodeFile(file.absolutePath, opts) ?: return null
+    return ReceiptPhotoStore.applyExifOrientation(decoded, file)
 }
 
 @Composable
@@ -1136,6 +1137,12 @@ private fun EntryFormScaffold(
                 onSelect = { onDay(it.toString()) },
                 enabled = !lockAmountAndDay
             )
+            // Sous sticky Enregistrer : jours 25–31 scrollables / tappables (S25 smoke).
+            Spacer(
+                modifier = Modifier.height(
+                    A11yTokens.minTouchHeight + A11yTokens.bottomSystemClearance
+                )
+            )
 
             // Édition ponctuelle (sans modèle) : info seule.
             if (!showRecurring && !showFrequencyEdit) {
@@ -1146,12 +1153,14 @@ private fun EntryFormScaffold(
             }
 
             if ((showRecurring || showFrequencyEdit) && onRecurrence != null) {
-                Text("Fréquence", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
+                Text(
+                    "Fréquence",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = A11yTokens.Ink
+                )
                 if (showFrequencyEdit) {
                     Text(
-                        text = "Vous pouvez corriger une erreur (mensuel, 3 mois, annuel, une fois) " +
-                            "sans supprimer la ligne. Pour les mois déjà créés : cochez " +
-                            "« Aussi les mois suivants ».",
+                        text = "Corriger ici. Mois déjà créés : cochez « Aussi les mois suivants ».",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted,
                         modifier = Modifier.fillMaxWidth()
@@ -1179,12 +1188,10 @@ private fun EntryFormScaffold(
                     }
                 }
                 if (showNextDueMonth) {
-                    Text("Prochaine échéance", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                     Text(
-                        text = "Choisissez le mois où elle tombe (ex. taxe en mars).",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
-                        modifier = Modifier.fillMaxWidth()
+                        "Prochaine échéance",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = A11yTokens.Ink
                     )
                     @OptIn(ExperimentalLayoutApi::class)
                     FlowRow(
@@ -1208,29 +1215,19 @@ private fun EntryFormScaffold(
                     onChecked = onRecurring
                 )
             }
-            if (showAutoDebit) {
-                CheckRow(
-                    checked = isAutoDebit,
-                    label = "Prélèvement automatique",
-                    onChecked = onAutoDebit
-                )
-                Text(
-                    text = "Les rappels diront de vérifier le prélèvement (la ligne reste à cocher FAIT).",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            // FORM01 : page qui/combien/jour ci-dessus ; puis Paiement & preuve ; Accord après.
+            // FORM01 : qui → combien → jour (ci-dessus) → Paiement & preuve → Accord.
+            // Prélèvement vit dans Paiement (pas un tip cockpit entre grille et section).
             if (showPaymentAssist) {
                 val hasPaymentContent =
                     paymentNote.isNotBlank() ||
                         hasReceiptPhoto ||
                         hasPendingPhoto ||
                         hasPendingPdf ||
-                        extraReceiptPaths.isNotEmpty()
+                        extraReceiptPaths.isNotEmpty() ||
+                        isAutoDebit
+                // Fermé par défaut : grille jours reste au premier plan ; pièce en attente → ouvre.
                 var paymentExpanded by remember {
-                    mutableStateOf(!hasPaymentContent || hasPendingPhoto || hasPendingPdf)
+                    mutableStateOf(hasPendingPhoto || hasPendingPdf)
                 }
                 LaunchedEffect(hasPendingPhoto, hasPendingPdf) {
                     if (hasPendingPhoto || hasPendingPdf) paymentExpanded = true
@@ -1240,26 +1237,27 @@ private fun EntryFormScaffold(
                     title = "Paiement & preuve",
                     expanded = paymentExpanded,
                     closedHint = when {
-                        hasPaymentContent -> "Fermé — communication ou pièce déjà notée"
-                        else -> "Fermé — QR, +++ , photo, PDF"
+                        hasPaymentContent -> "Noté — touchez pour voir"
+                        else -> "QR, +++ , photo, PDF, prélèvement"
                     },
                     onToggle = { paymentExpanded = !paymentExpanded }
                 )
                 if (paymentExpanded) {
-                    // Secondary = gestes utiles (QR / photo / PDF) ;
+                    // Secondary = QR / photo / PDF seulement ;
                     // QuietLink = Copier / Voir / Enlever / OCR (2ᵉ rang).
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
+                        if (showAutoDebit) {
+                            CheckRow(
+                                checked = isAutoDebit,
+                                label = "Prélèvement automatique",
+                                onChecked = onAutoDebit
+                            )
+                        }
                         if (onScanEpc != null) {
                             SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
-                            // FORM03 : tip sous le bouton, sans boîte.
-                            Text(
-                                text = "Visez le QR de la facture belge.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted
-                            )
                         }
                         OutlinedTextField(
                             value = paymentNote,
@@ -1309,20 +1307,12 @@ private fun EntryFormScaffold(
                             // PDF absent, photo seule (joindre à côté), ou accord (ajouter).
                             SecondaryA11yButton(text = "Joindre un PDF", onClick = onPickPdf)
                         }
-                        if (appendOnAgreement) {
-                            Text(
-                                text = "Une nouvelle photo ou un PDF s’ajoute aux courriers. " +
-                                    "La première pièce reste.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted
-                            )
-                        }
                         if (hasPendingPhoto) {
                             val photoOkShape = MaterialTheme.shapes.medium
                             val photoOkText = if (isAgreement && hasReceiptPhoto) {
-                                "Photo prête. Elle s’ajoutera aux courriers quand vous enregistrerez."
+                                "Photo prête — s’ajoute aux courriers à l’enregistrement."
                             } else {
-                                "Photo prête. Touchez Enregistrer pour la garder."
+                                "Photo prête — Enregistrer pour la garder."
                             }
                             Text(
                                 text = photoOkText,
@@ -1352,9 +1342,9 @@ private fun EntryFormScaffold(
                         if (hasPendingPdf) {
                             val pdfOkShape = MaterialTheme.shapes.medium
                             val pdfOkText = if (hasReceiptPhoto) {
-                                "PDF prêt. Il s’ajoute à côté de la photo quand vous enregistrerez."
+                                "PDF prêt — s’ajoute à côté de la photo à l’enregistrement."
                             } else {
-                                "PDF prêt. Touchez Enregistrer pour le garder."
+                                "PDF prêt — Enregistrer pour le garder."
                             }
                             Text(
                                 text = pdfOkText,
@@ -1496,6 +1486,12 @@ private fun EntryFormScaffold(
                         }
                     }
                 }
+            } else if (showAutoDebit) {
+                CheckRow(
+                    checked = isAutoDebit,
+                    label = "Prélèvement automatique",
+                    onChecked = onAutoDebit
+                )
             }
 
             if (showDossierSection) {
@@ -1504,7 +1500,7 @@ private fun EntryFormScaffold(
                 FormSectionToggle(
                     title = "Retard ou accord",
                     expanded = dossierExpanded,
-                    closedHint = "Fermé — touchez pour déplier",
+                    closedHint = "Huissier, hôpital, plan de paiement…",
                     onToggle = { onDossierExpanded(!dossierExpanded) }
                 )
                 if (dossierExpanded) {
@@ -1564,8 +1560,7 @@ private fun EntryFormScaffold(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
                         Text(
-                            text = "Le montant plus haut est le versement du mois. " +
-                                "Laissez vide si ce n’est pas un accord.",
+                            text = "Vide = pas un accord. Le montant du haut = versement du mois.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted,
                             modifier = Modifier.fillMaxWidth()
@@ -1577,13 +1572,6 @@ private fun EntryFormScaffold(
                                 text = "Ranger sans plan",
                                 onClick = onSaveAsPendingLetter,
                                 enabled = primaryEnabled
-                            )
-                            Text(
-                                text = "Photo et nom seulement — rien dans le Reste " +
-                                    "tant que le versement n’est pas fixé.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
-                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
@@ -1608,12 +1596,6 @@ private fun EntryFormScaffold(
                     )
                     if (onCopyIban != null && iban.isNotBlank()) {
                         QuietLinkA11y(text = "Copier l’IBAN", onClick = onCopyIban)
-                        Text(
-                            text = "Pour coller dans l’app bancaire.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
                     OutlinedTextField(
                         value = creditorEmail,
@@ -1635,12 +1617,6 @@ private fun EntryFormScaffold(
                     )
                     if (onWriteMail != null && creditorEmail.isNotBlank()) {
                         QuietLinkA11y(text = "Écrire", onClick = onWriteMail)
-                        Text(
-                            text = "Ouvre l’app Mail avec un brouillon. Rien n’est stocké ici.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
                     if (isAgreement) {
                         if (feeEvents.isNotEmpty() || addedFeesCents > 0L) {
@@ -1708,8 +1684,7 @@ private fun EntryFormScaffold(
                     onChecked = onApplyFollowing
                 )
                 Text(
-                    text = "Laissé décoché : montant et photo de ce mois seulement. " +
-                        "La communication suit déjà les mois suivants.",
+                    text = "Décoché = ce mois seulement (montant / photo).",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()
@@ -1742,10 +1717,11 @@ private fun EntryFormScaffold(
                         }
                 )
             }
-            // Marge basse + clearance 28 : dernier champ lisible au-dessus du socle CTA.
+            // Marge basse : Primary + Annuler (+ Delete) + clearance — dernier QuietLink hors sticky.
             Spacer(
                 modifier = Modifier.height(
-                    A11yTokens.minTouchHeight + A11yTokens.bottomSystemClearance
+                    A11yTokens.minTouchHeight * (if (onDelete != null) 3 else 2) +
+                        A11yTokens.bottomSystemClearance
                 )
             )
         }
