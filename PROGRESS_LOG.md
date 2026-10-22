@@ -9,15 +9,29 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.61** (smoke S25 + polish Accueil/fiche) |
+| Dernière étape terminée | **6.62** (fiche pratique : grille, Paiement fermé, EXIF) |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke doigt manuel (biométrie, widget home, scan caméra) · S26 |
-| Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **284/284** |
+| Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **291/291** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.62 Fiche pratique (grille / Paiement / EXIF)
+
+**Vu (S25 smoke + code 6.61) :** jours 25–31 coupés par sticky Enregistrer ; « Paiement & preuve » ouvert à vide = cockpit Secondary ; tips redondants ; JPEG caméra sans rotation EXIF (Samsung).
+
+**Codé (zone fiche seulement) :**
+- Ordre qui → combien → jour → Paiement (prélèvement dedans) → Accord ; Paiement **fermé** sauf pièce en attente
+- Spacer sous grille + marge bas sticky (Primary+Annuler[+Delete]) ; tip grille retiré ; titres `titleMedium`
+- Tips raccourcis / absents ; QuietLink / 1 Primary inchangés ; pas d’OCR montant
+- EXIF : `ReceiptPhotoStore.applyExifOrientation` + decode caméra fiche (`exifinterface`)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **291/291** (69 fichiers, 0 failure).  
+**Version :** claim journal **6.62**.  
+**Pas un claim « premium parfait »** : smoke doigt photo orientation.
 
 ### 2026-10-22 — 6.61 Smoke S25 Ultra + polish Accueil / fiche
 
