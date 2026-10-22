@@ -59,6 +59,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -990,7 +992,7 @@ private fun EntryFormScaffold(
     }
     val fit = rememberDisplayFit()
     val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPad = fit.tipPad
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
         modifier = Modifier
@@ -1873,6 +1875,7 @@ private fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Un
             .padding(vertical = 4.dp)
             .semantics {
                 contentDescription = if (checked) "$label, coché" else "$label, non coché"
+                toggleableState = if (checked) ToggleableState.On else ToggleableState.Off
             },
         verticalAlignment = Alignment.CenterVertically
     ) {

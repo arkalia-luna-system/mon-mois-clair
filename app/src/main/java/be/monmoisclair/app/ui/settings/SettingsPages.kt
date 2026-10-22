@@ -1,6 +1,5 @@
 package be.monmoisclair.app.ui.settings
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +48,8 @@ import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.model.ThemePreference
+import be.monmoisclair.app.ui.components.CarnetBannerKind
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.QuietLinkA11y
@@ -123,7 +124,7 @@ fun SettingsSavingsScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPad = fit.tipPad
     val keyboardOpen = imeOpen()
     val pinSavingsAction = keyboardOpen && state.savingsAmountText.isNotBlank()
     var confirmRemoveSavings by remember { mutableStateOf(false) }
@@ -167,7 +168,7 @@ fun SettingsSavingsScreen(
         pinnedAboveBack = if (pinSavingsAction) {
             {
                 state.savingsDeficit?.let { deficit ->
-                    SettingsStateBanner(text = deficit, kind = SettingsBannerKind.Warn, pad = tipPad)
+                    CarnetStateBanner(text = deficit, kind = CarnetBannerKind.Warn, pad = tipPad)
                 }
                 SecondaryA11yButton(
                     text = savingsActionLabel(state.savingsBusy, state.savingsActive),
@@ -211,7 +212,7 @@ fun SettingsSavingsScreen(
         )
         if (!pinSavingsAction) {
             state.savingsDeficit?.let { deficit ->
-                SettingsStateBanner(text = deficit, kind = SettingsBannerKind.Warn, pad = tipPad)
+                CarnetStateBanner(text = deficit, kind = CarnetBannerKind.Warn, pad = tipPad)
             }
         }
         state.savingsNextMonthNote?.let { note ->
@@ -240,9 +241,9 @@ fun SettingsSavingsScreen(
             )
         }
         state.savingsMessage?.let { msg ->
-            SettingsStateBanner(
+            CarnetStateBanner(
                 text = msg,
-                kind = if (state.savingsMessageError) SettingsBannerKind.Error else SettingsBannerKind.Ok,
+                kind = if (state.savingsMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
                 pad = tipPad
             )
         }
@@ -257,7 +258,7 @@ fun SettingsPrivacyScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as FragmentActivity
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPad = fit.tipPad
 
     SettingsResumeRefresh(viewModel)
 
@@ -342,13 +343,13 @@ fun SettingsPrivacyScreen(
                     "Pas d’empreinte ni de code sur ce téléphone."
             }
             if (availText != null) {
-                SettingsStateBanner(text = availText, kind = SettingsBannerKind.Warn, pad = tipPad)
+                CarnetStateBanner(text = availText, kind = CarnetBannerKind.Warn, pad = tipPad)
             }
         }
         state.message?.let { msg ->
-            SettingsStateBanner(
+            CarnetStateBanner(
                 text = msg,
-                kind = if (state.isError) SettingsBannerKind.Error else SettingsBannerKind.Ok,
+                kind = if (state.isError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
                 pad = tipPad
             )
         }
@@ -363,7 +364,7 @@ fun SettingsDeadlinesScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
-    val tipPadLg = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val tipPadLg = fit.tipPadLg
 
     SettingsResumeRefresh(viewModel)
 
@@ -452,7 +453,7 @@ fun SettingsBackupScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPad = fit.tipPad
 
     SettingsResumeRefresh(viewModel)
     SettingsShareEffect(viewModel)
@@ -483,9 +484,9 @@ fun SettingsBackupScreen(
         run {
             val healthLine = BackupHealthCopy.statusLine(state.backupHealth)
             val healthOk = BackupHealthCopy.isOk(state.backupHealth)
-            SettingsStateBanner(
+            CarnetStateBanner(
                 text = healthLine,
-                kind = if (healthOk) SettingsBannerKind.Ok else SettingsBannerKind.Error,
+                kind = if (healthOk) CarnetBannerKind.Ok else CarnetBannerKind.Error,
                 pad = tipPad
             )
         }
@@ -506,16 +507,16 @@ fun SettingsBackupScreen(
             enabled = !state.busy
         )
         state.backupMessage?.let { msg ->
-            SettingsStateBanner(
+            CarnetStateBanner(
                 text = msg,
-                kind = if (state.backupMessageError) SettingsBannerKind.Error else SettingsBannerKind.Ok,
+                kind = if (state.backupMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
                 pad = tipPad
             )
         }
         state.flashMessage?.let { msg ->
-            SettingsStateBanner(
+            CarnetStateBanner(
                 text = msg,
-                kind = if (state.flashMessageError) SettingsBannerKind.Error else SettingsBannerKind.Ok,
+                kind = if (state.flashMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
                 pad = tipPad
             )
         }
@@ -530,7 +531,7 @@ fun SettingsHelpScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPad = fit.tipPad
 
     SettingsResumeRefresh(viewModel)
     SettingsShareEffect(viewModel)
@@ -548,9 +549,9 @@ fun SettingsHelpScreen(
             enabled = !state.busy
         )
         state.flashMessage?.let { msg ->
-            SettingsStateBanner(
+            CarnetStateBanner(
                 text = msg,
-                kind = if (state.flashMessageError) SettingsBannerKind.Error else SettingsBannerKind.Ok,
+                kind = if (state.flashMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
                 pad = tipPad
             )
         }
@@ -565,46 +566,6 @@ internal fun SettingsPageTitle(title: String) {
         text = title,
         style = MaterialTheme.typography.headlineMedium,
         color = A11yTokens.Ink
-    )
-}
-
-internal enum class SettingsBannerKind { Ok, Error, Warn }
-
-@Composable
-internal fun SettingsStateBanner(
-    text: String,
-    kind: SettingsBannerKind,
-    pad: androidx.compose.ui.unit.Dp
-) {
-    val shape = MaterialTheme.shapes.medium
-    val ink = when (kind) {
-        SettingsBannerKind.Ok -> A11yTokens.AccentOkInk
-        SettingsBannerKind.Error -> A11yTokens.DangerInk
-        SettingsBannerKind.Warn -> A11yTokens.AccentWarn
-    }
-    val border = when (kind) {
-        SettingsBannerKind.Ok -> A11yTokens.AccentOkInk.copy(alpha = 0.35f)
-        SettingsBannerKind.Error -> A11yTokens.DangerInk.copy(alpha = 0.4f)
-        SettingsBannerKind.Warn -> A11yTokens.AccentWarn.copy(alpha = 0.45f)
-    }
-    val bg = when (kind) {
-        SettingsBannerKind.Ok -> A11yTokens.AccentOkSoft
-        SettingsBannerKind.Error, SettingsBannerKind.Warn -> A11yTokens.PaperWarm
-    }
-    val assertive = kind == SettingsBannerKind.Error
-    Text(
-        text = text,
-        color = ink,
-        style = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(1.dp, border, shape)
-            .background(bg, shape)
-            .padding(pad)
-            .semantics {
-                liveRegion = if (assertive) LiveRegionMode.Assertive else LiveRegionMode.Polite
-                contentDescription = text
-            }
     )
 }
 

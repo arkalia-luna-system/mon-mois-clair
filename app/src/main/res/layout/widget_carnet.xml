@@ -10,12 +10,13 @@
     android:paddingEnd="18dp"
     android:paddingBottom="12dp">
 
-    <!-- WDG01 : libellé discret — le montant commande. RemoteViews = police système. -->
+    <!-- WDG01 : libellé Medium discret — le montant bold commande. RemoteViews = système (pas BrandSerif). -->
     <TextView
         android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
         android:maxLines="1"
         android:text="Reste"
         android:textColor="@color/widget_muted"
@@ -40,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
         android:maxLines="2"
         android:text="Ouvrir le carnet"
         android:textColor="@color/widget_muted"

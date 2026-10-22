@@ -43,7 +43,7 @@ fun SettingsScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
+    val tipPad = fit.tipPad
 
     SettingsResumeRefresh(viewModel)
 

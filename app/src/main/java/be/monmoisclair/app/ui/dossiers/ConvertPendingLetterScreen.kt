@@ -43,7 +43,7 @@ fun ConvertPendingLetterScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val tipPad = fit.tipPadLg
     LaunchedEffect(state.done) {
         if (state.done) onConverted(state.createdInstanceId)
     }

@@ -55,7 +55,7 @@ fun PendingLetterFormScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val tipPad = fit.tipPadLg
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(state.saved) {

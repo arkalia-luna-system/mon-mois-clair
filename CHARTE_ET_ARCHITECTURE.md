@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.67** — hub Réglages + Courses sticky + fiche + secondaires).
+Mise à jour : 2026-10-22 (lot **6.69** — audit vérifié + CarnetStateBanner / tipPad / a11y rows).
 
 ## 1. Vision
 
@@ -38,7 +38,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | **Courses** (tap ≥48) | Montant divers du mois ; ouvre la sheet d’édition | Toujours hors aperçu futur (`Courses` ou `Courses X € · après Y €`) |
 | **Après les FAIT** · **Mis de côté** · alertes | Détail | Derrière **Plus / Moins** (pas de mini-dashboard) |
 
-Courses : **une** sheet (`HomeCoursesSheet`) ouverte depuis la ligne sticky (et rappel InkMuted en bas de liste). Pas de 2ᵉ formulaire empilé ; pas de lien teal « Noter des courses ».
+Courses : **une** sheet (`HomeCoursesSheet`) ouverte depuis la ligne sticky (›). Pas de 2ᵉ formulaire ni rappel en bas de liste ; pas de lien teal « Noter des courses ».
 
 Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun warn `#6B4515` (≥ 7:1 sur crème) ; Après courses = muted, **brique** si négatif.  
 Pas de plaque colorée, pas de nom d’app dans l’en-tête. Tips courants = texte `InkMuted` (boîtes = erreur / ok / warn seulement).
@@ -182,15 +182,15 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 
 | Idée étude | Décision MMC |
 |------------|--------------|
-| Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Après les FAIT** (si besoin) + **Après courses** (si besoin). Gros chiffre = signal n°1 (36 sp compact / 42 sp confort) |
+| Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Après les FAIT** (si besoin) + **Courses** (sticky, sheet unique). Gros chiffre = signal n°1 (**34 sp** compact / **~40 sp** confort ; étude 36–42) |
 | Check-off | Bouton d’**action** « FAIT ✓ » à droite (≥ 96 dp), plein forêt tant que ce n’est pas fait. « À payer » baisse tout de suite. Le bouton ne s’appelle pas « À PAYER » : un bouton dit l’action |
 | Preuve | Pastille **« FAIT le JJ/MM »** (`doneAtEpochMs`) |
 | Liste > graphiques | Jamais camembert / courbes |
-| Zone pouce | Barre basse **Menu · + Ajouter**, cachée pendant le clavier. Factures en tête ; divers en dessous |
+| Zone pouce | Barre basse **Menu · + Ajouter**, cachée pendant le clavier. Factures en liste ; **Courses** dans le sticky (pas un 2ᵉ formulaire en bas) |
 | Jour d’échéance | Grille **1–31**, cibles ≥ 48 dp, qui se replie (7 colonnes de 48 dp ne tiennent pas sur le S26) |
 | Montant | Clavier décimal. Édition **ce mois-ci seul** par défaut |
 | Mois indépendants | Pas de report auto. Un revenu ponctuel « Reste du mois passé » si elle le veut |
-| Alertes | Hub dans **Réglages → Alertes**. Le libellé bas « Menu » peut devenir « Menu / Alertes » seulement si notifs ou alarmes exactes refusées. Pas de pastille permanente pour la batterie Samsung |
+| Alertes | Hub dans **Réglages → Alertes**. Bouton bas reste **« Menu »** ; badge `!` si notifs / alarmes bloquées + ligne Alertes en tête du sheet. Pas de pastille permanente pour la batterie Samsung |
 | Local-first | Zéro banque, zéro cloud, zéro pub |
 
 ### Refuser

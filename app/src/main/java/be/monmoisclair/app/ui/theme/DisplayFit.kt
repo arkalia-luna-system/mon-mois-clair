@@ -36,6 +36,12 @@ data class DisplayFit(
      */
     val remainingAmountSp: Float
 ) {
+    /** Padding bannières / tips d’état. */
+    val tipPad: Dp get() = if (compactHomeChrome) 10.dp else 12.dp
+
+    /** Padding tips un peu plus aérés (onboarding / scan). */
+    val tipPadLg: Dp get() = if (compactHomeChrome) 12.dp else 14.dp
+
     companion object {
         /**
          * Sous ~800 dp de hauteur, le sticky mange trop la liste

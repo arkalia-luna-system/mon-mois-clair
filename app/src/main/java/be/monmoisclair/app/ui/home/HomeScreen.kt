@@ -1183,6 +1183,7 @@ private fun IncomeRow(
                 .fillMaxWidth()
                 .heightIn(min = A11yTokens.minTouchHeight)
                 .clickable(
+                    role = Role.Button,
                     onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
                     onClick = onClick
                 )
@@ -1269,6 +1270,7 @@ private fun ExpenseRow(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(
+                            role = Role.Button,
                             onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
                             onClick = onClick
                         ),

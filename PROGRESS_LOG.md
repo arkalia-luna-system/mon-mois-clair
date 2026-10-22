@@ -9,15 +9,33 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.68** (audits consolidés visuel / UX / code / a11y → carnet) |
+| Dernière étape terminée | **6.69** (audit sévère 6.68 + écarts NON/PARTIEL) |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke doigt (Menu badge Alertes, Courses ›, épargne/échéances sticky, Reste 34/40) · S26 |
-| Audit premium | Corrections 6.68 branchées · **pas** claim « premium terminé » · **292/292** |
+| Audit premium | Matrice 6.69 vérifiée code · **pas** claim « premium terminé » · **293/293** |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.69 Audit sévère + écarts restants
+
+**Vérifié code (claims 6.68 ne comptent que si preuve) :** V-01…V-13, UX, a11y — voir livrable matrice.
+
+**Codé cette passe :**
+- **CarnetStateBanner** extrait (`ui/components`) — Settings ne garde plus de copie locale
+- **tipPad / tipPadLg** unifiés via `DisplayFit`
+- **Role.Button** sur IncomeRow / ExpenseRow ; CheckRow + `toggleableState`
+- **HowItWorks** accordéon (1 section ouverte) — raccourci si long
+- **titleMedium** test Robolectric (`CarnetTypographyTest`)
+- Widget titre/ligne `sans-serif-medium` ; hex commentés = A11yTokens.Day
+- CHARTE : Reste 34/40, Menu badge `!`, Courses sticky seule porte
+
+**Reporté :** scission Home/Entry god-files · detekt · androidTest.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **293/293** (70 fichiers, 0 failure).  
+**Version :** `0.1.0-6.69` · `versionCode` 74.
 
 ### 2026-10-22 — 6.68 Audits consolidés (premium carnet, sans claim fini)
 

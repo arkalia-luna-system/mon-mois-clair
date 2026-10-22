@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-292%2F292-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-293%2F293-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.68-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.69-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,11 +23,11 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.68` |
-| Dernière étape | **6.68** audits consolidés : typo Source Sans · Menu/Alertes · Courses › · sticky routes · warn ≥7:1 |
+| Version | `0.1.0-6.69` |
+| Dernière étape | **6.69** audit vérifié + CarnetStateBanner · tipPad · Role.Button · HowItWorks accordéon · typo test |
 | Device | Smoke **6.39–6.42** puis S25 Ultra (`SM-S938B`) 2026-10-22 : widget, OCR, PDF. Correctif photo+PDF **6.54** à revalider. S26 pas en main |
 | Distribution | Sideload familial **release signé** (hors Play Store) — voir [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **292/292** OK (`--rerun-tasks`) |
+| Tests unitaires | **293/293** OK (`--rerun-tasks`) |
 | Schéma Room | **8** — `expense_fee_events` (+ 7 : courriers ; 6 : IBAN / e-mail / cumul frais) |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Audit dossiers (figé) : [`docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)

@@ -104,8 +104,9 @@ private fun TextStyle.tabular(): TextStyle = copy(fontFeatureSettings = TabularF
 /**
  * Tous les slots Material3 utilisés (dont [titleMedium]) = Source Sans ≥ 18 sp.
  * Sans ça, Compose retombe sur Roboto pour les styles non listés.
+ * Visible aux tests (V-01) : [titleMedium] ≠ serif, taille ≥ [A11yTokens.minBodySp].
  */
-private fun appTypography(ink: Color, muted: Color) = Typography(
+internal fun carnetTypography(ink: Color, muted: Color) = Typography(
     displayLarge = TextStyle(
         fontFamily = BrandSerif,
         fontWeight = FontWeight.SemiBold,
@@ -229,7 +230,7 @@ fun MonMoisClairTheme(
     CompositionLocalProvider(LocalCarnetPalette provides palette) {
         MaterialTheme(
             colorScheme = colorScheme(palette, night),
-            typography = appTypography(palette.ink, palette.inkMuted),
+            typography = carnetTypography(palette.ink, palette.inkMuted),
             shapes = AppShapes
         ) {
             CompositionLocalProvider(LocalRippleConfiguration provides ripple) {

@@ -53,7 +53,7 @@ fun PermissionsSetupScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val report = state.report
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val tipPad = fit.tipPadLg
 
     val notifLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()

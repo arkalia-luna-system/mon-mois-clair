@@ -209,7 +209,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
     }
 
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val tipPad = fit.tipPadLg
     Column(
         Modifier
             .fillMaxSize()
