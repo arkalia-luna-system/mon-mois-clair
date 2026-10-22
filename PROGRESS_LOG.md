@@ -12,7 +12,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Dernière étape terminée | **6.55** (1er frame, empreinte, OCR, widget) |
 | Étape en cours | — |
 | Prochaine sous-étape | Reprendre la photo de loyer3 — ou S26 maman |
-| Audit premium | Benchmark · inspection visuelle · **282/282** |
+| Audit premium | Benchmark · inspection visuelle · **281/281** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
@@ -35,10 +35,11 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 **Limite assumée :** widget nuit hors process mort (Android bloque `CONFIGURATION_CHANGED` au manifeste).
 
-**Tests :** *(à recalculer après `--rerun-tasks`)*  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **281/281** (66 fichiers) après retrait use case mort.  
 **Version :** `0.1.0-6.55` · `versionCode` 60.
 
-**Docs (même lot) :** plan détaillé A→F → `docs/archive/` ; plan vivant court ; charte §4 condensée ; index anti-doublon ; `DeviceCareCopy.BODY` retiré ; purge locale `dist/verify/smoke-*`.
+**Docs (même lot) :** plan détaillé A→F → `docs/archive/` ; plan vivant court ; charte §4 condensée ; index anti-doublon ; `DeviceCareCopy.BODY` retiré ; purge locale `dist/verify/smoke-*`.  
+**Suite rangement :** `DeletePendingLetterUseCase` retiré (jamais branché UI ; convert utilise déjà `deleteById`).
 
 ### 2026-10-22 — 6.54 Correctifs P0 audit (photo / verrou / PDF)
 

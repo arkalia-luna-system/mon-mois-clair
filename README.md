@@ -7,7 +7,7 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-282%2F282-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-281%2F281-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
 [![Version](https://img.shields.io/badge/version-0.1.0--6.55-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -27,7 +27,7 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 | Dernière étape | **6.55** Premier frame, empreinte, OCR sans collage, widget — suite **6.54** |
 | Device | Smoke **6.39–6.42** puis S25 Ultra (`SM-S938B`) 2026-10-22 : widget, OCR, PDF. Correctif photo+PDF **6.54** à revalider. S26 pas en main |
 | Distribution | Sideload familial **release signé** (hors Play Store) — voir [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **282/282** OK (`--rerun-tasks`) |
+| Tests unitaires | **281/281** OK (`--rerun-tasks`) |
 | Schéma Room | **8** — `expense_fee_events` (+ 7 : courriers ; 6 : IBAN / e-mail / cumul frais) |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Audit dossiers (figé) : [`docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)

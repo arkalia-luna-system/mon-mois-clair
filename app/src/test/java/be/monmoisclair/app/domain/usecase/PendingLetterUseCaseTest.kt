@@ -31,7 +31,6 @@ class PendingLetterUseCaseTest {
     private lateinit var create: CreatePendingLetterUseCase
     private lateinit var list: ListPendingLettersUseCase
     private lateinit var convert: ConvertPendingLetterToDossierUseCase
-    private lateinit var delete: DeletePendingLetterUseCase
     private val brussels: ZoneId = ZoneId.of("Europe/Brussels")
 
     @Before
@@ -57,7 +56,6 @@ class PendingLetterUseCaseTest {
             engine,
             mutating
         )
-        delete = DeletePendingLetterUseCase(mutating)
         AppClock.clock = Clock.fixed(Instant.parse("2026-10-15T10:00:00Z"), brussels)
     }
 
@@ -112,10 +110,4 @@ class PendingLetterUseCaseTest {
         assertThat(expenses.single().status).isEqualTo(ExpenseStatus.TODO)
     }
 
-    @Test
-    fun delete_removesLetter() = runBlocking {
-        val created = create(who = "X") as CreatePendingLetterResult.Success
-        delete(created.id)
-        assertThat(list()).isEmpty()
-    }
 }

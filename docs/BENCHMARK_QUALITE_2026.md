@@ -57,11 +57,11 @@ Pas de dégradé teal, pas d’icône seule Menu/FAIT, pas de 2ᵉ hero, pas de 
 
 ## 4. Ce qui reste au doigt
 
-| Reste | Note |
-|-------|------|
-| Smoke Galaxy | S25 partiel 2026-10-22. Photo de loyer3 à revalider (correctif `hasReceipt` 6.54). S26 : non |
-| Widget nuit process mort | Si l’app n’est plus en mémoire, Android ne livre pas `CONFIGURATION_CHANGED` au manifeste — refresh au prochain réveil |
-| Tests d’écran | Pas de parcours instrumenté |
+Prochain geste produit : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md). Smoke : [`AUDIT_STATUS.md`](AUDIT_STATUS.md).
+
+| Note technique | |
+|----------------|--|
+| Widget nuit hors process | Android ne livre pas `CONFIGURATION_CHANGED` au manifeste — refresh au prochain réveil de l’app |
 
 ## 5. Inspection des pages — 2026-10-22
 

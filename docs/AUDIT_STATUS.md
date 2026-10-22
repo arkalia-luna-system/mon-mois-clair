@@ -1,7 +1,7 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit fermé : **6.55** (`0.1.0-6.55`, schéma Room **8**, unitaires **282/282**).  
+Journal produit fermé : **6.55** (`0.1.0-6.55`, schéma Room **8**, unitaires **281/281**).  
 Phrase rythme : domaine + UI fiche / Mes dossiers (pas de smoke device dédié pour cette phrase seule).  
 Dossiers / accords (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
