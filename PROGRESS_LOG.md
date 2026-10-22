@@ -9,15 +9,28 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.58** (audit matrice + tip-boxes restantes) |
+| Dernière étape terminée | **6.59** (FORM01 rythme fiche + SET01 filets) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke S26 / doigt — FORM01 regroupement profond (volontairement différé) |
+| Prochaine sous-étape | Smoke S26 / doigt (photo+PDF 6.54, FORM01 au doigt) |
 | Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **284/284** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.59 FORM01 + SET01
+
+**Vu :** FORM01 PARTIEL (6.58) — page fiche encore plate ; Réglages = 8 cartes clones PaperCard.
+
+**Codé (visuel seulement) :**
+- FORM01 : rythme objet papier — page qui/combien/jour · « Paiement & preuve » repliable (QR / +++ / photo-PDF) · « Retard ou accord » après, déjà expansible ; CTA photo/PDF d’ajout seulement si absents, sinon via le bloc pièce ; tips InkMuted ; 1 Primary Enregistrer
+- SET01 : Réglages en filets + texture page (plus de Surface clone par section) ; navigation inchangée
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **284/284** (67 fichiers).  
+**Assemble :** `:app:assembleDebug` OK.  
+**Version :** `0.1.0-6.59` · `versionCode` 64.  
+**Pas un claim « premium terminé »** : smoke doigt / S26 restent ouverts.
 
 ### 2026-10-22 — 6.58 Audit exhaustif + last tip-boxes
 

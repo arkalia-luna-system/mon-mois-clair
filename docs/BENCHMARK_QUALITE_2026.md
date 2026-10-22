@@ -1,13 +1,13 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.58**).  
+Date : 2026-10-22 (état code : **6.59**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · 6.56/6.57 Accueil–widget · **6.58** matrice audit + tip-boxes restantes (EditTemplate, dossiers, Fermer Secondary, dialogs PaperCream) · WDG02 accepté |
-| **Pas fait** | S26 en main · smoke doigt · FORM01 regroupement profond |
+| **Fait** | … · **6.58** tip-boxes · **6.59** FORM01 (Paiement & preuve repliable) + SET01 filets · WDG02 accepté |
+| **Pas fait** | S26 en main · smoke doigt |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 

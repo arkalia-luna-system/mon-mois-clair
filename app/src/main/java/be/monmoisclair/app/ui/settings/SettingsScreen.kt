@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -250,7 +251,7 @@ fun SettingsScreen(
             )
         }
 
-        SettingsCard(title = "Aide") {
+        SettingsSection(title = "Aide") {
             SecondaryA11yButton(
                 text = "Comment ça marche",
                 onClick = onOpenHowItWorks,
@@ -268,7 +269,7 @@ fun SettingsScreen(
             )
         }
 
-        SettingsCard(title = "Apparence") {
+        SettingsSection(title = "Apparence") {
             ThemeOptionRow(
                 label = "Comme le téléphone",
                 selected = state.themePreference == ThemePreference.System,
@@ -289,7 +290,7 @@ fun SettingsScreen(
             )
         }
 
-        SettingsCard(title = "Mettre de côté") {
+        SettingsSection(title = "Mettre de côté") {
             // SET02 : tip 1 phrase.
             Text(
                 text = "Chaque mois, ce montant compte dans le Reste (autre compte).",
@@ -403,7 +404,7 @@ fun SettingsScreen(
             }
         }
 
-        SettingsCard(title = "Confidentialité") {
+        SettingsSection(title = "Confidentialité") {
             Text(
                 text = "Par défaut l’app s’ouvre sans code.",
                 style = MaterialTheme.typography.bodyLarge,
@@ -514,7 +515,7 @@ fun SettingsScreen(
             }
         }
 
-        SettingsCard(title = "Alertes") {
+        SettingsSection(title = "Alertes") {
             SecondaryA11yButton(
                 text = "Vérifier les alertes",
                 onClick = onOpenHealth,
@@ -522,7 +523,7 @@ fun SettingsScreen(
             )
         }
 
-        SettingsCard(title = "Échéances hors ce mois") {
+        SettingsSection(title = "Échéances hors ce mois") {
             if (state.offMonthPeriodics.isEmpty()) {
                 Text(
                     text = "Aucune pour l’instant.",
@@ -578,7 +579,7 @@ fun SettingsScreen(
         }
 
         if (state.showSummaryButton) {
-            SettingsCard(title = "Résumé à montrer") {
+            SettingsSection(title = "Résumé à montrer") {
                 Text(
                     text = "Pour un créancier ou un conseiller. Texte ou PDF — même contenu.",
                     style = MaterialTheme.typography.bodyMedium,
@@ -599,7 +600,7 @@ fun SettingsScreen(
             }
         }
 
-        SettingsCard(title = "Sauvegarde") {
+        SettingsSection(title = "Sauvegarde") {
             // Pas de tip « copie auto » si aucun dossier — le statut NOT_CONFIGURED suffit.
             if (state.backupHealth != BackupHealth.NOT_CONFIGURED) {
                 Text(
@@ -770,33 +771,27 @@ private fun ThemeOptionRow(
     }
 }
 
+/** SET01 : filets + une texture page (PaperCream), pas 8 cartes clones. */
 @Composable
-private fun SettingsCard(
+private fun SettingsSection(
     title: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val fit = rememberDisplayFit()
-    val cardPad = if (fit.compactHomeChrome) 12.dp else 16.dp
     val innerGap = if (fit.compactHomeChrome) 8.dp else 10.dp
-    val betweenCards = if (fit.compactHomeChrome) 10.dp else 14.dp
-    Surface(
-        color = A11yTokens.PaperCard,
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
+    val between = if (fit.compactHomeChrome) 14.dp else 18.dp
+    HorizontalDivider(color = A11yTokens.PaperBorder)
+    Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 10.dp else 12.dp))
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(innerGap)
     ) {
-        Column(
-            modifier = Modifier.padding(cardPad),
-            verticalArrangement = Arrangement.spacedBy(innerGap)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.Ink
-            )
-            content()
-        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            color = A11yTokens.Ink
+        )
+        content()
     }
-    Spacer(modifier = Modifier.height(betweenCards))
+    Spacer(modifier = Modifier.height(between))
 }

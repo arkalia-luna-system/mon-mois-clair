@@ -33,6 +33,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -990,7 +991,6 @@ private fun EntryFormScaffold(
     val fit = rememberDisplayFit()
     val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
     val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
-    val tipPadLg = if (fit.compactHomeChrome) 12.dp else 14.dp
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
         modifier = Modifier
@@ -1223,8 +1223,287 @@ private fun EntryFormScaffold(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+            // FORM01 : page qui/combien/jour ci-dessus ; puis Paiement & preuve ; Accord après.
+            if (showPaymentAssist) {
+                val hasPaymentContent =
+                    paymentNote.isNotBlank() ||
+                        hasReceiptPhoto ||
+                        hasPendingPhoto ||
+                        hasPendingPdf ||
+                        extraReceiptPaths.isNotEmpty()
+                var paymentExpanded by remember {
+                    mutableStateOf(!hasPaymentContent || hasPendingPhoto || hasPendingPdf)
+                }
+                LaunchedEffect(hasPendingPhoto, hasPendingPdf) {
+                    if (hasPendingPhoto || hasPendingPdf) paymentExpanded = true
+                }
+                HorizontalDivider(color = A11yTokens.PaperBorder)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SecondaryA11yButton(
+                        text = "Paiement & preuve",
+                        onClick = { paymentExpanded = !paymentExpanded }
+                    )
+                    Text(
+                        text = when {
+                            paymentExpanded -> "Ouvert"
+                            hasPaymentContent -> "Fermé — communication ou pièce déjà notée"
+                            else -> "Fermé — QR, +++ , photo, PDF"
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                }
+                if (paymentExpanded) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        if (onScanEpc != null) {
+                            SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
+                            // FORM03 : tip sous le bouton, sans boîte.
+                            Text(
+                                text = "Visez le QR de la facture belge.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                        }
+                        OutlinedTextField(
+                            value = paymentNote,
+                            onValueChange = onPaymentNote,
+                            label = { Text("Référence / communication") },
+                            placeholder = { Text("+++090/9337/55493+++") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .then(noteBring),
+                            textStyle = MaterialTheme.typography.bodyLarge,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
+                            SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
+                        }
+                        if (onReadCommFromPhoto != null) {
+                            SecondaryA11yButton(
+                                text = if (ocrBusy) "Lecture de la photo…" else "Lire +++ sur la photo",
+                                onClick = onReadCommFromPhoto,
+                                enabled = !ocrBusy
+                            )
+                        }
+                        // Photo / PDF : CTA d’ajout seulement si absents ;
+                        // sinon via le bloc pièce (aperçu / reprendre / enlever).
+                        val noPhotoYet = !hasReceiptPhoto && !hasPendingPhoto
+                        val noPdfYet = !hasReceiptPhoto && !hasPendingPdf &&
+                            extraReceiptPaths.none { isPdfPath(it) }
+                        val appendOnAgreement =
+                            isAgreement && hasReceiptPhoto && !hasPendingPhoto && !hasPendingPdf
+                        if (onTakePhoto != null && (noPhotoYet || appendOnAgreement)) {
+                            SecondaryA11yButton(
+                                text = if (appendOnAgreement) {
+                                    "Ajouter un courrier (photo)"
+                                } else {
+                                    "Photo de la facture papier"
+                                },
+                                onClick = onTakePhoto
+                            )
+                        }
+                        if (onPickPdf != null && (noPdfYet || appendOnAgreement ||
+                                (hasReceiptPhoto && !receiptIsPdf && !hasPendingPdf))
+                        ) {
+                            // PDF absent, photo seule (joindre à côté), ou accord (ajouter).
+                            SecondaryA11yButton(text = "Joindre un PDF", onClick = onPickPdf)
+                        }
+                        if (appendOnAgreement) {
+                            Text(
+                                text = "Une nouvelle photo ou un PDF s’ajoute aux courriers. " +
+                                    "La première pièce reste.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted
+                            )
+                        }
+                        if (hasPendingPhoto) {
+                            val photoOkShape = MaterialTheme.shapes.medium
+                            val photoOkText = if (isAgreement && hasReceiptPhoto) {
+                                "Photo prête. Elle s’ajoutera aux courriers quand vous enregistrerez."
+                            } else {
+                                "Photo prête. Touchez Enregistrer pour la garder."
+                            }
+                            Text(
+                                text = photoOkText,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.AccentOkInk,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        1.dp,
+                                        A11yTokens.AccentOkInk.copy(alpha = 0.35f),
+                                        photoOkShape
+                                    )
+                                    .background(A11yTokens.AccentOkSoft, photoOkShape)
+                                    .padding(10.dp)
+                                    .semantics {
+                                        liveRegion = LiveRegionMode.Polite
+                                        contentDescription = photoOkText
+                                    }
+                            )
+                            if (onTakePhoto != null) {
+                                SecondaryA11yButton(
+                                    text = "Reprendre la photo",
+                                    onClick = onTakePhoto
+                                )
+                            }
+                        }
+                        if (hasPendingPdf) {
+                            val pdfOkShape = MaterialTheme.shapes.medium
+                            val pdfOkText = if (hasReceiptPhoto) {
+                                "PDF prêt. Il s’ajoute à côté de la photo quand vous enregistrerez."
+                            } else {
+                                "PDF prêt. Touchez Enregistrer pour le garder."
+                            }
+                            Text(
+                                text = pdfOkText,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.AccentOkInk,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        1.dp,
+                                        A11yTokens.AccentOkInk.copy(alpha = 0.35f),
+                                        pdfOkShape
+                                    )
+                                    .background(A11yTokens.AccentOkSoft, pdfOkShape)
+                                    .padding(10.dp)
+                                    .semantics {
+                                        liveRegion = LiveRegionMode.Polite
+                                        contentDescription = pdfOkText
+                                    }
+                            )
+                            if (onPickPdf != null) {
+                                SecondaryA11yButton(text = "Changer le PDF", onClick = onPickPdf)
+                            }
+                            if (onClearPendingPdf != null) {
+                                SecondaryA11yButton(
+                                    text = "Enlever ce courrier",
+                                    onClick = onClearPendingPdf
+                                )
+                            }
+                        }
+                        // Bloc pièce existante (aperçu / voir / reprendre / enlever).
+                        if (
+                            hasReceiptPhoto &&
+                            receiptPreview == null &&
+                            onViewReceipt != null &&
+                            !hasPendingPhoto &&
+                            !hasPendingPdf
+                        ) {
+                            SecondaryA11yButton(
+                                text = if (receiptIsPdf) {
+                                    "Voir le courrier (PDF)"
+                                } else {
+                                    "Voir la photo de la facture"
+                                },
+                                onClick = onViewReceipt
+                            )
+                        }
+                        receiptPreview?.let { bmp ->
+                            // FORM06 : miniature seule — contentDescription / onClickLabel suffisent.
+                            Image(
+                                bitmap = bmp.asImageBitmap(),
+                                contentDescription = "Photo de la facture — touchez pour agrandir",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(120.dp)
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .background(A11yTokens.PaperWarm)
+                                    .then(
+                                        if (onViewReceipt != null) {
+                                            Modifier.clickable(
+                                                role = Role.Button,
+                                                onClickLabel = "Agrandir la facture",
+                                                onClick = onViewReceipt
+                                            )
+                                        } else {
+                                            Modifier
+                                        }
+                                    )
+                            )
+                        }
+                        if (hasReceiptPhoto && !hasPendingPhoto) {
+                            if (onTakePhoto != null && !receiptIsPdf) {
+                                SecondaryA11yButton(
+                                    text = "Reprendre la photo de la facture",
+                                    onClick = onTakePhoto
+                                )
+                            }
+                            if (onPickPdf != null && receiptIsPdf) {
+                                SecondaryA11yButton(
+                                    text = "Remplacer le PDF",
+                                    onClick = onPickPdf
+                                )
+                            }
+                            if (onClearReceipt != null) {
+                                SecondaryA11yButton(
+                                    text = if (
+                                        !applyFollowing &&
+                                        !isSavingsLine &&
+                                        (isAgreement || hasTemplate)
+                                    ) {
+                                        if (receiptIsPdf) {
+                                            "Enlever le PDF de ce mois"
+                                        } else {
+                                            "Enlever la photo de ce mois"
+                                        }
+                                    } else if (receiptIsPdf) {
+                                        "Enlever le PDF"
+                                    } else {
+                                        "Enlever la photo"
+                                    },
+                                    onClick = onClearReceipt
+                                )
+                            }
+                        }
+                        if (extraReceiptPaths.isNotEmpty()) {
+                            Text(
+                                text = if (hasReceiptPhoto) "Autres courriers" else "Courriers",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.InkMuted
+                            )
+                            extraReceiptPaths.forEachIndexed { index, path ->
+                                val n = if (hasReceiptPhoto) index + 2 else index + 1
+                                val pdf = isPdfPath(path)
+                                @OptIn(ExperimentalLayoutApi::class)
+                                FlowRow(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    if (onViewExtraReceipt != null) {
+                                        SecondaryA11yButton(
+                                            text = if (pdf) {
+                                                "Voir le courrier $n (PDF)"
+                                            } else {
+                                                "Voir le courrier $n"
+                                            },
+                                            onClick = { onViewExtraReceipt(path) },
+                                            fillMaxWidth = false
+                                        )
+                                    }
+                                    if (onRemoveExtraReceipt != null) {
+                                        SecondaryA11yButton(
+                                            text = "Enlever le courrier $n",
+                                            onClick = { onRemoveExtraReceipt(path) },
+                                            fillMaxWidth = false
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             if (showDossierSection) {
-                // FORM04 : libellé court ; état ouvert/fermé en InkMuted à côté du bouton.
+                // FORM04 / FORM01 : Accord après Paiement — filet + repli.
+                HorizontalDivider(color = A11yTokens.PaperBorder)
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     SecondaryA11yButton(
                         text = "Retard ou accord",
@@ -1237,7 +1516,7 @@ private fun EntryFormScaffold(
                     )
                 }
                 if (dossierExpanded) {
-                    // FORM01 : groupe clair sans boîte-dans-boîte — tips = texte seul.
+                    // Accordion Accord : tips = texte InkMuted, pas de boîte-dans-boîte.
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -1428,229 +1707,6 @@ private fun EntryFormScaffold(
                         )
                     }
                     } // fin carte dossier
-                }
-            }
-            if (showPaymentAssist) {
-                Text("Facture papier", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                if (onScanEpc != null) {
-                    SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
-                    // FORM03 : tip sous le bouton, sans boîte dans la carte.
-                    Text(
-                        text = "Visez le QR de la facture belge.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted
-                    )
-                }
-                OutlinedTextField(
-                    value = paymentNote,
-                    onValueChange = onPaymentNote,
-                    label = { Text("Référence / communication") },
-                    placeholder = { Text("+++090/9337/55493+++") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = A11yTokens.minTouchHeight)
-                        .then(noteBring),
-                    textStyle = MaterialTheme.typography.bodyLarge,
-                    shape = MaterialTheme.shapes.medium
-                )
-                if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
-                    SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
-                }
-                if (onReadCommFromPhoto != null) {
-                    SecondaryA11yButton(
-                        text = if (ocrBusy) "Lecture de la photo…" else "Lire +++ sur la photo",
-                        onClick = onReadCommFromPhoto,
-                        enabled = !ocrBusy
-                    )
-                }
-                if (onTakePhoto != null || onPickPdf != null) {
-                    val appendOnAgreement =
-                        isAgreement && hasReceiptPhoto && !hasPendingPhoto && !hasPendingPdf
-                    if (onTakePhoto != null) {
-                        SecondaryA11yButton(
-                            text = when {
-                                hasPendingPhoto -> "Reprendre la photo"
-                                appendOnAgreement -> "Ajouter un courrier (photo)"
-                                hasReceiptPhoto && !receiptIsPdf -> "Reprendre la photo de la facture"
-                                else -> "Photo de la facture papier"
-                            },
-                            onClick = onTakePhoto
-                        )
-                    }
-                    if (onPickPdf != null) {
-                        SecondaryA11yButton(
-                            text = when {
-                                hasPendingPdf -> "Changer le PDF"
-                                appendOnAgreement -> "Joindre un PDF"
-                                hasReceiptPhoto && receiptIsPdf -> "Remplacer le PDF"
-                                else -> "Joindre un PDF"
-                            },
-                            onClick = onPickPdf
-                        )
-                    }
-                    if (appendOnAgreement) {
-                        Text(
-                            text = "Une nouvelle photo ou un PDF s’ajoute aux courriers. " +
-                                "La première pièce reste.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted
-                        )
-                    }
-                    if (onClearReceipt != null && (hasPendingPhoto || hasReceiptPhoto)) {
-                        SecondaryA11yButton(
-                            text = if (
-                                !hasPendingPhoto &&
-                                hasReceiptPhoto &&
-                                !applyFollowing &&
-                                !isSavingsLine &&
-                                (isAgreement || hasTemplate)
-                            ) {
-                                if (receiptIsPdf) "Enlever le PDF de ce mois" else "Enlever la photo de ce mois"
-                            } else if (receiptIsPdf) {
-                                "Enlever le PDF"
-                            } else {
-                                "Enlever la photo"
-                            },
-                            onClick = onClearReceipt
-                        )
-                    }
-                    if (hasPendingPhoto) {
-                        val photoOkShape = MaterialTheme.shapes.medium
-                        val photoOkText = if (isAgreement && hasReceiptPhoto) {
-                            "Photo prête. Elle s’ajoutera aux courriers quand vous enregistrerez."
-                        } else {
-                            "Photo prête. Touchez Enregistrer pour la garder."
-                        }
-                        Text(
-                            text = photoOkText,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.AccentOkInk,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    1.dp,
-                                    A11yTokens.AccentOkInk.copy(alpha = 0.35f),
-                                    photoOkShape
-                                )
-                                .background(A11yTokens.AccentOkSoft, photoOkShape)
-                                .padding(10.dp)
-                                .semantics {
-                                    liveRegion = LiveRegionMode.Polite
-                                    contentDescription = photoOkText
-                                }
-                        )
-                    }
-                    if (hasPendingPdf) {
-                        val pdfOkShape = MaterialTheme.shapes.medium
-                        val pdfOkText = if (hasReceiptPhoto) {
-                            "PDF prêt. Il s’ajoute à côté de la photo quand vous enregistrerez."
-                        } else {
-                            "PDF prêt. Touchez Enregistrer pour le garder."
-                        }
-                        Text(
-                            text = pdfOkText,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.AccentOkInk,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    1.dp,
-                                    A11yTokens.AccentOkInk.copy(alpha = 0.35f),
-                                    pdfOkShape
-                                )
-                                .background(A11yTokens.AccentOkSoft, pdfOkShape)
-                                .padding(10.dp)
-                                .semantics {
-                                    liveRegion = LiveRegionMode.Polite
-                                    contentDescription = pdfOkText
-                                }
-                        )
-                        if (onClearPendingPdf != null) {
-                            SecondaryA11yButton(
-                                text = "Enlever ce courrier",
-                                onClick = onClearPendingPdf
-                            )
-                        }
-                    }
-                    if (
-                        hasReceiptPhoto &&
-                        receiptPreview == null &&
-                        onViewReceipt != null
-                    ) {
-                        SecondaryA11yButton(
-                            text = if (receiptIsPdf) {
-                                "Voir le courrier (PDF)"
-                            } else {
-                                "Voir la photo de la facture"
-                            },
-                            onClick = onViewReceipt
-                        )
-                    }
-                    receiptPreview?.let { bmp ->
-                        // FORM06 : miniature seule — contentDescription / onClickLabel suffisent.
-                        Image(
-                            bitmap = bmp.asImageBitmap(),
-                            contentDescription = "Photo de la facture — touchez pour agrandir",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp)
-                                .clip(MaterialTheme.shapes.medium)
-                                .background(A11yTokens.PaperWarm)
-                                .then(
-                                    if (onViewReceipt != null) {
-                                        Modifier.clickable(
-                                            role = Role.Button,
-                                            onClickLabel = "Agrandir la facture",
-                                            onClick = onViewReceipt
-                                        )
-                                    } else {
-                                        Modifier
-                                    }
-                                )
-                        )
-                    }
-                    // Une seule liste de courriers (photo ou PDF) — toute facture.
-                    if (extraReceiptPaths.isNotEmpty()) {
-                        Text(
-                            text = if (hasReceiptPhoto) "Autres courriers" else "Courriers",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.InkMuted
-                        )
-                        extraReceiptPaths.forEachIndexed { index, path ->
-                            val n = if (hasReceiptPhoto) index + 2 else index + 1
-                            val pdf = isPdfPath(path)
-                            @OptIn(ExperimentalLayoutApi::class)
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                if (onViewExtraReceipt != null) {
-                                    SecondaryA11yButton(
-                                        text = if (pdf) {
-                                            "Voir le courrier $n (PDF)"
-                                        } else {
-                                            "Voir le courrier $n"
-                                        },
-                                        onClick = { onViewExtraReceipt(path) },
-                                        fillMaxWidth = false
-                                    )
-                                }
-                                if (onRemoveExtraReceipt != null) {
-                                    SecondaryA11yButton(
-                                        text = "Enlever le courrier $n",
-                                        onClick = { onRemoveExtraReceipt(path) },
-                                        fillMaxWidth = false
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
                 }
             }
             if (showApplyFollowing && hasTemplate) {
