@@ -154,7 +154,6 @@ fun RestoreBackupScreen(
     }
 
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         Text(
@@ -162,22 +161,15 @@ fun RestoreBackupScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val tipShape = MaterialTheme.shapes.medium
-        Column(
+        Text(
+            text = "Après réinstallation ou nouveau téléphone. " +
+                "Remplace tout ce qui est dans l’app — confirmation demandée.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = A11yTokens.InkMuted,
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(tipPad),
-            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 6.dp else 8.dp)
-        ) {
-            Text(
-                text = "Après réinstallation ou nouveau téléphone. " +
-                    "Remplace tout ce qui est dans l’app — confirmation demandée.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
-            )
-        }
+                .padding(vertical = if (fit.compactHomeChrome) 6.dp else 8.dp)
+        )
 
         state.message?.let { msg ->
             if (!showSuccessDialog) {
@@ -242,7 +234,8 @@ fun RestoreBackupScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        PrimaryA11yButton(
+        // RST01 : CTA destructif hors Primary teal — Danger / Secondary fort.
+        DangerA11yButton(
             text = if (state.busy) "Restauration…" else "Restaurer la dernière sauvegarde",
             enabled = !state.busy,
             onClick = { pending = PendingRestore.Latest }

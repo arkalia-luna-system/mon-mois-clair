@@ -187,6 +187,8 @@ fun MonMoisClairTheme(
             shapes = AppShapes
         ) {
             CompositionLocalProvider(LocalRippleConfiguration provides ripple) {
+                // Samsung One UI : coupe le thumb framework fantôme sur le bord start.
+                DisableFrameworkScrollbars()
                 content()
             }
         }

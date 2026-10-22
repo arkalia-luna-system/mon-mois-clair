@@ -9,15 +9,38 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.55** (1er frame, empreinte, OCR, widget) |
+| Dernière étape terminée | **6.56** (quick wins audit + menu/capsule) |
 | Étape en cours | — |
-| Prochaine sous-étape | Reprendre la photo de loyer3 — ou S26 maman |
-| Audit premium | Benchmark · inspection visuelle · **281/281** |
+| Prochaine sous-étape | Suite audit (SCAN01, FORM05, SET01 profond, widget…) — ou S26 |
+| Audit premium | Quick wins partiels · **284/284** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.56 Mois du menu + capsule gauche
+
+**Vu :** puces mois du menu coupées par la barre (feuille dialogue : insets Compose = 0, barre ~48 dp). Capsule grise fixe à gauche (~120 dp) sur écrans scrollables : thumb framework Samsung One UI et/ou ombre sticky 4 côtés ; poignée Edge (`CocktailBar`) possible en plus hors app.
+
+**Codé :**
+- `SheetBottomClearance` / `rememberSheetBottomClearance` — max(Compose, framework, 48 dp) + 28 dp ; `contentWindowInsets = 0` ; padding **hors** scroll (`HomeMenuSheet`)
+- `DisableFrameworkScrollbars` dans le thème
+- Sticky accueil : Reste + 1 statut (+ Après courses si > 0) ; détails derrière « Plus / Moins » ; plus de lien teal « Noter des courses » ; une seule UI Courses en liste (« J’ai dépensé » / « Corriger »)
+- Tips courants sans boîte (Accueil sticky, Menu, Réglages, fiche) ; boîtes réservées erreur/ok/warn
+- Menu : titre seul (pas wordmark) ; Mois sans carte-titre ; puces `StampShape`
+- Dossiers : plus de `LinearProgressIndicator` — typo « Déjà versé · reste »
+- Restaurer : CTA `Danger` (hors Primary teal) ; dialog photo « Fermer » = Secondary
+- Pastilles Prêt/À régler + chips exclusifs = `StampShape` ; cartes compact moins écrasées
+- FORM02/04/06 + GRID01 : `TypeChip` / mois ancre / jours grille → `StampShape` ; tips Facture papier sans boîte imbriquée ; « Retard ou accord » court ; miniature sans tip « agrandir »
+- MEN03 : coins sheet Menu 16 dp ; padding bas hors scroll
+- SCAN01/02 : cadre ivoire sans croix ; flash crème ; status neutre hors carte
+- FORM05 : Annuler = lien ; 1 Primary + Danger delete
+- FORM07 : Checkbox teal carnet
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **284/284** (67 fichiers).  
+**Version :** `0.1.0-6.56` · `versionCode` 61.  
+**Pas un claim « premium terminé »** : polish visuel audit ; smoke doigt / S26 restent ouverts.
 
 ### 2026-10-22 — 6.55 Premier frame, empreinte, OCR, widget
 

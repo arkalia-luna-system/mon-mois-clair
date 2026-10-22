@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -77,6 +78,7 @@ import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
@@ -1064,13 +1066,8 @@ private fun EntryFormScaffold(
                 enabled = !lockAmountAndDay
             )
             if (isSavingsLine) {
-                val savingsShape = MaterialTheme.shapes.medium
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, savingsShape)
-                        .background(A11yTokens.PaperWarm, savingsShape)
-                        .padding(tipPad),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
@@ -1099,13 +1096,8 @@ private fun EntryFormScaffold(
             // Accords : reste + rythme au-dessus de la grille (campagne D2 / D11 —
             // ne plus exiger de scroller sous les 31 jours).
             if (isAgreement && !isSavingsLine) {
-                val remShape = MaterialTheme.shapes.medium
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, remShape)
-                        .background(A11yTokens.PaperWarm, remShape)
-                        .padding(tipPad),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     if (isSettled) {
@@ -1163,18 +1155,13 @@ private fun EntryFormScaffold(
             if ((showRecurring || showFrequencyEdit) && onRecurrence != null) {
                 Text("Fréquence", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                 if (showFrequencyEdit) {
-                    val freqTipShape = MaterialTheme.shapes.medium
                     Text(
                         text = "Vous pouvez corriger une erreur (mensuel, 3 mois, annuel, une fois) " +
                             "sans supprimer la ligne. Pour les mois déjà créés : cochez " +
                             "« Aussi les mois suivants ».",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, A11yTokens.PaperBorder, freqTipShape)
-                            .background(A11yTokens.PaperWarm, freqTipShape)
-                            .padding(tipPad)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
                 @OptIn(ExperimentalLayoutApi::class)
@@ -1200,16 +1187,11 @@ private fun EntryFormScaffold(
                 }
                 if (showNextDueMonth) {
                     Text("Prochaine échéance", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
-                    val nextDueTipShape = MaterialTheme.shapes.medium
                     Text(
                         text = "Choisissez le mois où elle tombe (ex. taxe en mars).",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, A11yTokens.PaperBorder, nextDueTipShape)
-                            .background(A11yTokens.PaperWarm, nextDueTipShape)
-                            .padding(10.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                     @OptIn(ExperimentalLayoutApi::class)
                     FlowRow(
@@ -1239,62 +1221,46 @@ private fun EntryFormScaffold(
                     label = "Prélèvement automatique",
                     onChecked = onAutoDebit
                 )
-                val autoTipShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Les rappels diront de vérifier le prélèvement (la ligne reste à cocher FAIT).",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, autoTipShape)
-                        .background(A11yTokens.PaperCard, autoTipShape)
-                        .padding(tipPad)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
             if (showDossierSection) {
-                SecondaryA11yButton(
-                    text = if (dossierExpanded) {
-                        "C’est un retard ou un accord ? ▴"
-                    } else {
-                        "C’est un retard ou un accord ? ▾"
-                    },
-                    onClick = { onDossierExpanded(!dossierExpanded) }
-                )
+                // FORM04 : libellé court ; état ouvert/fermé en InkMuted à côté du bouton.
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SecondaryA11yButton(
+                        text = "Retard ou accord",
+                        onClick = { onDossierExpanded(!dossierExpanded) }
+                    )
+                    Text(
+                        text = if (dossierExpanded) "Ouvert" else "Fermé — touchez pour déplier",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted
+                    )
+                }
                 if (dossierExpanded) {
-                    val dossierShape = MaterialTheme.shapes.medium
+                    // FORM01 : groupe clair sans boîte-dans-boîte — tips = texte seul.
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, A11yTokens.PaperBorder, dossierShape)
-                            .background(A11yTokens.PaperCard, dossierShape)
-                            .padding(tipPad),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                     if (isSettled) {
-                        val settledShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Soldé",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.AccentOkInk,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, A11yTokens.AccentOkInk.copy(alpha = 0.35f), settledShape)
-                                .background(A11yTokens.PaperWarm, settledShape)
-                                .padding(tipPad)
+                            color = A11yTokens.AccentOkInk
                         )
                     }
                     remainingCents?.let { rem ->
                         if (!isSettled) {
-                            val remShape = MaterialTheme.shapes.medium
                             Text(
                                 text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = A11yTokens.InkMuted,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(1.dp, A11yTokens.PaperBorder, remShape)
-                                    .background(A11yTokens.PaperWarm, remShape)
-                                    .padding(10.dp)
+                                modifier = Modifier.fillMaxWidth()
                             )
                             if (!pacePhrase.isNullOrBlank()) {
                                 Text(
@@ -1331,17 +1297,12 @@ private fun EntryFormScaffold(
                             shape = MaterialTheme.shapes.medium,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
-                        val openTipShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Le montant plus haut est le versement du mois. " +
                                 "Laissez vide si ce n’est pas un accord.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, A11yTokens.PaperBorder, openTipShape)
-                                .background(A11yTokens.PaperCard, openTipShape)
-                                .padding(10.dp)
+                            modifier = Modifier.fillMaxWidth()
                         )
                         if (onSaveAsPendingLetter != null &&
                             openingRemainingText.isBlank()
@@ -1351,17 +1312,12 @@ private fun EntryFormScaffold(
                                 onClick = onSaveAsPendingLetter,
                                 enabled = primaryEnabled
                             )
-                            val pendingTipShape = MaterialTheme.shapes.medium
                             Text(
                                 text = "Photo et nom seulement — rien dans le Reste " +
                                     "tant que le versement n’est pas fixé.",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = A11yTokens.InkMuted,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(1.dp, A11yTokens.PaperBorder, pendingTipShape)
-                                    .background(A11yTokens.PaperWarm, pendingTipShape)
-                                    .padding(10.dp)
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
@@ -1386,16 +1342,11 @@ private fun EntryFormScaffold(
                     )
                     if (onCopyIban != null && iban.isNotBlank()) {
                         SecondaryA11yButton(text = "Copier l’IBAN", onClick = onCopyIban)
-                        val ibanTipShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Pour coller dans l’app bancaire.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, A11yTokens.PaperBorder, ibanTipShape)
-                                .background(A11yTokens.PaperWarm, ibanTipShape)
-                                .padding(10.dp)
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                     OutlinedTextField(
@@ -1418,27 +1369,17 @@ private fun EntryFormScaffold(
                     )
                     if (onWriteMail != null && creditorEmail.isNotBlank()) {
                         SecondaryA11yButton(text = "Écrire", onClick = onWriteMail)
-                        val writeTipShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Ouvre l’app Mail avec un brouillon. Rien n’est stocké ici.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, A11yTokens.PaperBorder, writeTipShape)
-                                .background(A11yTokens.PaperWarm, writeTipShape)
-                                .padding(10.dp)
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                     if (isAgreement) {
                         if (feeEvents.isNotEmpty() || addedFeesCents > 0L) {
-                            val feesShape = MaterialTheme.shapes.medium
                             Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(1.dp, A11yTokens.PaperBorder, feesShape)
-                                    .background(A11yTokens.PaperWarm, feesShape)
-                                    .padding(10.dp),
+                                modifier = Modifier.fillMaxWidth(),
                                 verticalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Text(
@@ -1495,28 +1436,18 @@ private fun EntryFormScaffold(
                 }
             }
             if (showPaymentAssist) {
-                val paperShape = MaterialTheme.shapes.medium
                 Text("Facture papier", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, paperShape)
-                        .background(A11yTokens.PaperCard, paperShape)
-                        .padding(tipPad),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                 if (onScanEpc != null) {
                     SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
-                    val scanTipShape = MaterialTheme.shapes.medium
+                    // FORM03 : tip sous le bouton, sans boîte dans la carte.
                     Text(
                         text = "Visez le QR de la facture belge.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .border(1.dp, A11yTokens.PaperBorder, scanTipShape)
-                            .background(A11yTokens.PaperWarm, scanTipShape)
-                            .padding(10.dp)
+                        color = A11yTokens.InkMuted
                     )
                 }
                 OutlinedTextField(
@@ -1567,17 +1498,11 @@ private fun EntryFormScaffold(
                         )
                     }
                     if (appendOnAgreement) {
-                        val appendTipShape = MaterialTheme.shapes.medium
                         Text(
                             text = "Une nouvelle photo ou un PDF s’ajoute aux courriers. " +
                                 "La première pièce reste.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, A11yTokens.PaperBorder, appendTipShape)
-                                .background(A11yTokens.PaperWarm, appendTipShape)
-                                .padding(10.dp)
+                            color = A11yTokens.InkMuted
                         )
                     }
                     if (onClearReceipt != null && (hasPendingPhoto || hasReceiptPhoto)) {
@@ -1671,20 +1596,10 @@ private fun EntryFormScaffold(
                         )
                     }
                     receiptPreview?.let { bmp ->
-                        val zoomTipShape = MaterialTheme.shapes.medium
-                        Text(
-                            text = "Touchez pour agrandir.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, A11yTokens.PaperBorder, zoomTipShape)
-                                .background(A11yTokens.PaperWarm, zoomTipShape)
-                                .padding(10.dp)
-                        )
+                        // FORM06 : miniature seule — contentDescription / onClickLabel suffisent.
                         Image(
                             bitmap = bmp.asImageBitmap(),
-                            contentDescription = "Photo de la facture",
+                            contentDescription = "Photo de la facture — touchez pour agrandir",
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -1695,7 +1610,7 @@ private fun EntryFormScaffold(
                                     if (onViewReceipt != null) {
                                         Modifier.clickable(
                                             role = Role.Button,
-                                            onClickLabel = "Voir la facture",
+                                            onClickLabel = "Agrandir la facture",
                                             onClick = onViewReceipt
                                         )
                                     } else {
@@ -1749,17 +1664,12 @@ private fun EntryFormScaffold(
                     label = "Aussi les mois suivants",
                     onChecked = onApplyFollowing
                 )
-                val followShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Laissé décoché : montant et photo de ce mois seulement. " +
                         "La communication suit déjà les mois suivants.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, followShape)
-                        .background(A11yTokens.PaperWarm, followShape)
-                        .padding(tipPad)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -1812,16 +1722,28 @@ private fun EntryFormScaffold(
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
+        // FORM05 : 1 seul plein (Enregistrer) ; Annuler = lien ; Supprimer = Danger.
         PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
         if (!keyboardOpen) {
             Spacer(modifier = Modifier.height(8.dp))
-            SecondaryA11yButton(
+            Text(
                 text = "Annuler",
-                onClick = onCancel,
-                enabled = primaryEnabled
+                style = MaterialTheme.typography.titleLarge,
+                color = if (primaryEnabled) A11yTokens.Link else A11yTokens.InkMuted,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .clickable(
+                        enabled = primaryEnabled,
+                        role = Role.Button,
+                        onClickLabel = "Annuler sans enregistrer",
+                        onClick = onCancel
+                    )
+                    .padding(vertical = 12.dp)
+                    .semantics { contentDescription = "Annuler" }
             )
             if (onDelete != null) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 DangerA11yButton(
                     text = deleteLabel,
                     onClick = onDelete,
@@ -1837,7 +1759,8 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
     val fit = rememberDisplayFit()
     val hPad = if (fit.compactHomeChrome) 12.dp else 16.dp
     val vPad = if (fit.compactHomeChrome) 10.dp else 12.dp
-    val shape = MaterialTheme.shapes.medium
+    // FORM02 : choix exclusifs = pastille capsule, pas bouton 16 dp.
+    val shape = StampShape
     val bg = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm
     val fg = if (selected) A11yTokens.ButtonText else A11yTokens.Ink
     Text(
@@ -1879,7 +1802,16 @@ private fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Un
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(checked = checked, onCheckedChange = onChecked)
+        // FORM07 : case teal carnet (pas Material stock).
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onChecked,
+            colors = CheckboxDefaults.colors(
+                checkedColor = A11yTokens.ButtonFill,
+                uncheckedColor = A11yTokens.FieldLine,
+                checkmarkColor = A11yTokens.ButtonText
+            )
+        )
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,

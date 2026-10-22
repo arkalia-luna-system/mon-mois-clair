@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.55** — premier frame, empreinte, OCR).
+Mise à jour : 2026-10-22 (lot **6.56** — mois du menu au-dessus de la barre).
 
 ## 1. Vision
 
@@ -29,19 +29,19 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Mes dossiers** (si N>0) · calendrier (passé + **3 mois à venir**) |
 | Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
 
-**Sticky (verrouillé 6.27) — maman lit sans calculer :**
+**Sticky (verrouillé 6.27, densité 6.56) — maman lit sans calculer :**
 
 | Ligne | Sens | Quand |
 |-------|------|--------|
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
-| **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 |
-| **Après les FAIT** | Revenus − factures **déjà FAIT** (= Reste + À payer) | Seulement s’il reste à payer (> 0) ; ancien libellé « Hors à payer » |
-| **Après courses** | Reste − courses / divers du mois | Seulement si courses > 0 |
-| **Mis de côté** | Montant mensuel épargne (tap → Réglages) | Seulement si activé |
-| Lien **Courses** | Ouvre le sheet (pas un 2ᵉ bouton plein) | Toujours |
+| **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
+| **Après courses** | Reste − courses / divers du mois | Seulement si courses > 0 (pas de lien teal « Noter des courses ») |
+| **Après les FAIT** · **Mis de côté** · alertes | Détail | Derrière **Plus / Moins** (pas de mini-dashboard) |
+
+Courses : **une** UI en bas de liste (« J’ai dépensé » / « Corriger »), pas de 2ᵉ sheet depuis le sticky.
 
 Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun `#8A5A1E` ; Après courses = muted, **brique** si négatif.  
-Pas de plaque colorée, pas de nom d’app dans l’en-tête.
+Pas de plaque colorée, pas de nom d’app dans l’en-tête. Tips courants = texte `InkMuted` (boîtes = erreur / ok / warn seulement).
 
 **Interdit** : empiler Alertes / aide / restore dans le Menu (ils vivent dans **Réglages**) ; boutons critiques collés tout en haut.  
 **Marque** : absente de l’accueil. Légende discrète au verrouillage et à l’installation.  
@@ -77,6 +77,7 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.52–6.53** | Retry PDF · cache thème · docs · copy Réglages/Aide | ✅ |
 | **6.54** | hasReceipt photo+PDF · verrou anti-tap · PDF `finally` · VIEW ClipData · widget nuit | ✅ |
 | **6.55** | 1er frame Apparence · cache empreinte · OCR sans collage · widget si le processus vit | ✅ |
+| **6.56** | Feuille Menu : marge basse hors défilement (plancher 48 dp) · polish carnet (sticky, tips) | ✅ |
 
 ## 5. Branches Git (verrouillé)
 
@@ -113,7 +114,8 @@ La bande basse des **boutons système** (3 boutons ou geste) doit rester **libre
 3. **`A11yTokens.bottomSystemClearance` (28 dp)** — confort familial (évite double appui app + Android)
 
 Appliqué **une seule fois** dans `MainActivity`.  
-**Interdit** de re-ajouter `bottomSystemClearance` dans les LazyColumn / écrans (sinon double marge, surtout sur S26).
+**Interdit** de re-ajouter `bottomSystemClearance` dans les LazyColumn / écrans (sinon double marge, surtout sur S26).  
+**Exception** : `ModalBottomSheet` (fenêtre dialogue) — insets souvent à 0 sur Galaxy edge-to-edge → `rememberSheetBottomClearance()` (plancher 48 dp + clearance).
 
 ### Adaptation hauteur (`DisplayFit`)
 
@@ -129,7 +131,7 @@ Appliqué **une seule fois** dans `MainActivity`.
 - Nom de l’app : hors de l’accueil. Sur l’écran d’accueil du téléphone : **M ivoire sur teal** (`#1B4D4E`). Les rappels utilisent la même silhouette en blanc.
 - Bandeau L : fond contrasté, max 3–4 lignes.
 
-Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `HomeMenuSheet`.
+Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomClearance` · `HomeMenuSheet` · `DisableFrameworkScrollbars`.
 
 ## 7. Hub Réglages & usage sur une année (verrouillé)
 

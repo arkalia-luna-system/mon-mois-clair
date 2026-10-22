@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,11 +30,12 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.domain.AppClock
-import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
+import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 import java.time.YearMonth
 
 /**
@@ -72,29 +73,32 @@ fun HomeMenuSheet(
     val months = HomeMonthChoices.recentMonths(current)
     val fit = rememberDisplayFit()
     val menuGap = if (fit.compactHomeChrome) 12.dp else 16.dp
+    val sheetBottom = rememberSheetBottomClearance()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-        containerColor = A11yTokens.PaperCream
+        // MEN03 : coins feuille = 16 dp (famille cartes), pas 12.
+        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        containerColor = A11yTokens.PaperCream,
+        // On gère la marge basse nous-mêmes (secours si insets dialogue = 0).
+        contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .navigationBarsPadding()
+                // Hors du défilement : la zone visible s’arrête au-dessus de la barre.
+                .padding(bottom = sheetBottom)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = A11yTokens.screenPadding)
-                .padding(bottom = if (fit.compactHomeChrome) 20.dp else 28.dp)
+                .padding(bottom = 8.dp)
         ) {
-            AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
-            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
+            // MEN01 : titre « Menu » seul (pas wordmark + titre).
             Text(
                 text = "Menu",
                 style = MaterialTheme.typography.headlineMedium,
                 color = A11yTokens.Ink
             )
-            val introShape = MaterialTheme.shapes.medium
             Text(
                 text = if (showDossiers) {
                     "Réglages, dossiers, ou un autre mois."
@@ -105,12 +109,7 @@ fun HomeMenuSheet(
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, introShape)
-                    .background(A11yTokens.PaperCard, introShape)
-                    .padding(
-                        horizontal = 12.dp,
-                        vertical = if (fit.compactHomeChrome) 8.dp else 10.dp
-                    )
+                    .padding(top = 4.dp)
             )
             Spacer(modifier = Modifier.height(menuGap))
 
@@ -144,19 +143,11 @@ fun HomeMenuSheet(
             )
 
             Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 14.dp else 20.dp))
-            val monthsShape = MaterialTheme.shapes.medium
+            // MEN01 : section Mois = titre typo, pas carte-titre.
             Text(
                 text = "Mois",
                 style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.Ink,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, monthsShape)
-                    .background(A11yTokens.PaperCard, monthsShape)
-                    .padding(
-                        horizontal = 12.dp,
-                        vertical = if (fit.compactHomeChrome) 8.dp else 10.dp
-                    )
+                color = A11yTokens.Ink
             )
             Text(
                 text = "Mois à venir en tête (aperçu) — sans FAIT ni ajout.",
@@ -181,7 +172,8 @@ fun HomeMenuSheet(
                     yearMonths.forEach { ym ->
                         val selected = ym == selectedYearMonth
                         val chipLabel = DayLabelFormat.monthChipShort(ym)
-                        val chipShape = MaterialTheme.shapes.medium
+                        // MEN02 : pastilles exclusives = capsule.
+                        val chipShape = StampShape
                         Surface(
                             color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
                             shape = chipShape,
@@ -221,7 +213,6 @@ fun HomeMenuSheet(
             }
             if (isPastMonth || isFuturePreview) {
                 Spacer(modifier = Modifier.height(10.dp))
-                val noteShape = MaterialTheme.shapes.medium
                 Text(
                     text = if (isFuturePreview) {
                         "Aperçu d’un mois à venir. Rien n’est coché FAIT ici — le mois en cours reste sur l’accueil."
@@ -230,11 +221,7 @@ fun HomeMenuSheet(
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, noteShape)
-                        .background(A11yTokens.PaperCard, noteShape)
-                        .padding(horizontal = 12.dp, vertical = 10.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 SecondaryA11yButton(

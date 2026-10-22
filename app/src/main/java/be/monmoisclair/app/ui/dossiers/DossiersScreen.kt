@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -85,16 +84,11 @@ fun DossiersScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val introShape = MaterialTheme.shapes.medium
         Text(
             text = "Accords et retards — le reste dû est ici, pas sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, introShape)
-                .background(A11yTokens.PaperCard, introShape)
-                .padding(tipPad)
+            modifier = Modifier.fillMaxWidth()
         )
 
         val snap = state.snapshot
@@ -393,16 +387,12 @@ private fun DossierRow(
     val fit = rememberDisplayFit()
     val rowPad = if (fit.compactHomeChrome) 12.dp else 14.dp
     val shape = MaterialTheme.shapes.medium
-    val progress = if (item.totalDueCents > 0L) {
-        (item.paidCents.toFloat() / item.totalDueCents.toFloat()).coerceIn(0f, 1f)
-    } else {
-        0f
-    }
     val a11y = buildString {
         append(item.who)
         if (item.what.isNotBlank()) append(", ${item.what}")
         if (item.isSettled) append(", soldé")
         else {
+            append(", déjà versé ${MoneyFormat.formatCents(item.paidCents)}")
             append(", reste ${MoneyFormat.formatCents(item.remainingCents)}")
             if (item.pacePhrase != null) append(". ${item.pacePhrase}")
         }
@@ -440,36 +430,19 @@ private fun DossierRow(
                     .padding(horizontal = 10.dp, vertical = 8.dp)
             )
         } else {
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(10.dp)
-                    .clip(MaterialTheme.shapes.small)
-                    .semantics {
-                        contentDescription =
-                            "Déjà versé ${MoneyFormat.formatCents(item.paidCents)} " +
-                                "sur ${MoneyFormat.formatCents(item.totalDueCents)}"
-                    },
-                color = A11yTokens.Link,
-                trackColor = A11yTokens.PaperWarm
+            // DOS01 : typo seule — pas de barre de progression.
+            Text(
+                text = "Déjà versé ${MoneyFormat.formatCents(item.paidCents)} · " +
+                    "reste ${MoneyFormat.formatCents(item.remainingCents)}",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.Ink
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            if (item.cadenceLabel.isNotBlank()) {
                 Text(
-                    text = "Reste ${MoneyFormat.formatCents(item.remainingCents)}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.Ink
+                    text = item.cadenceLabel,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
                 )
-                if (item.cadenceLabel.isNotBlank()) {
-                    Text(
-                        text = item.cadenceLabel,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted
-                    )
-                }
             }
             if (!item.pacePhrase.isNullOrBlank()) {
                 Text(

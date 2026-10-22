@@ -16,12 +16,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
 
 @Composable
 fun HealthStatusRow(label: String, ok: Boolean) {
     val status = if (ok) "Prêt" else "À régler"
     val shape = MaterialTheme.shapes.medium
-    val chipShape = MaterialTheme.shapes.small
+    // HLTH01 : pastilles Prêt / À régler = capsule.
+    val chipShape = StampShape
     Row(
         modifier = Modifier
             .fillMaxWidth()

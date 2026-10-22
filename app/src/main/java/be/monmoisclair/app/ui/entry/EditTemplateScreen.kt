@@ -49,6 +49,7 @@ import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
@@ -319,7 +320,8 @@ fun EditTemplateScreen(
             ) {
                 for (m in 1..12) {
                     val selected = state.anchorMonth == m
-                    val shape = MaterialTheme.shapes.medium
+                    // FORM02 : mois exclusifs = pastille capsule.
+                    val shape = StampShape
                     val label = RecurrenceAnchor.frenchMonthLabel(m)
                     Surface(
                         color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,

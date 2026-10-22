@@ -290,17 +290,12 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Mettre de côté") {
-            val savingsTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Facture mensuelle vers un autre compte ; compte dans le Reste dès le 1er. " +
                     "Pas d’argent stocké ici.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, savingsTipShape)
-                    .background(A11yTokens.PaperWarm, savingsTipShape)
-                    .padding(tipPad)
+                modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = state.savingsAmountText,
@@ -346,16 +341,12 @@ fun SettingsScreen(
                 }
             }
             state.savingsNextMonthNote?.let { note ->
-                val nextShape = MaterialTheme.shapes.medium
                 Text(
                     text = note,
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, nextShape)
-                        .background(A11yTokens.PaperWarm, nextShape)
-                        .padding(tipPad)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = note
@@ -413,16 +404,11 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Confidentialité") {
-            val privacyTipShape = MaterialTheme.shapes.medium
             Text(
                 text = "Par défaut l’app s’ouvre sans code.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, privacyTipShape)
-                    .background(A11yTokens.PaperWarm, privacyTipShape)
-                    .padding(tipPad)
+                modifier = Modifier.fillMaxWidth()
             )
             val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
             Row(
@@ -533,28 +519,18 @@ fun SettingsScreen(
 
         SettingsCard(title = "Échéances hors ce mois") {
             if (state.offMonthPeriodics.isEmpty()) {
-                val emptyShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Aucune pour l’instant.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, emptyShape)
-                        .background(A11yTokens.PaperWarm, emptyShape)
-                        .padding(tipPad)
+                    modifier = Modifier.fillMaxWidth()
                 )
             } else {
-                val echeancesTipShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Factures 1×/an ou tous les 3 mois hors ce mois. Touchez pour modifier.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, echeancesTipShape)
-                        .background(A11yTokens.PaperWarm, echeancesTipShape)
-                        .padding(tipPad)
+                    modifier = Modifier.fillMaxWidth()
                 )
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                     state.offMonthPeriodics.forEach { item ->
@@ -598,16 +574,11 @@ fun SettingsScreen(
 
         if (state.showSummaryButton) {
             SettingsCard(title = "Résumé à montrer") {
-                val tipShape = MaterialTheme.shapes.medium
                 Text(
                     text = "Pour un créancier ou un conseiller. Texte ou PDF — même contenu.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                        .background(A11yTokens.PaperCard, tipShape)
-                        .padding(tipPad)
+                    modifier = Modifier.fillMaxWidth()
                 )
                 // Un seul feedback busy : labels des boutons (pas de bandeau en plus).
                 SecondaryA11yButton(
@@ -624,7 +595,6 @@ fun SettingsScreen(
         }
 
         SettingsCard(title = "Sauvegarde") {
-            val backupTipShape = MaterialTheme.shapes.medium
             // Pas de tip « copie auto » si aucun dossier — le statut NOT_CONFIGURED suffit.
             if (state.backupHealth != BackupHealth.NOT_CONFIGURED) {
                 Text(
@@ -632,11 +602,7 @@ fun SettingsScreen(
                         "« Envoyer une copie » = archive WhatsApp / Mail.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, backupTipShape)
-                        .background(A11yTokens.PaperWarm, backupTipShape)
-                        .padding(tipPad)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
             run {
@@ -720,14 +686,11 @@ fun SettingsScreen(
             null
         }
         val stepLabel = AppVersionDisplay.stepLabel(versionName)
-        val footShape = MaterialTheme.shapes.medium
         Column(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, footShape)
-                .background(A11yTokens.PaperCard, footShape)
-                .padding(tipPadLg)
+                .padding(vertical = tipPad)
                 .semantics(mergeDescendants = true) {
                     contentDescription = buildString {
                         append("Mon Mois Clair")

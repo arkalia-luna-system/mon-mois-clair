@@ -221,16 +221,11 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-        val tipShape = MaterialTheme.shapes.medium
         Text(
             text = "Cadrez le QR belge de la facture. La lampe aide dans le noir.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                .background(A11yTokens.PaperCard, tipShape)
-                .padding(tipPad)
+            modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
         val statusColor = when (status) {
@@ -239,30 +234,39 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             "Lecture du QR impossible. Recadrez ou réessayez.",
             "Caméra indisponible.",
             "Autorisez la caméra pour scanner la facture." -> A11yTokens.DangerInk
-            else -> A11yTokens.Ink
+            else -> A11yTokens.InkMuted
         }
-        val statusBorder = when (statusColor) {
-            A11yTokens.AccentOkInk -> A11yTokens.AccentOkInk.copy(alpha = 0.4f)
-            A11yTokens.DangerInk -> A11yTokens.DangerInk.copy(alpha = 0.4f)
-            else -> A11yTokens.PaperBorder
-        }
+        // SCAN02 : status neutre = une ligne ; ok/erreur = boîte d’état.
+        val statusIsState = statusColor == A11yTokens.AccentOkInk ||
+            statusColor == A11yTokens.DangerInk
         val statusShape = MaterialTheme.shapes.medium
         Text(
             status,
             style = MaterialTheme.typography.bodyLarge,
-            color = statusColor,
+            color = if (statusIsState) statusColor else A11yTokens.InkMuted,
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, statusBorder, statusShape)
-                .background(
-                    when (statusColor) {
-                        A11yTokens.Ink -> A11yTokens.PaperCard
-                        A11yTokens.AccentOkInk -> A11yTokens.AccentOkSoft
-                        else -> A11yTokens.PaperWarm
-                    },
-                    statusShape
+                .then(
+                    if (statusIsState) {
+                        Modifier
+                            .border(
+                                1.dp,
+                                statusColor.copy(alpha = 0.4f),
+                                statusShape
+                            )
+                            .background(
+                                if (statusColor == A11yTokens.AccentOkInk) {
+                                    A11yTokens.AccentOkSoft
+                                } else {
+                                    A11yTokens.PaperWarm
+                                },
+                                statusShape
+                            )
+                            .padding(horizontal = 12.dp, vertical = 10.dp)
+                    } else {
+                        Modifier.padding(vertical = 4.dp)
+                    }
                 )
-                .padding(horizontal = 12.dp, vertical = 10.dp)
                 .semantics {
                     liveRegion = LiveRegionMode.Polite
                     contentDescription = status
@@ -284,9 +288,8 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                     factory = { previewView },
                     modifier = Modifier.fillMaxSize()
                 )
-                // Couleurs hors DrawScope : A11yTokens.* est @Composable (palette jour/nuit).
+                // SCAN01 : cadre ivoire seul, sans croix « scanner bancaire ».
                 val frameStroke = A11yTokens.PaperCard.copy(alpha = 0.92f)
-                val crosshair = A11yTokens.Link.copy(alpha = 0.9f)
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val frame = size.minDimension * 0.62f
                     val left = (size.width - frame) / 2f
@@ -298,26 +301,13 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                         cornerRadius = CornerRadius(24f, 24f),
                         style = Stroke(width = 4f)
                     )
-                    val cx = size.width / 2f
-                    val cy = size.height / 2f
-                    drawLine(
-                        color = crosshair,
-                        start = Offset(cx - 28f, cy),
-                        end = Offset(cx + 28f, cy),
-                        strokeWidth = 3f
-                    )
-                    drawLine(
-                        color = crosshair,
-                        start = Offset(cx, cy - 28f),
-                        end = Offset(cx, cy + 28f),
-                        strokeWidth = 3f
-                    )
                 }
                 if (flashAlpha > 0.01f) {
+                    // Flash crème (pas vert notification).
                     Box(
                         Modifier
                             .fillMaxSize()
-                            .background(A11yTokens.AccentOkInk.copy(alpha = flashAlpha))
+                            .background(A11yTokens.PaperCream.copy(alpha = flashAlpha))
                     )
                 }
             }

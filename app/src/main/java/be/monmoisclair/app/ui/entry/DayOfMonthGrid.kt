@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 /**
@@ -45,15 +46,15 @@ fun DayOfMonthGrid(
     val fit = rememberDisplayFit()
     // Écart serré : 31 cases doivent pouvoir défiler sans masquer Enregistrer.
     val dayGap = if (fit.compactHomeChrome) 4.dp else 6.dp
-    val tipPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     Column(modifier = modifier) {
         Text(
             text = "Jour du mois",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted
         )
+        // GRID01 : intro 1 ligne.
         Text(
-            text = "Touchez un jour (1 à 31). Faites défiler la page pour voir la suite.",
+            text = "Touchez un jour (1 à 31).",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.padding(top = 2.dp, bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
@@ -64,7 +65,8 @@ fun DayOfMonthGrid(
         ) {
             for (day in 1..31) {
                 val selected = selectedDay == day
-                val shape = MaterialTheme.shapes.medium
+                // GRID01 : tampon date = capsule, pas case 16 dp.
+                val shape = StampShape
                 val bg = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm
                 val fg = if (selected) A11yTokens.ButtonText else A11yTokens.Ink
                 Box(
@@ -107,16 +109,11 @@ fun DayOfMonthGrid(
         }
         if (selectedDay != null && selectedDay > 28) {
             Spacer(Modifier.height(8.dp))
-            val tipShape = MaterialTheme.shapes.medium
             Text(
                 text = "En février (et les mois courts), ce sera le dernier jour du mois.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, tipShape)
-                    .background(A11yTokens.PaperCard, tipShape)
-                    .padding(tipPad)
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
