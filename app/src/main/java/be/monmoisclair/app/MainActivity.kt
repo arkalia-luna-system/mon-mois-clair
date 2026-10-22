@@ -7,7 +7,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -61,20 +60,23 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         pendingHighlightExpenseId = intent?.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
-        val paperCream = ContextCompat.getColor(this, R.color.paper_cream)
-        val nightWindow = (resources.configuration.uiMode and
+        val systemDarkBoot = (resources.configuration.uiMode and
             android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
             android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val nightBoot = be.monmoisclair.app.domain.ThemePreferenceCache
+            .peek(this)
+            .resolveNight(systemDarkBoot)
+        val barBoot = if (nightBoot) 0xFF1E1B18.toInt() else 0xFFF6F3E8.toInt()
         enableEdgeToEdge(
-            statusBarStyle = if (nightWindow) {
-                SystemBarStyle.dark(paperCream)
+            statusBarStyle = if (nightBoot) {
+                SystemBarStyle.dark(barBoot)
             } else {
-                SystemBarStyle.light(paperCream, paperCream)
+                SystemBarStyle.light(barBoot, barBoot)
             },
-            navigationBarStyle = if (nightWindow) {
-                SystemBarStyle.dark(paperCream)
+            navigationBarStyle = if (nightBoot) {
+                SystemBarStyle.dark(barBoot)
             } else {
-                SystemBarStyle.light(paperCream, paperCream)
+                SystemBarStyle.light(barBoot, barBoot)
             }
         )
         setContent {

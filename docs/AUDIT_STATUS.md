@@ -1,9 +1,9 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit fermé : **6.51** (`0.1.0-6.51`, schéma Room **8**, unitaires **276/276**).  
-Phrase rythme : pas de smoke device dédié (domaine + UI fiche / Mes dossiers). Voir l’audit §8.  
-Dossiers / accords : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
+Journal produit fermé : **6.52** (`0.1.0-6.52`, schéma Room **8**, unitaires **280/280**).  
+Phrase rythme : domaine + UI fiche / Mes dossiers (pas de smoke device dédié pour cette phrase seule).  
+Dossiers / accords (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
 
 | Vague | État |
@@ -17,7 +17,7 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 6.33 install + EuroFormat + Menu | ✅ smoke retour 2026-10-21 |
 | 6.36 + hauteur Accord / FAIT | ✅ smoke Ultra 2026-10-21 |
 | Hauteur courte type S26 | ✅ sim. 360×780 dp + texte 1,3 (2026-10-21) |
-| 6.43–6.51 (formes, PDF, nuit, OCR, résumé PDF 18/22 pt, widget, ClipData) | ✅ code + tests unitaires — **pas encore** smoke device dédié |
+| 6.43–6.52 | ✅ code. Smoke **partiel** S25 le 2026-10-22 (accueil nuit, étape 6.51, partage du PDF résumé). OCR, widget posé, PDF facture, S26 : pas encore |
 
 ## Smoke SM-S938B — 2026-10-21
 
@@ -57,15 +57,24 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 27 | Flèche › / Menu → mois futur : aperçu lecture seule | ✅ 6.41 |
 | 28 | Re-sync template sur mois futur déjà ouvert ; Soldés repliés | ✅ 6.42 |
 
-## Pas encore fumés au doigt (code + tests unitaires seulement)
+## Smoke SM-S938B — 2026-10-22 (release 6.51, mise à jour depuis 6.44)
+
+| # | Check | Résultat |
+|---|-------|----------|
+| 1 | Accueil octobre, nuit (téléphone sombre, Apparence = comme le téléphone) | ✅ Reste, lignes, FAIT forêt, pastille « En retard » |
+| 2 | Réglages → pied de page | ✅ « étape 6.51 » |
+| 3 | « PDF du résumé » | ✅ feuille `mon-mois-clair-resume.pdf` dans le partage. Rien envoyé |
+| 4 | Widget | Fournisseur installé. Pas posé sur l’accueil |
+| 5 | OCR `+++`, PDF à côté d’une photo, S26 | Pas faits dans ce passage |
+
+## Pas encore fumés au doigt
 
 | Lot | À vérifier sur Galaxy |
 |-----|------------------------|
-| 6.43–6.45 | Formes, ombre sticky, fondu FAIT, nuit système |
-| 6.46 | Réglages → Apparence Clair / Sombre |
+| 6.43–6.45 | Fondu FAIT et ombre sticky (les formes de l’accueil nuit ont été vues, pas le fondu) |
+| 6.46 | Basculer Clair / Sombre à la main (le mode « comme le téléphone » était déjà sombre) |
 | 6.47 | « Lire +++ sur la photo » |
-| 6.48 | « PDF du résumé » |
-| 6.49 | Widget accueil + PDF dès Ajouter |
-| 6.50 | PDF résumé s’ouvre bien dans Mail / WhatsApp ; widget nuit |
+| 6.49 | Poser le widget + PDF dès Ajouter |
+| 6.50 | Ouvrir le PDF résumé dans Mail ; widget en nuit sur l’accueil |
 
 Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.

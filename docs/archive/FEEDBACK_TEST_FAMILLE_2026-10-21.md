@@ -1,11 +1,12 @@
 # Feedback test famille — 21 oct. 2026 (soir)
 
+> **Archivé (ne plus éditer).** Historique doigt **6.38→6.42**. Suite produit : `PROGRESS_LOG.md` / `BENCHMARK_QUALITE_2026.md`.
+
 Source : Athalia après usage doigt de `0.1.0-6.38` (SM-S938B).  
-But de ce fichier : **ne rien perdre**, croiser chaque demande avec le **code actuel**, et noter **comment** corriger / améliorer **sans casser** maman (accueil simple) ni Alex (dossiers).
+But de ce fichier : **ne rien perdre**, croiser chaque demande avec le code d’alors, et noter **comment** corriger / améliorer **sans casser** maman (accueil simple) ni Alex (dossiers).
 
 État à la rédaction : **6.38** (historique).  
-**Livré ensuite :** 6.39–6.42 (feedback) · 6.43–6.49 (formes, PDF, nuit, OCR, résumé PDF, widget).  
-Ce fichier reste une **trace de décisions** — l’état produit actuel est dans `PROGRESS_LOG.md` / `BENCHMARK_QUALITE_2026.md`.
+**Livré ensuite :** 6.39–6.42 (feedback) · 6.43–6.52 (formes, PDF, nuit, OCR, résumé PDF, widget, finitions).
 
 ---
 

@@ -22,6 +22,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.util.concurrent.atomic.AtomicInteger
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class ToggleExpenseDoneUseCaseTest {
@@ -50,7 +51,8 @@ class ToggleExpenseDoneUseCaseTest {
                 }
 
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         useCase = ToggleExpenseDoneUseCase(
             instanceDao = db.instanceDao(),

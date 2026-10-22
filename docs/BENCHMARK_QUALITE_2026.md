@@ -1,19 +1,19 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.51**).  
-App lue au départ : `0.1.0-6.41`. Le dépôt a avancé : formes **6.43**, PDF facture **6.44/6.49**, nuit **6.44/6.46**, polish **6.45**, OCR **6.47**, PDF résumé **6.48/6.51**, widget **6.49/6.50**.  
+Date : 2026-10-22 (état code : **6.52**).  
+App lue au départ : `0.1.0-6.41`. Le dépôt a avancé : formes **6.43**, PDF facture **6.44/6.49**, nuit **6.44/6.46**, polish **6.45**, OCR **6.47**, PDF résumé **6.48/6.51**, widget **6.49/6.50**, finitions **6.52**.  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
 | **Fait** | `tnum`, fond `#F6F3E8`, cartes 16 dp + ombre, pastilles capsule, boutons 12 dp, socle `PaperWarm`, FAIT forêt, fondu mois 180 ms, ombre sticky, fondu couleur ligne FAIT ~150 ms |
-| **Fait** | PDF à côté de la photo — **toute** facture (ajout + édition) |
-| **Fait** | Encre de nuit + choix Clair / Sombre / téléphone (Réglages) |
+| **Fait** | PDF à côté de la photo — **toute** facture (ajout + édition, retry si échec) |
+| **Fait** | Encre de nuit + choix Clair / Sombre / téléphone (Réglages) + cache 1er frame |
 | **Fait** | OCR `+++` sur la photo — jamais le montant |
 | **Fait** | PDF du résumé (même texte, gros caractères 18/22 pt — 6.51) |
-| **Fait** | Widget : Reste + prochaine ligne non FAIT |
+| **Fait** | Widget : Reste + prochaine ligne non FAIT (crème/encre fixes) |
 
-Ce n’est pas un plan à coder. Lots A→F et feedback 6.39+ : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md), [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md). Audit dossiers : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md). Recherche figée : [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md).
+Ce n’est pas un plan à coder. Lots A→F et feedback 6.39+ : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md), [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md). Audit dossiers (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md). Recherche figée : [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md).
 
 ---
 
@@ -106,7 +106,7 @@ Pas de dégradé teal, pas d’icône seule Menu/FAIT, pas de 2ᵉ hero, pas de 
 
 ## 5. Ordre (historique)
 
-1–4 formes → **6.43**. PDF facture → **6.44**. Nuit → **6.44/6.46**. Polish sticky/FAIT → **6.45**. OCR `+++` → **6.47**. PDF résumé → **6.48**, lecture 18/22 pt → **6.51**. Widget + PDF à l’ajout → **6.49**. Partage PDF (`ClipData`) + fonds widget fixes → **6.50**.
+1–4 formes → **6.43**. PDF facture → **6.44**. Nuit → **6.44/6.46**. Polish sticky/FAIT → **6.45**. OCR `+++` → **6.47**. PDF résumé → **6.48**, lecture 18/22 pt → **6.51**. Widget + PDF à l’ajout → **6.49**. Partage PDF (`ClipData`) + fonds widget fixes → **6.50**. Finitions retry PDF / cache thème / ZIP / docs → **6.52**.
 
 ---
 
@@ -116,7 +116,7 @@ Le carnet a les fonctions des bons carnets 2026 (rappel, FAIT, photo, PDF, widge
 
 | Reste | Pourquoi ça compte |
 |-------|--------------------|
-| Smoke Galaxy **6.43–6.51** | Le code et les unitaires (**276/276**) sont verts. Le geste n’est pas refait sur le S25, ni sur le S26 de maman |
+| Smoke Galaxy encore incomplet | S25 (`SM-S938B`) : accueil nuit, étape 6.51 et partage du PDF résumé vus le 2026-10-22 (code actuel 6.52). Pas encore : widget posé, OCR `+++`, PDF sur une facture, S26 de maman |
 | Tests d’écran | Pas de parcours instrumenté (ajout, FAIT, widget, PDF) |
 
 Volontairement dehors : banque, catégories, graphiques, grille calendrier, OCR du montant, synchro, thème fluo.

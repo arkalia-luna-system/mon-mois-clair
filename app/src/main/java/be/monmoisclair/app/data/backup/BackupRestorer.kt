@@ -35,7 +35,7 @@ class BackupRestorer @Inject constructor(
     private val reminderScheduler: ReminderScheduler,
     private val backupScheduler: BackupScheduler,
     private val healthStore: BackupHealthStore,
-    private val widgetSink: CarnetWidgetSink = CarnetWidgetSink.Noop
+    private val widgetSink: CarnetWidgetSink
 ) {
 
     suspend fun restoreFromLatest(): RestoreResult {

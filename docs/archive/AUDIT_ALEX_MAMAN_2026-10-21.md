@@ -1,16 +1,19 @@
 # Audit — maman, Alex, et le brief « dossiers »
 
+> **Archivé (ne plus éditer).** Arbitrages §8 absorbés dans `PLAN_PRODUIT_FINI.md` / `PROGRESS_LOG.md`. État smoke : `docs/AUDIT_STATUS.md`.  
+> Menu actuel = Réglages · À venir · Mes dossiers · calendrier (plus « Réglages + mois » seuls). Sticky : plus de libellé « Sans les futures ».
+
 Date du premier constat : 2026-10-21.  
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
-Dernière étape **fermée** dans le journal : **6.44** (`0.1.0-6.44`, `versionCode` 49), schéma **8**, suite **251/251**.  
+Dernière étape **fermée** au moment de l’écriture active : **6.44** (`0.1.0-6.44`, `versionCode` 49), schéma **8**, suite **251/251**.  
 Phrase rythme : fiche + Mes dossiers + résumé ; jamais l’accueil ; masquée si un **FAIT** a divergé.  
 
-Lots A–F + 6.37–6.44 tenus. Lire la **§8** avant de croire un badge ou une case ✅.  
-Smokes Ultra (feedback 6.39–6.42, aperçu mois futurs) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`AUDIT_STATUS.md`). Le S26 réel n’y est pas.
+Lots A–F + 6.37–6.44 tenus à l’époque. Lire la **§8** comme historique d’arbitrage.  
+Smokes Ultra (feedback 6.39–6.42, aperçu mois futurs) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`../AUDIT_STATUS.md`). Le S26 réel n’y est pas.
 
-Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
-Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
+Cette note dit ce que le code faisait / demandait au 21 oct. Sources : [`RECHERCHE_OUTILS_2026-10-21.md`](RECHERCHE_OUTILS_2026-10-21.md).  
+Plan vivant : [`../PLAN_PRODUIT_FINI.md`](../PLAN_PRODUIT_FINI.md).
 
 La partie 1 est le constat du matin (schéma 3). Elle reste pour comprendre pourquoi les lots existent. **L’état actuel est la partie 7.** La partie 5 dit ce qu’il ne faut pas coder même si le brief le demande.
 

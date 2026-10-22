@@ -12,6 +12,7 @@ import be.monmoisclair.app.data.backup.SafBackupStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -109,7 +110,7 @@ class ReceiptPhotoStore @Inject constructor(
         if (relativePath.isBlank() || isPdf(relativePath)) return null
         openUri(relativePath)?.let { uri ->
             runCatching {
-                context.contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it) }
+                context.contentResolver.openInputStream(uri)?.use { decodeImageStream(it) }
             }.getOrNull()?.let { return it }
         }
         return readLocal(relativePath)
@@ -131,7 +132,7 @@ class ReceiptPhotoStore @Inject constructor(
         val file = localFile(relativePath) ?: return null
         if (!file.isFile) return null
         return runCatching {
-            file.inputStream().use { BitmapFactory.decodeStream(it) }
+            file.inputStream().use { decodeImageStream(it) }
         }.getOrNull()
     }
 
@@ -159,8 +160,20 @@ class ReceiptPhotoStore @Inject constructor(
             val documentsCopyOk: Boolean
         )
 
-        /** Décode un JPEG/PNG déjà lu en mémoire, borné à [MAX_SIDE_PX] (anti-OOM galerie). */
-        fun decodeJpegBytesBounded(bytes: ByteArray, maxSide: Int = MAX_SIDE_PX): Bitmap? {
+        /** Plafond lecture photo (OCR / aperçu). Au-delà, on refuse plutôt que de saturer. */
+        const val MAX_DECODE_BYTES = 8L * 1024 * 1024
+
+        /**
+         * Lit tout le flux puis décode. [BitmapFactory.decodeStream] renvoie null
+         * sur un flux Documents sans retour arrière (photo webp déjà enregistrée).
+         */
+        fun decodeImageStream(input: InputStream, maxBytes: Long = MAX_DECODE_BYTES): Bitmap? =
+            runCatching { decodeImageBytes(BackupSecurityArchive.readBounded(input, maxBytes)) }
+                .getOrNull()
+
+        /** JPEG, PNG ou WebP en mémoire, borné à [MAX_SIDE_PX]. */
+        fun decodeImageBytes(bytes: ByteArray, maxSide: Int = MAX_SIDE_PX): Bitmap? {
+            if (bytes.isEmpty()) return null
             val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
             if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
@@ -170,6 +183,10 @@ class ReceiptPhotoStore @Inject constructor(
             val opts = BitmapFactory.Options().apply { inSampleSize = sample }
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.size, opts)
         }
+
+        /** Décode un JPEG/PNG déjà lu en mémoire, borné à [MAX_SIDE_PX] (anti-OOM galerie). */
+        fun decodeJpegBytesBounded(bytes: ByteArray, maxSide: Int = MAX_SIDE_PX): Bitmap? =
+            decodeImageBytes(bytes, maxSide)
 
         fun compressWebp(source: Bitmap, maxSide: Int = MAX_SIDE_PX, quality: Int = WEBP_QUALITY): ByteArray {
             val scaled = scaleMax(source, maxSide)

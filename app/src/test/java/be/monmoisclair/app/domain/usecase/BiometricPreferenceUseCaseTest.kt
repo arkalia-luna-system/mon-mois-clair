@@ -16,6 +16,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.util.concurrent.atomic.AtomicInteger
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class BiometricPreferenceUseCaseTest {
@@ -41,7 +42,8 @@ class BiometricPreferenceUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         useCase = BiometricPreferenceUseCase(db.appMetaDao(), mutating)
     }

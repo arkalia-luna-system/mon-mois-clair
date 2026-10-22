@@ -9,15 +9,28 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.51** (PDF résumé gros caractères) |
+| Dernière étape terminée | **6.52** (finitions ajout PDF / thème / ZIP / docs) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke Galaxy 6.43–6.51 — ou S26 maman |
-| Audit premium | Benchmark clos · PDF 18/22 pt · **276/276** |
+| Prochaine sous-étape | Smoke Galaxy 6.43–6.52 — ou S26 maman |
+| Audit premium | Benchmark clos · finitions 6.52 · **280/280** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.52 Finitions chasse d’erreurs + rangement docs
+
+**Vu :** PDF en échec à l’ajout non retriable (bytes vidés) ; flash thème au cold start ; ZIP de sauvegarde hors `ShareFileIntents` ; couleurs widget inversées en `values-night` ; audits historiques encore « actifs » ; AppleDouble T7.
+
+**Codé :**
+- Ajout : retry photo **et** PDF (`retryAttachments`) ; garder bitmap/PDF si échec ; passer en revenu vide aussi la photo
+- `ThemePreferenceCache` (SharedPreferences) + peek boot `MainActivity` — moins de flash Clair/Sombre
+- `ShareFileIntents.zip` branché sauvegarde ; strip `widget_*` nuit (crème/encre fixes)
+- Aide KDoc Menu à jour ; archive `AUDIT_ALEX` + `FEEDBACK` ; index docs
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **280/280** (66 fichiers).  
+**Version :** `0.1.0-6.52` · `versionCode` 57.
 
 ### 2026-10-22 — 6.51 PDF résumé à gros caractères
 
@@ -27,7 +40,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 - `MonthSummaryPdfWriter` : papier `#F6F3E8`, encre, Source Sans 3 / Serif 4 via `ResourcesCompat.getFont`
 - Corps **18 pt**, titre doc **22 pt**, pied 14 pt (« Mon Mois Clair » + n° page) — pas tout le texte à 18
 - Rubriques (Revenus, mois, Déficit…) en semibold ; puces / versements indentés exclus
-- Aide : « gros caractères ». **Pas de smoke device affirmé** (adb voit un appareil ; aucun parcours doigt ici).
+- Aide : « gros caractères ».
+
+**Smoke S25 Ultra (`SM-S938B`), 2026-10-22, APK release `versionCode` 56 installé par-dessus 6.44 (données gardées) :** accueil nuit (Apparence = comme le téléphone), FAIT et « En retard » visibles, Réglages affiche l’étape **6.51**, « PDF du résumé » ouvre le partage de `mon-mois-clair-resume.pdf` (rien n’a été envoyé). Pas coché FAIT, pas ajouté de ligne. Widget enregistré dans l’app, pas posé sur l’écran d’accueil. OCR `+++`, PDF sur une facture, et S26 : pas faits dans ce passage.
 
 **Finition chasse d’erreurs :**
 - Aide : widget suit Apparence (plus « One UI seul »)

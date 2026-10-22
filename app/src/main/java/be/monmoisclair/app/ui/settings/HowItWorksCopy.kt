@@ -2,7 +2,7 @@ package be.monmoisclair.app.ui.settings
 
 /**
  * Aide « Comment ça marche » — textes figés, testables, ton familial.
- * Affiché depuis Réglages (Menu = Réglages + mois seulement).
+ * Affiché depuis Réglages (Menu = calendrier, À venir, Mes dossiers, Réglages).
  */
 object HowItWorksCopy {
     const val TITLE = "Comment ça marche"

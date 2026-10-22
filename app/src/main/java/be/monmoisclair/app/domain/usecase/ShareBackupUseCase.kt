@@ -1,6 +1,5 @@
 package be.monmoisclair.app.domain.usecase
 
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -9,6 +8,7 @@ import be.monmoisclair.app.data.backup.BackupCoordinator
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.backup.BackupSecurityArchive
 import be.monmoisclair.app.data.backup.SafBackupStore
+import be.monmoisclair.app.domain.ShareFileIntents
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
@@ -60,18 +60,12 @@ class ShareBackupUseCase @Inject constructor(
                 1 -> "1 photo de facture incluse."
                 else -> "${packed.photoCount} photos de factures incluses."
             }
-            val send = Intent(Intent.ACTION_SEND).apply {
-                type = "application/zip"
-                putExtra(Intent.EXTRA_STREAM, uri)
-                clipData = ClipData.newRawUri("", uri)
-                putExtra(Intent.EXTRA_SUBJECT, "Sauvegarde Mon Mois Clair")
-                putExtra(
-                    Intent.EXTRA_TEXT,
-                    "Copie de sécurité Mon Mois Clair (mois + photos). $photoLine " +
-                        "À restaurer via Réglages → Restaurer."
-                )
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
+            val send = ShareFileIntents.zip(
+                uri = uri,
+                subject = "Sauvegarde Mon Mois Clair",
+                text = "Copie de sécurité Mon Mois Clair (mois + photos). $photoLine " +
+                    "À restaurer via Réglages → Restaurer."
+            )
             ShareBackupResult.Ready(Intent.createChooser(send, "Envoyer une copie de sécurité"))
         } catch (e: BackupFailure) {
             Log.e(TAG, "Partage BackupFailure: ${e.message}", e)

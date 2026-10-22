@@ -25,6 +25,7 @@ import org.robolectric.RobolectricTestRunner
 import java.time.Clock
 import java.time.YearMonth
 import java.time.ZoneId
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class DossierAgreementUseCaseTest {
@@ -47,7 +48,8 @@ class DossierAgreementUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         engine = MonthCycleEngine(db.monthLedgerDao(), repo)
         add = AddEntryUseCase(engine, repo)
@@ -401,7 +403,8 @@ class DossierAgreementUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), repo)
         db.templateDao().insertExpense(

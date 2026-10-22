@@ -6,10 +6,8 @@ Index des notes **actives**. Le reste est en [`archive/`](archive/README.md).
 
 | Fichier | Rôle |
 |---------|------|
-| [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | Lots A→F + rythme + feedback (**clos → 6.49**) |
-| [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) | Constats. **Décider via §8** |
-| [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md) | Retours doigt Athalia (historique **6.38→6.42**) |
-| [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Apps 2026 : état réel **6.49** (widget / PDF / OCR / nuit) |
+| [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | Lots A→F + rythme + feedback (**clos → 6.52**) |
+| [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Apps 2026 : état réel **6.52** (widget / PDF / OCR / nuit / finitions) |
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Envoi / MAJ APK **sans USB** (Drive / WA) |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy |
 | [`CI.md`](CI.md) | Feuille de route CI (+ Dependabot Security) |
@@ -28,4 +26,4 @@ Racine : `README.md` · `PROGRESS_LOG.md` · `CHARTE_ET_ARCHITECTURE.md` · `SEC
 
 ## Archive
 
-Voir [`archive/README.md`](archive/README.md).
+Voir [`archive/README.md`](archive/README.md) (audits dossiers / feedback famille inclus).

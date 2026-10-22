@@ -1,4 +1,4 @@
-> **Figé le 2026-10-20, version 6.26.** Ne décrit pas l’app actuelle (journal **6.36**). État : `docs/AUDIT_ALEX_MAMAN_2026-10-21.md` §8.
+> **Figé le 2026-10-20, version 6.26.** Ne décrit pas l’app actuelle (journal **6.36**). État : `docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md` §8.
 
 # Rapport senior / One UI — 2026-10-20
 

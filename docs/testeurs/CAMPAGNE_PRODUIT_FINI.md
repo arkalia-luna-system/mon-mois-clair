@@ -11,7 +11,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 adb install -r dist/MonMoisClair-release.apk
 # ou depuis le cache Gradle release
 adb shell dumpsys package be.monmoisclair.app | grep versionName
-# doit afficher versionName du journal (ex. 0.1.0-6.49)
+# doit afficher versionName du journal (ex. 0.1.0-6.52)
 ```
 
 ## 0. Protocol device (OBLIGATOIRE pour chaque agent)

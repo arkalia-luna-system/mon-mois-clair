@@ -21,6 +21,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.YearMonth
 import java.time.ZoneId
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class AddEntryUseCaseTest {
@@ -41,7 +42,8 @@ class AddEntryUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         val engine = MonthCycleEngine(db.monthLedgerDao(), repo)
         add = AddEntryUseCase(engine, repo)

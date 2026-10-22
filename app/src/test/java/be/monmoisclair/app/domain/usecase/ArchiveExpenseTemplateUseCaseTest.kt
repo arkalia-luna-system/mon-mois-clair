@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class ArchiveExpenseTemplateUseCaseTest {
@@ -34,7 +35,8 @@ class ArchiveExpenseTemplateUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         archive = ArchiveExpenseTemplateUseCase(repo)
     }

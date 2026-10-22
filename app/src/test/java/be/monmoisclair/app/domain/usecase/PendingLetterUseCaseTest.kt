@@ -21,6 +21,7 @@ import org.robolectric.RobolectricTestRunner
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class PendingLetterUseCaseTest {
@@ -45,7 +46,8 @@ class PendingLetterUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         create = CreatePendingLetterUseCase(mutating)
         list = ListPendingLettersUseCase(db.pendingLetterDao())

@@ -41,7 +41,9 @@ class MainViewModel @Inject constructor(
     val biometricAuth: BiometricAuthGateway
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MainUiState())
+    private val _uiState = MutableStateFlow(
+        MainUiState(themePreference = themePreference.preference.value)
+    )
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     init {

@@ -225,6 +225,10 @@ fun AddEntryScreen(
     }
 
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
+    // Revenu : plus de photo/PDF — vider aussi l’aperçu Compose local (le VM a déjà clear).
+    LaunchedEffect(state.isExpense, state.hasPendingPhoto) {
+        if (!state.isExpense || !state.hasPendingPhoto) pendingPreview = null
+    }
     LaunchedEffect(epcRawResult) {
         val raw = epcRawResult ?: return@LaunchedEffect
         viewModel.applyEpcRaw(raw)
@@ -302,7 +306,7 @@ fun AddEntryScreen(
         hasPendingPdf = state.hasPendingPdf,
         receiptPreview = pendingPreview,
         onScanEpc = onScanEpc,
-        onTakePhoto = takePhoto,
+        onTakePhoto = if (state.isExpense) takePhoto else null,
         onPickPdf = if (state.isExpense) pickPdf else null,
         onClearPendingPdf = if (state.hasPendingPdf) viewModel::clearPendingPdf else null,
         onViewReceipt = if (pendingPreview != null) {

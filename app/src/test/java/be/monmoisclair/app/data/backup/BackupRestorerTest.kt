@@ -19,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.util.concurrent.atomic.AtomicInteger
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class BackupRestorerTest {
@@ -62,7 +63,8 @@ class BackupRestorerTest {
                 override suspend fun cancelFor(expenseId: String) = Unit
             },
             backupScheduler = BackupScheduler { backupCalls.incrementAndGet() },
-            healthStore = healthStore
+            healthStore = healthStore,
+            widgetSink = CarnetWidgetSink.Noop
         )
     }
 

@@ -127,12 +127,14 @@ class AddEntryViewModel @Inject constructor(
     fun setExpense(v: Boolean) {
         if (!v) {
             pendingPdfBytes = null
+            pendingBitmap = null
         }
         _state.update {
             it.copy(
                 isExpense = v,
                 isAutoDebit = if (v) it.isAutoDebit else false,
                 hasPendingPdf = if (v) it.hasPendingPdf else false,
+                hasPendingPhoto = if (v) it.hasPendingPhoto else false,
                 error = null
             )
         }
@@ -326,7 +328,7 @@ class AddEntryViewModel @Inject constructor(
         viewModelScope.launch {
             val existingId = createdInstanceId
             if (existingId != null) {
-                retryPhotoOnly(existingId)
+                retryAttachments(existingId)
                 return@launch
             }
             val s = _state.value
@@ -415,24 +417,31 @@ class AddEntryViewModel @Inject constructor(
                     createdInstanceId = result.instanceId
                     // documentsOk : la copie SAF peut échouer ; la photo locale suffit pour rester.
                     val (photoOk, _) = attachPendingPhoto(result.instanceId)
-                    val pdfOk = attachPendingPdf(result.instanceId, recurring = s.recurrence != RecurrenceChoice.Once)
-                    pendingBitmap = null
-                    pendingPdfBytes = null
+                    val pdfOk = attachPendingPdf(
+                        result.instanceId,
+                        recurring = s.recurrence != RecurrenceChoice.Once
+                    )
+                    // Garder le bitmap / PDF en échec pour un 2ᵉ Enregistrer (retry).
+                    if (photoOk) pendingBitmap = null
+                    if (pdfOk) pendingPdfBytes = null
                     val attachOk = photoOk && pdfOk
                     _state.update {
                         it.copy(
                             saving = false,
                             saved = attachOk,
-                            hasPendingPhoto = false,
-                            hasPendingPdf = false,
+                            hasPendingPhoto = pendingBitmap != null,
+                            hasPendingPdf = pendingPdfBytes != null,
                             error = when {
                                 attachOk -> null
+                                !photoOk && !pdfOk ->
+                                    "Facture enregistrée. Photo et PDF n’ont pas suivi — " +
+                                        "réessayez Enregistrer."
                                 !photoOk ->
                                     "Facture enregistrée. La photo n’a pas suivi — " +
                                         "reprenez-en une, puis Enregistrer."
                                 else ->
                                     "Facture enregistrée. Le PDF n’a pas suivi — " +
-                                        "rouvez la fiche pour le joindre."
+                                        "réessayez Enregistrer."
                             }
                         )
                     }
@@ -443,28 +452,39 @@ class AddEntryViewModel @Inject constructor(
         }
     }
 
-    private suspend fun retryPhotoOnly(instanceId: String) {
-        val bmp = pendingBitmap
-        if (bmp == null) {
+    private suspend fun retryAttachments(instanceId: String) {
+        val hasPhoto = pendingBitmap != null
+        val hasPdf = pendingPdfBytes != null
+        if (!hasPhoto && !hasPdf) {
             _state.update {
                 it.copy(
-                    error = "Reprenez une photo, puis Enregistrer.",
+                    error = "Reprenez une photo ou un PDF, puis Enregistrer.",
                     saving = false
                 )
             }
             return
         }
         _state.update { it.copy(saving = true, error = null) }
-        val (ok, _) = attachPendingPhoto(instanceId)
-        pendingBitmap = null
+        val expense = instanceDao.getExpenseById(instanceId)
+        val recurring = expense?.templateId != null ||
+            (expense == null && templateDao.getExpenseById(instanceId) != null)
+        val photoOk = if (hasPhoto) attachPendingPhoto(instanceId).first else true
+        val pdfOk = if (hasPdf) attachPendingPdf(instanceId, recurring = recurring) else true
+        if (photoOk) pendingBitmap = null
+        if (pdfOk) pendingPdfBytes = null
+        val ok = photoOk && pdfOk
         _state.update {
             it.copy(
                 saving = false,
                 saved = ok,
-                error = if (ok) {
-                    null
-                } else {
-                    "La photo n’a pas pu être enregistrée. Réessayez."
+                hasPendingPhoto = pendingBitmap != null,
+                hasPendingPdf = pendingPdfBytes != null,
+                error = when {
+                    ok -> null
+                    !photoOk && !pdfOk ->
+                        "Photo et PDF n’ont pas pu être enregistrés. Réessayez."
+                    !photoOk -> "La photo n’a pas pu être enregistrée. Réessayez."
+                    else -> "Le PDF n’a pas pu être enregistré. Réessayez."
                 }
             )
         }

@@ -2,12 +2,12 @@
 
 Date : 2026-10-21 (état code mis à jour **2026-10-22**).  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37–**6.51** clos (`0.1.0-6.51`, schéma Room **8**). Benchmark : formes / PDF / nuit / OCR / résumé PDF (18/22 pt) / widget.  
-Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
+Lots **A à F** + 6.37–**6.52** clos (`0.1.0-6.52`, schéma Room **8**). Benchmark : formes / PDF / nuit / OCR / résumé PDF (18/22 pt) / widget / finitions.  
+Détail (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
 
-- Constat et arbitrages : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md)
+- Constat et arbitrages (archive) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md)
 - Sources (archive) : [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)
 
 ---
@@ -18,7 +18,7 @@ Deux personnes, **un** écran.
 
 | Personne | Fini, c’est quand… |
 |----------|--------------------|
-| **Maman** (S26 6,3″) | L’accueil qu’elle a aujourd’hui ne gagne **aucun** bouton, aucun onglet, aucun mot « huissier », tant qu’elle n’a pas créé de dossier ni activé « Mettre de côté ». Elle continue : mois, gros reste, FAIT, courses, menu = Réglages + mois |
+| **Maman** (S26 6,3″) | L’accueil qu’elle a aujourd’hui ne gagne **aucun** bouton, aucun onglet, aucun mot « huissier », tant qu’elle n’a pas créé de dossier ni activé « Mettre de côté ». Elle continue : mois, gros reste, FAIT, courses ; Menu = Réglages · À venir · Mes dossiers (si N>0) · calendrier |
 | **Alex** (S25 Ultra, même UI) | Un retard a : à qui, pour quoi, référence copiable comme la banque la veut, IBAN, photo qui **revient** le mois suivant, e-mail prérempli, versement du mois réservé dans le Reste dès le 1er, reste dû qui baisse du montant **réellement** coché FAIT, arrêt quand c’est soldé |
 | **Les deux** | Une ligne « Mettre de côté » possible, traitée comme une facture, vers un autre compte. Pas une cagnotte à l’écran |
 | **Un mois impossible** | Le déficit reste honnête. Un texte partageable (revenus, charges, dossiers) sert à écrire au créancier ou à un service de médiation. L’app ne promet pas de rendre le mois positif |
@@ -214,13 +214,13 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37–6.51** clos (`0.1.0-6.51`, schéma **8**, unitaires **276/276**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). La feuille résumé est le même texte, en **18/22 pt**, papier crème, polices du carnet.
+**A–F + 6.37–6.52** clos (`0.1.0-6.52`, schéma **8**, unitaires **280/280**). Finition visuelle : [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). La feuille résumé est le même texte, en **18/22 pt**, papier crème, polices du carnet.
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;
-- smoke doigt dédié 6.43–6.51 sur Galaxy ;
+- smoke doigt encore incomplet (S25 : accueil nuit + PDF résumé partagés le 2026-10-22 ; widget posé, OCR, PDF facture, S26 : non) ;
 - tests d’écran instrumentés (ajout, FAIT, widget, PDF).
 
-**Prochain geste** : smoke Galaxy des lots 6.43–6.51, ou le S26 de maman en main.
+**Prochain geste** : au doigt, poser le widget, ouvrir « Lire +++ sur la photo », et le PDF à côté d’une facture. Le S26 de maman n’est pas encore en main.
 
 Risques C : photos extras = voir / enlever ; frais = historique daté (6.38).

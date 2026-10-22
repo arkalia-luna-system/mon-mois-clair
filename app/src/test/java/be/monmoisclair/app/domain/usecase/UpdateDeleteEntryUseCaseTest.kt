@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class UpdateDeleteEntryUseCaseTest {
@@ -39,7 +40,8 @@ class UpdateDeleteEntryUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         update = UpdateInstanceUseCase(db.instanceDao(), repo)
         delete = DeleteInstanceUseCase(db.instanceDao(), repo)

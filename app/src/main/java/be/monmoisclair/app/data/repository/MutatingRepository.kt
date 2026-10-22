@@ -32,7 +32,7 @@ class MutatingRepository @Inject constructor(
     private val db: AppDatabase,
     private val backupScheduler: BackupScheduler,
     private val reminderScheduler: ReminderScheduler,
-    private val widgetSink: CarnetWidgetSink = CarnetWidgetSink.Noop
+    private val widgetSink: CarnetWidgetSink
 ) {
 
     suspend fun <T> mutate(

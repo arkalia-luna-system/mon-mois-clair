@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.time.YearMonth
 import java.util.concurrent.atomic.AtomicInteger
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class MutatingRepositoryTest {
@@ -48,7 +49,8 @@ class MutatingRepositoryTest {
                 }
 
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
     }
 

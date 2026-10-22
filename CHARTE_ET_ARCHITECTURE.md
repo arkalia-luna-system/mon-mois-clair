@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.51** — PDF résumé gros caractères).
+Mise à jour : 2026-10-22 (lot **6.52** — finitions retry PDF / thème / ZIP / docs).
 
 ## 1. Vision
 
@@ -26,7 +26,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
 | Mois ‹ › puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
-| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** + calendrier (passé + **3 mois à venir**) |
+| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Mes dossiers** (si N>0) · calendrier (passé + **3 mois à venir**) |
 | Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
 
 **Sticky (verrouillé 6.27) — maman lit sans calculer :**
@@ -101,6 +101,7 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.49** | Widget accueil : Reste + prochaine ligne non FAIT · PDF aussi à l’ajout | ✅ |
 | **6.50** | ClipData sur PDF résumé · fonds widget crème / encre fixes | ✅ |
 | **6.51** | PDF résumé : 18/22 pt, Source Sans/Serif, pied de page | ✅ |
+| **6.52** | Retry PDF à l’ajout · cache thème · ZIP `ShareFileIntents` · docs archivés | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

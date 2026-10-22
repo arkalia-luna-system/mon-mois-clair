@@ -23,6 +23,7 @@ import java.time.Instant
 import java.time.YearMonth
 import java.time.ZoneId
 import java.util.concurrent.atomic.AtomicInteger
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class MonthCycleEngineTest {
@@ -51,7 +52,8 @@ class MonthCycleEngineTest {
                 }
 
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            widgetSink = CarnetWidgetSink.Noop
         )
         engine = MonthCycleEngine(
             monthLedgerDao = db.monthLedgerDao(),
