@@ -9,7 +9,7 @@
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-239%2F239-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.39-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.40-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,9 +23,9 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.39` |
-| Dernière étape | **6.39** Feedback famille (mail, soldés, date Vers, À venir, courses, épargne) |
-| Device | Smoke **6.36–6.37** sur **Galaxy S25 Ultra** (`SM-S938B`) + sim. hauteur courte. Checklist 5.4.1 archivée. Campagne testeurs en cours : `docs/testeurs/`. S26 maman pas encore en main |
+| Version | `0.1.0-6.40` |
+| Dernière étape | **6.40** Polish sticky (Après courses danger + Courses en lien) — suite **6.39** feedback famille |
+| Device | Smoke **6.39–6.40** sur **Galaxy S25 Ultra** (`SM-S938B`) + sim. hauteur courte. Checklist 5.4.1 archivée. Campagne testeurs : `docs/testeurs/`. S26 maman pas encore en main |
 | Distribution | Sideload familial **release signé** (hors Play Store) — voir [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **239/239** OK (`--rerun-tasks`) |
 | Schéma Room | **8** — `expense_fee_events` (+ 7 : courriers ; 6 : IBAN / e-mail / cumul frais) |

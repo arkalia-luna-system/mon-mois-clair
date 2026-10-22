@@ -1,7 +1,7 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit fermé : **6.38** (`0.1.0-6.38`, schéma Room **8**, suite verte **235/235**).  
+Journal produit fermé : **6.40** (`0.1.0-6.40`, schéma Room **8**, suite verte **239/239**).  
 Phrase rythme : pas de smoke device dédié (domaine + UI fiche / Mes dossiers). Voir l’audit §8.  
 Dossiers / accords : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
@@ -43,5 +43,15 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 19 | Hauteur courte ~780 dp + police 1,3 : Accord sur la ligne du nom, FAIT ≥ 48 dp | ✅ dens. 640 (= 360×780) ; chip à droite du nom ; cause puis montant ; FAIT **48 dp** |
 | 20 | Menu (Réglages / Mes dossiers) sous chrome compact | ✅ |
 | 21 | Fiche ajout : bloc « C’est un retard ou un accord ? » replié (▾) | ✅ |
+
+## Smoke SM-S938B — 2026-10-22 (6.39 → 6.40)
+
+| # | Check | Résultat |
+|---|-------|----------|
+| 22 | Menu → À venir (3 mois lecture seule) | ✅ 6.39 |
+| 23 | Mes dossiers : En cours / Soldés + « Vers … » | ✅ 6.39 |
+| 24 | Réglages → « Un souci avec l’app ? » | ✅ 6.39 |
+| 25 | Sticky Mis de côté + sheet Courses | ✅ 6.39 |
+| 26 | Après courses négatif = brique ; Courses = lien (pas 2ᵉ bouton plein) | ✅ 6.40 |
 
 Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.

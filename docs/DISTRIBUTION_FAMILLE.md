@@ -9,7 +9,22 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 # APK : dist/MonMoisClair-release.apk  (~14 Mo, ARM)
 ```
 
+### Sans USB (famille)
+
 Envoyer le fichier par **WhatsApp**, **Google Drive** ou **Mail** (si la pièce jointe passe).
+
+### Avec USB (Athalia — même parcours « fichier », pas `adb install`)
+
+Dépose l’APK dans **Téléchargements** du téléphone, puis ouvre l’installateur système (comme s’ils l’avaient reçu) :
+
+```bash
+adb push dist/MonMoisClair-release.apk /sdcard/Download/MonMoisClair-release.apk
+adb shell am start -a android.intent.action.VIEW \
+  -d "file:///sdcard/Download/MonMoisClair-release.apk" \
+  -t "application/vnd.android.package-archive"
+```
+
+Sur One UI récents, si `file://` est refusé : ouvrir **Mes fichiers → Téléchargements → MonMoisClair-release.apk** à la main.
 
 - Toujours l’APK **release** signé (jamais debug).
 - Même keystore qu’avant = mise à jour sans perdre les données.

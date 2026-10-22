@@ -529,7 +529,11 @@ fun HomeScreen(
                     Text(
                         text = afterLabel,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = A11yTokens.InkMuted,
+                        color = if (state.afterDiversCents < 0L) {
+                            A11yTokens.AccentDanger
+                        } else {
+                            A11yTokens.InkMuted
+                        },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.semantics { contentDescription = afterLabel }
@@ -546,21 +550,34 @@ fun HomeScreen(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
                             .clickable(
                                 role = Role.Button,
-                                onClickLabel = "Modifier l’épargne"
+                                onClickLabel = "modifier l’épargne"
                             ) { onOpenSettings() }
                             .semantics { contentDescription = savLabel }
                     )
                 }
-                SecondaryA11yButton(
-                    text = if (state.diversSpentCents > 0L) {
-                        "Courses · ${MoneyFormat.formatCents(state.diversSpentCents)}"
-                    } else {
-                        "Courses"
-                    },
-                    onClick = { diversSheetOpen = true },
-                    fillMaxWidth = true
+                // Lien compact (pas un 2e gros bouton plein) — le sheet fait le travail.
+                val coursesLabel = if (state.diversSpentCents > 0L) {
+                    "Courses · ${MoneyFormat.formatCents(state.diversSpentCents)}"
+                } else {
+                    "Noter des courses"
+                }
+                Text(
+                    text = coursesLabel,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.ButtonFill,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = "ouvrir courses"
+                        ) { diversSheetOpen = true }
+                        .semantics { contentDescription = coursesLabel }
                 )
                 if (state.summary.remainingCents < 0L &&
                     state.timeline.none { it is TimelineItem.Income }

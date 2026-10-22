@@ -23,10 +23,11 @@ object HowItWorksCopy {
         Section(
             title = "Courses",
             body = "Pour les petites dépenses sans facture fixe (courses, pharmacie…). " +
-                "Bouton « Courses » sous le Reste (ou en bas de liste) : " +
+                "Lien « Courses » (ou « Noter des courses ») sous le Reste : " +
                 "tapez un montant puis « J’ai dépensé » ou « Corriger ». " +
                 "Le gros chiffre « Reste après factures » ne change pas. " +
-                "Une ligne « Après courses » montre ce qu’il resterait, à titre indicatif."
+                "Une ligne « Après courses » montre ce qu’il resterait ; " +
+                "elle passe en brique si le montant est négatif."
         ),
         Section(
             title = "Marquer FAIT",
@@ -107,7 +108,7 @@ object HowItWorksCopy {
                 "Elles réapparaissent le bon mois ; les autres mois, Menu → « À venir » ou Réglages → « Échéances hors ce mois ». " +
                 "Si vous vous êtes trompée de fréquence, ouvrez la ligne et changez-la : pas besoin de supprimer. " +
                 "Pour feuilleter l’historique : Menu → calendrier des mois, ou les flèches à côté du mois. " +
-                "Courses : bouton sous le Reste (pas seulement en bas de liste). " +
+                "Courses : lien sous le Reste (pas seulement en bas de liste). " +
                 "Un souci : Réglages → « Un souci avec l’app ? » (mail à Athalia, capture possible). " +
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
                 "Aide, alertes et restauration : tout est dans Réglages."

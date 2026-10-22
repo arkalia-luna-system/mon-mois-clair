@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-21 (lot **6.38** — historique daté des frais ; lots A–F + 6.37 tenus).
+Mise à jour : 2026-10-22 (lot **6.40** — polish sticky courses ; 6.39 feedback famille tenu).
 
 ## 1. Vision
 
@@ -37,8 +37,10 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 |
 | **Après les FAIT** | Revenus − factures **déjà FAIT** (= Reste + À payer) | Seulement s’il reste à payer (> 0) ; ancien libellé « Hors à payer » |
 | **Après courses** | Reste − courses / divers du mois | Seulement si courses > 0 |
+| **Mis de côté** | Montant mensuel épargne (tap → Réglages) | Seulement si activé |
+| Lien **Courses** | Ouvre le sheet (pas un 2ᵉ bouton plein) | Toujours |
 
-Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun `#8A5A1E` ; Après courses = muted.  
+Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun `#8A5A1E` ; Après courses = muted, **brique** si négatif.  
 Pas de plaque colorée, pas de nom d’app dans l’en-tête.
 
 **Interdit** : empiler Alertes / aide / restore dans le Menu (ils vivent dans **Réglages**) ; boutons critiques collés tout en haut.  
@@ -86,6 +88,8 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.36** | Résumé texte (Mes dossiers / Réglages si déficit ou dossier) | ✅ lot F |
 | **6.37** | Phrase rythme (« encore environ N… si… ») fiche / Mes dossiers | ✅ |
 | **6.38** | Historique daté des frais (`expense_fee_events`, schéma 8) | ✅ |
+| **6.39** | Feedback famille (mail, soldés, Vers, À venir, courses, épargne) | ✅ |
+| **6.40** | Polish sticky : Après courses danger + Courses en lien compact | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

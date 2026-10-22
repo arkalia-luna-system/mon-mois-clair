@@ -437,7 +437,9 @@ private fun DossierRow(
                 Text(
                     text = item.pacePhrase,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
+                    color = A11yTokens.InkMuted,
+                    maxLines = 3,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
             }
         }

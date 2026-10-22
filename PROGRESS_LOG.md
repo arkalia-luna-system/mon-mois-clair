@@ -9,15 +9,28 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.39** (feedback famille) |
+| Dernière étape terminée | **6.40** (polish sticky courses) |
 | Étape en cours | — |
-| Prochaine sous-étape | — S26 maman optionnel · smoke doigt 6.39 |
-| Audit premium | Feedback famille 6.39 · **239/239** |
+| Prochaine sous-étape | — S26 maman optionnel |
+| Audit premium | Feedback 6.39 + polish 6.40 · **239/239** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.40 Polish sticky (smoke 6.39)
+
+**Vu (doigt Ultra) :** sticky un peu chargé ; « Après courses −340 € » trop discret ; gros bouton Courses en double avec le sheet.
+
+**Codé :**
+- « Après courses » en **AccentDanger** si négatif
+- Courses = **lien compact** teal (« Courses · X » / « Noter des courses »), cible ≥ 48 dp — plus de `SecondaryA11yButton` plein
+- `pacePhrase` Mes dossiers : max 3 lignes + ellipsis
+- Aide à jour (lien Courses + brique si négatif)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **239/239** (61 fichiers).  
+**Version :** `0.1.0-6.40` · `versionCode` 45.
 
 ### 2026-10-22 — 6.39 Feedback famille (test 21 oct.)
 
