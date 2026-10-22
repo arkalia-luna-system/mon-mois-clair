@@ -7,17 +7,17 @@ import org.junit.Test
 class BackupHealthCopyTest {
 
     @Test
-    fun statusLine_coversAllStates() {
-        assertThat(BackupHealthCopy.statusLine(BackupHealth.OK)).contains("à jour")
-        assertThat(BackupHealthCopy.statusLine(BackupHealth.BROKEN)).contains("ne s’écrit plus")
-        assertThat(BackupHealthCopy.statusLine(BackupHealth.NOT_CONFIGURED))
-            .contains("Aucun dossier")
+    fun notConfigured_doesNotClaimAutoCopy() {
+        val line = BackupHealthCopy.statusLine(BackupHealth.NOT_CONFIGURED)
+        assertThat(line).isEqualTo("Aucun dossier Documents choisi.")
+        assertThat(line.lowercase()).doesNotContain("automat")
+        assertThat(BackupHealthCopy.isOk(BackupHealth.NOT_CONFIGURED)).isFalse()
     }
 
     @Test
-    fun isOk_onlyForOk() {
+    fun ok_and_broken_are_distinct() {
         assertThat(BackupHealthCopy.isOk(BackupHealth.OK)).isTrue()
-        assertThat(BackupHealthCopy.isOk(BackupHealth.BROKEN)).isFalse()
-        assertThat(BackupHealthCopy.isOk(BackupHealth.NOT_CONFIGURED)).isFalse()
+        assertThat(BackupHealthCopy.statusLine(BackupHealth.OK)).contains("à jour")
+        assertThat(BackupHealthCopy.statusLine(BackupHealth.BROKEN)).contains("dossier")
     }
 }

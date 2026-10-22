@@ -52,8 +52,15 @@ data class SettingsUiState(
     val availability: BiometricAvailability = BiometricAvailability.Unsupported,
     val backupHealth: BackupHealth = BackupHealth.NOT_CONFIGURED,
     val offMonthPeriodics: List<OffMonthPeriodic> = emptyList(),
+    /** Feedback Confidentialité (biométrie) uniquement. */
     val message: String? = null,
     val isError: Boolean = false,
+    /** Feedback carte Sauvegarde (partage / erreur intent). */
+    val backupMessage: String? = null,
+    val backupMessageError: Boolean = false,
+    /** Erreur intent hors sauvegarde (résumé, mail support) — sous le titre. */
+    val flashMessage: String? = null,
+    val flashMessageError: Boolean = false,
     val busy: Boolean = false,
     val savingsAmountText: String = "",
     val savingsDay: Int = 1,
@@ -92,6 +99,10 @@ class SettingsViewModel @Inject constructor(
     private var savingsPreviewJob: Job? = null
     /** Saisie en cours : un retour dans l’écran ne doit pas l’effacer. */
     private var savingsDraftDirty = false
+    /** Dernier intent lancé — pour router l’erreur startActivity. */
+    private var pendingShareKind: PendingShareKind = PendingShareKind.None
+
+    private enum class PendingShareKind { None, Backup, Other }
 
     init {
         refresh()
@@ -111,6 +122,8 @@ class SettingsViewModel @Inject constructor(
                 } else {
                     ""
                 }
+                // Ne pas effacer message / backupMessage / flashMessage :
+                // ON_RESUME après le share sheet doit encore montrer « Choisissez l’app… ».
                 cur.copy(
                     loading = false,
                     themePreference = themePreference.read(),
@@ -118,8 +131,6 @@ class SettingsViewModel @Inject constructor(
                     availability = biometricAuth.availability(),
                     backupHealth = healthStore.read(),
                     offMonthPeriodics = listOffMonth(),
-                    message = null,
-                    isError = false,
                     savingsActive = savings.active,
                     savingsAmountText = if (keepDraft) cur.savingsAmountText else storedAmount,
                     savingsDay = if (keepDraft) {
@@ -226,9 +237,9 @@ class SettingsViewModel @Inject constructor(
                         .alreadyTransferredThisMonth
                     savingsDraftDirty = false
                     val noted = if (startsNextMonth) {
-                        "C’est noté. Ce mois reste FAIT. Le nouveau montant commence le mois suivant."
+                        "Noté — nouveau montant dès le mois suivant."
                     } else {
-                        "C’est noté. La ligne « Mettre de côté » est dans le mois."
+                        "Noté."
                     }
                     _uiState.update {
                         it.copy(
@@ -308,6 +319,7 @@ class SettingsViewModel @Inject constructor(
     /** Retour famille → Athalia (joindre une capture dans Gmail). */
     fun writeSupportMail() {
         if (_uiState.value.busy) return
+        pendingShareKind = PendingShareKind.Other
         viewModelScope.launch {
             val pm = appContext.packageManager
             val pkg = appContext.packageName
@@ -345,7 +357,10 @@ class SettingsViewModel @Inject constructor(
     /** Lot F — même texte que Mes dossiers (WhatsApp / Mail). */
     fun shareMonthSummary() {
         if (_uiState.value.busy || _uiState.value.summaryBusy) return
-        _uiState.update { it.copy(summaryBusy = true, message = null, isError = false) }
+        pendingShareKind = PendingShareKind.Other
+        _uiState.update {
+            it.copy(summaryBusy = true, flashMessage = null, flashMessageError = false)
+        }
         viewModelScope.launch {
             val result = prepareMonthSummary()
             val intent = Intent(Intent.ACTION_SEND).apply {
@@ -363,7 +378,10 @@ class SettingsViewModel @Inject constructor(
     /** Même texte en PDF (imprimer / joindre). */
     fun shareMonthSummaryPdf() {
         if (_uiState.value.busy || _uiState.value.summaryBusy) return
-        _uiState.update { it.copy(summaryBusy = true, message = null, isError = false) }
+        pendingShareKind = PendingShareKind.Other
+        _uiState.update {
+            it.copy(summaryBusy = true, flashMessage = null, flashMessageError = false)
+        }
         viewModelScope.launch {
             val result = prepareMonthSummary()
             val file = withContext(Dispatchers.IO) {
@@ -386,7 +404,10 @@ class SettingsViewModel @Inject constructor(
 
     fun shareSecurityCopy() {
         if (_uiState.value.busy || _uiState.value.savingsBusy) return
-        _uiState.update { it.copy(busy = true, message = null, isError = false) }
+        pendingShareKind = PendingShareKind.Backup
+        _uiState.update {
+            it.copy(busy = true, backupMessage = null, backupMessageError = false)
+        }
         viewModelScope.launch {
             when (val result = shareBackup()) {
                 is ShareBackupResult.Ready -> {
@@ -394,15 +415,18 @@ class SettingsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             busy = false,
-                            message = "Choisissez une app pour envoyer. " +
-                                "L’archive contient les mois et les photos de factures.",
-                            isError = false
+                            backupMessage = "Choisissez l’app d’envoi.",
+                            backupMessageError = false
                         )
                     }
                 }
                 is ShareBackupResult.Failed -> {
                     _uiState.update {
-                        it.copy(busy = false, message = result.message, isError = true)
+                        it.copy(
+                            busy = false,
+                            backupMessage = result.message,
+                            backupMessageError = true
+                        )
                     }
                 }
             }
@@ -421,8 +445,7 @@ class SettingsViewModel @Inject constructor(
                         it.copy(
                             biometricEnabled = true,
                             busy = false,
-                            message = "Verrouillage activé. Au prochain retour dans l’app, " +
-                                "empreinte ou code d’écran seront demandés.",
+                            message = "Verrouillage activé.",
                             isError = false
                         )
                     }
@@ -471,11 +494,28 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun reportExternalIntentFailed() {
-        _uiState.update {
-            it.copy(
-                message = "Impossible d’ouvrir cet écran système. Réessayez depuis les réglages Samsung.",
-                isError = true
-            )
+        val msg = "Impossible d’ouvrir l’écran système. Réessayez."
+        when (pendingShareKind) {
+            PendingShareKind.Backup -> {
+                _uiState.update {
+                    it.copy(
+                        busy = false,
+                        backupMessage = msg,
+                        backupMessageError = true
+                    )
+                }
+            }
+            else -> {
+                _uiState.update {
+                    it.copy(
+                        busy = false,
+                        summaryBusy = false,
+                        flashMessage = msg,
+                        flashMessageError = true
+                    )
+                }
+            }
         }
+        pendingShareKind = PendingShareKind.None
     }
 }

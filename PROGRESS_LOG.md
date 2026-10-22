@@ -31,6 +31,8 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **280/280** (66 fichiers).  
 **Version :** `0.1.0-6.53` · `versionCode` 58.
 
+**Finition même lot :** messages Réglages séparés (biométrie / sauvegarde / flash) pour ne plus écraser le feedback ; Aide encore plus courte ; photo masquée sur ligne « Mettre de côté » en édition.
+
 ### 2026-10-22 — 6.52 Finitions chasse d’erreurs + rangement docs
 
 **Vu :** PDF en échec à l’ajout non retriable (bytes vidés) ; flash thème au cold start ; ZIP de sauvegarde hors `ShareFileIntents` ; couleurs widget inversées en `values-night` ; audits historiques encore « actifs » ; AppleDouble T7.

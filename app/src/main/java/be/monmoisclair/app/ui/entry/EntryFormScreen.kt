@@ -728,7 +728,15 @@ fun EditEntryScreen(
             viewModel.isPdfPath(state.receiptRelativePath),
         receiptPreview = pendingPreview ?: receiptBitmap,
         onScanEpc = onScanEpc,
-        onTakePhoto = if (!state.futurePreviewReadOnly) takePhoto else null,
+        onTakePhoto = if (
+            !state.futurePreviewReadOnly &&
+            state.isExpense &&
+            !state.isSavingsLine
+        ) {
+            takePhoto
+        } else {
+            null
+        },
         onPickPdf = if (
             !state.futurePreviewReadOnly &&
             state.isExpense &&
