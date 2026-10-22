@@ -105,7 +105,9 @@ object HowItWorksCopy {
             body = "Les factures mensuelles restent sur l’accueil. " +
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
                 "Sur l’accueil, une ligne discrète rappelle « tous les 3 mois » / « 1× par an » si ce n’est pas mensuel. " +
-                "Elles réapparaissent le bon mois ; les autres mois, Menu → « À venir » ou Réglages → « Échéances hors ce mois ». " +
+                "Elles réapparaissent le bon mois. Pour les voir d’avance : flèche › ou Menu → mois à venir " +
+                "(aperçu lecture seule, factures et rentrées déjà prévues — pas de FAIT). " +
+                "Aussi Menu → « À venir » (liste des 3 prochains mois) ou Réglages → « Échéances hors ce mois ». " +
                 "Si vous vous êtes trompée de fréquence, ouvrez la ligne et changez-la : pas besoin de supprimer. " +
                 "Pour feuilleter l’historique : Menu → calendrier des mois, ou les flèches à côté du mois. " +
                 "Courses : lien sous le Reste (pas seulement en bas de liste). " +

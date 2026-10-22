@@ -16,19 +16,31 @@ class MonthNavigationTest {
     }
 
     @Test
-    fun canGoNext_onlyTowardCurrent_notFuture() {
+    fun canGoNext_allowsFutureWithinHorizon() {
         val current = YearMonth.of(2026, 10)
         assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 9), current)).isTrue()
-        assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 10), current)).isFalse()
-        assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 11), current)).isFalse()
+        assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 10), current)).isTrue()
+        assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 11), current)).isTrue()
+        assertThat(MonthNavigation.canGoNext(YearMonth.of(2026, 12), current)).isTrue()
+        assertThat(MonthNavigation.canGoNext(YearMonth.of(2027, 1), current)).isFalse()
     }
 
     @Test
-    fun canSelect_allowsPastAndCurrent_notFuture() {
+    fun canSelect_allowsPastCurrentAndNearFuture() {
         val current = YearMonth.of(2026, 10)
         assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 10), current)).isTrue()
         assertThat(MonthNavigation.canSelect(YearMonth.of(2025, 1), current)).isTrue()
         assertThat(MonthNavigation.canSelect(YearMonth.of(2024, 1), current)).isFalse()
-        assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 11), current)).isFalse()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2026, 11), current)).isTrue()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2027, 1), current)).isTrue()
+        assertThat(MonthNavigation.canSelect(YearMonth.of(2027, 2), current)).isFalse()
+    }
+
+    @Test
+    fun isFuturePreview_onlyAfterCurrent() {
+        val current = YearMonth.of(2026, 10)
+        assertThat(MonthNavigation.isFuturePreview(current, current)).isFalse()
+        assertThat(MonthNavigation.isFuturePreview(YearMonth.of(2026, 9), current)).isFalse()
+        assertThat(MonthNavigation.isFuturePreview(YearMonth.of(2026, 11), current)).isTrue()
     }
 }

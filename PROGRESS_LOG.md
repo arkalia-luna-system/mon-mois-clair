@@ -9,15 +9,28 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.40** (polish sticky courses) |
+| Dernière étape terminée | **6.41** (aperçu mois futurs) |
 | Étape en cours | — |
 | Prochaine sous-étape | — S26 maman optionnel |
-| Audit premium | Feedback 6.39 + polish 6.40 · **239/239** |
+| Audit premium | Feedback 6.39–6.41 · **240/240** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.41 Aperçu mois futurs (feedback §4)
+
+**Vu :** « À venir » listait bien Nov+… mais le **calendrier / flèche ›** refusaient encore tout mois > courant — Athalia n’avait pas l’accès demandé (factures + rentrées dans le mois futur).
+
+**Codé :**
+- `MonthNavigation` : jusqu’à **M+3** sélectionnable ; `isFuturePreview`
+- Menu : mois à venir en tête ; Home : `ensureMonthExists` + bandeau aperçu ; pas de FAIT / + Ajouter / courses
+- Aide + tests navigation mis à jour
+- Doc CI : bruit Dependabot security ≠ échec `ci.yml`
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **240/240** (61 fichiers).  
+**Version :** `0.1.0-6.41` · `versionCode` 46.
 
 ### 2026-10-22 — 6.40 Polish sticky (smoke 6.39)
 

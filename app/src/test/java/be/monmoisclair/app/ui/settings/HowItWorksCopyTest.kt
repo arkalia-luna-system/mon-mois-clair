@@ -45,6 +45,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Vers mois année")
         assertThat(all).contains("Soldés")
         assertThat(all).contains("À venir")
+        assertThat(all).contains("aperçu lecture seule")
         assertThat(all).contains("Un souci avec l’app")
         assertThat(all).doesNotContain("ancre")
         assertThat(all).doesNotContain("EN RETARD")

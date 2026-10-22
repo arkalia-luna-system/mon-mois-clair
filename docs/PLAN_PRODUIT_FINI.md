@@ -2,7 +2,7 @@
 
 Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37–**6.40** clos (`0.1.0-6.40`, schéma Room **8**, **239/239**).  
+Lots **A à F** + 6.37–**6.41** clos (`0.1.0-6.41`, schéma Room **8**, **240/240**).  
 Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -213,7 +213,7 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37–6.40** clos (`0.1.0-6.40`, schéma **8**, **239/239**). Feedback famille + polish sticky (voir [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md)).
+**A–F + 6.37–6.41** clos (`0.1.0-6.41`, schéma **8**, **240/240**). Feedback famille + aperçu mois futurs (voir [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md)).
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;

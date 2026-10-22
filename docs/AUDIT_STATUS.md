@@ -1,7 +1,7 @@
 # Audits premium — statut smoke
 
 Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit fermé : **6.40** (`0.1.0-6.40`, schéma Room **8**, suite verte **239/239**).  
+Journal produit fermé : **6.41** (`0.1.0-6.41`, schéma Room **8**, suite verte **240/240**).  
 Phrase rythme : pas de smoke device dédié (domaine + UI fiche / Mes dossiers). Voir l’audit §8.  
 Dossiers / accords : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
@@ -53,5 +53,6 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 | 24 | Réglages → « Un souci avec l’app ? » | ✅ 6.39 |
 | 25 | Sticky Mis de côté + sheet Courses | ✅ 6.39 |
 | 26 | Après courses négatif = brique ; Courses = lien (pas 2ᵉ bouton plein) | ✅ 6.40 |
+| 27 | Flèche › / Menu → mois futur : factures + rentrées, bandeau aperçu, pas de FAIT | ✅ 6.41 |
 
 Ne pas rouvrir l’audit premium pour du code déjà tenu : noter seulement le smoke ici ou dans `PROGRESS_LOG.md`.

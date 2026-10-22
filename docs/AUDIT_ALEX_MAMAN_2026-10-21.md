@@ -3,11 +3,11 @@
 Date du premier constat : 2026-10-21.  
 Relecture du code : le même jour ; lots A/B/C/D ensuite clos au journal (**6.34**).
 
-Dernière étape **fermée** dans le journal : **6.40** (`0.1.0-6.40`, `versionCode` 45), schéma **8**, suite **239/239**.  
+Dernière étape **fermée** dans le journal : **6.41** (`0.1.0-6.41`, `versionCode` 46), schéma **8**, suite **240/240**.  
 Phrase rythme : fiche + Mes dossiers + résumé ; jamais l’accueil ; masquée si un **FAIT** a divergé.  
 
-Lots A–F + 6.37–6.40 tenus. Lire la **§8** avant de croire un badge ou une case ✅.  
-Smokes Ultra (« Écrire », FAIT, feedback 6.39, polish 6.40) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`AUDIT_STATUS.md`). Le S26 réel n’y est pas.
+Lots A–F + 6.37–6.41 tenus. Lire la **§8** avant de croire un badge ou une case ✅.  
+Smokes Ultra (feedback 6.39–6.41, aperçu mois futurs) + hauteur courte type S26 (sim. 360×780 + texte 1,3) : **faits** (`AUDIT_STATUS.md`). Le S26 réel n’y est pas.
 
 Cette note dit ce que le code fait vraiment, ce que le brief demande, et ce qu’il faut garder après comparaison avec d’autres outils (voir [`archive/RECHERCHE_OUTILS_2026-10-21.md`](archive/RECHERCHE_OUTILS_2026-10-21.md)).  
 Le plan : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).
@@ -335,9 +335,9 @@ Cette section remplace la partie 7 pour décider. Les parties 1 à 6 restent l�
 
 | Promesse | Tenu ? |
 |----------|--------|
-| Lots A à F + phrase rythme + frais datés + feedback + polish | Oui jusqu’à **6.40** (**239/239**) |
-| Badge ou README = l’arbre d’aujourd’hui | Badge **239/239** · version `0.1.0-6.40` |
-| `versionName` `0.1.0-6.40` | Oui (`versionCode` 45) |
+| Lots A à F + phrase rythme + frais datés + feedback + aperçu futur | Oui jusqu’à **6.41** (**240/240**) |
+| Badge ou README = l’arbre d’aujourd’hui | Badge **240/240** · version `0.1.0-6.41` |
+| `versionName` `0.1.0-6.41` | Oui (`versionCode` 46) |
 | « En retard » en capitales dans l’app | **Non.** L’écran et l’aide disent « En retard ». Le README a été aligné |
 | Checklist S25 prouve le 6.37 | **Non.** Archivée (`docs/archive/CHECKLIST_S25_2026-10-19.md`, v5.4.1). Smoke actuel : journal + `AUDIT_STATUS.md` |
 | Rapports `dist/verify/*2026-10-20*` | Figés en **6.26**. Ils ne décrivent pas A–F |
@@ -387,7 +387,7 @@ Ce qui empêche de dire « produit fini premium » :
 
 | Fichier | Rôle maintenant |
 |---------|-----------------|
-| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. Version **6.40**, suite **239/239** |
+| `PROGRESS_LOG.md`, `README.md`, `CHARTE_ET_ARCHITECTURE.md` | État. Version **6.41**, suite **240/240** |
 | `docs/PLAN_PRODUIT_FINI.md` | Construction A–F. Le §7 dit ce qui n’est pas livré |
 | `docs/AUDIT_STATUS.md` | Carnet de smoke. Pas un substitut du code |
 | `docs/archive/*` | Figé. Ne pas s’en servir pour l’état |

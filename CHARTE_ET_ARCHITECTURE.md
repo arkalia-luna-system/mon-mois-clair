@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.40** — polish sticky courses ; 6.39 feedback famille tenu).
+Mise à jour : 2026-10-22 (lot **6.41** — aperçu mois futurs ; 6.39–6.40 tenus).
 
 ## 1. Vision
 
@@ -26,8 +26,8 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
 | Mois ‹ › puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
-| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite | Menu = **Réglages** + calendrier des mois |
-| Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | **Masquée** tant que le clavier est ouvert |
+| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** + calendrier (passé + **3 mois à venir**) |
+| Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
 
 **Sticky (verrouillé 6.27) — maman lit sans calculer :**
 
@@ -90,6 +90,7 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.38** | Historique daté des frais (`expense_fee_events`, schéma 8) | ✅ |
 | **6.39** | Feedback famille (mail, soldés, Vers, À venir, courses, épargne) | ✅ |
 | **6.40** | Polish sticky : Après courses danger + Courses en lien compact | ✅ |
+| **6.41** | Aperçu mois futurs (flèche › / Menu, M+1…M+3, lecture seule) | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 

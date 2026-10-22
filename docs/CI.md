@@ -39,6 +39,14 @@ Travail quotidien = **`develop`** uniquement (voir charte §5).
 4. ⏳ Plus tard : scan CVE (ex. dependency-check) en **rapport** puis éventuellement en garde.
 5. Garder hors CI : secrets (`keystore`, `local.properties`) — déjà dans `.gitignore` / `SECURITY.md`.
 
+**Bruit Dependabot « Updates » (security) :** GitHub peut lancer un job qui tente de
+patcher des jars **transitif** (netty, bouncycastle, protobuf…) venant de l’AGP /
+des plugins Google — **pas** de nos `implementation` directs. Le job échoue alors
+avec `dependency_not_found` dans le snapshot. **Ce n’est pas le workflow CI**
+(`ci.yml` / tests unitaires). Ne pas confondre avec un build rouge : la garde
+produit reste `:app:testDebugUnitTest`. Remède possible plus tard : monter AGP /
+contraintes Gradle ciblées — pas un hotfix app.
+
 ## Phase 4 — plus corsé (optionnel)
 
 - Tests instrumentés / emulator (lent, coûteux) — seulement si vraiment utile.

@@ -205,6 +205,14 @@ fun HomeScreen(
     var pastMarkingDone by remember { mutableStateOf(true) }
 
     fun onFaitToggle(expenseId: String, markingDone: Boolean) {
+        if (state.isFuturePreview) {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    "Aperçu seulement — on ne coche pas FAIT sur un mois à venir."
+                )
+            }
+            return
+        }
         // Mois passé : dialogue d’abord — pas de snackbar anticipé.
         if (state.isPastMonth) {
             pastMarkingDone = markingDone
@@ -396,6 +404,7 @@ fun HomeScreen(
         HomeMenuSheet(
             selectedYearMonth = state.selectedYearMonth,
             isPastMonth = state.isPastMonth,
+            isFuturePreview = state.isFuturePreview,
             onDismiss = { menuOpen = false },
             onSelectMonth = viewModel::goToMonth,
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
@@ -559,26 +568,28 @@ fun HomeScreen(
                     )
                 }
                 // Lien compact (pas un 2e gros bouton plein) — le sheet fait le travail.
-                val coursesLabel = if (state.diversSpentCents > 0L) {
-                    "Courses · ${MoneyFormat.formatCents(state.diversSpentCents)}"
-                } else {
-                    "Noter des courses"
+                if (!state.isFuturePreview) {
+                    val coursesLabel = if (state.diversSpentCents > 0L) {
+                        "Courses · ${MoneyFormat.formatCents(state.diversSpentCents)}"
+                    } else {
+                        "Noter des courses"
+                    }
+                    Text(
+                        text = coursesLabel,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.ButtonFill,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "ouvrir courses"
+                            ) { diversSheetOpen = true }
+                            .semantics { contentDescription = coursesLabel }
+                    )
                 }
-                Text(
-                    text = coursesLabel,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.ButtonFill,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = A11yTokens.minTouchHeight)
-                        .clickable(
-                            role = Role.Button,
-                            onClickLabel = "ouvrir courses"
-                        ) { diversSheetOpen = true }
-                        .semantics { contentDescription = coursesLabel }
-                )
                 if (state.summary.remainingCents < 0L &&
                     state.timeline.none { it is TimelineItem.Income }
                 ) {
@@ -610,6 +621,28 @@ fun HomeScreen(
                             modifier = Modifier.weight(1f)
                         )
                     }
+                }
+                if (state.isFuturePreview) {
+                    val previewShape = MaterialTheme.shapes.medium
+                    val previewLabel =
+                        "Aperçu — pas encore ce mois. Factures et rentrées prévues ; " +
+                            "pas de FAIT ni d’ajout ici."
+                    Text(
+                        text = previewLabel,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.AccentWarn,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), previewShape)
+                            .background(A11yTokens.PaperWarm, previewShape)
+                            .padding(horizontal = 12.dp, vertical = 10.dp)
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = previewLabel
+                            }
+                    )
                 }
                 state.nextMonthWarning?.let { warning ->
                     val warnShape = MaterialTheme.shapes.medium
@@ -843,13 +876,32 @@ fun HomeScreen(
                             when (item) {
                                 is TimelineItem.Income -> IncomeRow(
                                     item = item,
-                                    onClick = { onEdit(item.id, false) }
+                                    onClick = {
+                                        if (state.isFuturePreview) {
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(
+                                                    "Aperçu seulement — ouvrez le mois en cours pour modifier."
+                                                )
+                                            }
+                                        } else {
+                                            onEdit(item.id, false)
+                                        }
+                                    }
                                 )
                                 is TimelineItem.Expense -> ExpenseRow(
                                     item = item,
                                     highlighted = item.id == state.highlightExpenseId,
+                                    readOnlyPreview = state.isFuturePreview,
                                     onToggle = { onFaitToggle(item.id, markingDone = !item.isDone) },
                                     onClick = {
+                                        if (state.isFuturePreview) {
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(
+                                                    "Aperçu seulement — ouvrez le mois en cours pour modifier."
+                                                )
+                                            }
+                                            return@ExpenseRow
+                                        }
                                         viewModel.clearHighlight()
                                         onEdit(item.id, true)
                                     },
@@ -1025,11 +1077,19 @@ fun HomeScreen(
                             )
                         }
                         Box(modifier = Modifier.weight(1.2f)) {
-                            PrimaryA11yButton(
-                                text = "+ Ajouter",
-                                onClick = { onAdd(state.selectedYearMonth) },
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            if (state.isFuturePreview) {
+                                SecondaryA11yButton(
+                                    text = "Mois en cours",
+                                    onClick = viewModel::goToCurrentMonth,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            } else {
+                                PrimaryA11yButton(
+                                    text = "+ Ajouter",
+                                    onClick = { onAdd(state.selectedYearMonth) },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
                     }
                 }
@@ -1171,6 +1231,7 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
 private fun ExpenseRow(
     item: TimelineItem.Expense,
     highlighted: Boolean,
+    readOnlyPreview: Boolean = false,
     onToggle: () -> Unit,
     onClick: () -> Unit,
     onCopyNote: () -> Unit,
@@ -1308,20 +1369,22 @@ private fun ExpenseRow(
                     hideAgreementChip = compact && item.isAgreement
                 )
             }
-            SecondaryA11yButton(
-                text = if (item.isDone) "Remettre" else "FAIT ✓",
-                onClick = onToggle,
-                fillMaxWidth = false,
-                modifier = Modifier
-                    .widthIn(min = if (compact) 88.dp else 96.dp)
-                    .semantics {
-                        contentDescription = if (item.isDone) {
-                            "Remettre à payer"
-                        } else {
-                            "Marquer FAIT"
+            if (!readOnlyPreview) {
+                SecondaryA11yButton(
+                    text = if (item.isDone) "Remettre" else "FAIT ✓",
+                    onClick = onToggle,
+                    fillMaxWidth = false,
+                    modifier = Modifier
+                        .widthIn(min = if (compact) 88.dp else 96.dp)
+                        .semantics {
+                            contentDescription = if (item.isDone) {
+                                "Remettre à payer"
+                            } else {
+                                "Marquer FAIT"
+                            }
                         }
-                    }
-            )
+                )
+            }
         }
     }
 }

@@ -46,6 +46,7 @@ import java.time.YearMonth
 fun HomeMenuSheet(
     selectedYearMonth: YearMonth,
     isPastMonth: Boolean,
+    isFuturePreview: Boolean = false,
     onDismiss: () -> Unit,
     onSelectMonth: (YearMonth) -> Unit,
     onGoToCurrentMonth: () -> Unit,
@@ -157,6 +158,12 @@ fun HomeMenuSheet(
                         vertical = if (fit.compactHomeChrome) 8.dp else 10.dp
                     )
             )
+            Text(
+                text = "Les mois à venir (aperçu) sont en tête — factures et rentrées déjà prévues, sans cocher FAIT.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.padding(top = 6.dp)
+            )
             val byYear = months.groupBy { it.year }
             HomeMonthChoices.yearsInOrder(months).forEach { year ->
                 val yearMonths = byYear[year] ?: return@forEach
@@ -212,17 +219,21 @@ fun HomeMenuSheet(
                     }
                 }
             }
-            if (isPastMonth) {
+            if (isPastMonth || isFuturePreview) {
                 Spacer(modifier = Modifier.height(10.dp))
-                val pastShape = MaterialTheme.shapes.medium
+                val noteShape = MaterialTheme.shapes.medium
                 Text(
-                    text = "Vous consultez un mois passé. Les totaux ne bougent plus.",
+                    text = if (isFuturePreview) {
+                        "Aperçu d’un mois à venir. Rien n’est coché FAIT ici — le mois en cours reste sur l’accueil."
+                    } else {
+                        "Vous consultez un mois passé. Les totaux ne bougent plus."
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, pastShape)
-                        .background(A11yTokens.PaperCard, pastShape)
+                        .border(1.dp, A11yTokens.PaperBorder, noteShape)
+                        .background(A11yTokens.PaperCard, noteShape)
                         .padding(horizontal = 12.dp, vertical = 10.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))

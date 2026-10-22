@@ -4,7 +4,7 @@ Source : Athalia après usage doigt de `0.1.0-6.38` (SM-S938B).
 But de ce fichier : **ne rien perdre**, croiser chaque demande avec le **code actuel**, et noter **comment** corriger / améliorer **sans casser** maman (accueil simple) ni Alex (dossiers).
 
 État à la rédaction : **6.38**.  
-**Livré en 6.39** (`0.1.0-6.39`, **239/239**) ; polish sticky **6.40** (`0.1.0-6.40`) — les pistes « Comment faire » ci-dessous décrivent ce qui a été codé (et ce qui reste optionnel).
+**Livré en 6.39** (`0.1.0-6.39`) ; polish sticky **6.40** ; aperçu mois futurs **6.41** (`0.1.0-6.41`, **240/240**) — les pistes « Comment faire » ci-dessous décrivent ce qui a été codé.
 
 ---
 
@@ -114,26 +114,22 @@ Fichiers : `DossierRemaining.kt`, `EditEntryViewModel`, `ListDossiersUseCase`, `
 ### Demande
 Pouvoir feuilleter le **futur** et y voir déjà les factures / dossiers mensuels, 3 mois, annuels, et aussi les **revenus** récurrents. Aujourd’hui ce n’est pas possible.
 
-### Code aujourd’hui
-- `MonthNavigation` / `HomeViewModel` : **pas de mois futur** (`canGoNext` faux si cible > mois courant).
-- `MonthCycleEngine` **sait** matérialiser revenus + dépenses quand un mois est créé — mais l’UI **refuse** de créer un mois futur (`AddEntryUseCase` aussi).
-- Compromis actuel :
-  - bandeau Home **« À prévoir le mois prochain »** (périodiques intervalle > 1) ;
-  - Réglages → **« Échéances hors ce mois »**.
+### Code aujourd’hui (livré **6.39** + **6.41**)
+- **6.39** : Menu → **« À venir »** (liste lecture seule M+1…M+3).
+- **6.41** : flèche › + chips Menu ouvrent aussi **Nov / Déc / Jan** comme un mois Home : `ensureMonthExists` matérialise factures + rentrées ; bandeau **« Aperçu — pas encore ce mois »** ; **pas** de FAIT / + Ajouter / courses.
+- `AddEntryUseCase` refuse toujours d’**ajouter** dans un mois futur (sécurité).
+- Bandeau « À prévoir… » + Réglages → Échéances : toujours là.
 
-### Décision à trancher
-- A) **Feuilleter** janv./févr. comme le passé (lourd : Reste du futur, FAIT, courses, confusion maman).
-- B) **Aperçu lecture seule** « Mois à venir » (liste des lignes prévues, sans sticky Reste du futur).
-- C) Enrichir seulement le bandeau + Réglages (plus proche de la charte).
+### Décision
+**B + A lecture seule** (choix Athalia après test) — plafonné à 3 mois.
 
-### Comment faire (recommandé : B puis éventuellement A lecture seule)
-1. Nouveau écran ou feuille **Menu → « À venir »** (ou depuis le bandeau) :  
-   pour M+1 … M+3 (plafond court), lister les templates qui **tomberaient** ce mois (même logique que `MonthCycleEngine` / off-month), **sans** écrire en DB tant qu’on n’ouvre pas le mois.
-2. Revenus récurrents : même projection (templates income).
-3. Si plus tard on autorise `goToMonth(futur)` : créer le ledger via `ensureMonthExists` en **lecture**, sticky avec libellé **« Aperçu — pas encore le mois en cours »**.
-4. Ne pas permettre FAIT / Enregistrer sur un mois futur tant que la règle n’est pas tranchée.
+### Comment faire — fait
+1. `MonthNavigation.FUTURE_MONTHS = 3` · `isFuturePreview`
+2. `HomeMonthChoices` : futurs en tête du Menu
+3. Home : aperçu read-only
+4. Écran « À venir » conservé pour la vue liste des 3 mois
 
-Fichiers : `MonthNavigation`, `HomeViewModel`, `MonthCycleEngine`, `ListNextMonthPeriodicsUseCase`, `ListOffMonthPeriodicsUseCase`, `HomeMenuSheet`.
+Fichiers : `MonthNavigation`, `HomeViewModel`, `HomeScreen`, `HomeMenuSheet`, `ListUpcomingMonthsUseCase`.
 
 ---
 

@@ -8,13 +8,13 @@ class SupportMailComposerTest {
     @Test
     fun build_targetsAthalia_andIncludesVersion() {
         val draft = SupportMailComposer.build(
-            versionName = "0.1.0-6.40",
-            versionCode = 45,
+            versionName = "0.1.0-6.41",
+            versionCode = 46,
             deviceModel = "SM-S938B",
             monthLabel = "Octobre 2026"
         )
         assertThat(draft.to).isEqualTo("arkalia.luna.system@gmail.com")
-        assertThat(draft.subject).contains("0.1.0-6.40")
+        assertThat(draft.subject).contains("0.1.0-6.41")
         assertThat(draft.body).contains("SM-S938B")
         assertThat(draft.body).contains("Octobre 2026")
         assertThat(draft.body).contains("capture")

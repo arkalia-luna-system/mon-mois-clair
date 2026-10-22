@@ -51,6 +51,8 @@ data class HomeUiState(
     val selectedYearMonth: java.time.YearMonth = AppClock.currentYearMonth(),
     val monthLabel: String = "",
     val isPastMonth: Boolean = false,
+    /** Aperçu M+1…M+3 : factures/revenus visibles, pas de FAIT / ajout. */
+    val isFuturePreview: Boolean = false,
     val canGoPrev: Boolean = false,
     val canGoNext: Boolean = false,
     val summary: MonthSummary = MonthSummary(0, 0, 0, 0),
@@ -169,6 +171,7 @@ class HomeViewModel @Inject constructor(
                     selectedYearMonth = ym,
                     monthLabel = DayLabelFormat.monthTitle(ym),
                     isPastMonth = ym.isBefore(current),
+                    isFuturePreview = MonthNavigation.isFuturePreview(ym, current),
                     canGoPrev = MonthNavigation.canGoPrev(ym, current),
                     canGoNext = MonthNavigation.canGoNext(ym, current),
                     summary = summary,
@@ -252,7 +255,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val target = selectedMonth.value.plusMonths(1)
             val current = AppClock.currentYearMonth()
-            if (target > current) return@launch
+            if (!MonthNavigation.canGoNext(selectedMonth.value, current)) return@launch
             monthCycleEngine.ensureMonthExists(target)
             selectedMonth.value = target
         }
@@ -263,7 +266,7 @@ class HomeViewModel @Inject constructor(
         goToMonth(AppClock.currentYearMonth())
     }
 
-    /** Saut depuis le calendrier Menu (jamais vers le futur). */
+    /** Saut depuis le calendrier Menu (passé, courant, ou aperçu futur proche). */
     fun goToMonth(target: java.time.YearMonth) {
         viewModelScope.launch {
             val current = AppClock.currentYearMonth()
@@ -275,7 +278,12 @@ class HomeViewModel @Inject constructor(
 
     fun requestToggleDone(expenseId: String) {
         val ym = selectedMonth.value
-        if (ym.isBefore(AppClock.currentYearMonth())) {
+        val current = AppClock.currentYearMonth()
+        if (MonthNavigation.isFuturePreview(ym, current)) {
+            _userMessages.tryEmit("Aperçu seulement — on ne coche pas FAIT sur un mois à venir.")
+            return
+        }
+        if (ym.isBefore(current)) {
             pendingPastToggleId.value = expenseId
         } else {
             performToggle(expenseId)
@@ -347,6 +355,11 @@ class HomeViewModel @Inject constructor(
 
     private fun adjustDiversBy(eurosText: String, add: Boolean) {
         if (_diversBusy.value) return
+        val current = AppClock.currentYearMonth()
+        if (MonthNavigation.isFuturePreview(selectedMonth.value, current)) {
+            _userMessages.tryEmit("Aperçu seulement — les courses se notent sur le mois en cours.")
+            return
+        }
         _diversBusy.value = true
         viewModelScope.launch {
             try {
