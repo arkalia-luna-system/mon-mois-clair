@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.settings
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -379,6 +380,7 @@ class SettingsViewModel @Inject constructor(
                 type = "application/pdf"
                 putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
                 putExtra(Intent.EXTRA_STREAM, uri)
+                clipData = ClipData.newRawUri("", uri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             _shareIntents.emit(
