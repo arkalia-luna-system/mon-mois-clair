@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.59** — FORM01 fiche + SET01 Réglages).
+Mise à jour : 2026-10-22 (lot **6.60** — densité Secondary / typo / rythme crème).
 
 ## 1. Vision
 
@@ -81,6 +81,7 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.57** | Accueil H05–H14 · Réglages radio/case · SCAN/LOCK/LOAD · widget 32 sp | ✅ |
 | **6.58** | Matrice audit · tip-boxes hors états retirées · dialogs PaperCream | ✅ |
 | **6.59** | FORM01 rythme fiche (Paiement & preuve) · SET01 Réglages filets | ✅ |
+| **6.60** | Densité Secondary fiche · QuietLink · typo titres · À venir / CheckRow sans boîte | ✅ |
 
 ## 5. Branches Git (verrouillé)
 

@@ -70,6 +70,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -442,14 +443,11 @@ fun EditEntryScreen(
                 .padding(A11yTokens.screenPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
                     .padding(12.dp)
                     .semantics {
                         contentDescription = "Chargement de la fiche"
@@ -1238,22 +1236,18 @@ private fun EntryFormScaffold(
                     if (hasPendingPhoto || hasPendingPdf) paymentExpanded = true
                 }
                 HorizontalDivider(color = A11yTokens.PaperBorder)
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    SecondaryA11yButton(
-                        text = "Paiement & preuve",
-                        onClick = { paymentExpanded = !paymentExpanded }
-                    )
-                    Text(
-                        text = when {
-                            paymentExpanded -> "Ouvert"
-                            hasPaymentContent -> "Fermé — communication ou pièce déjà notée"
-                            else -> "Fermé — QR, +++ , photo, PDF"
-                        },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted
-                    )
-                }
+                FormSectionToggle(
+                    title = "Paiement & preuve",
+                    expanded = paymentExpanded,
+                    closedHint = when {
+                        hasPaymentContent -> "Fermé — communication ou pièce déjà notée"
+                        else -> "Fermé — QR, +++ , photo, PDF"
+                    },
+                    onToggle = { paymentExpanded = !paymentExpanded }
+                )
                 if (paymentExpanded) {
+                    // Secondary = gestes utiles (QR / photo / PDF) ;
+                    // QuietLink = Copier / Voir / Enlever / OCR (2ᵉ rang).
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -1280,10 +1274,13 @@ private fun EntryFormScaffold(
                             shape = MaterialTheme.shapes.medium
                         )
                         if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
-                            SecondaryA11yButton(text = "Copier la communication", onClick = onCopyPaymentNote)
+                            QuietLinkA11y(
+                                text = "Copier la communication",
+                                onClick = onCopyPaymentNote
+                            )
                         }
                         if (onReadCommFromPhoto != null) {
-                            SecondaryA11yButton(
+                            QuietLinkA11y(
                                 text = if (ocrBusy) "Lecture de la photo…" else "Lire +++ sur la photo",
                                 onClick = onReadCommFromPhoto,
                                 enabled = !ocrBusy
@@ -1346,7 +1343,7 @@ private fun EntryFormScaffold(
                                     }
                             )
                             if (onTakePhoto != null) {
-                                SecondaryA11yButton(
+                                QuietLinkA11y(
                                     text = "Reprendre la photo",
                                     onClick = onTakePhoto
                                 )
@@ -1378,10 +1375,10 @@ private fun EntryFormScaffold(
                                     }
                             )
                             if (onPickPdf != null) {
-                                SecondaryA11yButton(text = "Changer le PDF", onClick = onPickPdf)
+                                QuietLinkA11y(text = "Changer le PDF", onClick = onPickPdf)
                             }
                             if (onClearPendingPdf != null) {
-                                SecondaryA11yButton(
+                                QuietLinkA11y(
                                     text = "Enlever ce courrier",
                                     onClick = onClearPendingPdf
                                 )
@@ -1395,7 +1392,7 @@ private fun EntryFormScaffold(
                             !hasPendingPhoto &&
                             !hasPendingPdf
                         ) {
-                            SecondaryA11yButton(
+                            QuietLinkA11y(
                                 text = if (receiptIsPdf) {
                                     "Voir le courrier (PDF)"
                                 } else {
@@ -1430,19 +1427,19 @@ private fun EntryFormScaffold(
                         }
                         if (hasReceiptPhoto && !hasPendingPhoto) {
                             if (onTakePhoto != null && !receiptIsPdf) {
-                                SecondaryA11yButton(
+                                QuietLinkA11y(
                                     text = "Reprendre la photo de la facture",
                                     onClick = onTakePhoto
                                 )
                             }
                             if (onPickPdf != null && receiptIsPdf) {
-                                SecondaryA11yButton(
+                                QuietLinkA11y(
                                     text = "Remplacer le PDF",
                                     onClick = onPickPdf
                                 )
                             }
                             if (onClearReceipt != null) {
-                                SecondaryA11yButton(
+                                QuietLinkA11y(
                                     text = if (
                                         !applyFollowing &&
                                         !isSavingsLine &&
@@ -1473,11 +1470,11 @@ private fun EntryFormScaffold(
                                 val pdf = isPdfPath(path)
                                 @OptIn(ExperimentalLayoutApi::class)
                                 FlowRow(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     if (onViewExtraReceipt != null) {
-                                        SecondaryA11yButton(
+                                        QuietLinkA11y(
                                             text = if (pdf) {
                                                 "Voir le courrier $n (PDF)"
                                             } else {
@@ -1488,7 +1485,7 @@ private fun EntryFormScaffold(
                                         )
                                     }
                                     if (onRemoveExtraReceipt != null) {
-                                        SecondaryA11yButton(
+                                        QuietLinkA11y(
                                             text = "Enlever le courrier $n",
                                             onClick = { onRemoveExtraReceipt(path) },
                                             fillMaxWidth = false
@@ -1504,17 +1501,12 @@ private fun EntryFormScaffold(
             if (showDossierSection) {
                 // FORM04 / FORM01 : Accord après Paiement — filet + repli.
                 HorizontalDivider(color = A11yTokens.PaperBorder)
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    SecondaryA11yButton(
-                        text = "Retard ou accord",
-                        onClick = { onDossierExpanded(!dossierExpanded) }
-                    )
-                    Text(
-                        text = if (dossierExpanded) "Ouvert" else "Fermé — touchez pour déplier",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted
-                    )
-                }
+                FormSectionToggle(
+                    title = "Retard ou accord",
+                    expanded = dossierExpanded,
+                    closedHint = "Fermé — touchez pour déplier",
+                    onToggle = { onDossierExpanded(!dossierExpanded) }
+                )
                 if (dossierExpanded) {
                     // Accordion Accord : tips = texte InkMuted, pas de boîte-dans-boîte.
                     Column(
@@ -1581,7 +1573,7 @@ private fun EntryFormScaffold(
                         if (onSaveAsPendingLetter != null &&
                             openingRemainingText.isBlank()
                         ) {
-                            SecondaryA11yButton(
+                            QuietLinkA11y(
                                 text = "Ranger sans plan",
                                 onClick = onSaveAsPendingLetter,
                                 enabled = primaryEnabled
@@ -1615,7 +1607,7 @@ private fun EntryFormScaffold(
                         )
                     )
                     if (onCopyIban != null && iban.isNotBlank()) {
-                        SecondaryA11yButton(text = "Copier l’IBAN", onClick = onCopyIban)
+                        QuietLinkA11y(text = "Copier l’IBAN", onClick = onCopyIban)
                         Text(
                             text = "Pour coller dans l’app bancaire.",
                             style = MaterialTheme.typography.bodyMedium,
@@ -1642,7 +1634,7 @@ private fun EntryFormScaffold(
                         )
                     )
                     if (onWriteMail != null && creditorEmail.isNotBlank()) {
-                        SecondaryA11yButton(text = "Écrire", onClick = onWriteMail)
+                        QuietLinkA11y(text = "Écrire", onClick = onWriteMail)
                         Text(
                             text = "Ouvre l’app Mail avec un brouillon. Rien n’est stocké ici.",
                             style = MaterialTheme.typography.bodyMedium,
@@ -1805,6 +1797,39 @@ private fun EntryFormScaffold(
     }
 }
 
+/** Titre de section repliable — titleLarge, pas un Secondary plein largeur. */
+@Composable
+private fun FormSectionToggle(
+    title: String,
+    expanded: Boolean,
+    closedHint: String,
+    onToggle: () -> Unit
+) {
+    val label = if (expanded) "$title ▴" else "$title ▾"
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleLarge,
+            color = A11yTokens.Ink,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = A11yTokens.minTouchHeight)
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = if (expanded) "Replier $title" else "Déplier $title",
+                    onClick = onToggle
+                )
+                .padding(vertical = 10.dp)
+                .semantics { contentDescription = label }
+        )
+        Text(
+            text = if (expanded) "Ouvert" else closedHint,
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted
+        )
+    }
+}
+
 @Composable
 private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
     val fit = rememberDisplayFit()
@@ -1839,15 +1864,13 @@ private fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
 private fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Unit) {
     // Checkbox avec onCheckedChange réel : le pattern toggleable+null
     // n’enregistre pas les taps sur One UI / uiautomator (case « Revient… » morte).
-    val shape = MaterialTheme.shapes.medium
+    // Pas de carte bordée : rythme crème + case teal (FORM07).
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .border(1.dp, A11yTokens.PaperBorder, shape)
-            .background(A11yTokens.PaperCard, shape)
             .clickable(role = Role.Checkbox) { onChecked(!checked) }
-            .padding(horizontal = 4.dp, vertical = 2.dp)
+            .padding(vertical = 4.dp)
             .semantics {
                 contentDescription = if (checked) "$label, coché" else "$label, non coché"
             },

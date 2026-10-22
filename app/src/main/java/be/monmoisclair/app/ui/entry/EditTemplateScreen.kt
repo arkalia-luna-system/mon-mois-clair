@@ -165,14 +165,11 @@ fun EditTemplateScreen(
                 .padding(A11yTokens.screenPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
                     .padding(12.dp)
                     .semantics {
                         contentDescription = "Chargement de l’échéance"

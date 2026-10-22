@@ -56,14 +56,11 @@ fun ConvertPendingLetterScreen(
                 color = A11yTokens.Ink
             )
             if (state.loading) {
-                val busyShape = MaterialTheme.shapes.medium
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                        .background(A11yTokens.PaperCard, busyShape)
                         .padding(tipPad)
                         .semantics {
                             contentDescription = "Chargement du courrier"
@@ -196,16 +193,12 @@ fun ConvertPendingLetterScreen(
             )
         }
         if (state.saving) {
-            val busyShape = MaterialTheme.shapes.medium
             Text(
                 text = "Création de l’accord…",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
-                    .padding(tipPad)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
                         contentDescription = "Création de l’accord"

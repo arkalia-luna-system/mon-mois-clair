@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,16 +22,14 @@ import be.monmoisclair.app.ui.theme.StampShape
 @Composable
 fun HealthStatusRow(label: String, ok: Boolean) {
     val status = if (ok) "Prêt" else "À régler"
-    val shape = MaterialTheme.shapes.medium
-    // HLTH01 : pastilles Prêt / À régler = capsule.
+    // Pastille capsule seule — pas de carte bordée empilée.
     val chipShape = StampShape
+    HorizontalDivider(color = A11yTokens.PaperBorder)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .border(1.dp, A11yTokens.PaperBorder, shape)
-            .background(A11yTokens.PaperCard, shape)
-            .padding(horizontal = 12.dp, vertical = 10.dp)
+            .padding(vertical = 10.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = "$label : $status"
             },

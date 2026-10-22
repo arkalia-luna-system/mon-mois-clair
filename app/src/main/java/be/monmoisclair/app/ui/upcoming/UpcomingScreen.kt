@@ -1,14 +1,15 @@
 package be.monmoisclair.app.ui.upcoming
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +42,7 @@ fun UpcomingScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
-    val tipPad = if (fit.compactHomeChrome) 12.dp else 14.dp
+    val monthGap = if (fit.compactHomeChrome) 14.dp else 18.dp
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) viewModel.refresh()
@@ -94,26 +95,25 @@ fun UpcomingScreen(
             return@PinnedBackScaffold
         }
         state.months.forEach { month ->
-            UpcomingMonthBlock(month = month, tipPad = tipPad)
+            UpcomingMonthBlock(month = month)
+            Spacer(modifier = Modifier.height(monthGap))
         }
     }
 }
 
 @Composable
-private fun UpcomingMonthBlock(month: UpcomingMonth, tipPad: androidx.compose.ui.unit.Dp) {
-    val shape = MaterialTheme.shapes.medium
+private fun UpcomingMonthBlock(month: UpcomingMonth) {
+    // Rythme crème + filets (pas de cartes empilées).
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(1.dp, A11yTokens.PaperBorder, shape)
-            .background(A11yTokens.PaperCard, shape)
-            .padding(tipPad),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        HorizontalDivider(color = A11yTokens.PaperBorder)
         Text(
             text = month.monthLabel,
             style = MaterialTheme.typography.titleLarge,
-            color = A11yTokens.Ink
+            color = A11yTokens.Ink,
+            modifier = Modifier.padding(top = 4.dp)
         )
         month.lines.forEach { line ->
             UpcomingLineRow(line)

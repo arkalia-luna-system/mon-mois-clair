@@ -115,11 +115,12 @@ private fun appTypography(ink: Color, muted: Color) = Typography(
         lineHeight = 30.sp,
         color = ink
     ).tabular(),
+    // Titres de section / page : plus présents que Secondary (body Medium).
     titleLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
-        fontSize = A11yTokens.minTitleSp.value.sp,
-        lineHeight = 28.sp,
+        fontSize = 23.sp,
+        lineHeight = 30.sp,
         color = ink
     ).tabular(),
     bodyLarge = TextStyle(

@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -94,14 +95,11 @@ fun DossiersScreen(
         val pending = state.pendingLetters
         // Spinner seulement au tout premier chargement (liste encore vide).
         if (state.loading && snap.items.isEmpty() && pending.isEmpty()) {
-            val busyShape = MaterialTheme.shapes.medium
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                    .background(A11yTokens.PaperCard, busyShape)
                     .padding(12.dp)
                     .semantics {
                         contentDescription = "Chargement des dossiers"
@@ -123,30 +121,20 @@ fun DossiersScreen(
         }
 
         if (snap.items.isEmpty() && pending.isEmpty()) {
-            val emptyShape = MaterialTheme.shapes.medium
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.PaperBorder, emptyShape)
-                    .background(A11yTokens.PaperCard, emptyShape)
-                    .padding(if (fit.compactHomeChrome) 12.dp else 16.dp),
-                verticalArrangement = Arrangement.spacedBy(
-                    if (fit.compactHomeChrome) 6.dp else 8.dp
-                )
-            ) {
-                Text(
-                    text = "Aucun accord pour le moment.",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.Ink
-                )
-                Text(
-                    text = "Sur une facture, ouvrez « C’est un retard ou un accord ? » " +
-                        "et indiquez combien il reste aujourd’hui. " +
-                        "Sans montant encore : « Ranger sans plan ».",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.InkMuted
-                )
-            }
+            // Empty tip = InkMuted, pas de tip-box.
+            Text(
+                text = "Aucun accord pour le moment.",
+                style = MaterialTheme.typography.titleLarge,
+                color = A11yTokens.Ink
+            )
+            Text(
+                text = "Sur une facture, ouvrez « Retard ou accord » " +
+                    "et indiquez combien il reste aujourd’hui. " +
+                    "Sans montant encore : « Ranger sans plan ».",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
+            )
             SecondaryA11yButton(
                 text = "Ranger un courrier sans plan",
                 onClick = onAddPending
@@ -180,12 +168,11 @@ fun DossiersScreen(
             if (settledItems.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(sectionGap))
                 var settledExpanded by remember { mutableStateOf(false) }
-                val settledHeaderShape = MaterialTheme.shapes.medium
                 val settledHeaderLabel =
                     if (settledExpanded) {
-                        "Soldés (${settledItems.size}) — masquer"
+                        "Soldés (${settledItems.size}) ▴"
                     } else {
-                        "Soldés (${settledItems.size}) — afficher"
+                        "Soldés (${settledItems.size}) ▾"
                     }
                 Text(
                     text = settledHeaderLabel,
@@ -194,9 +181,6 @@ fun DossiersScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = A11yTokens.minTouchHeight)
-                        .clip(settledHeaderShape)
-                        .border(1.dp, A11yTokens.PaperBorder, settledHeaderShape)
-                        .background(A11yTokens.PaperCard, settledHeaderShape)
                         .clickable(
                             role = Role.Button,
                             onClickLabel = if (settledExpanded) {
@@ -205,7 +189,7 @@ fun DossiersScreen(
                                 "Afficher les dossiers soldés"
                             }
                         ) { settledExpanded = !settledExpanded }
-                        .padding(horizontal = 14.dp, vertical = 12.dp)
+                        .padding(vertical = 10.dp)
                         .semantics { contentDescription = settledHeaderLabel }
                 )
                 if (settledExpanded) {
@@ -291,15 +275,12 @@ fun DossiersScreen(
                 color = A11yTokens.InkMuted
             )
             if (state.summaryBusy) {
-                val busyShape = MaterialTheme.shapes.medium
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, busyShape)
-                        .background(A11yTokens.PaperCard, busyShape)
-                        .padding(12.dp)
+                        .padding(vertical = 8.dp)
                         .semantics {
                             contentDescription = "Préparation du résumé"
                             liveRegion = LiveRegionMode.Polite
@@ -354,8 +335,14 @@ private fun DossierRow(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
+            .shadow(
+                elevation = 2.dp,
+                shape = shape,
+                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
+                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
+            )
             .clip(shape)
-            .background(A11yTokens.PaperCard)
+            .background(A11yTokens.PaperCard, shape)
             .border(1.dp, A11yTokens.PaperBorder, shape)
             .clickable(role = Role.Button, onClickLabel = "Ouvrir le dossier", onClick = onClick)
             .semantics { contentDescription = a11y }
@@ -428,8 +415,14 @@ private fun PendingLetterRow(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
+            .shadow(
+                elevation = 2.dp,
+                shape = shape,
+                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
+                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
+            )
             .clip(shape)
-            .background(A11yTokens.PaperCard)
+            .background(A11yTokens.PaperCard, shape)
             .border(1.dp, A11yTokens.PaperBorder, shape)
             .clickable(
                 role = Role.Button,

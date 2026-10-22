@@ -9,15 +9,30 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.59** (FORM01 rythme fiche + SET01 filets) |
+| Dernière étape terminée | **6.60** (passe premium densité / typo / rythme crème) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke S26 / doigt (photo+PDF 6.54, FORM01 au doigt) |
+| Prochaine sous-étape | Smoke doigt S25 Ultra + S26 (checklist retour) |
 | Audit premium | Matrice H/MEN/SET/FORM/… vérifiée code · **284/284** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.60 Passe premium densité / typo / rythme
+
+**Vu :** Paiement & preuve ouvert = mur de Secondary ; CheckRow / À venir / empty dossiers encore « boîtes » ; titres et Secondary au même poids ; tips busy en cartes.
+
+**Codé (visuel seulement) :**
+- FORM : sections `FormSectionToggle` (titleLarge) ; Secondary = QR / photo / PDF seulement ; Copier / Voir / Enlever / OCR / IBAN = `QuietLinkA11y` ; CheckRow sans carte
+- Secondary global : contour PaperBorder + poids Medium (plus discret que titres 23 sp)
+- À venir / Santé / empty dossiers / chargements : filets ou typo InkMuted (plus de tip-box hors états)
+- Dossiers lignes : ombre 2 dp papier ; pas de grain overlay
+- Anti-régression audit : sticky H01, Courses uniques, DOS sans KPI, Restaurer Danger, Fermer photo Secondary, StampShape, insets MainActivity inchangés
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **284/284** (67 fichiers).  
+**Version :** `0.1.0-6.60` · `versionCode` 65.  
+**Pas un claim « premium terminé »** : smoke doigt / S26 restent ouverts.
 
 ### 2026-10-22 — 6.59 FORM01 + SET01
 
