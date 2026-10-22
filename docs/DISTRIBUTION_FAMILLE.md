@@ -13,18 +13,23 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 
 Envoyer le fichier par **WhatsApp**, **Google Drive** ou **Mail** (si la pièce jointe passe).
 
-### Avec USB (Athalia — même parcours « fichier », pas `adb install`)
+### Avec USB (Athalia)
 
-Dépose l’APK dans **Téléchargements** du téléphone, puis ouvre l’installateur système (comme s’ils l’avaient reçu) :
+1. Déposer aussi dans **Téléchargements** (même fichier que pour la famille) :
 
 ```bash
 adb push dist/MonMoisClair-release.apk /sdcard/Download/MonMoisClair-release.apk
-adb shell am start -a android.intent.action.VIEW \
-  -d "file:///sdcard/Download/MonMoisClair-release.apk" \
-  -t "application/vnd.android.package-archive"
 ```
 
-Sur One UI récents, si `file://` est refusé : ouvrir **Mes fichiers → Téléchargements → MonMoisClair-release.apk** à la main.
+2. Sur One UI, `file://` / installateur auto est souvent bloqué. Au doigt : **Mes fichiers → Téléchargements → MonMoisClair-release.apk**.  
+   En shell (équivalent fiable) :
+
+```bash
+adb push dist/MonMoisClair-release.apk /data/local/tmp/MonMoisClair-release.apk
+adb shell pm install -r /data/local/tmp/MonMoisClair-release.apk
+```
+
+Éviter `adb install` stream depuis le Mac comme seul geste « famille » : le fichier dans Download reste le modèle à transmettre.
 
 - Toujours l’APK **release** signé (jamais debug).
 - Même keystore qu’avant = mise à jour sans perdre les données.
