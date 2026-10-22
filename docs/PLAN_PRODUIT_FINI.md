@@ -2,7 +2,7 @@
 
 Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37 + **6.38** (frais datés) clos (`0.1.0-6.38`, schéma Room **8**, **235/235**).  
+Lots **A à F** + 6.37 + **6.38** + **6.39** (feedback famille) clos (`0.1.0-6.39`, schéma Room **8**, **239/239**).  
 Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -213,12 +213,12 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37 + 6.38** clos (`0.1.0-6.38`, schéma **8**, **235/235**). Liste de frais datée livrée.
+**A–F + 6.37 + 6.38 + 6.39** clos (`0.1.0-6.39`, schéma **8**, **239/239**). Feedback famille livré (voir [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md)).
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;
 - tests d’écran instrumentés.
 
-**Prochain geste** : campagne personae [`testeurs/CAMPAGNE_PRODUIT_FINI.md`](testeurs/CAMPAGNE_PRODUIT_FINI.md) · S26.
+**Prochain geste** : smoke doigt 6.39 · S26.
 
 Risques C : photos extras = voir / enlever ; frais = historique daté (6.38).

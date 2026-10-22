@@ -190,16 +190,51 @@ fun DossiersScreen(
                     .semantics { liveRegion = LiveRegionMode.Polite }
             )
 
-            Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
-                snap.items.forEach { item ->
-                    DossierRow(
-                        item = item,
-                        onClick = {
-                            val id = item.openInstanceId
-                            if (id != null) onOpenInstance(id)
-                            else onOpenTemplate(item.templateId)
-                        }
-                    )
+            val openItems = snap.items.filter { !it.isSettled }
+            val settledItems = snap.items.filter { it.isSettled }
+            if (openItems.isNotEmpty()) {
+                Text(
+                    text = "En cours",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.Ink
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
+                    openItems.forEach { item ->
+                        DossierRow(
+                            item = item,
+                            onClick = {
+                                val id = item.openInstanceId
+                                if (id != null) onOpenInstance(id)
+                                else onOpenTemplate(item.templateId)
+                            }
+                        )
+                    }
+                }
+            }
+            if (settledItems.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(sectionGap))
+                Text(
+                    text = "Soldés",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.Ink
+                )
+                Text(
+                    text = "Terminés — les mois déjà payés restent dans le calendrier. " +
+                        "Touchez une ligne pour revoir la fiche.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
+                    settledItems.forEach { item ->
+                        DossierRow(
+                            item = item,
+                            onClick = {
+                                val id = item.openInstanceId
+                                if (id != null) onOpenInstance(id)
+                                else onOpenTemplate(item.templateId)
+                            }
+                        )
+                    }
                 }
             }
         }

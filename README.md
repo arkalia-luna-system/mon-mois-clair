@@ -7,9 +7,9 @@
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-236%2F236-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-239%2F239-success)](#statut)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.38-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.39-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
@@ -23,11 +23,11 @@ Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exac
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.38` |
-| Dernière étape | **6.38** Historique daté des frais |
+| Version | `0.1.0-6.39` |
+| Dernière étape | **6.39** Feedback famille (mail, soldés, date Vers, À venir, courses, épargne) |
 | Device | Smoke **6.36–6.37** sur **Galaxy S25 Ultra** (`SM-S938B`) + sim. hauteur courte. Checklist 5.4.1 archivée. Campagne testeurs en cours : `docs/testeurs/`. S26 maman pas encore en main |
-| Distribution | Sideload familial **release signé** (hors Play Store) |
-| Tests unitaires | **236/236** OK (`--rerun-tasks`) |
+| Distribution | Sideload familial **release signé** (hors Play Store) — voir [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
+| Tests unitaires | **239/239** OK (`--rerun-tasks`) |
 | Schéma Room | **8** — `expense_fee_events` (+ 7 : courriers ; 6 : IBAN / e-mail / cumul frais) |
 
 Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Audit dossiers : [`docs/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)

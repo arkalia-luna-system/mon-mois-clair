@@ -107,7 +107,8 @@ class ListDossiersUseCaseTest {
         assertThat(item.dueThisMonth).isTrue()
         assertThat(item.cadenceLabel).isEqualTo("50 € / mois")
         assertThat(item.pacePhrase)
-            .isEqualTo("Encore environ 4 mois si le versement reste de 50 €.")
+            .startsWith("Encore environ 4 mois si le versement reste de 50 €.")
+        assertThat(item.pacePhrase).contains("Vers janvier 2027.")
     }
 
     @Test
@@ -134,6 +135,7 @@ class ListDossiersUseCaseTest {
         assertThat(item.dueThisMonth).isFalse()
         assertThat(item.cadenceLabel).isEqualTo("120 € / an")
         assertThat(item.pacePhrase)
-            .isEqualTo("Encore environ 1 versement si le versement reste de 120 €.")
+            .startsWith("Encore environ 1 versement si le versement reste de 120 €.")
+        assertThat(item.pacePhrase).contains("Vers octobre 2026.")
     }
 }

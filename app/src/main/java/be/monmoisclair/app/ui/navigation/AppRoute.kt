@@ -9,6 +9,7 @@ object AppRoute {
     const val Settings = "settings"
     const val HowItWorks = "how_it_works"
     const val Dossiers = "dossiers"
+    const val Upcoming = "upcoming"
     const val PendingLetterForm = "dossiers/pending/new"
     const val ConvertPendingLetter = "dossiers/pending/convert/{letterId}"
     const val AddEntry = "entry/add/{ym}"

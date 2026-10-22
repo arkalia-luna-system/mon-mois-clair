@@ -1,12 +1,17 @@
 package be.monmoisclair.app.ui.settings
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.backup.BackupHealthStore
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.SupportMailComposer
 import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsResult
@@ -17,8 +22,10 @@ import be.monmoisclair.app.domain.usecase.OffMonthPeriodic
 import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
 import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
+import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,6 +62,7 @@ data class SettingsUiState(
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val preference: BiometricPreferenceUseCase,
     val biometricAuth: BiometricAuthGateway,
     private val healthStore: BackupHealthStore,
@@ -274,6 +282,43 @@ class SettingsViewModel @Inject constructor(
                     _uiState.update { it.copy(savingsBusy = false) }
                 }
             }
+        }
+    }
+
+    /** Retour famille → Athalia (joindre une capture dans Gmail). */
+    fun writeSupportMail() {
+        if (_uiState.value.busy) return
+        viewModelScope.launch {
+            val pm = appContext.packageManager
+            val pkg = appContext.packageName
+            val info = runCatching {
+                if (Build.VERSION.SDK_INT >= 33) {
+                    pm.getPackageInfo(pkg, android.content.pm.PackageManager.PackageInfoFlags.of(0))
+                } else {
+                    @Suppress("DEPRECATION")
+                    pm.getPackageInfo(pkg, 0)
+                }
+            }.getOrNull()
+            val versionName = info?.versionName ?: "?"
+            val versionCode = if (info != null) {
+                if (Build.VERSION.SDK_INT >= 28) info.longVersionCode.toInt() else {
+                    @Suppress("DEPRECATION")
+                    info.versionCode
+                }
+            } else {
+                0
+            }
+            val draft = SupportMailComposer.build(
+                versionName = versionName,
+                versionCode = versionCode,
+                deviceModel = Build.MODEL.orEmpty(),
+                monthLabel = DayLabelFormat.monthTitle(AppClock.currentYearMonth())
+            )
+            val intent = Intent(
+                Intent.ACTION_SENDTO,
+                Uri.parse(SupportMailComposer.mailtoUri(draft))
+            )
+            _shareIntents.emit(Intent.createChooser(intent, "Écrire à Athalia"))
         }
     }
 

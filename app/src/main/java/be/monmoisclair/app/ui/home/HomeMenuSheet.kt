@@ -53,7 +53,8 @@ fun HomeMenuSheet(
     /** 0 = pas de bouton (zéro dossier = zéro pixel), sauf courriers sans plan. */
     dossierCount: Int = 0,
     pendingLetterCount: Int = 0,
-    onOpenDossiers: () -> Unit = {}
+    onOpenDossiers: () -> Unit = {},
+    onOpenUpcoming: () -> Unit = {}
 ) {
     val showDossiers = dossierCount > 0 || pendingLetterCount > 0
     val menuDossierLabel = when {
@@ -131,6 +132,15 @@ fun HomeMenuSheet(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            SecondaryA11yButton(
+                text = "À venir",
+                onClick = {
+                    onDismiss()
+                    onOpenUpcoming()
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 14.dp else 20.dp))
             val monthsShape = MaterialTheme.shapes.medium

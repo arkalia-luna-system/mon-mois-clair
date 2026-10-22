@@ -180,6 +180,7 @@ class PrepareMonthSummaryUseCaseTest {
         assertThat(text).contains("Pas de versement ce mois.")
         assertThat(text).doesNotContain("Versement ce mois :")
         assertThat(text).contains("Encore environ 1 versement si le versement reste de 120 €.")
+        assertThat(text).contains("Vers octobre 2026.")
         assertThat(text).doesNotContain("fin prévue")
     }
 

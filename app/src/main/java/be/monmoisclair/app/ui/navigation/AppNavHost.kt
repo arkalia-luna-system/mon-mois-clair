@@ -30,6 +30,7 @@ import be.monmoisclair.app.ui.scan.EpcScanHandoff
 import be.monmoisclair.app.ui.scan.ScanEpcScreen
 import be.monmoisclair.app.ui.settings.HowItWorksScreen
 import be.monmoisclair.app.ui.settings.SettingsScreen
+import be.monmoisclair.app.ui.upcoming.UpcomingScreen
 
 @Composable
 fun AppNavHost(
@@ -77,8 +78,12 @@ fun AppNavHost(
                 },
                 onOpenSettings = { navController.navigate(AppRoute.Settings) },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
-                onOpenDossiers = { navController.navigate(AppRoute.Dossiers) }
+                onOpenDossiers = { navController.navigate(AppRoute.Dossiers) },
+                onOpenUpcoming = { navController.navigate(AppRoute.Upcoming) }
             )
+        }
+        composable(AppRoute.Upcoming) {
+            UpcomingScreen(onBack = { navController.popBackStack() })
         }
         composable(AppRoute.Dossiers) {
             DossiersScreen(

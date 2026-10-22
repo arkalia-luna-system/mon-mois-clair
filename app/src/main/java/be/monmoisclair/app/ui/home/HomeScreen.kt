@@ -29,11 +29,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -42,6 +46,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -99,6 +104,7 @@ fun HomeScreen(
     onOpenSettings: () -> Unit,
     onOpenHealth: () -> Unit = {},
     onOpenDossiers: () -> Unit = {},
+    onOpenUpcoming: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -116,6 +122,7 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     var diversInput by remember { mutableStateOf("") }
     var diversExpanded by remember { mutableStateOf(false) }
+    var diversSheetOpen by remember { mutableStateOf(false) }
     var menuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     /** S02 : ne pas chasser le snackbar « Annuler » FAIT. */
@@ -395,7 +402,24 @@ fun HomeScreen(
             onOpenSettings = onOpenSettings,
             dossierCount = state.dossierCount,
             pendingLetterCount = state.pendingLetterCount,
-            onOpenDossiers = onOpenDossiers
+            onOpenDossiers = onOpenDossiers,
+            onOpenUpcoming = onOpenUpcoming
+        )
+    }
+
+    if (diversSheetOpen) {
+        DiversCoursesSheet(
+            diversInput = diversInput,
+            onDiversInput = {
+                diversInput = it
+                viewModel.clearDiversError()
+            },
+            diversError = diversError,
+            diversBusy = diversBusy,
+            diversSpentCents = state.diversSpentCents,
+            onAdd = { viewModel.addDivers(diversInput) },
+            onRemove = { viewModel.removeDivers(diversInput) },
+            onDismiss = { diversSheetOpen = false }
         )
     }
 
@@ -511,6 +535,33 @@ fun HomeScreen(
                         modifier = Modifier.semantics { contentDescription = afterLabel }
                     )
                 }
+                if (state.savingsMonthlyCents > 0L) {
+                    val savLabel =
+                        "Mis de côté : ${MoneyFormat.formatCents(state.savingsMonthlyCents)} / mois"
+                    Text(
+                        text = savLabel,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.InkMuted,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Modifier l’épargne"
+                            ) { onOpenSettings() }
+                            .semantics { contentDescription = savLabel }
+                    )
+                }
+                SecondaryA11yButton(
+                    text = if (state.diversSpentCents > 0L) {
+                        "Courses · ${MoneyFormat.formatCents(state.diversSpentCents)}"
+                    } else {
+                        "Courses"
+                    },
+                    onClick = { diversSheetOpen = true },
+                    fillMaxWidth = true
+                )
                 if (state.summary.remainingCents < 0L &&
                     state.timeline.none { it is TimelineItem.Income }
                 ) {
@@ -1189,6 +1240,15 @@ private fun ExpenseRow(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
+                    item.cadenceHint?.let { cadence ->
+                        Text(
+                            text = cadence,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     Text(
                         text = item.amountLabel,
                         color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
@@ -1312,6 +1372,99 @@ private fun ExpenseStatusLine(
                     .widthIn(min = if (compact) 80.dp else 96.dp)
                     .semantics { contentDescription = "Voir la photo de la facture" }
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DiversCoursesSheet(
+    diversInput: String,
+    onDiversInput: (String) -> Unit,
+    diversError: String?,
+    diversBusy: Boolean,
+    diversSpentCents: Long,
+    onAdd: () -> Unit,
+    onRemove: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val fit = rememberDisplayFit()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        containerColor = A11yTokens.PaperCream
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = A11yTokens.screenPadding)
+                .padding(bottom = if (fit.compactHomeChrome) 20.dp else 28.dp),
+            verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
+        ) {
+            Text(
+                text = "Courses / divers",
+                style = MaterialTheme.typography.headlineMedium,
+                color = A11yTokens.Ink
+            )
+            Text(
+                text = if (diversSpentCents > 0L) {
+                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} ce mois. " +
+                        "Hors du Reste après factures."
+                } else {
+                    "Notez ce que vous avez dépensé hors factures. " +
+                        "Hors du Reste après factures."
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+            OutlinedTextField(
+                value = diversInput,
+                onValueChange = onDiversInput,
+                label = { Text("Montant (€)") },
+                singleLine = true,
+                enabled = !diversBusy,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = A11yTokens.minTouchHeight),
+                textStyle = MaterialTheme.typography.bodyLarge,
+                shape = MaterialTheme.shapes.medium
+            )
+            diversError?.let { err ->
+                Text(
+                    text = err,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.AccentDanger,
+                    modifier = Modifier.semantics {
+                        liveRegion = LiveRegionMode.Assertive
+                        contentDescription = err
+                    }
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SecondaryA11yButton(
+                    text = "J’ai dépensé",
+                    onClick = onAdd,
+                    enabled = !diversBusy,
+                    modifier = Modifier.weight(1f)
+                )
+                SecondaryA11yButton(
+                    text = "Corriger",
+                    onClick = onRemove,
+                    enabled = !diversBusy,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            SecondaryA11yButton(text = "Fermer", onClick = onDismiss)
         }
     }
 }

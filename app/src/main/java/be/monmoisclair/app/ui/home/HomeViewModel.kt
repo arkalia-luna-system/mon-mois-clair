@@ -21,6 +21,7 @@ import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.AdjustDiversResult
 import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
+import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
 import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
 import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
@@ -63,7 +64,9 @@ data class HomeUiState(
     /** Lot D — 0 = pas d’entrée Menu « Mes dossiers » (sauf courriers). */
     val dossierCount: Int = 0,
     /** Lot D — bandeau accueil si > 0. */
-    val pendingLetterCount: Int = 0
+    val pendingLetterCount: Int = 0,
+    /** Lot E — forfait mensuel « Mettre de côté » (0 = inactif). */
+    val savingsMonthlyCents: Long = 0L
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -145,6 +148,7 @@ class HomeViewModel @Inject constructor(
                                 receiptRelativePath = exp.receiptRelativePath,
                                 causeLabel = tpl?.causeLabel.orEmpty(),
                                 isAgreement = DossierRemaining.isDossier(tpl?.openingRemainingCents),
+                                intervalMonths = tpl?.intervalMonths ?: 1,
                                 sortDay = exp.dayOfMonth,
                                 sortLabel = exp.label
                             )
@@ -155,6 +159,9 @@ class HomeViewModel @Inject constructor(
                 val current = AppClock.currentYearMonth()
                 val dossierCount = templates.count {
                     it.active && DossierRemaining.isDossier(it.openingRemainingCents)
+                }
+                val savingsTpl = templates.firstOrNull {
+                    it.active && it.label == ConfigureSavingsUseCase.LABEL
                 }
                 HomeUiState(
                     loading = false,
@@ -170,7 +177,8 @@ class HomeViewModel @Inject constructor(
                     timeline = timeline,
                     highlightExpenseId = highlight,
                     pendingPastToggleId = pendingToggle,
-                    dossierCount = dossierCount
+                    dossierCount = dossierCount,
+                    savingsMonthlyCents = savingsTpl?.amountCents ?: 0L
                 )
             }
         },

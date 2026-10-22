@@ -9,15 +9,31 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.38** (historique daté des frais) |
+| Dernière étape terminée | **6.39** (feedback famille) |
 | Étape en cours | — |
-| Prochaine sous-étape | — S26 maman optionnel · campagne personae |
-| Audit premium | Smokes Ultra · frais datés 6.38 · garde-fou montants · **236/236** |
+| Prochaine sous-étape | — S26 maman optionnel · smoke doigt 6.39 |
+| Audit premium | Feedback famille 6.39 · **239/239** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.39 Feedback famille (test 21 oct.)
+
+**Demandes :** mail Athalia · soldés · date « Vers… » + recalcul · à venir · épargne sticky · rythme Home · courses accessibles · doc APK sans USB.
+
+**Codé :**
+- Réglages → « Un souci avec l’app ? » (`SupportMailComposer` → `arkalia.luna.system@gmail.com`)
+- Mes dossiers : sections **En cours** / **Soldés**
+- `pacePhrase` : date « Vers mois année » + recalcul si FAIT ≠ forfait
+- Menu → **À venir** (aperçu 3 mois lecture seule, revenus + dépenses)
+- Sticky : Mis de côté + bouton **Courses** (sheet) ; cadence discrète si ≠ mensuel
+- Retrait épargne : dialogue d’accroche ; `docs/DISTRIBUTION_FAMILLE.md`
+- Aide à jour
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **239/239** (61 fichiers).  
+**Version :** `0.1.0-6.39` · `versionCode` 44.
 
 ### 2026-10-21 — Mes dossiers sans sursaut + gradlew exécutable (CI)
 

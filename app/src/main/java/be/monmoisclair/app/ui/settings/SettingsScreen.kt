@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -24,6 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -118,6 +122,41 @@ fun SettingsScreen(
     val tipPadLg = if (fit.compactHomeChrome) 12.dp else 14.dp
     val keyboardOpen = imeOpen()
     val pinSavingsAction = keyboardOpen && state.savingsAmountText.isNotBlank()
+    var confirmRemoveSavings by remember { mutableStateOf(false) }
+    if (confirmRemoveSavings) {
+        AlertDialog(
+            onDismissRequest = { confirmRemoveSavings = false },
+            title = {
+                Text("Retirer « Mettre de côté » ?")
+            },
+            text = {
+                Text(
+                    "Ce n’est pas de l’argent dans l’app : c’est sur votre autre compte. " +
+                        "Même 1 € par mois, remis de côté, change la suite. " +
+                        "Les virements déjà marqués FAIT restent dans l’historique."
+                )
+            },
+            confirmButton = {
+                DangerA11yButton(
+                    text = "Retirer",
+                    onClick = {
+                        confirmRemoveSavings = false
+                        viewModel.removeSavings()
+                    },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                )
+            },
+            dismissButton = {
+                SecondaryA11yButton(
+                    text = "Annuler",
+                    onClick = { confirmRemoveSavings = false },
+                    fillMaxWidth = false,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+        )
+    }
     PinnedBackScaffold(
         onBack = onBack,
         backEnabled = !state.busy,
@@ -196,6 +235,17 @@ fun SettingsScreen(
                 text = "Comment ça marche",
                 onClick = onOpenHowItWorks,
                 enabled = !state.busy
+            )
+            SecondaryA11yButton(
+                text = "Un souci avec l’app ?",
+                onClick = viewModel::writeSupportMail,
+                enabled = !state.busy
+            )
+            Text(
+                text = "Ouvre Mail / Gmail vers Athalia. " +
+                    "Vous pouvez y joindre une capture d’écran.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted
             )
         }
 
@@ -284,7 +334,7 @@ fun SettingsScreen(
             if (state.savingsActive) {
                 DangerA11yButton(
                     text = "Retirer la ligne",
-                    onClick = viewModel::removeSavings,
+                    onClick = { confirmRemoveSavings = true },
                     enabled = !state.busy && !state.savingsBusy
                 )
             }

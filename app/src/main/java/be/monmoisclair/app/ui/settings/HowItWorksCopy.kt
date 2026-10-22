@@ -23,7 +23,8 @@ object HowItWorksCopy {
         Section(
             title = "Courses",
             body = "Pour les petites dépenses sans facture fixe (courses, pharmacie…). " +
-                "Tapez un montant puis « Ajouter » ou « Retirer ». " +
+                "Bouton « Courses » sous le Reste (ou en bas de liste) : " +
+                "tapez un montant puis « J’ai dépensé » ou « Corriger ». " +
                 "Le gros chiffre « Reste après factures » ne change pas. " +
                 "Une ligne « Après courses » montre ce qu’il resterait, à titre indicatif."
         ),
@@ -76,9 +77,10 @@ object HowItWorksCopy {
                 "vous pouvez voir ou enlever chaque courrier. " +
                 "Chaque lettre de frais garde sa date et son motif dans la fiche. " +
                 "S’il y a au moins un accord : Menu → « Mes dossiers » " +
-                "(reste dû, barre, et « encore environ N mois si le versement reste de X » " +
-                "sur la fiche et Mes dossiers — seulement si chaque versement déjà FAIT " +
-                "est resté au forfait ; rien de tout ça sur l’accueil). " +
+                "(reste dû, barre, « encore environ N mois si… » et « Vers mois année » " +
+                "sur la fiche et Mes dossiers — recalculé si un versement change ; " +
+                "jamais une date certaine ; rien de tout ça sur l’accueil). " +
+                "Les dossiers soldés sont rangés sous « Soldés » dans Mes dossiers. " +
                 "Sans versement encore : « Ranger sans plan » (photo + qui + pour quoi) — " +
                 "le courrier n’entre pas dans le Reste. Une ligne sur l’accueil " +
                 "« courrier sans plan · Voir » s’affiche s’il y en a. " +
@@ -94,16 +96,19 @@ object HowItWorksCopy {
                 "pas sur la fiche de ce virement. " +
                 "Ce n’est pas de l’argent gardé dans l’application. " +
                 "La fiche dit « Déjà viré » : cette somme n’est pas disponible ici. " +
-                "Tant que vous ne l’activez pas, l’accueil ne change pas."
+                "Quand c’est activé, l’accueil montre « Mis de côté : X € / mois » (tap → Réglages). " +
+                "Retirer la ligne demande confirmation : ce n’est pas dans l’app, c’est sur votre autre compte."
         ),
         Section(
             title = "Sur une année",
             body = "Les factures mensuelles restent sur l’accueil. " +
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
-                "Elles réapparaissent le bon mois ; les autres mois, regardez Réglages → « Échéances hors ce mois ». " +
+                "Sur l’accueil, une ligne discrète rappelle « tous les 3 mois » / « 1× par an » si ce n’est pas mensuel. " +
+                "Elles réapparaissent le bon mois ; les autres mois, Menu → « À venir » ou Réglages → « Échéances hors ce mois ». " +
                 "Si vous vous êtes trompée de fréquence, ouvrez la ligne et changez-la : pas besoin de supprimer. " +
-                "Pour feuilleter l’historique : Menu (barre du bas) → calendrier des mois, " +
-                "ou les flèches à côté du mois. " +
+                "Pour feuilleter l’historique : Menu → calendrier des mois, ou les flèches à côté du mois. " +
+                "Courses : bouton sous le Reste (pas seulement en bas de liste). " +
+                "Un souci : Réglages → « Un souci avec l’app ? » (mail à Athalia, capture possible). " +
                 "Le jour d’échéance se choisit en touchant un grand numéro, de 1 à 31. " +
                 "Aide, alertes et restauration : tout est dans Réglages."
         ),

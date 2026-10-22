@@ -2,8 +2,11 @@ package be.monmoisclair.app.domain
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.time.YearMonth
 
 class DossierRemainingTest {
+
+    private val from = YearMonth.of(2026, 10)
 
     @Test
     fun notADossier_whenOpeningNull() {
@@ -14,7 +17,6 @@ class DossierRemainingTest {
 
     @Test
     fun remaining_subtractsActualDoneAmounts() {
-        // 600 € départ, un mois à 30 € FAIT → 570 € (pas 550).
         val rem = DossierRemaining.remainingCents(60_000L, 3_000L)
         assertThat(rem).isEqualTo(57_000L)
         assertThat(DossierRemaining.isSettled(60_000L, 3_000L)).isFalse()
@@ -29,32 +31,41 @@ class DossierRemainingTest {
 
     @Test
     fun installment_capsAtRemainingWhenBelowForfait() {
-        // Forfait 50 €, reste 20 € → dernière ligne partielle.
         assertThat(DossierRemaining.installmentCents(5_000L, 60_000L, 58_000L))
             .isEqualTo(2_000L)
-        // Reste encore > forfait → forfait intact.
         assertThat(DossierRemaining.installmentCents(5_000L, 60_000L, 10_000L))
             .isEqualTo(5_000L)
-        // Pas un dossier → forfait.
         assertThat(DossierRemaining.installmentCents(5_000L, null, 0L)).isEqualTo(5_000L)
     }
 
     @Test
-    fun pacePhrase_monthly_usesSi_andHidesWhenAMonthDiverged() {
+    fun pacePhrase_monthly_usesSi_andProjectedDate() {
         val steady = DossierRemaining.pacePhrase(
             forfaitCents = 5_000L,
             remainingCents = 45_000L,
             doneAmounts = listOf(5_000L, 5_000L),
-            todoAmounts = listOf(5_000L)
+            todoAmounts = listOf(5_000L),
+            fromYearMonth = from
         )
-        assertThat(steady).isEqualTo("Encore environ 9 mois si le versement reste de 50 €.")
+        assertThat(steady).startsWith("Encore environ 9 mois si le versement reste de 50 €.")
+        assertThat(steady).contains("Vers juin 2027.")
         assertThat(steady).doesNotContain("fin prévue")
+        assertThat(steady).doesNotContain("recalculée")
+    }
+
+    @Test
+    fun pacePhrase_recalculatesWhenAMonthDiverged() {
+        // Reste 450 € après un FAIT partiel : toujours estimer + mention recalcul.
         val diverged = DossierRemaining.pacePhrase(
             forfaitCents = 5_000L,
             remainingCents = 45_000L,
-            doneAmounts = listOf(5_000L, 3_000L)
+            doneAmounts = listOf(5_000L, 3_000L),
+            fromYearMonth = from
         )
-        assertThat(diverged).isNull()
+        assertThat(diverged).isNotNull()
+        assertThat(diverged).contains("si le versement reste de 50 €")
+        assertThat(diverged).contains("Vers juin 2027.")
+        assertThat(diverged).contains("recalculée")
     }
 
     @Test
@@ -63,49 +74,59 @@ class DossierRemainingTest {
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
                 remainingCents = 2_000L,
-                todoAmounts = listOf(2_000L)
+                todoAmounts = listOf(2_000L),
+                fromYearMonth = from
             )
-        ).isEqualTo("Encore environ 1 mois si le prochain versement est le reste, 20 €.")
+        ).startsWith("Encore environ 1 mois si le prochain versement est le reste, 20 €.")
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
-                remainingCents = 2_000L
+                remainingCents = 2_000L,
+                fromYearMonth = from
             )
         )!!.contains("si")
-        // TODO d’un autre montant (édition manuelle) : la phrase reste — seuls les FAIT comptent.
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
                 remainingCents = 45_000L,
                 doneAmounts = listOf(5_000L),
-                todoAmounts = listOf(4_000L)
+                todoAmounts = listOf(4_000L),
+                fromYearMonth = from
             )
-        ).isEqualTo("Encore environ 9 mois si le versement reste de 50 €.")
+        ).contains("9 mois")
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
                 remainingCents = 10_000L,
-                intervalMonths = 3
+                intervalMonths = 3,
+                fromYearMonth = from
             )
-        ).isEqualTo("Encore environ 2 versements si le versement reste de 50 €.")
-        // Division exacte : toujours « environ » (frais possibles).
+        ).contains("2 versements")
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
                 remainingCents = 10_000L,
-                doneAmounts = listOf(5_000L)
+                doneAmounts = listOf(5_000L),
+                fromYearMonth = from
             )
-        ).isEqualTo("Encore environ 2 mois si le versement reste de 50 €.")
+        ).contains("2 mois")
         assertThat(DossierRemaining.cadenceSuffix(12)).isEqualTo("/ an")
         assertThat(DossierRemaining.cadenceSuffix(1)).isEqualTo("/ mois")
         assertThat(DossierRemaining.cadenceSuffix(6)).isEqualTo("/ semestre")
         assertThat(DossierRemaining.cadenceSuffix(2)).isEqualTo("/ 2 mois")
-        assertThat(DossierRemaining.pacePhrase(5_000L, 0L)).isNull()
+        assertThat(DossierRemaining.pacePhrase(5_000L, 0L, fromYearMonth = from)).isNull()
+    }
+
+    @Test
+    fun projectedEnd_nineMonthlyPaymentsFromOctober() {
+        // 450 € / 50 € = 9 → oct + 8 = juin 2027
+        assertThat(
+            DossierRemaining.projectedEndYearMonth(45_000L, 5_000L, 1, from)
+        ).isEqualTo(YearMonth.of(2027, 6))
     }
 
     @Test
     fun fees_increaseRemaining_withoutErasingDone() {
-        // 600 € − 50 € FAIT + 20 € frais → 570 €
         val rem = DossierRemaining.remainingCents(60_000L, 5_000L, addedFeesCents = 2_000L)
         assertThat(rem).isEqualTo(57_000L)
     }
