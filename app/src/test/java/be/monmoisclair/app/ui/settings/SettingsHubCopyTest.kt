@@ -6,6 +6,36 @@ import org.junit.Test
 class SettingsHubCopyTest {
 
     @Test
+    fun hubGroups_areThreeCalmDoors() {
+        assertThat(SettingsHubCopy.hubGroups).containsExactly(
+            SettingsHubCopy.GROUP_ACCOUNT,
+            SettingsHubCopy.GROUP_COMFORT,
+            SettingsHubCopy.GROUP_HELP
+        ).inOrder()
+    }
+
+    @Test
+    fun comfortAndAccountRows_coverCharteTopics() {
+        assertThat(SettingsHubCopy.comfortRows()).containsExactly(
+            SettingsHubCopy.APPEARANCE,
+            SettingsHubCopy.ALERTS,
+            SettingsHubCopy.DEADLINES
+        ).inOrder()
+        assertThat(SettingsHubCopy.accountRows(showSummary = false)).containsExactly(
+            SettingsHubCopy.SAVINGS,
+            SettingsHubCopy.PRIVACY,
+            SettingsHubCopy.BACKUP
+        ).inOrder()
+        assertThat(SettingsHubCopy.accountRows(showSummary = true))
+            .containsExactly(
+                SettingsHubCopy.SAVINGS,
+                SettingsHubCopy.PRIVACY,
+                SettingsHubCopy.SUMMARY,
+                SettingsHubCopy.BACKUP
+            ).inOrder()
+    }
+
+    @Test
     fun alwaysVisibleRows_coverCharteTopics() {
         assertThat(SettingsHubCopy.alwaysVisibleRows).containsExactly(
             SettingsHubCopy.APPEARANCE,
@@ -36,5 +66,8 @@ class SettingsHubCopyTest {
         assertThat(SettingsHubCopy.alwaysVisibleRows).contains(SettingsHubCopy.ALERTS)
         assertThat(SettingsHubCopy.alwaysVisibleRows).contains(SettingsHubCopy.HELP)
         assertThat(SettingsHubCopy.alwaysVisibleRows).contains(SettingsHubCopy.BACKUP)
+        assertThat(SettingsHubCopy.comfortRows()).contains(SettingsHubCopy.ALERTS)
+        assertThat(SettingsHubCopy.accountRows(false)).contains(SettingsHubCopy.BACKUP)
+        assertThat(SettingsHubCopy.hubGroups).contains(SettingsHubCopy.GROUP_HELP)
     }
 }

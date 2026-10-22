@@ -23,6 +23,37 @@ class HomeMonthChoicesTest {
     }
 
     @Test
+    fun recentStrip_isChronologicalAndShort() {
+        val current = YearMonth.of(2026, 10)
+        val strip = HomeMonthChoices.recentStrip(current)
+        assertThat(strip).containsExactly(
+            YearMonth.of(2026, 8),
+            YearMonth.of(2026, 9),
+            YearMonth.of(2026, 10),
+            YearMonth.of(2026, 11),
+            YearMonth.of(2026, 12),
+            YearMonth.of(2027, 1)
+        ).inOrder()
+        assertThat(strip).hasSize(
+            HomeMonthChoices.RECENT_PAST + 1 + MonthNavigation.FUTURE_MONTHS
+        )
+    }
+
+    @Test
+    fun otherMonthsByYear_excludesRecentStrip() {
+        val current = YearMonth.of(2026, 10)
+        val recent = HomeMonthChoices.recentStrip(current)
+        val other = HomeMonthChoices.otherMonthsByYear(current, recent)
+        val flat = other.flatMap { it.second }
+        assertThat(flat).containsNoneIn(recent)
+        assertThat(flat).contains(YearMonth.of(2026, 7))
+        assertThat(flat).contains(YearMonth.of(2025, 10))
+        assertThat(other.map { it.first }).containsExactly(2026, 2025, 2024).inOrder()
+        // 2027 n’a que jan dans la bande récente → pas de « autres » 2027
+        assertThat(other.map { it.first }).doesNotContain(2027)
+    }
+
+    @Test
     fun canSelect_allowsNearFuture() {
         val current = YearMonth.of(2026, 10)
         assertThat(HomeMonthChoices.canSelect(current, current)).isTrue()

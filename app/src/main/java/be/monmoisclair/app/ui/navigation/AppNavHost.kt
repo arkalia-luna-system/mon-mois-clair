@@ -30,8 +30,10 @@ import be.monmoisclair.app.ui.scan.EpcScanHandoff
 import be.monmoisclair.app.ui.scan.ScanEpcScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import be.monmoisclair.app.ui.settings.HowItWorksScreen
+import be.monmoisclair.app.ui.settings.SettingsAccountGroupScreen
 import be.monmoisclair.app.ui.settings.SettingsAppearanceScreen
 import be.monmoisclair.app.ui.settings.SettingsBackupScreen
+import be.monmoisclair.app.ui.settings.SettingsComfortGroupScreen
 import be.monmoisclair.app.ui.settings.SettingsDeadlinesScreen
 import be.monmoisclair.app.ui.settings.SettingsHelpScreen
 import be.monmoisclair.app.ui.settings.SettingsPrivacyScreen
@@ -140,15 +142,31 @@ fun AppNavHost(
         composable(AppRoute.Settings) {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
-                onOpenAppearance = { navController.navigate(AppRoute.SettingsAppearance) },
+                onOpenAccountGroup = { navController.navigate(AppRoute.SettingsAccountGroup) },
+                onOpenComfortGroup = { navController.navigate(AppRoute.SettingsComfortGroup) },
+                // Aide → Comment ça marche (support reste accessible depuis Aide).
+                onOpenHelp = { navController.navigate(AppRoute.HowItWorks) }
+            )
+        }
+        composable(AppRoute.SettingsAccountGroup) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsAccountGroupScreen(
+                onBack = { navController.popBackStack() },
                 onOpenSavings = { navController.navigate(AppRoute.SettingsSavings) },
                 onOpenPrivacy = { navController.navigate(AppRoute.SettingsPrivacy) },
-                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
-                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) },
                 onOpenSummary = { navController.navigate(AppRoute.SettingsSummary) },
                 onOpenBackup = { navController.navigate(AppRoute.SettingsBackup) },
-                // Aide → profondeur Comment ça marche (support reste accessible depuis Aide).
-                onOpenHelp = { navController.navigate(AppRoute.HowItWorks) }
+                viewModel = hiltViewModel(parent)
+            )
+        }
+        composable(AppRoute.SettingsComfortGroup) { entry ->
+            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
+            SettingsComfortGroupScreen(
+                onBack = { navController.popBackStack() },
+                onOpenAppearance = { navController.navigate(AppRoute.SettingsAppearance) },
+                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
+                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) },
+                viewModel = hiltViewModel(parent)
             )
         }
         composable(AppRoute.SettingsAppearance) { entry ->

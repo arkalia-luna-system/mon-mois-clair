@@ -22,6 +22,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -39,7 +43,7 @@ import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 import java.time.YearMonth
 
 /**
- * Hub hors ledger — outils puis calendrier.
+ * Hub hors ledger — outils puis mois (récents + autres, pas un mur de pastilles).
  * Aide / restore : dans Réglages. Alertes = signal en tête si bloquées (pas de remplacement Menu).
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -72,10 +76,23 @@ fun HomeMenuSheet(
     }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val current = AppClock.currentYearMonth()
-    val months = HomeMonthChoices.recentMonths(current)
+    val recent = remember(current) { HomeMonthChoices.recentStrip(current) }
+    val otherByYear = remember(current, recent) {
+        HomeMonthChoices.otherMonthsByYear(current, recent)
+    }
     val fit = rememberDisplayFit()
     val menuGap = if (fit.compactHomeChrome) 10.dp else 14.dp
     val sheetBottom = rememberSheetBottomClearance()
+    val selectedInOther = otherByYear.any { (_, months) -> selectedYearMonth in months }
+    var expandedYear by remember(selectedYearMonth, otherByYear) {
+        mutableStateOf(
+            if (selectedInOther) {
+                otherByYear.firstOrNull { (_, months) -> selectedYearMonth in months }?.first
+            } else {
+                null
+            }
+        )
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -142,61 +159,62 @@ fun HomeMenuSheet(
                 style = MaterialTheme.typography.titleLarge,
                 color = A11yTokens.Ink
             )
-            val byYear = months.groupBy { it.year }
-            HomeMonthChoices.yearsInOrder(months).forEach { year ->
-                val yearMonths = byYear[year] ?: return@forEach
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = year.toString(),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.Ink
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = "Mois récents",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted
+            )
+            recent.forEach { ym ->
+                val label = DayLabelFormat.monthTitle(ym)
+                CarnetHubRow(
+                    label = label,
+                    onClick = {
+                        onSelectMonth(ym)
+                        onDismiss()
+                    },
+                    labelColor = if (ym == selectedYearMonth) A11yTokens.Link else A11yTokens.Ink
                 )
-                Spacer(modifier = Modifier.height(6.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    yearMonths.forEach { ym ->
-                        val selected = ym == selectedYearMonth
-                        val chipLabel = DayLabelFormat.monthChipShort(ym)
-                        val chipShape = StampShape
-                        Surface(
-                            color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
-                            shape = chipShape,
-                            modifier = Modifier
-                                .heightIn(min = A11yTokens.minTouchHeight)
-                                .border(
-                                    1.dp,
-                                    if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
-                                    chipShape
-                                )
-                                .semantics(mergeDescendants = true) {
-                                    contentDescription = if (selected) {
-                                        "Mois affiché : $chipLabel"
-                                    } else {
-                                        "Aller à $chipLabel"
-                                    }
-                                    this.selected = selected
-                                }
+            }
+
+            if (otherByYear.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 14.dp else 18.dp))
+                Text(
+                    text = "Autres mois",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted
+                )
+                otherByYear.forEach { (year, yearMonths) ->
+                    val expanded = expandedYear == year
+                    CarnetHubRow(
+                        label = if (expanded) "$year ▾" else year.toString(),
+                        onClick = {
+                            expandedYear = if (expanded) null else year
+                        },
+                        chevronColor = if (expanded) A11yTokens.InkMuted else A11yTokens.Link
+                    )
+                    if (expanded) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(bottom = 4.dp)
                         ) {
-                            Text(
-                                text = chipLabel,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
-                                modifier = Modifier
-                                    .clickable(
-                                        role = Role.Button,
-                                        onClickLabel = "Afficher $chipLabel"
-                                    ) {
+                            yearMonths.forEach { ym ->
+                                MenuMonthPastille(
+                                    ym = ym,
+                                    selected = ym == selectedYearMonth,
+                                    onClick = {
                                         onSelectMonth(ym)
                                         onDismiss()
                                     }
-                                    .padding(horizontal = 14.dp, vertical = 12.dp)
-                            )
+                                )
+                            }
                         }
                     }
                 }
             }
+
             if (isPastMonth || isFuturePreview) {
                 Spacer(modifier = Modifier.height(12.dp))
                 SecondaryA11yButton(
@@ -209,5 +227,46 @@ fun HomeMenuSheet(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun MenuMonthPastille(
+    ym: YearMonth,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val chipLabel = DayLabelFormat.monthChipShort(ym)
+    val chipShape = StampShape
+    Surface(
+        color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
+        shape = chipShape,
+        modifier = Modifier
+            .heightIn(min = A11yTokens.minTouchHeight)
+            .border(
+                1.dp,
+                if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
+                chipShape
+            )
+            .semantics(mergeDescendants = true) {
+                contentDescription = if (selected) {
+                    "Mois affiché : $chipLabel"
+                } else {
+                    "Aller à $chipLabel"
+                }
+                this.selected = selected
+            }
+    ) {
+        Text(
+            text = chipLabel,
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
+            modifier = Modifier
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = "Afficher $chipLabel"
+                ) { onClick() }
+                .padding(horizontal = 14.dp, vertical = 12.dp)
+        )
     }
 }

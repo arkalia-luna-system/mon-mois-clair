@@ -24,19 +24,14 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 /**
- * Hub Réglages : menu court → sous-écrans (un sujet chacun).
+ * Hub Réglages : 3 groupes → sous-écrans sujet.
  * Alertes / Aide / Restaurer restent ici (pas dans le Menu Accueil).
  */
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
-    onOpenAppearance: () -> Unit,
-    onOpenSavings: () -> Unit,
-    onOpenPrivacy: () -> Unit,
-    onOpenHealth: () -> Unit,
-    onOpenDeadlines: () -> Unit,
-    onOpenSummary: () -> Unit,
-    onOpenBackup: () -> Unit,
+    onOpenAccountGroup: () -> Unit,
+    onOpenComfortGroup: () -> Unit,
     onOpenHelp: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
@@ -54,17 +49,18 @@ fun SettingsScreen(
             style = MaterialTheme.typography.headlineMedium,
             color = A11yTokens.Ink
         )
-
-        CarnetHubRow(label = SettingsHubCopy.APPEARANCE, onClick = onOpenAppearance)
-        CarnetHubRow(label = SettingsHubCopy.SAVINGS, onClick = onOpenSavings)
-        CarnetHubRow(label = SettingsHubCopy.PRIVACY, onClick = onOpenPrivacy)
-        CarnetHubRow(label = SettingsHubCopy.ALERTS, onClick = onOpenHealth)
-        CarnetHubRow(label = SettingsHubCopy.DEADLINES, onClick = onOpenDeadlines)
-        if (state.showSummaryButton) {
-            CarnetHubRow(label = SettingsHubCopy.SUMMARY, onClick = onOpenSummary)
-        }
-        CarnetHubRow(label = SettingsHubCopy.BACKUP, onClick = onOpenBackup)
-        CarnetHubRow(label = SettingsHubCopy.HELP, onClick = onOpenHelp)
+        CarnetHubRow(
+            label = SettingsHubCopy.GROUP_ACCOUNT,
+            onClick = onOpenAccountGroup
+        )
+        CarnetHubRow(
+            label = SettingsHubCopy.GROUP_COMFORT,
+            onClick = onOpenComfortGroup
+        )
+        CarnetHubRow(
+            label = SettingsHubCopy.GROUP_HELP,
+            onClick = onOpenHelp
+        )
 
         val versionName = try {
             val p = context.packageManager.getPackageInfo(context.packageName, 0)
@@ -104,5 +100,45 @@ fun SettingsScreen(
                 color = A11yTokens.InkMuted
             )
         }
+    }
+}
+
+@Composable
+fun SettingsAccountGroupScreen(
+    onBack: () -> Unit,
+    onOpenSavings: () -> Unit,
+    onOpenPrivacy: () -> Unit,
+    onOpenSummary: () -> Unit,
+    onOpenBackup: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    SettingsResumeRefresh(viewModel)
+    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
+        SettingsPageTitle(SettingsHubCopy.GROUP_ACCOUNT)
+        CarnetHubRow(label = SettingsHubCopy.SAVINGS, onClick = onOpenSavings)
+        CarnetHubRow(label = SettingsHubCopy.PRIVACY, onClick = onOpenPrivacy)
+        if (state.showSummaryButton) {
+            CarnetHubRow(label = SettingsHubCopy.SUMMARY, onClick = onOpenSummary)
+        }
+        CarnetHubRow(label = SettingsHubCopy.BACKUP, onClick = onOpenBackup)
+    }
+}
+
+@Composable
+fun SettingsComfortGroupScreen(
+    onBack: () -> Unit,
+    onOpenAppearance: () -> Unit,
+    onOpenHealth: () -> Unit,
+    onOpenDeadlines: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    SettingsResumeRefresh(viewModel)
+    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
+        SettingsPageTitle(SettingsHubCopy.GROUP_COMFORT)
+        CarnetHubRow(label = SettingsHubCopy.APPEARANCE, onClick = onOpenAppearance)
+        CarnetHubRow(label = SettingsHubCopy.ALERTS, onClick = onOpenHealth)
+        CarnetHubRow(label = SettingsHubCopy.DEADLINES, onClick = onOpenDeadlines)
     }
 }

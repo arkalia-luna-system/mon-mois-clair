@@ -15,6 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -29,11 +32,16 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.usecase.UpcomingLine
 import be.monmoisclair.app.domain.usecase.UpcomingMonth
+import be.monmoisclair.app.ui.components.CarnetHubRow
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
+/**
+ * À venir : liste des mois → détail lecture seule (entrées / sorties).
+ * Pas de FAIT ni d’édition — le mois courant reste sur l’accueil.
+ */
 @Composable
 fun UpcomingScreen(
     onBack: () -> Unit,
@@ -42,7 +50,9 @@ fun UpcomingScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
-    val monthGap = if (fit.compactHomeChrome) 14.dp else 18.dp
+    var selectedYmKey by rememberSaveable { mutableStateOf<String?>(null) }
+    val selectedMonth = state.months.firstOrNull { it.yearMonth.toString() == selectedYmKey }
+
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) viewModel.refresh()
@@ -51,7 +61,20 @@ fun UpcomingScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    PinnedBackScaffold(onBack = onBack) {
+    val backFromDetailOrScreen: () -> Unit = {
+        if (selectedYmKey != null) {
+            selectedYmKey = null
+        } else {
+            onBack()
+        }
+    }
+
+    PinnedBackScaffold(onBack = backFromDetailOrScreen) {
+        if (selectedMonth != null) {
+            UpcomingMonthDetail(month = selectedMonth)
+            return@PinnedBackScaffold
+        }
+
         Text(
             text = "À venir",
             style = MaterialTheme.typography.headlineMedium,
@@ -63,6 +86,8 @@ fun UpcomingScreen(
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
+
         if (state.loading && state.months.isEmpty()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -94,29 +119,35 @@ fun UpcomingScreen(
             return@PinnedBackScaffold
         }
         state.months.forEach { month ->
-            UpcomingMonthBlock(month = month)
-            Spacer(modifier = Modifier.height(monthGap))
+            val count = month.lines.size
+            val suffix = if (count == 1) "1 ligne" else "$count lignes"
+            CarnetHubRow(
+                label = "${month.monthLabel} · $suffix",
+                onClick = { selectedYmKey = month.yearMonth.toString() }
+            )
         }
     }
 }
 
 @Composable
-private fun UpcomingMonthBlock(month: UpcomingMonth) {
-    // Rythme crème + filets (pas de cartes empilées).
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        HorizontalDivider(color = A11yTokens.PaperBorder)
-        Text(
-            text = month.monthLabel,
-            style = MaterialTheme.typography.titleLarge,
-            color = A11yTokens.Ink,
-            modifier = Modifier.padding(top = 4.dp)
-        )
-        month.lines.forEach { line ->
-            UpcomingLineRow(line)
-        }
+private fun UpcomingMonthDetail(month: UpcomingMonth) {
+    Text(
+        text = month.monthLabel,
+        style = MaterialTheme.typography.headlineMedium,
+        color = A11yTokens.Ink
+    )
+    Text(
+        text = "Lecture seule — pas de FAIT ici.",
+        style = MaterialTheme.typography.bodyLarge,
+        color = A11yTokens.InkMuted,
+        modifier = Modifier.fillMaxWidth()
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+    HorizontalDivider(color = A11yTokens.PaperBorder)
+    Spacer(modifier = Modifier.height(8.dp))
+    month.lines.forEach { line ->
+        UpcomingLineRow(line)
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 

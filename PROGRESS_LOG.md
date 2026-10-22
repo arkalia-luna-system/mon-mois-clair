@@ -9,15 +9,33 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.69** (audit sévère 6.68 + écarts NON/PARTIEL) |
+| Dernière étape terminée | **6.70** (Menu mois compact · À venir liste→détail · hub Réglages 3 groupes) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt (Menu badge Alertes, Courses ›, épargne/échéances sticky, Reste 34/40) · S26 |
-| Audit premium | Matrice 6.69 vérifiée code · **pas** claim « premium terminé » · **293/293** |
+| Prochaine sous-étape | Smoke doigt Menu/À venir/Réglages sur S25 · S26 · claim premium non |
+| Audit premium | Matrice audits **FAIT** code (6.68–6.69) + UX rangement **6.70** · **pas** « premium parfait » · **297/297** |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.70 UX rangement Menu / À venir / Réglages
+
+**Audits (re-vérif code) :** V-01…V-13, UX pratique, a11y, code quick — **FAIT** (preuves 6.68–6.69 tenues : typo Source Sans, Menu badge `!`, Courses sticky, filets hub, sticky shortcuts, S26 compact, AccentWarn ≥7:1, Résumé→dossiers, champs carnet, Reste 34/40, CarnetStateBanner, tipPad, Role.Button, HowItWorks accordéon). Aucun écart NON/PARTIEL rouvert.
+
+**Codé :**
+- **Menu mois** : bande « Mois récents » (filets) + « Autres mois » (années repliables, pastilles discrètes) — plus de mur de chips
+- **À venir** : liste de mois → détail lecture seule (retour = liste)
+- **Réglages** : hub 3 groupes (Compte & données / Confort / Aide) → sujets ; max 2 niveaux après hub ; Aide/Restore inchangés (pas dans Menu Accueil)
+- Tests `HomeMonthChoices` (strip / autres) + `SettingsHubCopy` (groupes)
+
+**Docs :** CHARTE Menu/hub · README · BENCHMARK · journal.
+
+**Cleanup :** commentaire HowItWorks ; pas de fichier mort sûr à supprimer.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **297/297** (70 fichiers, 0 failure).  
+**Version :** `0.1.0-6.70` · `versionCode` 75.  
+**Pas un claim « premium parfait ».**
 
 ### 2026-10-22 — 6.69 Audit sévère + écarts restants
 

@@ -7,6 +7,8 @@ object AppRoute {
     const val ReminderHealth = "reminder_health"
     const val RestoreBackup = "restore_backup"
     const val Settings = "settings"
+    const val SettingsAccountGroup = "settings/group/account"
+    const val SettingsComfortGroup = "settings/group/comfort"
     const val SettingsAppearance = "settings/appearance"
     const val SettingsSavings = "settings/savings"
     const val SettingsPrivacy = "settings/privacy"

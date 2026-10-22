@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.69** — audit vérifié + CarnetStateBanner / tipPad / a11y rows).
+Mise à jour : 2026-10-22 (lot **6.70** — Menu mois compact · À venir liste→détail · hub Réglages 3 groupes).
 
 ## 1. Vision
 
@@ -26,7 +26,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
 | Mois ‹ › puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
-| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Mes dossiers** (si N>0) · calendrier (passé + **3 mois à venir**) |
+| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Mes dossiers** (si N>0) · **Mois récents** + **Autres mois** (pas mur de pastilles ; passé + **3 mois à venir**) |
 | Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
 
 **Sticky (verrouillé 6.27, densité 6.56) — maman lit sans calculer :**
@@ -86,6 +86,8 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.62** | Fiche : grille sous sticky · Paiement fermé · EXIF JPEG · tips courts | ✅ |
 | **6.65–6.66** | Accueil Courses sticky (claim) · secondaires dossiers/widget | ✅ code fusionné en **6.67** |
 | **6.67** | Hub Réglages + sous-pages · Courses sticky branché · Menu allégé · une version | ✅ |
+| **6.68–6.69** | Audits typo/Menu/Courses/a11y · CarnetStateBanner · tipPad | ✅ |
+| **6.70** | Menu mois récents/autres · À venir liste→détail · hub 3 groupes | ✅ |
 
 ## 5. Branches Git (verrouillé)
 
@@ -143,7 +145,7 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomC
 
 ## 7. Hub Réglages & usage sur une année (verrouillé)
 
-**Forme (6.67) :** hub court (lignes filet + ›) → **sous-pages** (Apparence, Mettre de côté, Confidentialité, Échéances, Résumé si utile, Sauvegarde, Aide). Alertes ouvre Santé. Pas tout empilé sur une page.
+**Forme (6.70) :** hub = **3 groupes** (Compte & données / Confort / Aide) → sujets (Apparence, Alertes→Santé, Échéances, Mettre de côté, Confidentialité, Résumé si utile, Sauvegarde). Aide ouvre Comment ça marche. Max **2 niveaux** après le hub. Pas tout empilé sur une page.
 
 ### Inventaire (indispensable vs redondant)
 
@@ -162,9 +164,9 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomC
 |--------|-----|-----------------------------|
 | Loyer, salaire, courses | Home mois courant | OK (liste + reste + divers) |
 | Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
-| Feuilleter 12 mois passés | Menu → calendrier + ‹ › | **Revenir au mois en cours** (Menu) |
-| Rappels qui ne sonnent pas | Réglages → Alertes | Un seul hub (plus de doublon Menu / Réglages) |
-| Aide / restore | Réglages | Menu ne liste plus Comment ça marche ni Restaurer |
+| Feuilleter 12 mois passés | Menu → Mois récents / Autres mois + ‹ › | **Revenir au mois en cours** (Menu) |
+| Rappels qui ne sonnent pas | Réglages → Confort → Alertes | Un seul hub (pas de doublon Menu) |
+| Aide / restore | Réglages → Aide / Compte & données → Sauvegarde | Menu ne liste plus Comment ça marche ni Restaurer |
 
 Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages / aide dans le scroll Home ; dupliquer Alertes ou Aide dans le Menu.
 
@@ -190,7 +192,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 | Jour d’échéance | Grille **1–31**, cibles ≥ 48 dp, qui se replie (7 colonnes de 48 dp ne tiennent pas sur le S26) |
 | Montant | Clavier décimal. Édition **ce mois-ci seul** par défaut |
 | Mois indépendants | Pas de report auto. Un revenu ponctuel « Reste du mois passé » si elle le veut |
-| Alertes | Hub dans **Réglages → Alertes**. Bouton bas reste **« Menu »** ; badge `!` si notifs / alarmes bloquées + ligne Alertes en tête du sheet. Pas de pastille permanente pour la batterie Samsung |
+| Alertes | Hub **Réglages** (3 groupes : Compte & données / Confort / Aide) → **Confort → Alertes**. Bouton bas reste **« Menu »** ; badge `!` si notifs / alarmes bloquées + ligne Alertes en tête du sheet. Pas de pastille permanente pour la batterie Samsung |
 | Local-first | Zéro banque, zéro cloud, zéro pub |
 
 ### Refuser

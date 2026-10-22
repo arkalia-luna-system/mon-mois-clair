@@ -1,12 +1,12 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.69**).  
+Date : 2026-10-22 (état code : **6.70**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.68** audits · **6.69** vérification sévère + CarnetStateBanner / tipPad / typo test / HowItWorks accordéon · WDG02 accepté (serif RemoteViews) |
+| **Fait** | … · **6.68–6.69** audits · **6.70** Menu mois compact / À venir liste→détail / hub Réglages 3 groupes · WDG02 accepté (serif RemoteViews) |
 | **Pas fait** | S26 en main · biométrie / widget home / scan caméra au doigt · claim premium terminé · scission god-files |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
@@ -70,8 +70,9 @@ Accueil vu sur le S25 (jour). Les autres pages lues dans le Compose.
 | Page | À modifier ? |
 |------|----------------|
 | Accueil | Sticky allégé (Plus/Moins) ; Courses unifiées en liste ; tips sans boîte ; BrandMark hors alertes |
-| Menu | Titre seul · tip sans box · Mois sans carte-titre · `SheetBottomClearance` · puces capsule |
-| Réglages, Aide | Tips courants = texte InkMuted (boîtes = états seulement) |
+| Menu | Titre seul · tip sans box · **Mois récents** (filets) + **Autres mois** (années) · `SheetBottomClearance` · pastilles seulement hors bande récente |
+| Réglages, Aide | Hub 3 groupes · tips = InkMuted (boîtes = états seulement) |
+| À venir | Liste de mois → détail lecture seule (plus de blocs empilés d’emblée) |
 | Dossier de sauvegarde | Non. Il n’y a pas de page Téléchargements : un bouton « Choisir un dossier » |
 | Alertes fiables | Pastilles Prêt/À régler = StampShape |
 | Restaurer | CTA Danger (hors teal) ; tip intro sans boîte |
