@@ -18,8 +18,11 @@ object A11yTokens {
      */
     val bottomSystemClearance = 28.dp
 
-    /** Wax Paper — fond principal (AMOLED sans halo blanc pur). */
-    val PaperCream = Color(0xFFF7F4EB)
+    /**
+     * Wax Paper — fond principal (AMOLED sans halo blanc pur).
+     * Un cran plus soutenu que les cartes `#FFFDF9`, pour que la liste se détache.
+     */
+    val PaperCream = Color(0xFFF3EDE0)
     /** Warm Ivory — cartes factures. */
     val PaperCard = Color(0xFFFFFDF9)
     /** Ancien PaperWarm → surface sticky / champs (ivoire un peu plus marqué). */

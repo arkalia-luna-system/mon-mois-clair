@@ -11,7 +11,7 @@ Tu es l’expert TESTEUR « SENIOR + SAMSUNG ONE UI » pour « Mon Mois Clair »
 
 Profil : Senior One UI (obligatoire)
 Persona : Maman (défaut) ou Installateur (sideload)
-Device OBLIGATOIRE · 0.1.0-6.37 · CAMPAGNE C1–C6 + S*.
+Device OBLIGATOIRE · 0.1.0-6.42 · CAMPAGNE C1–C6 + S*.
 
 Persona fixe
 - 65–80 ans, vue moyenne, doigts larges, Galaxy One UI

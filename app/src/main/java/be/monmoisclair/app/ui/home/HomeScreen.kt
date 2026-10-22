@@ -2,11 +2,14 @@ package be.monmoisclair.app.ui.home
 
 import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
+import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,6 +60,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -92,6 +96,7 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.time.YearMonth
@@ -112,6 +117,16 @@ fun HomeScreen(
     val diversBusy by viewModel.diversBusy.collectAsStateWithLifecycle()
     val remindersBlocked by viewModel.remindersBlocked.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
+    val listAlpha = remember { Animatable(1f) }
+    var skipMonthFade by remember { mutableStateOf(true) }
+    LaunchedEffect(state.selectedYearMonth) {
+        if (skipMonthFade) {
+            skipMonthFade = false
+            return@LaunchedEffect
+        }
+        listAlpha.snapTo(0.45f)
+        listAlpha.animateTo(1f, tween(180))
+    }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
@@ -123,6 +138,12 @@ fun HomeScreen(
     var diversInput by remember { mutableStateOf("") }
     var diversExpanded by remember { mutableStateOf(false) }
     var diversSheetOpen by remember { mutableStateOf(false) }
+    LaunchedEffect(state.isFuturePreview) {
+        if (state.isFuturePreview) {
+            diversSheetOpen = false
+            diversExpanded = false
+        }
+    }
     var menuOpen by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     /** S02 : ne pas chasser le snackbar « Annuler » FAIT. */
@@ -477,10 +498,12 @@ fun HomeScreen(
                         onClick = viewModel::nextMonth
                     )
                 }
-                val remainingTitle = if (state.summary.remainingCents < 0L) {
-                    "Déficit après factures"
-                } else {
-                    "Reste après factures"
+                val remainingTitle = when {
+                    state.isFuturePreview && state.summary.remainingCents < 0L ->
+                        "Aperçu — déficit après factures"
+                    state.isFuturePreview -> "Aperçu — reste après factures"
+                    state.summary.remainingCents < 0L -> "Déficit après factures"
+                    else -> "Reste après factures"
                 }
                 val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
                 Text(
@@ -505,7 +528,8 @@ fun HomeScreen(
                 )
                 stickyStillToPayLabel(
                     stillToPayCents = state.summary.stillToPayCents,
-                    hasExpenses = state.timeline.any { it is TimelineItem.Expense }
+                    hasExpenses = state.timeline.any { it is TimelineItem.Expense },
+                    futurePreview = state.isFuturePreview
                 )?.let { label ->
                     Text(
                         text = label,
@@ -521,7 +545,8 @@ fun HomeScreen(
                 }
                 stickyWithoutUnpaidLabel(
                     remainingCents = state.summary.remainingCents,
-                    stillToPayCents = state.summary.stillToPayCents
+                    stillToPayCents = state.summary.stillToPayCents,
+                    futurePreview = state.isFuturePreview
                 )?.let { label ->
                     Text(
                         text = label,
@@ -532,7 +557,7 @@ fun HomeScreen(
                         modifier = Modifier.semantics { contentDescription = label }
                     )
                 }
-                if (state.diversSpentCents > 0L) {
+                if (!state.isFuturePreview && state.diversSpentCents > 0L) {
                     val afterLabel =
                         "Après courses ${MoneyFormat.formatCents(state.afterDiversCents)}"
                     Text(
@@ -590,7 +615,8 @@ fun HomeScreen(
                             .semantics { contentDescription = coursesLabel }
                     )
                 }
-                if (state.summary.remainingCents < 0L &&
+                if (!state.isFuturePreview &&
+                    state.summary.remainingCents < 0L &&
                     state.timeline.none { it is TimelineItem.Income }
                 ) {
                     val incomeTipShape = MaterialTheme.shapes.medium
@@ -718,7 +744,10 @@ fun HomeScreen(
 
             LazyColumn(
                 state = listState,
-                modifier = Modifier.weight(1f).fillMaxWidth(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .graphicsLayer { alpha = listAlpha.value },
                 contentPadding = PaddingValues(
                     start = fit.screenPadding,
                     end = fit.screenPadding,
@@ -785,12 +814,21 @@ fun HomeScreen(
                             ) {
                                 BrandMark(height = 36.dp)
                                 Text(
-                                    text = "Rien encore ce mois",
+                                    text = if (state.isFuturePreview) {
+                                        "Rien de prévu ce mois-là"
+                                    } else {
+                                        "Rien encore ce mois"
+                                    },
                                     style = MaterialTheme.typography.headlineMedium,
                                     color = A11yTokens.Ink
                                 )
                                 Text(
-                                    text = "Ajoutez le salaire et les factures avec « + Ajouter » en bas.",
+                                    text = if (state.isFuturePreview) {
+                                        "Les factures et rentrées réapparaissent ici quand elles sont dues. " +
+                                            "Revenez au mois en cours pour ajouter."
+                                    } else {
+                                        "Ajoutez le salaire et les factures avec « + Ajouter » en bas."
+                                    },
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = A11yTokens.InkMuted
                                 )
@@ -876,6 +914,7 @@ fun HomeScreen(
                             when (item) {
                                 is TimelineItem.Income -> IncomeRow(
                                     item = item,
+                                    readOnlyPreview = state.isFuturePreview,
                                     onClick = {
                                         if (state.isFuturePreview) {
                                             scope.launch {
@@ -926,8 +965,9 @@ fun HomeScreen(
                         }
                     }
                 }
-                // Divers : total visible fermé ; formulaire au tap.
-                val showDivers = !state.loading &&
+                // Divers : total visible fermé ; formulaire au tap (jamais en aperçu futur).
+                val showDivers = !state.isFuturePreview &&
+                    !state.loading &&
                     (state.timeline.isNotEmpty() || state.diversSpentCents > 0L)
                 if (showDivers) {
                     item(key = "divers-controls") {
@@ -1054,7 +1094,7 @@ fun HomeScreen(
             if (!keyboardOpen) {
                 HorizontalDivider(color = A11yTokens.PaperBorder)
                 Surface(
-                    color = A11yTokens.PaperCream,
+                    color = A11yTokens.PaperWarm,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -1139,7 +1179,7 @@ private fun MonthStep(
 
 @Composable
 private fun DayBadge(label: String, compact: Boolean = false) {
-    val shape = MaterialTheme.shapes.medium
+    val shape = StampShape
     Text(
         text = label,
         style = MaterialTheme.typography.bodyMedium,
@@ -1165,7 +1205,7 @@ private fun StatusChip(
     outlined: Boolean = false,
     compact: Boolean = false
 ) {
-    val shape = MaterialTheme.shapes.medium
+    val shape = StampShape
     val hPad = if (compact) 6.dp else 8.dp
     val vPad = if (compact) 2.dp else 4.dp
     Text(
@@ -1185,7 +1225,11 @@ private fun StatusChip(
 }
 
 @Composable
-private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
+private fun IncomeRow(
+    item: TimelineItem.Income,
+    readOnlyPreview: Boolean = false,
+    onClick: () -> Unit
+) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
     val rowPad = if (compact) 6.dp else 12.dp
@@ -1195,13 +1239,22 @@ private fun IncomeRow(item: TimelineItem.Income, onClick: () -> Unit) {
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = 2.dp,
+                shape = shape,
+                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
+                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
+            )
             .border(1.dp, A11yTokens.PaperBorder, shape)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = A11yTokens.minTouchHeight)
-                .clickable(onClickLabel = "Modifier", onClick = onClick)
+                .clickable(
+                    onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
+                    onClick = onClick
+                )
                 .padding(rowPad),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 10.dp)
@@ -1259,6 +1312,12 @@ private fun ExpenseRow(
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = 2.dp,
+                shape = shape,
+                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
+                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
+            )
             .then(borderMod)
     ) {
         Row(
@@ -1274,7 +1333,10 @@ private fun ExpenseRow(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(onClickLabel = "Modifier", onClick = onClick),
+                        .clickable(
+                            onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
+                            onClick = onClick
+                        ),
                     verticalArrangement = Arrangement.spacedBy(lineGap)
                 ) {
                     // Compact + accord : pastille sur la 1ʳᵉ ligne pour ne pas
@@ -1370,20 +1432,31 @@ private fun ExpenseRow(
                 )
             }
             if (!readOnlyPreview) {
-                SecondaryA11yButton(
-                    text = if (item.isDone) "Remettre" else "FAIT ✓",
-                    onClick = onToggle,
-                    fillMaxWidth = false,
-                    modifier = Modifier
-                        .widthIn(min = if (compact) 88.dp else 96.dp)
-                        .semantics {
-                            contentDescription = if (item.isDone) {
-                                "Remettre à payer"
-                            } else {
-                                "Marquer FAIT"
-                            }
+                val faitModifier = Modifier
+                    .widthIn(min = if (compact) 88.dp else 96.dp)
+                    .semantics {
+                        contentDescription = if (item.isDone) {
+                            "Remettre à payer"
+                        } else {
+                            "Marquer FAIT"
                         }
-                )
+                    }
+                if (item.isDone) {
+                    SecondaryA11yButton(
+                        text = "Remettre",
+                        onClick = onToggle,
+                        fillMaxWidth = false,
+                        modifier = faitModifier
+                    )
+                } else {
+                    PrimaryA11yButton(
+                        text = "FAIT ✓",
+                        onClick = onToggle,
+                        fillMaxWidth = false,
+                        containerColor = A11yTokens.AccentOk,
+                        modifier = faitModifier
+                    )
+                }
             }
         }
     }

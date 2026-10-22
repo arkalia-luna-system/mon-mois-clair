@@ -3,11 +3,11 @@ package be.monmoisclair.app
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
-import android.graphics.Color as AndroidColor
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         pendingHighlightExpenseId = intent?.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
-        // Statut + nav crème (cohérent avec themes.xml, pas de bandeau blanc).
-        val paperCream = AndroidColor.parseColor("#F7F4EB")
+        // Statut + nav crème (même teinte que colors.xml / themes.xml).
+        val paperCream = ContextCompat.getColor(this, R.color.paper_cream)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(paperCream, paperCream),
             navigationBarStyle = SystemBarStyle.light(paperCream, paperCream)

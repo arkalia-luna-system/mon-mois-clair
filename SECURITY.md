@@ -22,6 +22,14 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 - Pas de tests d’écran instrumentés. Le lint en CI ne bloque pas. Pas de scan CVE en garde.
 - Ne pas recopier le numéro de série d’un téléphone dans un markdown.
 
+## Dependabot Security Updates (bruit rouge)
+
+Les runs GitHub nommés `gradle in /. for protobuf… / netty…` viennent des
+**Security Updates** Dependabot (jars transitifs AGP), **pas** de `.github/workflows/ci.yml`.
+
+- Voir la procédure dans [`docs/CI.md`](docs/CI.md) § Phase 3 (Dismiss / désactiver Security Updates).
+- Ne pas ajouter de `implementation` netty/protobuf « pour faire plaisir » au graphe app.
+
 ## Secrets / fichiers interdits dans le dépôt
 
 - `local.properties`

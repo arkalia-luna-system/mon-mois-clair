@@ -12,6 +12,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
@@ -25,7 +26,10 @@ fun PrimaryA11yButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     /** false = bouton compact (ex. FAIT à droite d’une carte). */
-    fillMaxWidth: Boolean = true
+    fillMaxWidth: Boolean = true,
+    /** Teal par défaut. Forêt pour « FAIT ✓ » sur la ligne (pas un 2ᵉ bouton de barre). */
+    containerColor: Color = A11yTokens.ButtonFill,
+    contentColor: Color = A11yTokens.ButtonText
 ) {
     val haptics = LocalHapticFeedback.current
     Button(
@@ -43,12 +47,12 @@ fun PrimaryA11yButton(
         } else {
             PaddingValues(horizontal = 12.dp, vertical = 8.dp)
         },
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         colors = ButtonDefaults.buttonColors(
-            containerColor = A11yTokens.ButtonFill,
-            contentColor = A11yTokens.ButtonText,
-            disabledContainerColor = A11yTokens.ButtonFill.copy(alpha = 0.45f),
-            disabledContentColor = A11yTokens.ButtonText.copy(alpha = 0.85f)
+            containerColor = containerColor,
+            contentColor = contentColor,
+            disabledContainerColor = containerColor.copy(alpha = 0.45f),
+            disabledContentColor = contentColor.copy(alpha = 0.85f)
         )
     ) {
         Text(
@@ -80,7 +84,7 @@ fun SecondaryA11yButton(
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         border = BorderStroke(
             1.dp,
             if (enabled) A11yTokens.FieldLine else A11yTokens.FieldLine.copy(alpha = 0.45f)
@@ -123,7 +127,7 @@ fun DangerA11yButton(
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
             .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         border = BorderStroke(
             1.dp,
             if (enabled) A11yTokens.AccentDanger else A11yTokens.AccentDanger.copy(alpha = 0.4f)

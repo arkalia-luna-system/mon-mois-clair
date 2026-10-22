@@ -2,10 +2,12 @@ package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
+import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EuroFormat
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +21,7 @@ data class DossierListItem(
     val totalDueCents: Long,
     val paidCents: Long,
     val isSettled: Boolean,
-    /** Instance à ouvrir (mois courant si possible, sinon la plus récente). */
+    /** Instance à ouvrir (mois courant si possible, sinon passé — jamais un aperçu futur). */
     val openInstanceId: String?,
     /** Ligne vraiment dans le mois courant. */
     val dueThisMonth: Boolean = false,
@@ -67,7 +69,7 @@ class ListDossiersUseCase @Inject constructor(
             val instances = instanceDao.expensesByTemplate(tpl.id)
             val thisMonth = instances.firstOrNull { it.ledgerId == currentYm }
             val openId = thisMonth?.id
-                ?: instances.maxByOrNull { it.ledgerId }?.id
+                ?: pickNonFutureOpenInstanceId(instances, currentYm)
             val monthCents = when {
                 thisMonth != null -> thisMonth.amountCents
                 settled -> 0L
@@ -119,5 +121,25 @@ class ListDossiersUseCase @Inject constructor(
                 .thenBy { it.who.lowercase() }
         )
         return DossiersSnapshot(items = ordered, monthTotalCents = monthTotal)
+    }
+
+    /**
+     * Fallback hors mois courant : plus récent **passé ou courant**, jamais un ledger
+     * d’aperçu futur (sinon la fiche s’ouvre éditable jusqu’à Enregistrer).
+     */
+    private fun pickNonFutureOpenInstanceId(
+        instances: List<ExpenseInstanceEntity>,
+        currentYm: String
+    ): String? {
+        val current = runCatching { YearMonth.parse(currentYm) }.getOrNull() ?: return null
+        return instances
+            .asSequence()
+            .filter { inst ->
+                val ym = runCatching { YearMonth.parse(inst.ledgerId) }.getOrNull()
+                    ?: return@filter false
+                !ym.isAfter(current)
+            }
+            .maxByOrNull { it.ledgerId }
+            ?.id
     }
 }

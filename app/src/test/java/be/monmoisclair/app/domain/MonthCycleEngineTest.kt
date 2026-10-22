@@ -131,8 +131,68 @@ class MonthCycleEngineTest {
 
         val again = engine.ensureMonthExists(YearMonth.of(2026, 4))
         assertThat(again).isInstanceOf(EnsureMonthResult.AlreadyExists::class.java)
+        val exists = again as EnsureMonthResult.AlreadyExists
+        assertThat(exists.addedExpenseCount).isEqualTo(0)
         assertThat(db.instanceDao().observeExpenses("2026-04").first().single().amountCents)
             .isEqualTo(47_000L) // historique figé
+    }
+
+    /** 6.42 : ledger déjà ouvert (aperçu futur) + nouveau template → ligne ajoutée. */
+    @Test
+    fun ensureMonth_alreadyExists_addsNewTemplateLater() {
+        runBlocking {
+            freezeAt("2026-10-05T10:00:00+02:00")
+            seedTemplates(incomeDay = 5, expenseDay = 10, inactiveExpense = false)
+
+            val nov = YearMonth.of(2026, 11)
+            engine.ensureMonthExists(nov)
+            assertThat(db.instanceDao().observeExpenses("2026-11").first()).hasSize(1)
+            assertThat(db.instanceDao().observeIncomes("2026-11").first()).hasSize(1)
+            backupCalls.set(0)
+            reconcileCalls.set(0)
+
+            db.templateDao().insertExpense(
+                ExpenseTemplateEntity(
+                    id = "tpl-trimestriel",
+                    label = "Assurance",
+                    amountCents = 12_000L,
+                    dayOfMonth = 15,
+                    active = true,
+                    intervalMonths = 3,
+                    anchorYearMonth = "2026-11",
+                    createdAtEpochMs = AppClock.nowEpochMs(),
+                    archivedAtEpochMs = null
+                )
+            )
+            db.templateDao().insertIncome(
+                IncomeTemplateEntity(
+                    id = "tpl-prime",
+                    label = "Prime",
+                    amountCents = 50_000L,
+                    dayOfMonth = 20,
+                    active = true,
+                    createdAtEpochMs = AppClock.nowEpochMs(),
+                    archivedAtEpochMs = null
+                )
+            )
+
+            val again = engine.ensureMonthExists(nov) as EnsureMonthResult.AlreadyExists
+            assertThat(again.addedExpenseCount).isEqualTo(1)
+            assertThat(again.addedIncomeCount).isEqualTo(1)
+            val expenses = db.instanceDao().observeExpenses("2026-11").first()
+            assertThat(expenses.map { it.label }).containsExactly("Loyer", "Assurance")
+            assertThat(db.instanceDao().observeIncomes("2026-11").first()).hasSize(2)
+            // Montant loyer d’origine intact
+            assertThat(expenses.single { it.label == "Loyer" }.amountCents).isEqualTo(47_000L)
+            assertThat(backupCalls.get()).isEqualTo(1)
+            assertThat(reconcileCalls.get()).isEqualTo(1)
+
+            // Trimestre : décembre ne doit pas recevoir Assurance
+            engine.ensureMonthExists(YearMonth.of(2026, 12))
+            assertThat(
+                db.instanceDao().observeExpenses("2026-12").first().map { it.label }
+            ).containsExactly("Loyer")
+        }
     }
 
     @Test

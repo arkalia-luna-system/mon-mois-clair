@@ -4,7 +4,7 @@ Source : Athalia après usage doigt de `0.1.0-6.38` (SM-S938B).
 But de ce fichier : **ne rien perdre**, croiser chaque demande avec le **code actuel**, et noter **comment** corriger / améliorer **sans casser** maman (accueil simple) ni Alex (dossiers).
 
 État à la rédaction : **6.38**.  
-**Livré en 6.39** (`0.1.0-6.39`) ; polish sticky **6.40** ; aperçu mois futurs **6.41** (`0.1.0-6.41`, **240/240**) — les pistes « Comment faire » ci-dessous décrivent ce qui a été codé.
+**Livré en 6.39** (`0.1.0-6.39`) ; polish sticky **6.40** ; aperçu + sync **6.42** (`0.1.0-6.42`, **245/245**) — les pistes « Comment faire » ci-dessous décrivent ce qui a été codé.
 
 ---
 

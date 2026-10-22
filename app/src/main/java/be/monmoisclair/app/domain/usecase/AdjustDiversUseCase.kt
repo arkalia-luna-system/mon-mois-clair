@@ -1,7 +1,9 @@
 package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.repository.MutatingRepository
+import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.MonthCycleEngine
+import be.monmoisclair.app.domain.MonthNavigation
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,6 +33,11 @@ class AdjustDiversUseCase @Inject constructor(
         }
         val ym = runCatching { java.time.YearMonth.parse(ledgerId) }.getOrElse {
             return AdjustDiversResult.Failed("Ce mois n’est pas disponible.")
+        }
+        if (MonthNavigation.isFuturePreview(ym, AppClock.currentYearMonth())) {
+            return AdjustDiversResult.Failed(
+                "Aperçu seulement — les courses se notent sur le mois en cours."
+            )
         }
         monthCycleEngine.ensureMonthExists(ym)
         return mutatingRepository.mutate(rescheduleReminders = false) {

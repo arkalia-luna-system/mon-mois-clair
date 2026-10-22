@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-22 (lot **6.41** — aperçu mois futurs ; 6.39–6.40 tenus).
+Mise à jour : 2026-10-22 (lot **6.42** — sync futurs + Soldés ; 6.39–6.41 tenus).
 
 ## 1. Vision
 
@@ -91,6 +91,7 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 | **6.39** | Feedback famille (mail, soldés, Vers, À venir, courses, épargne) | ✅ |
 | **6.40** | Polish sticky : Après courses danger + Courses en lien compact | ✅ |
 | **6.41** | Aperçu mois futurs (flèche › / Menu, M+1…M+3, lecture seule) | ✅ |
+| **6.42** | Sync templates sur mois déjà ouverts · Soldés repliés · dist famille | ✅ |
 
 Journal : `PROGRESS_LOG.md`.
 
@@ -137,7 +138,10 @@ Appliqué **une seule fois** dans `MainActivity`.
 - Sinon → mode confort Ultra.
 - Montant « Reste » = signal n°1 (32 sp si l’écran est court, 36 sp sinon). Serif **seulement** pour ce chiffre.
 - Titres d’écran, noms de factures, boutons : sans-serif.
-- Un seul bouton plein (teal). Les autres sont un trait encre, coins 12 dp — pas une pile de pastilles teal.
+- Barre du bas : un seul bouton plein **teal** (« + Ajouter »), sur un socle `PaperWarm`. Menu, Copier, Remettre restent un trait. Coins des boutons : 12 dp.
+- Sur la ligne, « FAIT ✓ » est un plein **forêt** (`AccentOk`) : c’est l’action de la facture, pas un deuxième bouton de barre. Une fois FAIT, le bouton redevient le trait « Remettre ».
+- Cartes : coins 16 dp, ombre courte (encre ~8 %). Pastilles (jour, Accord, En retard, Prélèvement) : capsule, pas le même coin qu’un bouton.
+- Chiffres en chasse fixe (`tnum`) : les montants s’alignent.
 - Mois en toutes lettres (« Octobre 2026 »).
 - Nom de l’app : hors de l’accueil. Sur l’écran d’accueil du téléphone : **M ivoire sur teal** (`#1B4D4E`). Les rappels utilisent la même silhouette en blanc.
 - Bandeau L : fond contrasté, max 3–4 lignes.
@@ -184,7 +188,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 | Idée étude | Décision MMC |
 |------------|--------------|
 | Safe-to-Spend | Sticky **Reste après factures** + **À payer** + **Après les FAIT** (si besoin) + **Après courses** (si besoin). Gros chiffre = signal n°1 (36 sp compact / 42 sp confort) |
-| Check-off | Bouton d’**action** « FAIT ✓ » à droite (≥ 96 dp). « À payer » baisse tout de suite. Le bouton ne s’appelle pas « À PAYER » : un bouton dit l’action |
+| Check-off | Bouton d’**action** « FAIT ✓ » à droite (≥ 96 dp), plein forêt tant que ce n’est pas fait. « À payer » baisse tout de suite. Le bouton ne s’appelle pas « À PAYER » : un bouton dit l’action |
 | Preuve | Pastille **« FAIT le JJ/MM »** (`doneAtEpochMs`) |
 | Liste > graphiques | Jamais camembert / courbes |
 | Zone pouce | Barre basse **Menu · + Ajouter**, cachée pendant le clavier. Factures en tête ; divers en dessous |
@@ -204,7 +208,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 | Fiche intermédiaire Modifier / Supprimer / Fermer | Un tap de plus. La ligne ouvre déjà l’édition, avec Annuler et Supprimer écrits |
 | Menu hamburger icône seule | Toujours le mot « Menu » |
 | Rouge `#FF0000` / blanc `#FFFFFF` | Anxiété + halo AMOLED |
-| Photo / dictée IA type Moneko | Hors scope — scan EPC + photo facture restent offline |
+| Photo / dictée IA type Moneko qui remplit le montant | Hors scope — un OCR qui invente un euro fausse le Reste. Le QR EPC reste le geste sûr. Lire seulement une communication `+++` valide sur une photo : plus tard, hors ligne |
 | Ocre `#D99B26` **en texte** | Mesuré à **~2,2:1** sur le papier : illisible. L’or est le **fond** de la pastille « Auto », le mot est en encre |
 | Russet `#B84A27` tel quel | Mesuré à **~4,7:1** sur le papier, pas les ~7:1 annoncés. Remplacé par `#8E3418` (toujours brique, pas rouge sang) |
 
@@ -215,7 +219,7 @@ Un reste négatif et le bandeau « à prévoir » restent en brun `#8A5A1E` (~5,
 
 | Rôle | Hex | Token | Contraste utile |
 |------|-----|--------|-----------------|
-| Fond | `#F7F4EB` | `PaperCream` | Encre dessus ~15,6:1 |
+| Fond | `#F3EDE0` | `PaperCream` | Encre dessus (test ≥ 7:1). Un cran plus soutenu que la carte, pour que la liste se détache |
 | Cartes | `#FFFDF9` | `PaperCard` | Encre dessus ~16,9:1 |
 | Encre | `#1E1B18` | `Ink` | |
 | Boutons | `#1B4D4E` | `ButtonFill` | Ivoire `#FFFDF9` dessus ~9,3:1 |
@@ -223,3 +227,17 @@ Un reste négatif et le bandeau « à prévoir » restent en brun `#8A5A1E` (~5,
 | FAIT pastille | `#1E5631` | `AccentOk` | Ivoire dessus ~8,5:1 |
 | Retard / erreur | `#8E3418` | `AccentDanger` | Ivoire dessus ~7,8:1 ; encre brique sur papier ~7,2:1 |
 | Auto (fond de pastille) | `#D99B26` | `AccentAuto` | Encre dessus ~7,1:1 — jamais ce doré comme couleur de lettres |
+| Socle barre basse | `#EDE8DC` | `PaperWarm` | Déjà le fond des champs. Sous Menu / + Ajouter, pour que la barre ne se confonde pas avec la page |
+
+### Suite visuelle (pas dans ce lot)
+
+Décisions du [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md). On ne les code pas tant que l’étape formes / FAIT / chiffres n’est pas verte.
+
+| Suite | Décision |
+|-------|----------|
+| PDF à côté de la photo | Oui, sur la fiche seulement. Même dossier que les WebP. Pas d’aperçu lecteur : « Voir le courrier » ouvre le fichier |
+| Encre de nuit | Oui, plus tard, si on la veut le soir. Fond encre `#1E1B18`, texte papier, **même** teal. Pas le minuit fluo de Copilot. Pas la couleur du fond d’écran |
+| Widget | Un seul, plus tard : Reste + prochaine ligne non FAIT. Pas de camembert |
+| OCR de la communication | Plus tard. Jamais le montant |
+| PDF du résumé | Plus tard. Le texte partagé existe déjà. Pas un faux formulaire CPAS |
+| Grille calendrier, catégories, banque, graphiques, synchro | Non |

@@ -2,7 +2,7 @@
 
 Date : 2026-10-21.  
 Départ : carnet tenu.  
-Lots **A à F** + 6.37–**6.41** clos (`0.1.0-6.41`, schéma Room **8**, **240/240**).  
+Lots **A à F** + 6.37–**6.42** clos (`0.1.0-6.42`, schéma Room **8**, **245/245**).  
 Détail : [`AUDIT_ALEX_MAMAN_2026-10-21.md`](AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
 
 Lectures liées :
@@ -36,7 +36,7 @@ Les smokes notés au journal (notification, trimestriel, « Écrire », hauteur 
 3. **L’ordre des lignes reste le jour.** Pastille « Accord », pas un re-tri.
 4. **Les centimes FAIT font foi.** Pas un compteur « mois 4 sur 12 » qui ment si le montant a changé.
 5. **Les courriers et la référence vivent sur le modèle**, et chaque nouveau mois les reprend.
-6. **Un seul bouton plein** par écran. Le reste en trait.
+6. **Un seul bouton plein teal** sur la barre (« + Ajouter »). « FAIT ✓ » sur la ligne est un plein forêt : ce n’est pas un second bouton de barre. Le reste est en trait.
 7. **Le schéma bouge avec les colonnes**, le même jour : migration, backup, tests de restauration, puis journal. Pas de colonne « en avance » dans le JSON. A = 4, B = 5, C = 6, D = 7 (clos au journal). E n’a pas ajouté de colonne : le marqueur est dans `app_meta`.
 8. **Pas de `if (S25)`.** `DisplayFit` suffit. On vérifie une hauteur courte (S26) et une hauteur confort (Ultra).
 9. **Phrases de la recherche §9.** Pas de menace de saisie. Pas de date de fin sans « si ».
@@ -169,11 +169,12 @@ Réglages : montant + jour, facture mensuelle « Mettre de côté », alerte dé
 
 | Envie possible | Décision |
 |----------------|----------|
-| Widget « à payer aujourd’hui » | Plus tard, seulement si le carnet est ennuyeux à ouvrir. Pas dans ce plan |
+| Widget « à payer aujourd’hui » | Plus tard. S’il arrive : un seul, Reste + prochaine ligne non FAIT. Voir la charte, suite visuelle |
 | Lire les mails des créanciers | Non. On ouvre un nouveau message |
 | Calculer les intérêts | Non. Ils saisissent les frais quand la lettre arrive |
 | Dire quel accord payer en premier | Non. L’ordre reste le calendrier. La pastille distingue, elle ne commande pas |
-| Mode sombre, graphique annuel | Déjà hors charte |
+| Graphique annuel | Hors charte |
+| Encre de nuit, PDF courrier, widget, OCR `+++` | Décidés dans la charte (suite visuelle) et [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md). Pas avant la finition formes / FAIT / chiffres |
 | Compte Play Store | Hors sujet (sideload familial) |
 
 ---
@@ -213,7 +214,7 @@ Un lot n’est pas fini parce que l’écran existe. Il est fini quand :
 
 ## 7. Où on en est, et le prochain geste
 
-**A–F + 6.37–6.41** clos (`0.1.0-6.41`, schéma **8**, **240/240**). Feedback famille + aperçu mois futurs (voir [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md)).
+**A–F + 6.37–6.42** clos (`0.1.0-6.42`, schéma **8**, **245/245**). Feedback famille + sync mois futurs + dist (voir [`FEEDBACK_TEST_FAMILLE_2026-10-21.md`](FEEDBACK_TEST_FAMILLE_2026-10-21.md)).
 
 **Pas clos, et il ne faut pas l’écrire comme fait :**
 - le S26 de maman en main ;

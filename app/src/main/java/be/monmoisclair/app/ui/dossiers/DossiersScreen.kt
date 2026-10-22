@@ -20,6 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -213,27 +216,57 @@ fun DossiersScreen(
             }
             if (settledItems.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(sectionGap))
+                var settledExpanded by remember { mutableStateOf(false) }
+                val settledHeaderShape = MaterialTheme.shapes.medium
+                val settledHeaderLabel =
+                    if (settledExpanded) {
+                        "Soldés (${settledItems.size}) — masquer"
+                    } else {
+                        "Soldés (${settledItems.size}) — afficher"
+                    }
                 Text(
-                    text = "Soldés",
+                    text = settledHeaderLabel,
                     style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.Ink
-                )
-                Text(
-                    text = "Terminés — les mois déjà payés restent dans le calendrier. " +
-                        "Touchez une ligne pour revoir la fiche.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
-                Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
-                    settledItems.forEach { item ->
-                        DossierRow(
-                            item = item,
-                            onClick = {
-                                val id = item.openInstanceId
-                                if (id != null) onOpenInstance(id)
-                                else onOpenTemplate(item.templateId)
+                    color = A11yTokens.Ink,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .clip(settledHeaderShape)
+                        .border(1.dp, A11yTokens.PaperBorder, settledHeaderShape)
+                        .background(A11yTokens.PaperCard, settledHeaderShape)
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = if (settledExpanded) {
+                                "Masquer les dossiers soldés"
+                            } else {
+                                "Afficher les dossiers soldés"
                             }
-                        )
+                        ) { settledExpanded = !settledExpanded }
+                        .padding(horizontal = 14.dp, vertical = 12.dp)
+                        .semantics { contentDescription = settledHeaderLabel }
+                )
+                if (settledExpanded) {
+                    Text(
+                        text = "Terminés — les mois déjà payés restent dans le calendrier. " +
+                            "Touchez une ligne pour revoir la fiche.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap),
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        settledItems.forEach { item ->
+                            DossierRow(
+                                item = item,
+                                onClick = {
+                                    val id = item.openInstanceId
+                                    if (id != null) onOpenInstance(id)
+                                    else onOpenTemplate(item.templateId)
+                                }
+                            )
+                        }
                     }
                 }
             }

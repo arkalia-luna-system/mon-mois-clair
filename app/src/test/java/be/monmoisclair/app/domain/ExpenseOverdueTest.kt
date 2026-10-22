@@ -42,4 +42,16 @@ class ExpenseOverdueTest {
             )
         ).isFalse()
     }
+
+    @Test
+    fun future_month_never_overdue() {
+        assertThat(
+            ExpenseOverdue.isOverdue(
+                ledgerId = "2026-11",
+                dayOfMonth = 1,
+                status = ExpenseStatus.TODO,
+                today = LocalDate.of(2026, 10, 22)
+            )
+        ).isFalse()
+    }
 }

@@ -9,14 +9,14 @@ Chaque prompt = **un agent / un chat**.
 | [`PROFILS_TESTEURS.md`](PROFILS_TESTEURS.md) | Tempéraments + personae |
 | Prompts 1–5 ci-dessous | Mission de chaque expert |
 
-Version cible journal : **`0.1.0-6.38`** · schéma **8** · tests **235/235**.
+Version cible : lire **`PROGRESS_LOG.md`** / journal (**`0.1.0-6.42`**, schéma **8**).
 
 ## En-tête obligatoire (coller en haut de chaque chat)
 
 ```text
 Profil du jour : Chiant | Null | Perf | Hostile-doux | Fidélité 60 j | Senior One UI
 Persona : Maman | Alex | Installateur | Médiateur | Base vide | Multi-dossiers
-Device : OBLIGATOIRE — téléphone branché, release 6.37 installée
+Device : OBLIGATOIRE — téléphone branché, release journal (6.42+) installée
 Interdit : valider sans geste adb + preuve ; minimum 8 frictions
 ```
 

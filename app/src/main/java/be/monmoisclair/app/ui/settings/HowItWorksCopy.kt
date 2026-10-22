@@ -32,6 +32,7 @@ object HowItWorksCopy {
         Section(
             title = "Marquer FAIT",
             body = "Quand vous avez payé (ou vérifié le prélèvement), touchez « FAIT ✓ » à droite. " +
+                "Le bouton est vert tant que ce n’est pas fait. " +
                 "La ligne devient verte et affiche « FAIT le … » (jour, mois et année) — preuve rassurante. " +
                 "« Remettre » si vous vous êtes trompée. " +
                 "Si le montant change ce mois-ci, ouvrez la ligne et corrigez le chiffre : " +
@@ -81,7 +82,7 @@ object HowItWorksCopy {
                 "(reste dû, barre, « encore environ N mois si… » et « Vers mois année » " +
                 "sur la fiche et Mes dossiers — recalculé si un versement change ; " +
                 "jamais une date certaine ; rien de tout ça sur l’accueil). " +
-                "Les dossiers soldés sont rangés sous « Soldés » dans Mes dossiers. " +
+                "Les dossiers soldés sont rangés sous « Soldés » (replié) dans Mes dossiers. " +
                 "Sans versement encore : « Ranger sans plan » (photo + qui + pour quoi) — " +
                 "le courrier n’entre pas dans le Reste. Une ligne sur l’accueil " +
                 "« courrier sans plan · Voir » s’affiche s’il y en a. " +
@@ -106,7 +107,8 @@ object HowItWorksCopy {
                 "Assurances, taxes ou factures 1×/an : créez-les une fois (fréquence « 1× par an » ou « tous les 3 mois »). " +
                 "Sur l’accueil, une ligne discrète rappelle « tous les 3 mois » / « 1× par an » si ce n’est pas mensuel. " +
                 "Elles réapparaissent le bon mois. Pour les voir d’avance : flèche › ou Menu → mois à venir " +
-                "(aperçu lecture seule, factures et rentrées déjà prévues — pas de FAIT). " +
+                "(aperçu lecture seule : factures selon leur fréquence — mensuel, tous les 3 mois, 1× par an — " +
+                "et rentrées mensuelles ; pas de FAIT ni d’ajout). " +
                 "Aussi Menu → « À venir » (liste des 3 prochains mois) ou Réglages → « Échéances hors ce mois ». " +
                 "Si vous vous êtes trompée de fréquence, ouvrez la ligne et changez-la : pas besoin de supprimer. " +
                 "Pour feuilleter l’historique : Menu → calendrier des mois, ou les flèches à côté du mois. " +

@@ -335,6 +335,8 @@ class HomeViewModel @Inject constructor(
                 val ym = runCatching {
                     java.time.YearMonth.parse(exp.ledgerId)
                 }.getOrNull() ?: return@launch
+                val current = AppClock.currentYearMonth()
+                if (!MonthNavigation.canSelect(ym, current)) return@launch
                 monthCycleEngine.ensureMonthExists(ym)
                 selectedMonth.value = ym
             }

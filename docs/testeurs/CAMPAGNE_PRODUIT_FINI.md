@@ -1,6 +1,6 @@
 # Campagne produit fini — tests poussés sur téléphone
 
-Version cible : **`0.1.0-6.38`** (schéma Room **8**, lots A–F + frais datés).  
+Version cible : lire **`PROGRESS_LOG.md`** (journal **`0.1.0-6.42`**, schéma Room **8**).  
 **Règle d’or :** pas de « OK » sans geste **sur le téléphone branché** + preuve (`uiautomator` / screenshot dans `dist/verify/`).  
 Lire le code ne remplace **pas** le doigt. Survoler la matrice = échec de campagne.
 
@@ -11,7 +11,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 adb install -r dist/MonMoisClair-release.apk
 # ou depuis le cache Gradle release
 adb shell dumpsys package be.monmoisclair.app | grep versionName
-# doit afficher 0.1.0-6.37
+# doit afficher versionName du journal (ex. 0.1.0-6.42)
 ```
 
 ## 0. Protocol device (OBLIGATOIRE pour chaque agent)

@@ -14,6 +14,8 @@ object ExpenseOverdue {
     ): Boolean {
         if (status != ExpenseStatus.TODO) return false
         val ym = runCatching { YearMonth.parse(ledgerId) }.getOrNull() ?: return false
+        // Mois futur (aperçu) : jamais « En retard ».
+        if (ym.isAfter(YearMonth.from(today))) return false
         val dueDay = MonthDayClamp.clamp(dayOfMonth, ym)
         val due = ym.atDay(dueDay)
         return today.isAfter(due)

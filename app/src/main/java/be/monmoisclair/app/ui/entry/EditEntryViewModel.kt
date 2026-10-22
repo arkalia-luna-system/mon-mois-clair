@@ -97,6 +97,8 @@ data class EditEntryState(
     val loading: Boolean = true,
     /** Ligne absente (supprimée pendant l’ouverture). */
     val missing: Boolean = false,
+    /** Ledger d’aperçu futur : lecture seule (pas d’Enregistrer / Supprimer). */
+    val futurePreviewReadOnly: Boolean = false,
     /** Intent mail à lancer une fois (consommé par l’UI). */
     val mailDraft: CreditorMailComposer.Draft? = null
 )
@@ -563,6 +565,13 @@ class EditEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, done = true) }
                 DeleteInstanceResult.NotFound ->
                     _state.update { it.copy(saving = false, error = "Cette ligne n’est plus là.") }
+                DeleteInstanceResult.FuturePreviewBlocked ->
+                    _state.update {
+                        it.copy(
+                            saving = false,
+                            error = "Aperçu seulement — on ne supprime pas sur un mois à venir."
+                        )
+                    }
             }
         }
     }

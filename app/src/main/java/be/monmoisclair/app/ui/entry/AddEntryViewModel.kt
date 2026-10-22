@@ -70,14 +70,25 @@ class AddEntryViewModel @Inject constructor(
     private val instanceDao: InstanceDao,
     private val mutatingRepository: MutatingRepository
 ) : ViewModel() {
-    private val targetYm: YearMonth = run {
+    private val targetYm: YearMonth
+    private val clampedFromFuture: Boolean
+    init {
         val raw = savedStateHandle.get<String>("ym")
         val parsed = runCatching { YearMonth.parse(raw) }.getOrNull()
         val current = AppClock.currentYearMonth()
         when {
-            parsed == null -> current
-            parsed.isAfter(current) -> current
-            else -> parsed
+            parsed == null -> {
+                targetYm = current
+                clampedFromFuture = false
+            }
+            parsed.isAfter(current) -> {
+                targetYm = current
+                clampedFromFuture = true
+            }
+            else -> {
+                targetYm = parsed
+                clampedFromFuture = false
+            }
         }
     }
     private val _state = MutableStateFlow(
@@ -88,7 +99,12 @@ class AddEntryViewModel @Inject constructor(
             } else {
                 "Nouvelle facture ou revenu · ${DayLabelFormat.monthTitle(targetYm)}"
             },
-            nextDueMonth = targetYm.monthValue
+            nextDueMonth = targetYm.monthValue,
+            error = if (clampedFromFuture) {
+                "On ajoute sur le mois en cours — pas sur un mois à venir."
+            } else {
+                null
+            }
         )
     )
     val state: StateFlow<EntryFormState> = _state.asStateFlow()

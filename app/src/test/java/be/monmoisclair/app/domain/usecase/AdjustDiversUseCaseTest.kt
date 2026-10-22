@@ -72,4 +72,12 @@ class AdjustDiversUseCaseTest {
         assertThat(adjust("pas-un-mois", 100L))
             .isInstanceOf(AdjustDiversResult.Failed::class.java)
     }
+
+    @Test
+    fun futurePreviewMonth_isRejected() = runBlocking {
+        val result = adjust("2026-11", 500L)
+        assertThat(result).isInstanceOf(AdjustDiversResult.Failed::class.java)
+        assertThat((result as AdjustDiversResult.Failed).message).contains("Aperçu")
+        assertThat(db.monthLedgerDao().getById("2026-11")).isNull()
+    }
 }

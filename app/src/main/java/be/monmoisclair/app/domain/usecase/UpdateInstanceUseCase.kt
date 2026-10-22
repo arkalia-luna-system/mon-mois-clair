@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.MonthDayClamp
+import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.YearMonth
@@ -88,12 +89,19 @@ class UpdateInstanceUseCase @Inject constructor(
         }
         val cause = causeLabel.trim()
 
-        val exists = if (isExpense) {
-            instanceDao.getExpenseById(id) != null
+        val peekLedgerId = if (isExpense) {
+            instanceDao.getExpenseById(id)?.ledgerId
         } else {
-            instanceDao.getIncomeById(id) != null
+            instanceDao.getIncomeById(id)?.ledgerId
+        } ?: return UpdateInstanceResult.NotFound
+        val peekYm = runCatching { YearMonth.parse(peekLedgerId) }.getOrNull()
+        if (peekYm != null &&
+            MonthNavigation.isFuturePreview(peekYm, AppClock.currentYearMonth())
+        ) {
+            return UpdateInstanceResult.InvalidInput(
+                "Aperçu seulement — ouvrez le mois en cours pour modifier."
+            )
         }
-        if (!exists) return UpdateInstanceResult.NotFound
 
         return mutatingRepository.mutate(
             sideEffectsWhen = { it is UpdateInstanceResult.Success }

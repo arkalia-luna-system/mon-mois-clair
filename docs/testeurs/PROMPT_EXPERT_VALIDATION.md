@@ -27,10 +27,10 @@ Device : vérifier versionName installé = journal si claims device.
    main seulement sur demande. Prefer ./scripts/git-safe.sh (T7).
 7. Indiquer le nombre de tests RÉEL dans le résumé.
 
-## Checklist claims 6.37
+## Checklist claims (journal)
 
-- [ ] versionName 0.1.0-6.37 = PROGRESS = README = APK adb
-- [ ] Tests N/N après --rerun-tasks (= 231 si arbre 6.37 inchangé)
+- [ ] versionName journal = PROGRESS = README = APK adb
+- [ ] Tests N/N après --rerun-tasks (compter TEST-*.xml après --rerun-tasks)
 - [ ] Schéma 7 / pending ; pas de claim schéma 5 seul
 - [ ] Phrase rythme : « si » + environ ; jamais « fin prévue » ; pas sur Home
 - [ ] Pas banque / cloud / graphiques / huissier

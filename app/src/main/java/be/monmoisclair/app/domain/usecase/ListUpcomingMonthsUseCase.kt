@@ -3,6 +3,7 @@ package be.monmoisclair.app.domain.usecase
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.DossierRemaining
+import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.RecurrenceRules
 import be.monmoisclair.app.domain.model.ExpenseStatus
@@ -35,7 +36,7 @@ class ListUpcomingMonthsUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         from: YearMonth = AppClock.currentYearMonth(),
-        horizonMonths: Int = 3
+        horizonMonths: Int = MonthNavigation.FUTURE_MONTHS
     ): List<UpcomingMonth> {
         val horizon = horizonMonths.coerceIn(1, 6)
         val expenseTemplates = db.templateDao().activeExpenseTemplates()

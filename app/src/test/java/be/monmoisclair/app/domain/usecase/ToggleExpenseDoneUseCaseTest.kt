@@ -135,6 +135,23 @@ class ToggleExpenseDoneUseCaseTest {
     }
 
     @Test
+    fun toggle_futurePreviewMonth_isBlocked_withoutSideEffects() = runBlocking {
+        // Aujourd'hui = novembre ; décembre = aperçu.
+        seedExpense(
+            id = "exp-dec",
+            ledgerId = "2026-12",
+            status = ExpenseStatus.TODO
+        )
+
+        val result = useCase("exp-dec")
+        assertThat(result).isEqualTo(ToggleExpenseDoneResult.FuturePreviewBlocked)
+        assertThat(db.instanceDao().getExpenseById("exp-dec")!!.status)
+            .isEqualTo(ExpenseStatus.TODO)
+        assertThat(backupCalls.get()).isEqualTo(0)
+        assertThat(reconcileCalls.get()).isEqualTo(0)
+    }
+
+    @Test
     fun toggle_roundTrip_twice_restoresOriginalTodo() = runBlocking {
         seedExpense("exp-rt", "2026-09", ExpenseStatus.TODO)
         useCase("exp-rt")

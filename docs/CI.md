@@ -39,13 +39,24 @@ Travail quotidien = **`develop`** uniquement (voir charte §5).
 4. ⏳ Plus tard : scan CVE (ex. dependency-check) en **rapport** puis éventuellement en garde.
 5. Garder hors CI : secrets (`keystore`, `local.properties`) — déjà dans `.gitignore` / `SECURITY.md`.
 
-**Bruit Dependabot « Updates » (security) :** GitHub peut lancer un job qui tente de
-patcher des jars **transitif** (netty, bouncycastle, protobuf…) venant de l’AGP /
-des plugins Google — **pas** de nos `implementation` directs. Le job échoue alors
-avec `dependency_not_found` dans le snapshot. **Ce n’est pas le workflow CI**
-(`ci.yml` / tests unitaires). Ne pas confondre avec un build rouge : la garde
-produit reste `:app:testDebugUnitTest`. Remède possible plus tard : monter AGP /
-contraintes Gradle ciblées — pas un hotfix app.
+**Bruit Dependabot « Updates » (security) :** GitHub peut lancer un job nommé
+`gradle in /. for com.google.protobuf…, io.netty…` qui tente de patcher des jars
+**transitifs** (AGP / plugins Google) — **pas** nos `implementation` directs.
+Échec typique : `dependency_not_found` dans le snapshot. **Ce n’est pas le
+workflow CI** (`ci.yml` / tests). La garde produit reste `:app:testDebugUnitTest`.
+
+Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security Updates
+(ils sont distincts des PRs « version updates » hebdo).
+
+**Procédure Athalia (GitHub UI)** — pour faire taire le rouge sans faux correctif app :
+
+1. Ouvrir le dépôt → **Security** → **Dependabot** / alertes.
+2. Pour une alerte sur `netty` / `protobuf` / `commons-io` / `bouncycastle` **sans**
+   ligne directe dans `app/build.gradle.kts` : **Dismiss** (raison : transitive / AGP)
+   ou désactiver **Dependabot security updates** si le bruit reste permanent.
+3. Garder Dependabot **version updates** (Actions + Gradle) dans `dependabot.yml`.
+
+Plus tard éventuellement : monter AGP / contraintes Gradle ciblées — pas un hotfix app.
 
 ## Phase 4 — plus corsé (optionnel)
 

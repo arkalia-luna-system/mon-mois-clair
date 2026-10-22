@@ -29,4 +29,17 @@ class StickyStillToPayLabelTest {
             stickyWithoutUnpaidLabel(45_000L, 30_000L) { cents -> "${cents / 100} €" }
         ).isEqualTo("Après les FAIT 750 €")
     }
+
+    @Test
+    fun future_preview_uses_prevu_hides_fait_line() {
+        assertThat(
+            stickyStillToPayLabel(30_000L, hasExpenses = true, futurePreview = true) { "300 €" }
+        ).isEqualTo("Prévu 300 €")
+        assertThat(
+            stickyStillToPayLabel(0L, hasExpenses = true, futurePreview = true)
+        ).isNull()
+        assertThat(
+            stickyWithoutUnpaidLabel(45_000L, 30_000L, futurePreview = true)
+        ).isNull()
+    }
 }

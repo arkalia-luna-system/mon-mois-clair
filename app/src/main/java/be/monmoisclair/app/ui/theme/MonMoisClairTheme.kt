@@ -39,14 +39,21 @@ private val ColorScheme = lightColorScheme(
     outline = A11yTokens.FieldLine
 )
 
-/** Champs, dialogues et sheets : 12 dp partout (One UI / lisibilité). */
+/**
+ * Trois rayons, pas un seul.
+ * Boutons = [Shapes.small] 12 dp. Cartes = [Shapes.medium] 16 dp.
+ * Pastilles = [StampShape] (capsule). Feuilles = [Shapes.extraLarge].
+ */
 private val AppShapes = Shapes(
-    extraSmall = RoundedCornerShape(12.dp),
+    extraSmall = RoundedCornerShape(8.dp),
     small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(12.dp),
-    extraLarge = RoundedCornerShape(12.dp)
+    medium = RoundedCornerShape(16.dp),
+    large = RoundedCornerShape(16.dp),
+    extraLarge = RoundedCornerShape(28.dp)
 )
+
+/** Tampon (Accord, En retard, jour). Pas un bouton. */
+val StampShape = RoundedCornerShape(50)
 
 /** Source Serif 4 — chiffre, et le nom de l’app. OFL Adobe. */
 internal val BrandSerif = FontFamily(
@@ -63,67 +70,72 @@ private val UiSans = FontFamily(
     Font(R.font.source_sans3_semibold, FontWeight.Bold)
 )
 
+/** Chiffres de même chasse : 1 111,11 € et 9,00 € s’alignent. */
+private const val TabularFigures = "tnum"
+
+private fun TextStyle.tabular(): TextStyle = copy(fontFeatureSettings = TabularFigures)
+
 private val AppTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = BrandSerif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 34.sp,
         color = A11yTokens.Ink
-    ),
+    ).tabular(),
     headlineMedium = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 30.sp,
         color = A11yTokens.Ink
-    ),
+    ).tabular(),
     titleLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minTitleSp.value.sp,
         lineHeight = 28.sp,
         color = A11yTokens.Ink
-    ),
+    ).tabular(),
     bodyLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.Normal,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.Ink,
         lineHeight = 26.sp
-    ),
+    ).tabular(),
     bodyMedium = TextStyle(
         fontFamily = UiSans,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.InkMuted,
         lineHeight = 24.sp
-    ),
+    ).tabular(),
     // Pas de couleur figée : les boutons Primary doivent hériter de
     // LocalContentColor (crème sur vert), pas d’Ink sombre illisible.
     labelLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minBodySp
-    ),
+    ).tabular(),
     // Libellés flottants OutlinedTextField (≥ 18 sp, charte a11y).
     titleSmall = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.Ink
-    ),
+    ).tabular(),
     bodySmall = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.Normal,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.InkMuted,
         lineHeight = 24.sp
-    ),
+    ).tabular(),
     labelSmall = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.Medium,
         fontSize = A11yTokens.minBodySp,
         color = A11yTokens.InkMuted
-    )
+    ).tabular()
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

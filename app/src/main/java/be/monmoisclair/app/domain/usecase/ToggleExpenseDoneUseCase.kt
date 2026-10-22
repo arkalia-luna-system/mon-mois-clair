@@ -4,7 +4,9 @@ import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,12 +20,15 @@ sealed class ToggleExpenseDoneResult {
     ) : ToggleExpenseDoneResult()
 
     data object NotFound : ToggleExpenseDoneResult()
+
+    /** Mois futur (aperçu) : pas de FAIT tant que ce n’est pas le mois calendaire. */
+    data object FuturePreviewBlocked : ToggleExpenseDoneResult()
 }
 
 /**
  * Bascule FAIT : TODO ↔ DONE.
- * Autorisé sur **tout** mois déjà généré (courant ou précédent) —
- * pas de verrouillage lecture seule (oubli de cocher le 28).
+ * Autorisé sur mois courant ou passé déjà généré (oubli de cocher le 28).
+ * Refusé sur mois futur d’aperçu (M+1…M+[FUTURE_MONTHS]).
  *
  * Passe par [MutatingRepository] → backup SAF + reconcile rappels
  * uniquement si une mutation réelle a lieu.
@@ -38,8 +43,10 @@ class ToggleExpenseDoneUseCase @Inject constructor(
 
     suspend operator fun invoke(expenseId: String): ToggleExpenseDoneResult {
         // Évite backup/reconcile inutiles si l'id n'existe pas.
-        if (instanceDao.getExpenseById(expenseId) == null) {
-            return ToggleExpenseDoneResult.NotFound
+        val peek = instanceDao.getExpenseById(expenseId)
+            ?: return ToggleExpenseDoneResult.NotFound
+        if (isFuturePreviewLedger(peek.ledgerId)) {
+            return ToggleExpenseDoneResult.FuturePreviewBlocked
         }
 
         return mutatingRepository.mutate(
@@ -47,6 +54,9 @@ class ToggleExpenseDoneUseCase @Inject constructor(
         ) {
             val existing = instanceDao.getExpenseById(expenseId)
                 ?: return@mutate ToggleExpenseDoneResult.NotFound
+            if (isFuturePreviewLedger(existing.ledgerId)) {
+                return@mutate ToggleExpenseDoneResult.FuturePreviewBlocked
+            }
 
             val updated = flip(existing)
             instanceDao.updateExpense(updated)
@@ -71,6 +81,9 @@ class ToggleExpenseDoneUseCase @Inject constructor(
     suspend fun markDoneIfTodo(expenseId: String): ToggleExpenseDoneResult {
         val existing = instanceDao.getExpenseById(expenseId)
             ?: return ToggleExpenseDoneResult.NotFound
+        if (isFuturePreviewLedger(existing.ledgerId)) {
+            return ToggleExpenseDoneResult.FuturePreviewBlocked
+        }
         if (existing.status == ExpenseStatus.DONE) {
             return ToggleExpenseDoneResult.Toggled(
                 expenseId = existing.id,
@@ -81,6 +94,11 @@ class ToggleExpenseDoneUseCase @Inject constructor(
             )
         }
         return invoke(expenseId)
+    }
+
+    private fun isFuturePreviewLedger(ledgerId: String): Boolean {
+        val ym = runCatching { YearMonth.parse(ledgerId) }.getOrNull() ?: return false
+        return MonthNavigation.isFuturePreview(ym, AppClock.currentYearMonth())
     }
 
     private fun flip(expense: ExpenseInstanceEntity): ExpenseInstanceEntity {

@@ -9,15 +9,29 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.41** (aperçu mois futurs) |
+| Dernière étape terminée | **6.42** (sync futurs + Soldés + dist famille) |
 | Étape en cours | — |
 | Prochaine sous-étape | — S26 maman optionnel |
-| Audit premium | Feedback 6.39–6.41 · **240/240** |
+| Audit premium | Feedback 6.39–6.42 · **245/245** |
 | Règle agents | **Un seul Gradle** à la fois (sinon `R` / merge resources cassés). Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-22 — 6.42 Sync mois futurs + Soldés + dist
+
+**Vu :** ledger futur déjà ouvert n’accueillait pas une nouvelle facture ; Soldés toujours dépliés ; doc famille mince ; Dependabot Security rouge ≠ CI.
+
+**Codé :**
+- `MonthCycleEngine` : sync templates manquants sur `AlreadyExists` (montants/FAIT inchangés)
+- Mes dossiers : « Soldés » **replié** par défaut
+- Aide : fréquences + aperçu futur ; `docs/DISTRIBUTION_FAMILLE.md` enrichi
+- CI/SECURITY : procédure Dependabot Security (pas de faux fix yml)
+- Aperçu 6.41 durci : sticky « Prévu », sheet Courses fermée, pas d’« En retard » futur, gardes Update/Delete, highlight borné
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **245/245** (61 fichiers).  
+**Version :** `0.1.0-6.42` · `versionCode` 47.
 
 ### 2026-10-22 — 6.41 Aperçu mois futurs (feedback §4)
 
@@ -29,7 +43,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 - Aide + tests navigation mis à jour
 - Doc CI : bruit Dependabot security ≠ échec `ci.yml`
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **240/240** (61 fichiers).  
+**Suite (trous aperçu) :** voir durcissement listé sous **6.42** (même passe).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **240/240** à la livraison nav ; **245/245** après gardes (journal 6.42).  
 **Version :** `0.1.0-6.41` · `versionCode` 46.
 
 ### 2026-10-22 — 6.40 Polish sticky (smoke 6.39)

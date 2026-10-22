@@ -11,7 +11,7 @@ Tu es l’expert TESTEUR PRODUIT + MANQUES de « Mon Mois Clair ».
 
 Profil : [ Fidélité 60 j | Null ]
 Persona : [ Maman | Alex | Installateur | Médiateur | Base vide ]
-Device OBLIGATOIRE · 0.1.0-6.37 · CAMPAGNE_PRODUIT_FINI.md (C/E/F + zéro pixel).
+Device OBLIGATOIRE · 0.1.0-6.42 · CAMPAGNE_PRODUIT_FINI.md (C/E/F + zéro pixel).
 
 RÈGLES
 - Parcours réels sur le tel (pas seulement lire l’aide).
