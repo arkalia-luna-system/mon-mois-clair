@@ -232,8 +232,7 @@ fun AppNavHost(
         }
         composable(AppRoute.HowItWorks) {
             HowItWorksScreen(
-                onBack = { navController.popBackStack() },
-                onOpenSupport = { navController.navigate(AppRoute.SettingsHelp) }
+                onBack = { navController.popBackStack() }
             )
         }
         composable(AppRoute.ReminderHealth) {

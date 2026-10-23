@@ -32,8 +32,7 @@ import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 fun HowItWorksScreen(
-    onBack: () -> Unit,
-    @Suppress("UNUSED_PARAMETER") onOpenSupport: (() -> Unit)? = null
+    onBack: () -> Unit
 ) {
     val fit = rememberDisplayFit()
     val sectionGap = if (fit.compactHomeChrome) 12.dp else 16.dp

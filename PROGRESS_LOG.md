@@ -43,6 +43,8 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 **Version :** `0.1.0-6.74` · `versionCode` 79.  
 **Pas un claim « premium parfait ».**
 
+**Micro-passe post push :** retire `SettingsViewModel.writeSupportMail` mort + param `HowItWorks.onOpenSupport` (contact = Menu Accueil seul).
+
 ### 2026-10-23 — 6.73 Correctifs audit premium 6.72 (code)
 
 **P0/P1 codés (sans smoke téléphone) :**
