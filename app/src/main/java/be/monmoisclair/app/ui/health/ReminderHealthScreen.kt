@@ -108,7 +108,7 @@ fun ReminderHealthScreen(
                         .fillMaxWidth()
                         .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), MaterialTheme.shapes.medium)
                         .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
-                        .padding(12.dp)
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
                 )
             }
             if (r.isFullyHealthy) {

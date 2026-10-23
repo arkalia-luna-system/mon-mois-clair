@@ -47,6 +47,7 @@ fun HomeMenuSheet(
     onOpenSupport: () -> Unit = {}
 ) {
     val showDossiers = dossierCount > 0 || pendingLetterCount > 0
+    // Libellé court « Dossiers » (= PageTitle « Mes dossiers » / Aide).
     val menuDossierLabel = when {
         dossierCount > 0 && pendingLetterCount > 0 ->
             "Dossiers ($dossierCount) · $pendingLetterCount courrier" +

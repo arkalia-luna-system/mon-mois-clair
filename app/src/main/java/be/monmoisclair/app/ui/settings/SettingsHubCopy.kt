@@ -18,7 +18,7 @@ object SettingsHubCopy {
     const val PRIVACY = "Confidentialité"
     const val ALERTS = "Alertes"
     const val DEADLINES = "Échéances hors ce mois"
-    const val SUMMARY = "Résumé → Mes dossiers"
+    const val SUMMARY = "Résumé → Dossiers"
     const val BACKUP = "Sauvegarde"
     const val HELP = "Aide"
 

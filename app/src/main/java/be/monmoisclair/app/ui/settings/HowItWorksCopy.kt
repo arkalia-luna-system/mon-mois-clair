@@ -47,12 +47,12 @@ object HowItWorksCopy {
             title = "Retard ou accord",
             body = "Plan (à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +
                 "pas le total de la dette. Chaque FAIT baisse le reste. " +
-                "Menu → Mes dossiers. Résumé texte/PDF pour créancier."
+                "Menu → Dossiers. Résumé texte/PDF pour créancier."
         ),
         Section(
             title = "Mettre de côté",
-            body = "Ligne sous le Reste (comme Courses), ou Réglages pour le jour. " +
-                "FAIT = virement fait. Pas d’argent dans l’app."
+            body = "Ligne sous le Reste (sticky, comme Courses ; sinon derrière Plus). " +
+                "Ou Réglages pour le jour. FAIT = virement fait. Pas d’argent dans l’app."
         ),
         Section(
             title = "Sur une année",

@@ -1,12 +1,12 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-23 (état code : **6.72**).  
+Date : 2026-10-23 (état code : **6.73**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.71** calendrier · **6.72** PageTitle · widget/notif · sticky · snackbar FAIT · contact Menu Arkalia · épargne Accueil |
+| **Fait** | … · **6.72** PageTitle / sticky / snackbar / contact · **6.73** photo multi-ligne · sticky S26 Plus · copy Dossiers/Aide · À venir cartes |
 | **Pas fait** | S26 en main · biométrie / widget home / scan caméra au doigt · claim premium terminé · scission god-files |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
@@ -68,11 +68,11 @@ Prochain geste produit : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md). Smoke :
 
 | Page | À modifier ? |
 |------|----------------|
-| Accueil | Sticky PaperWarm · Courses + Mettre de côté · snackbar sous sticky · pas logo |
-| Menu | PageTitle · QuietLink contact Arkalia · pas Aide/Restore |
-| Réglages, Aide | Hub 3 groupes · Aide sans doublon contact · HowItWorks corps courts |
-| À venir | Liste → détail (6.70) |
-| Alertes | PageTitle · intro courte · pastilles |
-| Widget | Pads / filet / 36 sp Reste |
+| Accueil | Sticky PaperWarm · Courses ; épargne sticky ou derrière Plus (compact) · snackbar compact · pas logo |
+| Menu | PageTitle · Dossiers (N) · QuietLink contact Arkalia · pas Aide/Restore |
+| Réglages, Aide | Hub 3 groupes · Aide « Menu → Dossiers » · HowItWorks corps courts |
+| À venir | Liste → détail cartes papier (sans FAIT) |
+| Alertes | PageTitle · DeviceCare court · pastilles |
+| Widget | Pads / filet / 36 sp Reste (inchangé 6.73) |
 
 Volontairement dehors : banque, catégories, graphiques, grille calendrier, OCR montant, synchro, thème fluo.

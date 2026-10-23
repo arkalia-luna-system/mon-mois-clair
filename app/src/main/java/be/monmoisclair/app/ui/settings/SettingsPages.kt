@@ -434,13 +434,13 @@ fun SettingsSummaryScreen(
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.SUMMARY)
         Text(
-            text = "Texte ou PDF pour un créancier ou un conseiller — dans Mes dossiers.",
+            text = "Texte ou PDF pour un créancier ou un conseiller — dans Dossiers.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
         )
         QuietLinkA11y(
-            text = "Ouvrir Mes dossiers",
+            text = "Ouvrir Dossiers",
             onClick = onOpenDossiers
         )
     }

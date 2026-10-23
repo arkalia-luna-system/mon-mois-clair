@@ -9,15 +9,31 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.72** (typo PageTitle · sticky/widget/notif · snackbar · contact Menu · épargne Accueil) |
+| Dernière étape terminée | **6.73** (audit 6.72 P0/P1 code · photo multi-ligne · sticky S26 · copy) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt 6.72 (notif icon · snackbar · épargne sticky · Menu contact) · S26 · claim premium non |
-| Audit premium | Matrice **6.68–6.72** · **pas** « premium parfait » · **304/304** |
+| Prochaine sous-étape | Smoke doigt 6.73 (photo loyer3 · sticky Plus épargne · snackbar · notif) · S26 · claim premium non |
+| Audit premium | Matrice **6.68–6.73** · **pas** « premium parfait » · **305/305** |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.73 Correctifs audit premium 6.72 (code)
+
+**P0/P1 codés (sans smoke téléphone) :**
+1. **Photo** : `ReceiptPhotoStore.resolvedPath` — chaîne multi-lignes (loyer3 webp+PDF) avant sanitize/VIEW/decode ; fiche « Ouvrir à part » si décode échoue.
+2. **Sticky** : chrome compact ≤800 dp → épargne derrière **Plus** ; paddings resserrés ; › moins fort ; Courses reste visible.
+3. **Snackbar FAIT** : message court « Noté FAIT » ; bandeau `wrapContentWidth` (plus de barre pleine largeur).
+4. **Calendrier** : `CarnetPageTitle` « Choisir un mois ».
+5. **Aide / Menu / Dossiers** : « Menu → Dossiers » ; PageTitle Dossiers ; Soldés = SectionTitle InkMuted.
+6. **Fiche** : tips raccourcis ; pas de doublon reste/rythme dans Accord si déjà au-dessus.
+7. **À venir** détail : cartes papier type Accueil (sans FAIT).
+8. **Alertes** : `DeviceCareCopy.HINT` raccourci.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **305/305** (72 fichiers, 0 failure).  
+**Version :** `0.1.0-6.73` · `versionCode` 78.  
+**Pas un claim « premium parfait »** — smoke doigt (photo / S26 / notif) encore requis.
 
 ### 2026-10-23 — 6.72 Typo PageTitle · polish signalés · contact · épargne Accueil
 

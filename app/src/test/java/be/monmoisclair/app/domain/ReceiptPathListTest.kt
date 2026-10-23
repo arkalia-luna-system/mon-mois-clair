@@ -46,4 +46,20 @@ class ReceiptPathListTest {
         assertThat(hasReceipt).isTrue()
         assertThat(primary).isEqualTo("receipts/loyer3.webp")
     }
+
+    @Test
+    fun loyer3_multiLine_sanitizeNeedsPrimaryFirst() {
+        val raw = "receipts/loyer3.webp\nreceipts/loyer3-pdf.pdf"
+        // sanitize refuse la chaîne entière (slash / endsWith .pdf) — ouvrir = primary seul.
+        assertThat(
+            be.monmoisclair.app.data.backup.BackupSecurityArchive.sanitizeReceiptPath(raw)
+        ).isNull()
+        val primary = ReceiptPathList.primaryPhotoOrFirst(raw) {
+            be.monmoisclair.app.data.backup.BackupSecurityArchive.isPdfReceiptPath(it)
+        }
+        assertThat(primary).isEqualTo("receipts/loyer3.webp")
+        assertThat(
+            be.monmoisclair.app.data.backup.BackupSecurityArchive.sanitizeReceiptPath(primary)
+        ).isEqualTo("receipts/loyer3.webp")
+    }
 }

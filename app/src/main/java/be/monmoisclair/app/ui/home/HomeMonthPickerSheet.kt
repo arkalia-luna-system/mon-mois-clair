@@ -34,6 +34,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -78,11 +79,7 @@ fun HomeMonthPickerSheet(
                 .padding(horizontal = A11yTokens.screenPadding)
                 .padding(bottom = 8.dp)
         ) {
-            Text(
-                text = "Choisir un mois",
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
+            CarnetPageTitle("Choisir un mois", withTopSpacer = false)
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Passé et à venir (~2 ans). Futur = aperçu, sans FAIT.",

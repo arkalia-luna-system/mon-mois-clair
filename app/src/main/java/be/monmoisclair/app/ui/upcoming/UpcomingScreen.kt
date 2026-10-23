@@ -1,16 +1,18 @@
 package be.monmoisclair.app.ui.upcoming
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -20,10 +22,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -128,6 +132,8 @@ fun UpcomingScreen(
 
 @Composable
 private fun UpcomingMonthDetail(month: UpcomingMonth) {
+    val fit = rememberDisplayFit()
+    val compact = fit.compactHomeChrome
     CarnetPageTitle(month.monthLabel)
     Text(
         text = "Lecture seule — pas de FAIT ici.",
@@ -135,17 +141,17 @@ private fun UpcomingMonthDetail(month: UpcomingMonth) {
         color = A11yTokens.InkMuted,
         modifier = Modifier.fillMaxWidth()
     )
-    Spacer(modifier = Modifier.height(8.dp))
-    HorizontalDivider(color = A11yTokens.PaperBorder)
-    Spacer(modifier = Modifier.height(8.dp))
-    month.lines.forEach { line ->
-        UpcomingLineRow(line)
-        Spacer(modifier = Modifier.height(10.dp))
+    Spacer(modifier = Modifier.height(if (compact) 8.dp else 12.dp))
+    Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
+        month.lines.forEach { line ->
+            UpcomingLineCard(line = line, compact = compact)
+        }
     }
 }
 
+/** Densité type Accueil (carte papier) — sans FAIT ni actions. */
 @Composable
-private fun UpcomingLineRow(line: UpcomingLine) {
+private fun UpcomingLineCard(line: UpcomingLine, compact: Boolean) {
     val signed = MoneyFormat.formatSignedCents(line.amountCents, isExpense = !line.isIncome)
     val hint = buildString {
         append(if (line.isIncome) "Revenu" else "Dépense")
@@ -153,27 +159,54 @@ private fun UpcomingLineRow(line: UpcomingLine) {
         if (line.cadenceHint.isNotBlank()) append(" · ${line.cadenceHint}")
         append(" · le ${line.dayOfMonth}")
     }
-    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = line.label,
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.Ink,
-                modifier = Modifier.weight(1f)
+    val shape = MaterialTheme.shapes.medium
+    val rowPad = if (compact) 10.dp else 14.dp
+    Surface(
+        color = A11yTokens.PaperCard,
+        shape = shape,
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 2.dp,
+                shape = shape,
+                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
+                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
             )
+            .border(1.dp, A11yTokens.PaperBorder, shape)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = A11yTokens.minTouchHeight)
+                .padding(rowPad),
+            verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = line.label,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink,
+                    maxLines = if (compact) 1 else 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = signed,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = if (line.isIncome) A11yTokens.AccentOkInk else A11yTokens.Ink
+                )
+            }
             Text(
-                text = signed,
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (line.isIncome) A11yTokens.AccentOkInk else A11yTokens.Ink
+                text = hint,
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
-        Text(
-            text = hint,
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
-        )
     }
 }

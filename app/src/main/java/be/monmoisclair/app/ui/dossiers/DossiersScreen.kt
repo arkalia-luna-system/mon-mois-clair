@@ -44,6 +44,7 @@ import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 import be.monmoisclair.app.domain.usecase.DossierListItem
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSectionTitle
+import be.monmoisclair.app.ui.components.CarnetTitleTokens
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -84,7 +85,7 @@ fun DossiersScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        CarnetPageTitle("Mes dossiers")
+        CarnetPageTitle("Dossiers")
         Text(
             text = "Reste dû des accords — pas sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
@@ -172,10 +173,11 @@ fun DossiersScreen(
                         "Soldés (${settledItems.size}) ▾"
                     }
                 HorizontalDivider(color = A11yTokens.PaperBorder)
+                // Même rythme SectionTitle qu’« En cours » (InkMuted), disclosure ▾/▴.
                 Text(
                     text = settledHeaderLabel,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.Ink,
+                    style = CarnetTitleTokens.sectionTitleStyle(MaterialTheme.typography),
+                    color = A11yTokens.InkMuted,
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = A11yTokens.minTouchHeight)

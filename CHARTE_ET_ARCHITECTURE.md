@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-23 (lot **6.72** — typo PageTitle · sticky/widget/notif · contact Menu · épargne Accueil).
+Mise à jour : 2026-10-23 (lot **6.73** — correctifs audit 6.72 : photo · sticky compact · copy).
 
 ## 1. Vision
 
@@ -26,7 +26,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
 | ‹ **mois** › + icône **calendrier** (tap → « Choisir un mois ») puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
-| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Mes dossiers** (si N>0) · **Choisir un mois ›** · QuietLink contact bas (« Un souci… » → Arkalia Système). Titre « Menu » = PageTitle InkMuted. **Pas** Aide/Restore dans Menu |
+| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Dossiers** (si N>0) · **Choisir un mois ›** · QuietLink contact bas (« Un souci… » → Arkalia Système). Titre « Menu » = PageTitle InkMuted. **Pas** Aide/Restore dans Menu |
 | Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
 
 **Calendrier mois (6.71)** : feuille carnet (années + pastilles), **pas** agenda Google ni grille 31 jours. Horizon ~**24 mois** passé + **24 mois** futur (assez pour une facture annuelle l’année suivante). Futur = aperçu. **Pas** de logo / wordmark / nom d’app sur le sticky Accueil.
@@ -38,7 +38,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
 | **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
 | **Courses** (tap ≥48) | Montant divers du mois ; ouvre la sheet d’édition | Toujours hors aperçu futur (`Courses` ou `Courses X € · après Y €`) |
-| **Mettre de côté** (tap ≥48) | Forfait mensuel ; sheet montant (jour/retrait = Réglages) | Toujours hors aperçu futur — **pas** 2ᵉ hero |
+| **Mettre de côté** (tap ≥48) | Forfait mensuel ; sheet montant (jour/retrait = Réglages) | Hors aperçu futur — **pas** 2ᵉ hero ; chrome compact (≤800 dp) : derrière **Plus** (accessible) |
 | **Après les FAIT** · alertes / courriers | Détail | Derrière **Plus / Moins** (pas de mini-dashboard) |
 
 Courses / épargne : sheets depuis le sticky (›). Pas de 2ᵉ formulaire en bas de liste ; pas de logo / wordmark sur le sticky.
@@ -93,6 +93,7 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.70** | Menu mois récents/autres · À venir liste→détail · hub 3 groupes | ✅ |
 | **6.71** | Calendrier mois Accueil · Menu lien calendrier · widget carnet · horizon ~2 ans | ✅ |
 | **6.72** | PageTitle InkMuted · widget/notif · sticky · snackbar FAIT · contact Menu · épargne Accueil | ✅ |
+| **6.73** | Photo multi-ligne · sticky S26 Plus · snackbar compact · Dossiers/Aide · À venir cartes | ✅ |
 
 ## 5. Branches Git (verrouillé)
 

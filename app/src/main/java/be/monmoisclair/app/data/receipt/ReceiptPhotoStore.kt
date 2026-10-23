@@ -11,6 +11,7 @@ import androidx.exifinterface.media.ExifInterface
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.backup.BackupSecurityArchive
 import be.monmoisclair.app.data.backup.SafBackupStore
+import be.monmoisclair.app.domain.ReceiptPathList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -28,8 +29,20 @@ class ReceiptPhotoStore @Inject constructor(
 
     fun relativePdfPathFor(ownerId: String) = "receipts/$ownerId.pdf"
 
+    /**
+     * Un seul chemin `receipts/…` — refuse les chaînes multi-lignes brutes
+     * (ex. loyer3 webp+PDF) qui faisaient échouer [sanitizeReceiptPath] / VIEW.
+     */
+    fun resolvedPath(relativePath: String): String {
+        val paths = ReceiptPathList.parse(relativePath)
+        if (paths.isEmpty()) return relativePath.trim()
+        if (paths.size == 1) return paths[0]
+        return paths.firstOrNull { !BackupSecurityArchive.isPdfReceiptPath(it) }
+            ?: paths[0]
+    }
+
     fun isPdf(relativePath: String): Boolean =
-        BackupSecurityArchive.isPdfReceiptPath(relativePath)
+        BackupSecurityArchive.isPdfReceiptPath(resolvedPath(relativePath))
 
     suspend fun saveFromUri(expenseId: String, source: Uri): PhotoSaveResult {
         val bytes = context.contentResolver.openInputStream(source)?.use {
@@ -82,16 +95,20 @@ class ReceiptPhotoStore @Inject constructor(
         return savePdfBytes(ownerId, bytes)
     }
 
-    suspend fun openUri(relativePath: String): Uri? =
-        if (relativePath.isBlank()) null else safBackupStore.uriForRelative(relativePath)
+    suspend fun openUri(relativePath: String): Uri? {
+        val path = resolvedPath(relativePath)
+        if (path.isBlank()) return null
+        return safBackupStore.uriForRelative(path)
+    }
 
     /**
      * URI pour [Intent.ACTION_VIEW] : Documents si présent, sinon FileProvider local.
      */
     suspend fun viewUri(relativePath: String): Uri? {
-        if (relativePath.isBlank()) return null
-        openUri(relativePath)?.let { return it }
-        val file = localFile(relativePath) ?: return null
+        val path = resolvedPath(relativePath)
+        if (path.isBlank()) return null
+        openUri(path)?.let { return it }
+        val file = localFile(path) ?: return null
         if (!file.isFile) return null
         return FileProvider.getUriForFile(
             context,
@@ -101,7 +118,8 @@ class ReceiptPhotoStore @Inject constructor(
     }
 
     fun viewIntent(uri: Uri, relativePath: String): Intent {
-        val mime = BackupSecurityArchive.mimeForReceiptPath(relativePath) ?: "*/*"
+        val path = resolvedPath(relativePath)
+        val mime = BackupSecurityArchive.mimeForReceiptPath(path) ?: "*/*"
         return Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(uri, mime)
             clipData = android.content.ClipData.newRawUri("", uri)
@@ -112,12 +130,13 @@ class ReceiptPhotoStore @Inject constructor(
     /**
      * Décode dans l’app : **copie locale d’abord** (fiable), puis Documents.
      * Évite un fichier SAF tronqué / non rewindable qui masquait une bonne copie locale.
-     * Pas pour un PDF.
+     * Pas pour un PDF. Tolère une chaîne multi-lignes (photo d’abord).
      */
     suspend fun decodeBitmap(relativePath: String): Bitmap? {
-        if (relativePath.isBlank() || isPdf(relativePath)) return null
-        readLocal(relativePath)?.let { return it }
-        openUri(relativePath)?.let { uri ->
+        val path = resolvedPath(relativePath)
+        if (path.isBlank() || isPdf(path)) return null
+        readLocal(path)?.let { return it }
+        openUri(path)?.let { uri ->
             runCatching {
                 context.contentResolver.openInputStream(uri)?.use { decodeImageStream(it) }
             }.getOrNull()?.let { return it }
@@ -126,7 +145,8 @@ class ReceiptPhotoStore @Inject constructor(
     }
 
     private fun localFile(relativePath: String): File? {
-        val safe = BackupSecurityArchive.sanitizeReceiptPath(relativePath) ?: return null
+        val safe = BackupSecurityArchive.sanitizeReceiptPath(resolvedPath(relativePath))
+            ?: return null
         return File(context.filesDir, safe)
     }
 

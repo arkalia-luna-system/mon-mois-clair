@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -267,11 +268,7 @@ fun HomeScreen(
             faitUndoActive = true
             try {
                 val result = snackbarHostState.showSnackbar(
-                    message = if (markingDone) {
-                        "Noté FAIT — la ligne reste"
-                    } else {
-                        "Remis à payer"
-                    },
+                    message = if (markingDone) "Noté FAIT" else "Remis à payer",
                     actionLabel = "Annuler",
                     withDismissAction = true,
                     duration = SnackbarDuration.Short
@@ -636,79 +633,43 @@ fun HomeScreen(
                     afterDiversCents = state.afterDiversCents,
                     futurePreview = state.isFuturePreview
                 )?.let { coursesLabel ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .clickable(
-                                role = Role.Button,
-                                onClickLabel = "Modifier les courses"
-                            ) { coursesSheetOpen = true }
-                            .padding(vertical = 4.dp)
-                            .semantics {
-                                contentDescription = if (state.diversSpentCents > 0L) {
-                                    "$coursesLabel. Modifier les courses"
-                                } else {
-                                    "Courses. Noter un montant"
-                                }
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = coursesLabel,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = when {
-                                state.diversSpentCents > 0L && state.afterDiversCents < 0L ->
-                                    A11yTokens.DangerInk
-                                else -> A11yTokens.InkMuted
-                            },
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "›",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = A11yTokens.Link
-                        )
-                    }
+                    StickyLinkRow(
+                        label = coursesLabel,
+                        labelColor = when {
+                            state.diversSpentCents > 0L && state.afterDiversCents < 0L ->
+                                A11yTokens.DangerInk
+                            else -> A11yTokens.InkMuted
+                        },
+                        compact = fit.compactHomeChrome,
+                        onClickLabel = "Modifier les courses",
+                        contentDescription = if (state.diversSpentCents > 0L) {
+                            "$coursesLabel. Modifier les courses"
+                        } else {
+                            "Courses. Noter un montant"
+                        },
+                        onClick = { coursesSheetOpen = true }
+                    )
                 }
-                stickySavingsLabel(
+                // S26 / hauteur courte : épargne derrière Plus (toujours accessible).
+                val savingsLabelSticky = stickySavingsLabel(
                     savingsMonthlyCents = state.savingsMonthlyCents,
                     futurePreview = state.isFuturePreview
-                )?.let { savingsLabel ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .clickable(
-                                role = Role.Button,
-                                onClickLabel = "Modifier mettre de côté"
-                            ) { savingsSheetOpen = true }
-                            .padding(vertical = 4.dp)
-                            .semantics {
-                                contentDescription = if (state.savingsMonthlyCents > 0L) {
-                                    "$savingsLabel. Modifier"
-                                } else {
-                                    "Mettre de côté. Choisir un montant"
-                                }
+                )
+                val savingsBehindPlus =
+                    fit.compactHomeChrome && savingsLabelSticky != null
+                if (!savingsBehindPlus) {
+                    savingsLabelSticky?.let { savingsLabel ->
+                        StickyLinkRow(
+                            label = savingsLabel,
+                            labelColor = A11yTokens.InkMuted,
+                            compact = fit.compactHomeChrome,
+                            onClickLabel = "Modifier mettre de côté",
+                            contentDescription = if (state.savingsMonthlyCents > 0L) {
+                                "$savingsLabel. Modifier"
+                            } else {
+                                "Mettre de côté. Choisir un montant"
                             },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = savingsLabel,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "›",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = A11yTokens.Link
+                            onClick = { savingsSheetOpen = true }
                         )
                     }
                 }
@@ -739,7 +700,8 @@ fun HomeScreen(
                 val hasStickyExtras = afterFaitLabel != null ||
                     needIncomeTip ||
                     state.nextMonthWarning != null ||
-                    state.pendingLetterCount > 0
+                    state.pendingLetterCount > 0 ||
+                    savingsBehindPlus
                 if (hasStickyExtras) {
                     val detailsLabel = if (stickyDetailsOpen) "Moins" else "Plus"
                     Row(
@@ -780,6 +742,22 @@ fun HomeScreen(
                     Column(
                         verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
                     ) {
+                        if (savingsBehindPlus) {
+                            savingsLabelSticky?.let { savingsLabel ->
+                                StickyLinkRow(
+                                    label = savingsLabel,
+                                    labelColor = A11yTokens.InkMuted,
+                                    compact = true,
+                                    onClickLabel = "Modifier mettre de côté",
+                                    contentDescription = if (state.savingsMonthlyCents > 0L) {
+                                        "$savingsLabel. Modifier"
+                                    } else {
+                                        "Mettre de côté. Choisir un montant"
+                                    },
+                                    onClick = { savingsSheetOpen = true }
+                                )
+                            }
+                        }
                         afterFaitLabel?.let { label ->
                             Text(
                                 text = label,
@@ -840,7 +818,7 @@ fun HomeScreen(
                                     .heightIn(min = A11yTokens.minTouchHeight)
                                     .clickable(
                                         role = Role.Button,
-                                        onClickLabel = "Ouvrir Mes dossiers"
+                                        onClickLabel = "Ouvrir Dossiers"
                                     ) { onOpenDossiers() }
                                     .semantics {
                                         liveRegion = LiveRegionMode.Polite
@@ -855,13 +833,13 @@ fun HomeScreen(
             // Un seul filet sous le sticky (plus de double séparateur dégradé + divider).
             HorizontalDivider(color = A11yTokens.PaperBorder)
 
-            // FAIT : bandeau papier compact sous le sticky (pas barre basse géante).
+            // FAIT : bandeau papier compact sous le sticky (pas barre pleine largeur).
             SnackbarHost(
                 hostState = snackbarHostState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = fit.screenPadding)
-                    .padding(top = 6.dp, bottom = 2.dp)
+                    .padding(top = 4.dp, bottom = 2.dp)
             ) { data ->
                 Snackbar(
                     snackbarData = data,
@@ -870,7 +848,7 @@ fun HomeScreen(
                     contentColor = A11yTokens.Ink,
                     actionColor = A11yTokens.Link,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .wrapContentWidth()
                         .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.small)
                 )
             }
@@ -1158,6 +1136,42 @@ fun HomeScreen(
                 }
             }
         }
+    }
+}
+
+/** Ligne sticky Courses / épargne — padding serré, ellipsis, › discret. */
+@Composable
+private fun StickyLinkRow(
+    label: String,
+    labelColor: Color,
+    compact: Boolean,
+    onClickLabel: String,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = A11yTokens.minTouchHeight)
+            .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
+            .padding(vertical = if (compact) 2.dp else 4.dp)
+            .semantics { this.contentDescription = contentDescription },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = labelColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = "›",
+            style = MaterialTheme.typography.titleLarge,
+            color = A11yTokens.Link
+        )
     }
 }
 

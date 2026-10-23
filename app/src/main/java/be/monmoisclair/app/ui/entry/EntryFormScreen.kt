@@ -672,8 +672,8 @@ fun EditEntryScreen(
                         else -> {
                             val photoErrShape = MaterialTheme.shapes.medium
                             val photoErr =
-                                "Impossible d’ouvrir cette photo. " +
-                                    "Reprenez-en une avec le bouton ci-dessous."
+                                "Impossible d’afficher cette photo ici. " +
+                                    "Essayez « Ouvrir à part », ou reprenez-en une."
                             Text(
                                 text = photoErr,
                                 style = MaterialTheme.typography.bodyLarge,
@@ -692,6 +692,16 @@ fun EditEntryScreen(
                                         contentDescription = photoErr
                                     }
                             )
+                            val openPath = dialogPath?.takeIf { it.isNotBlank() }
+                                ?: state.receiptRelativePath.takeIf { it.isNotBlank() }
+                            if (openPath != null) {
+                                SecondaryA11yButton(
+                                    text = "Ouvrir à part",
+                                    onClick = {
+                                        scope.launch { openExternalReceipt(openPath) }
+                                    }
+                                )
+                            }
                         }
                     }
                     SecondaryA11yButton(
@@ -1067,25 +1077,23 @@ private fun EntryFormScaffold(
             if (isSavingsLine) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "Ce n’est pas de l’argent gardé dans l’application.",
+                        text = "Pas d’argent gardé dans l’app — virement vers un autre compte.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted
                     )
                     if (savingsTransferredCents > 0L) {
                         Text(
-                            text = "Déjà viré : ${MoneyFormat.formatCents(savingsTransferredCents)} " +
-                                "— pas disponible ici.",
+                            text = "Déjà viré : ${MoneyFormat.formatCents(savingsTransferredCents)}.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted
                         )
                     }
                     if (lockAmountAndDay) {
                         Text(
-                            text = "Ce mois est déjà FAIT. Le montant affiché est celui du virement. " +
-                                "Pour les mois suivants, changez-le dans Réglages.",
+                            text = "FAIT ce mois. Suite : Réglages → Mettre de côté.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted
                         )
@@ -1165,7 +1173,7 @@ private fun EntryFormScaffold(
                 )
                 if (showFrequencyEdit) {
                     Text(
-                        text = "Corriger ici. Mois déjà créés : cochez « Aussi les mois suivants ».",
+                        text = "Mois déjà créés : cochez « Aussi les mois suivants ».",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted,
                         modifier = Modifier.fillMaxWidth()
@@ -1243,7 +1251,7 @@ private fun EntryFormScaffold(
                     expanded = paymentExpanded,
                     closedHint = when {
                         hasPaymentContent -> "Noté — touchez pour voir"
-                        else -> "QR, +++ , photo, PDF, prélèvement"
+                        else -> "QR, +++ , photo, PDF"
                     },
                     onToggle = { paymentExpanded = !paymentExpanded }
                 )
@@ -1510,32 +1518,34 @@ private fun EntryFormScaffold(
                     onToggle = { onDossierExpanded(!dossierExpanded) }
                 )
                 if (dossierExpanded) {
-                    // Accordion Accord : tips = texte InkMuted, pas de boîte-dans-boîte.
+                    // Accordion : champs ; reste/rythme déjà au-dessus de la grille si accord.
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                    if (isSettled) {
-                        Text(
-                            text = "Soldé",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.AccentOkInk
-                        )
-                    }
-                    remainingCents?.let { rem ->
-                        if (!isSettled) {
+                    if (!isAgreement) {
+                        if (isSettled) {
                             Text(
-                                text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
-                                modifier = Modifier.fillMaxWidth()
+                                text = "Soldé",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = A11yTokens.AccentOkInk
                             )
-                            if (!pacePhrase.isNullOrBlank()) {
+                        }
+                        remainingCents?.let { rem ->
+                            if (!isSettled) {
                                 Text(
-                                    text = pacePhrase,
+                                    text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = A11yTokens.InkMuted
+                                    color = A11yTokens.InkMuted,
+                                    modifier = Modifier.fillMaxWidth()
                                 )
+                                if (!pacePhrase.isNullOrBlank()) {
+                                    Text(
+                                        text = pacePhrase,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = A11yTokens.InkMuted
+                                    )
+                                }
                             }
                         }
                     }
@@ -1568,7 +1578,7 @@ private fun EntryFormScaffold(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                         )
                         Text(
-                            text = "Vide = pas un accord. Le montant du haut = versement du mois.",
+                            text = "Vide = pas un accord. Le montant du haut = ce mois.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = A11yTokens.InkMuted,
                             modifier = Modifier.fillMaxWidth()
