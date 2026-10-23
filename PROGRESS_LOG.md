@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.77** (clôture audits nuit · MigrationTest · scrub PII vivants) |
+| Dernière étape terminée | **6.78** (Dependabot force · smoke S25 P1 · cartes filet) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt S26 · carrière GitHub hors repo · archives PII avant public |
-| Audit premium | Code audits **FAIT** · **pas** claim « 9/10 dans la main » sans smoke |
+| Prochaine sous-étape | Smoke doigt S26 · notif/widget/photo · carrière GitHub hors repo |
+| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,32 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.78 Dependabot + smoke S25 + carnet filet
+
+**Gradle (transitifs AGP/UTP, pas APK runtime) :**
+| Artefact | Avant → après |
+|----------|---------------|
+| `protobuf-java` | 3.22.3 → **3.25.5** |
+| `commons-io` | 2.13.0 → **2.18.0** |
+| `io.netty:*` | 4.1.93 → **4.1.118.Final** |
+
+Force dans `build.gradle.kts` racine (`resolutionStrategy`).
+
+**Vérif CODE Top15 + B01–B03 + audits 01–08 :** matrice **FAIT** dans `docs/audits/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md` (re-croisé sources). Écarts smoke S25 → corrigés.
+
+**Smoke S25 (`SM-S938B`) :** `docs/audits/2026-10-23-smoke-device.md` — P1 cartes / À venir / jour 31. PNG gitignorés (PII).
+
+**Micro carnet :**
+- Cartes Accueil + À venir : **filet seul** (plus d’ombre Material)
+- À venir : « N factures » · copy calendrier
+- Fiche : spacer post-grille jour ×2 (jour 31)
+
+**Ménage :** gitignore smoke PNG/XML · index docs audits · valorisation **lu** (doc only, pas de claim prix).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **315/315** (74 fichiers, 0 failure).  
+**Version :** `0.1.0-6.78` · `versionCode` 83.  
+**Pas un claim « premium vendable 10/10 » ni « 9/10 dans la main ».**
 
 ### 2026-10-23 — 6.77 Clôture audits nuit (code 100 % faisable)
 

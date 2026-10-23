@@ -11,7 +11,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
-import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -1273,17 +1272,12 @@ private fun IncomeRow(
     // H04 : compact moins écrasé (10/14) — laisser respirer le papier.
     val rowPad = if (compact) 10.dp else 14.dp
     val shape = MaterialTheme.shapes.medium
+    // Charte carnet : filet seul (pas ombre Material) — relief « imprimé ».
     Surface(
         color = A11yTokens.PaperCard,
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 2.dp,
-                shape = shape,
-                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
-                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
-            )
             .border(1.dp, A11yTokens.PaperBorder, shape)
     ) {
         Row(
@@ -1346,6 +1340,7 @@ private fun ExpenseRow(
         label = "expenseRowBg"
     )
     // H10 : highlight notif = 2 dp doux. Retard = pastille + lavis (pas contour brique 2 dp).
+    // Charte carnet : filet seul (pas ombre + bordure Material).
     val borderMod = when {
         highlighted -> Modifier.border(2.dp, A11yTokens.Link.copy(alpha = 0.55f), shape)
         else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
@@ -1356,12 +1351,6 @@ private fun ExpenseRow(
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 2.dp,
-                shape = shape,
-                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
-                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
-            )
             .then(borderMod)
     ) {
         Row(

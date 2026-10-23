@@ -26,6 +26,6 @@ Lots **A→F** et le détail de construction sont **clos** :
 
 ## Prochain geste
 
-Smoke doigt 6.75 (PageTitle / photo / sticky compact / contact Arkalia) sur S25, puis S26 quand il est là.
+Smoke doigt S26 (sticky / fontScale / photo / notif / widget). S25 Ultra partiel documenté en 6.78.
 
 Constats dossiers (figé, historique) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.

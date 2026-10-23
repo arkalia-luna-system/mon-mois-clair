@@ -3,41 +3,41 @@
 | | |
 |--|--|
 | **Date** | 2026-10-23 → lecture demain matin |
-| **Sources** | `nuit-01` … `nuit-08` (8 audits) + **passe code 6.77** (nuit agent) |
-| **Branche** | `develop` · `0.1.0-6.77` · **315/315** unit |
+| **Sources** | `nuit-01` … `nuit-08` (8 audits) + smoke S25 + **passe code 6.78** |
+| **Branche** | `develop` · `0.1.0-6.78` · **315/315** unit |
 | **Claim** | « 9/10 dans la main » = **non** · smoke S26 encore ouvert |
 
 ---
 
-## 1. Verdict global (après 6.77)
+## 1. Verdict global (après 6.78)
 
-P0 métier BE (B01–B03) **FAIT**. Sticky / a11y / widget tokens / copy / PRIVACY / eng min (Migration 7→8 + extract chrome fiche) **FAIT**.  
-P1 BE restants codés (B04 tip IBAN, B05 IBAN PDF, B06 tip aperçu, B07 snackbar Remettre, B08 tip prélèvement).  
-Scrub PII docs vivants (PROGRESS_LOG / DISTRIBUTION / audits) **FAIT** ; archives figées **REPORTÉ** avant public.  
-Carrière GitHub profil **REPORTÉ** (hors repo).  
-Smoke doigt S26 = seul juge « dans la main ».
+P0 métier BE (B01–B03) **FAIT** (re-croisé sources). Sticky / a11y / widget tokens / copy / PRIVACY / eng min **FAIT**.  
+P1 BE (B04–B08) **FAIT**. Dependabot transitifs (protobuf / commons-io / netty) **forcés** patchés.  
+Smoke S25 Ultra **partiel** (`2026-10-23-smoke-device.md`) → micro P1 cartes / À venir / jour 31 **FAIT**.  
+Scrub PII vivants **FAIT** ; captures smoke gitignorées ; archives **REPORTÉ**.  
+Carrière GitHub / S26 doigt **REPORTÉ**.
 
 ---
 
-## 2. Top 15 — statut croisé (6.77)
+## 2. Top 15 — statut croisé (6.78) — **CODE**
 
-| # | Priorité | Action | Statut 6.77 | Preuve |
-|--:|----------|--------|-------------|--------|
-| **1** | P0 BE | **B02** 1ʳᵉ mensualité plafonnée | **FAIT** | `AddEntryUseCase` / `ConvertPendingLetter…` + tests |
+| # | Priorité | Action | Statut | Preuve code |
+|--:|----------|--------|--------|-------------|
+| **1** | P0 BE | **B02** 1ʳᵉ mensualité plafonnée | **FAIT** | `AddEntryUseCase` / `ConvertPendingLetter…` + `installmentCents` |
 | **2** | P0 BE | **B03** `EpcQrParser` robuste | **FAIT** | `resolveRemittance` + fixtures sans Purpose |
 | **3** | P0 BE | **B01** politique `+++` | **FAIT** | `PaymentNotePolicy` · cycle · update · Aide |
-| **4** | Smoke | S26 sticky / fontScale / Plus | **CODE FAIT** | Autres infos · plafond hero · **smoke REPORTÉ** |
-| **5** | Smoke | Photo multi-ligne | **CODE FAIT** | `resolvedPath` 6.73 · **smoke REPORTÉ** |
-| **6** | Smoke | FAIT + snackbar | **CODE FAIT** | FAIT 96 dp · durée Long · **smoke REPORTÉ** |
-| **7** | Smoke | Notif silhouette + teal | **CODE FAIT** | 6.72 tenu · **smoke REPORTÉ** |
-| **8** | Smoke | Widget Reste + nuit + bio | **CODE FAIT** | Serif + tokens InkMuted/PaperBorder · **smoke REPORTÉ** |
-| **9** | P1 UI | Widget = même Reste serif | **FAIT** | `@font/source_serif4_semibold` + muted `#4A453C` / rule `#E2DDD2` |
-| **10** | P1 UI | Quieting sticky | **FAIT** | Mois muted · sticky crème · Autres infos |
+| **4** | Smoke | S26 sticky / fontScale / Plus | **CODE FAIT** | Autres infos · plafond hero · **S26 REPORTÉ** |
+| **5** | Smoke | Photo multi-ligne | **CODE FAIT** | `resolvedPath` · **smoke doigt REPORTÉ** |
+| **6** | Smoke | FAIT + snackbar | **CODE FAIT** | FAIT 96 dp · Long · dump S25 OK |
+| **7** | Smoke | Notif silhouette + teal | **CODE FAIT** | tenu · **notif doigt REPORTÉ** |
+| **8** | Smoke | Widget Reste + nuit + bio | **CODE FAIT** | Serif + tokens · **widget doigt REPORTÉ** |
+| **9** | P1 UI | Widget = même Reste serif | **FAIT** | `@font/source_serif4_semibold` + muted/rule |
+| **10** | P1 UI | Quieting sticky + cartes | **FAIT** | Sticky crème · cartes **filet seul** (6.78) |
 | **11** | P1 a11y | Plafond hero fontScale | **FAIT** | `rememberDisplayFit` pré-compense sp |
-| **12** | P1 a11y/copy | FAIT 96 · Plus · Compte · après | **FAIT** | 96 dp · Autres infos · Données & sauvegarde · il reste · Lire la communication |
-| **13** | Career | Bio + pins GitHub | **REPORTÉ** | Hors repo (profil `arkalia-luna-system`) |
-| **14** | Privacy docs | Scrub PII + PRIVACY | **FAIT** (vivants) | PRIVACY/SECURITY · journal · audits ; **archives REPORTÉ** |
-| **15** | Eng | Découpe EntryForm / MigrationTest | **FAIT** (gain min) | `EntryFormChrome` + `RoomMigrationTest` 7→8 ; god-files Home **REPORTÉ** |
+| **12** | P1 a11y/copy | FAIT 96 · Plus · Compte · après | **FAIT** | + À venir « N factures » (6.78) |
+| **13** | Career | Bio + pins GitHub | **REPORTÉ** | Hors repo |
+| **14** | Privacy docs | Scrub PII + PRIVACY | **FAIT** (vivants) | smoke PNG gitignorés ; archives REPORTÉ |
+| **15** | Eng | Découpe EntryForm / MigrationTest | **FAIT** (gain min) | `EntryFormChrome` + `RoomMigrationTest` 7→8 |
 
 ---
 
@@ -74,4 +74,4 @@ Palette crème / un teal · serif = Reste seulement · pas logo sticky · pas Al
 
 ---
 
-*Synthèse + matrice 6.77 · agent nuit · push `develop` si gate OK.*
+*Synthèse + matrice 6.78 · gate tests + push `develop` / `main`.*

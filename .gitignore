@@ -38,3 +38,7 @@ keystore.properties
 /dist/verify/campagne-*/
 # Captures smoke / dumps locaux (jamais versionnés)
 /tmp/
+# Smoke device local (PNG = PII foyer ; XML dumps idem) — garder un .md de synthèse si besoin
+/docs/audits/smoke/**/*.png
+/docs/audits/smoke/**/*.xml
+/docs/audits/smoke/**/*.webp

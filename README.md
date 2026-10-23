@@ -11,7 +11,7 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-315%2F315-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.77-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.78-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,11 +48,11 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.77` |
-| Dernière étape | **6.77** clôture audits nuit · MigrationTest · scrub PII vivants |
-| Device | Smoke historique S25 Ultra (`SM-S938B`). Photo / sticky / notif / S26 **encore à fumer** — pas claim « 9/10 dans la main » |
+| Version | `0.1.0-6.78` |
+| Dernière étape | **6.78** Dependabot force · smoke S25 P1 · cartes filet |
+| Device | Smoke S25 Ultra partiel (`docs/audits/2026-10-23-smoke-device.md`). Photo / notif / widget / S26 **ouverts** — pas claim « 9/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **315/315** OK (`--rerun-tasks`) — à recompter à chaque bump |
+| Tests unitaires | **315/315** OK (`--rerun-tasks`) |
 | Schéma Room | **8** |
 
 Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)

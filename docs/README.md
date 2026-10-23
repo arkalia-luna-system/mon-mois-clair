@@ -9,8 +9,9 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | État + prochain geste (lots A→F = archive) |
 | [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème apps 2026 / visuel (suivre version journal) |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy |
+| [`audits/`](audits/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md) | Audits nuit + smoke device + valorisation |
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Envoi / MAJ APK sans USB |
-| [`CI.md`](CI.md) | CI + Dependabot Security |
+| [`CI.md`](CI.md) | CI + Dependabot Security (force protobuf/netty) |
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 
@@ -32,3 +33,4 @@ Racine : `README.md` · `PROGRESS_LOG.md` · `CHARTE_ET_ARCHITECTURE.md` · `PRI
 |--------|------|
 | `dist/MonMoisClair-release.apk` | APK famille (gitignoré) |
 | `dist/verify/` | RESET + README tracked ; captures **locales** gitignorées |
+| `docs/audits/smoke/` | PNG/XML device **gitignorés** (PII) ; synthèse = `2026-10-23-smoke-device.md` |

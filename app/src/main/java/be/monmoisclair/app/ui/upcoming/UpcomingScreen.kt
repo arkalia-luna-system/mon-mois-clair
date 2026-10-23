@@ -22,7 +22,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -82,7 +81,7 @@ fun UpcomingScreen(
 
         CarnetPageTitle("À venir")
         Text(
-            text = "Prochains mois (lecture seule). Plus loin : Accueil → calendrier.",
+            text = "Prochains mois en lecture seule. Un mois précis : Accueil → calendrier.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -120,8 +119,18 @@ fun UpcomingScreen(
             return@PinnedBackScaffold
         }
         state.months.forEach { month ->
-            val count = month.lines.size
-            val suffix = if (count == 1) "1 échéance" else "$count échéances"
+            val expenses = month.lines.count { !it.isIncome }
+            val incomes = month.lines.count { it.isIncome }
+            val suffix = when {
+                expenses > 0 && incomes == 0 ->
+                    if (expenses == 1) "1 facture" else "$expenses factures"
+                incomes > 0 && expenses == 0 ->
+                    if (incomes == 1) "1 revenu" else "$incomes revenus"
+                else -> {
+                    val n = month.lines.size
+                    if (n == 1) "1 ligne" else "$n lignes"
+                }
+            }
             CarnetHubRow(
                 label = "${month.monthLabel} · $suffix",
                 onClick = { selectedYmKey = month.yearMonth.toString() }
@@ -161,17 +170,12 @@ private fun UpcomingLineCard(line: UpcomingLine, compact: Boolean) {
     }
     val shape = MaterialTheme.shapes.medium
     val rowPad = if (compact) 10.dp else 14.dp
+    // Charte carnet : filet seul (pas ombre Material).
     Surface(
         color = A11yTokens.PaperCard,
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 2.dp,
-                shape = shape,
-                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
-                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
-            )
             .border(1.dp, A11yTokens.PaperBorder, shape)
     ) {
         Column(
