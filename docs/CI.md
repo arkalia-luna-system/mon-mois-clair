@@ -56,11 +56,13 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
    ou désactiver **Dependabot security updates** si le bruit reste permanent.
 3. Garder Dependabot **version updates** (Actions + Gradle) dans `dependabot.yml`.
 
-**Mitigation repo (6.78+) :** `build.gradle.kts` racine force
-`protobuf-java:3.25.5`, `commons-io:2.18.0`, `io.netty:*:4.1.118.Final` via
-`resolutionStrategy` (transitifs UTP/AGP — **pas** dans l’APK runtime). Vérifier avec
-`./gradlew :app:dependencies` (→ `3.25.5` / `2.18.0` / `4.1.118`). Si Dependabot Security
-reste rouge malgré le force : dismiss UI (transitive) — la garde produit reste les tests.
+**Mitigation repo (6.80+) :** `build.gradle.kts` racine force via `resolutionStrategy`
+(transitifs UTP/AGP — **pas** dans l’APK runtime) :
+`protobuf-java:3.25.9`, `commons-io:2.22.0`, `io.netty:*:4.1.139.Final`,
+`bcprov-jdk18on:1.86`, `jdom2:2.0.6.1`, `jose4j:0.9.7`.
+Vérifier avec `./gradlew :app:dependencies`. Si Dependabot Security reste rouge malgré
+le force : dismiss UI (transitive) — la garde produit reste les tests. Alertes GitHub
+peuvent rester jusqu’au **rescan** Dependabot même si le classpath local est patché.
 
 ## Phase 4 — plus corsé (optionnel)
 

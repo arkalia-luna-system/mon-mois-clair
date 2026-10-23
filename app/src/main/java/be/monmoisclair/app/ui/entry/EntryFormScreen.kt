@@ -1139,11 +1139,11 @@ private fun EntryFormScaffold(
                 onSelect = { onDay(it.toString()) },
                 enabled = !lockAmountAndDay
             )
-            // Sous sticky Enregistrer : jours 25–31 scrollables / tappables
-            // (2×48 dp — jour 31 ne doit pas rester collé sous le socle).
+            // Sous sticky Enregistrer / Annuler / Supprimer : jour 31 scrollable
+            // (3×48 dp + clearance — sticky 3 actions plus haut que 2× sur S938B).
             Spacer(
                 modifier = Modifier.height(
-                    A11yTokens.minTouchHeight * 2 + A11yTokens.bottomSystemClearance
+                    A11yTokens.minTouchHeight * 3 + A11yTokens.bottomSystemClearance
                 )
             )
 

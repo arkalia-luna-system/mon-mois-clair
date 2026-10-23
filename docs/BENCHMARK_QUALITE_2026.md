@@ -1,13 +1,13 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-23 (état code : **6.76**).  
+Date : 2026-10-23 (état code : **6.80**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) · [`PRIVACY.md`](../PRIVACY.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.76** B01–B03 · sticky · **6.79** widget One UI (police système, plus `@font`) · fontScale hero · FAIT 96 |
-| **Pas fait** | S26 en main · biométrie / scan / notif au doigt · claim premium terminé · scission god-files |
+| **Fait** | … · **6.76** B01–B03 · sticky · **6.79** widget One UI · **6.80** Dependabot force + widget polish + P1 smoke code |
+| **Pas fait** | S26 en main · biométrie / scan / notif au doigt · claim premium terminé · scission god-files · rescan Dependabot GitHub |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 

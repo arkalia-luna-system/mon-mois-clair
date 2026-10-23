@@ -79,7 +79,8 @@ class CarnetWidgetRefresher @Inject constructor(
             val ink = if (night) 0xFFF6F3E8.toInt() else 0xFF1E1B18.toInt()
             val muted = if (night) 0xFFD1C1B1.toInt() else 0xFF4A453C.toInt()
             val danger = if (night) 0xFFF4C4B6.toInt() else 0xFF7A2C14.toInt()
-            val rule = if (night) 0xFF6E6458.toInt() else 0xFFE2DDD2.toInt()
+            // Alignés widget_rule / stroke drawables (jour #D8D2C6, nuit #5C5348).
+            val rule = if (night) 0xFF5C5348.toInt() else 0xFFD8D2C6.toInt()
             val views = RemoteViews(context.packageName, R.layout.widget_carnet)
             views.setInt(
                 R.id.widget_root,

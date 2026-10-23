@@ -28,6 +28,7 @@ import be.monmoisclair.app.domain.usecase.AdjustDiversResult
 import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsResult
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
+import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneResult
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
@@ -47,6 +48,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -70,8 +72,13 @@ data class HomeUiState(
     /** Demande confirm FAIT sur mois passé (T4). */
     val pendingPastToggleId: String? = null,
     val nextMonthWarning: String? = null,
-    /** Lot D — 0 = pas d’entrée Menu « Mes dossiers » (sauf courriers). */
+    /**
+     * Lot D — dossiers **en cours** (non soldés) pour le libellé Menu.
+     * Soldés exclus du chiffre (H01 smoke : « (4) » ≠ 2 cartes En cours).
+     */
     val dossierCount: Int = 0,
+    /** true s’il existe au moins un accord (ouvert ou soldé) → Menu visible. */
+    val hasDossiers: Boolean = false,
     /** Lot D — bandeau accueil si > 0. */
     val pendingLetterCount: Int = 0,
     /** Lot E — forfait mensuel « Mettre de côté » (0 = inactif). */
@@ -91,6 +98,7 @@ class HomeViewModel @Inject constructor(
     private val adjustDivers: AdjustDiversUseCase,
     private val configureSavings: ConfigureSavingsUseCase,
     private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase,
+    private val listDossiers: ListDossiersUseCase,
     private val reminderHealth: ReminderHealthChecker,
     private val receiptPhotos: ReceiptPhotoStore
 ) : ViewModel() {
@@ -179,7 +187,7 @@ class HomeViewModel @Inject constructor(
                 }.sortedWith(compareBy({ it.sortDay }, { it.sortLabel }))
 
                 val current = AppClock.currentYearMonth()
-                val dossierCount = templates.count {
+                val hasDossiers = templates.any {
                     it.active && DossierRemaining.isDossier(it.openingRemainingCents)
                 }
                 val savingsTpl = templates.firstOrNull {
@@ -200,8 +208,16 @@ class HomeViewModel @Inject constructor(
                     timeline = timeline,
                     highlightExpenseId = highlight,
                     pendingPastToggleId = pendingToggle,
-                    dossierCount = dossierCount,
+                    hasDossiers = hasDossiers,
                     savingsMonthlyCents = savingsTpl?.amountCents ?: 0L
+                )
+            }.mapLatest { base ->
+                // Compteur Menu = En cours seulement (soldés exclus du chiffre).
+                val snap = listDossiers()
+                val openCount = snap.items.count { !it.isSettled }
+                base.copy(
+                    dossierCount = openCount,
+                    hasDossiers = snap.items.isNotEmpty() || base.hasDossiers
                 )
             }
         },

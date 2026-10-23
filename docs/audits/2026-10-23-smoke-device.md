@@ -42,21 +42,22 @@
 
 ## P1 — fort (visibilité / pratique)
 
-### H01 — Badge « FAIT » chevauche la carte
+### H01 — Badge « FAIT » chevauche la carte → **FIX CODE 6.80**
 - **Où :** Accueil · carte « Mettre de côté » (`01_accueil.png`).
-- **Vu :** pastille « FAIT le 22/10/26 » **par-dessus** le libellé et le montant « − 2 € » ; le bouton « Remettre » reste visible à droite.
-- **Impact :** lecture confuse ; claim smoke « FAIT 96 dp » **non tenu** sur SM-S938B @ densité réelle.
-- **Attendu :** pastille dans sa propre bande (pas de collision texte/montant).
+- **Vu (soir) :** pastille « FAIT le 22/10/26 » **par-dessus** le libellé et le montant « − 2 € ».
+- **Fix 6.80 :** `ExpenseRow` — pastille / statut dans une **bande sous** la rangée titre·montant·Remettre (plus de collision).
+- **Reste :** revalider visu doigt S938B.
 
-### F01 — Jour 31 masqué / collé sous sticky Enregistrer
+### F01 — Jour 31 masqué / collé sous sticky Enregistrer → **FIX CODE 6.80**
 - **Où :** fiche (`07_fiche.png`) · grille « Jour du mois ».
-- **Vu :** cercles 1–30 visibles ; le **31** est dans l’arbre a11y (`Jour 31`) mais **hors zone lisible** — footer sticky « Enregistrer / Annuler / Supprimer » recouvre le bas de la grille.
-- **Impact :** mois à 31 jours → jour difficile à sélectionner / à voir (surtout gros doigt / fontScale).
-- **Note 6.78 :** spacer post-grille ×2 — à revalider visu sur device.
+- **Vu (soir) :** **31** hors zone lisible sous sticky Enregistrer / Annuler / Supprimer.
+- **Fix 6.80 :** spacer post-grille **3×** `minTouchHeight` + clearance (sticky 3 actions).
+- **Reste :** revalider visu doigt.
 
-### D01 — Compteur Menu « Dossiers (4) » ≠ liste visible
-- **Où :** Menu `02_menu.png` (« Dossiers **(4)** ») vs écran Dossiers `04_dossiers.png` (section **En cours** = **2** cartes : birdet, CourrierTestP).
-- **Impact :** doute sur le nombre réel ; si 2 sont archivés / autre section, le menu doit le dire ou n’afficher que le compte visible.
+### D01 — Compteur Menu « Dossiers (4) » ≠ liste visible → **FIX CODE 6.80**
+- **Où :** Menu (« Dossiers **(4)** ») vs Dossiers **En cours** = **2**.
+- **Cause :** Menu comptait tous les accords actifs (soldés inclus).
+- **Fix 6.80 :** chiffre Menu = dossiers **non soldés** (`ListDossiersUseCase`) ; soldés seuls → « Dossiers » sans faux (N).
 
 ---
 

@@ -37,8 +37,10 @@ fun HomeMenuSheet(
     onOpenMonthPicker: () -> Unit,
     onGoToCurrentMonth: () -> Unit,
     onOpenSettings: () -> Unit,
-    /** 0 = pas de bouton (zéro dossier = zéro pixel), sauf courriers sans plan. */
+    /** Ouverts (non soldés) — chiffre du Menu aligné sur « En cours ». */
     dossierCount: Int = 0,
+    /** Accords soldés seuls : Menu reste visible sans faux « (N) ». */
+    hasDossiers: Boolean = false,
     pendingLetterCount: Int = 0,
     onOpenDossiers: () -> Unit = {},
     onOpenUpcoming: () -> Unit = {},
@@ -46,16 +48,17 @@ fun HomeMenuSheet(
     onOpenHealth: () -> Unit = {},
     onOpenSupport: () -> Unit = {}
 ) {
-    val showDossiers = dossierCount > 0 || pendingLetterCount > 0
+    val showDossiers = hasDossiers || dossierCount > 0 || pendingLetterCount > 0
     // Libellé court « Dossiers » (= PageTitle / Aide « Menu → Dossiers »).
     val menuDossierLabel = when {
         dossierCount > 0 && pendingLetterCount > 0 ->
             "Dossiers ($dossierCount) · $pendingLetterCount courrier" +
                 if (pendingLetterCount > 1) "s" else ""
         dossierCount > 0 -> "Dossiers ($dossierCount)"
-        else ->
+        pendingLetterCount > 0 ->
             "Dossiers · $pendingLetterCount courrier" +
                 if (pendingLetterCount > 1) "s" else ""
+        else -> "Dossiers"
     }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val fit = rememberDisplayFit()

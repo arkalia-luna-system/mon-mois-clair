@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.79** (P0 widget One UI · police système RemoteViews) |
+| Dernière étape terminée | **6.80** (Dependabot force · widget premium · P1 smoke) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt S26 · notif/photo · carrière GitHub hors repo |
-| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · P0 widget **validé SM-S938B** · **pas** « 9/10 dans la main » |
+| Prochaine sous-étape | Smoke doigt S26 · notif/photo · carrière GitHub hors repo · rescan Dependabot GitHub |
+| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · P0 widget **OK** · polish carnet **6.80** · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,35 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.80 Dependabot + widget premium + P1 smoke
+
+**Dependabot (classpath build/UTP — pas APK runtime) :** force racine `build.gradle.kts` :
+
+| Artefact | Avant → après |
+|----------|---------------|
+| `protobuf-java` | 3.25.5 → **3.25.9** (reste 3.x ; pas 4.x) |
+| `commons-io` | 2.18.0 → **2.22.0** |
+| `io.netty:*` | 4.1.118 → **4.1.139.Final** (famille entière) |
+| `bcprov-jdk18on` | (transitif) → **1.86** |
+| `jdom2` | (transitif) → **2.0.6.1** |
+| `jose4j` | (transitif) → **0.9.7** |
+
+Alertes GitHub Security peuvent rester **jusqu’au rescan** Dependabot même si le force local est OK. Dismiss UI si transitif AGP (voir `docs/CI.md`).
+
+**Widget premium (RemoteViews) :** padding / letterSpacing / filet ImageView / coins 18 / contrastes crème·encre jour+nuit ; serif système inchangé ; contrats anti-`View` / anti-`@font` gardés.
+
+**P1 smoke CODE :**
+- H01 FAIT pastille → bande sous la rangée (plus de chevauchement)
+- F01 jour 31 → spacer **3×** touch + clearance
+- D01 Menu → compteur = dossiers **en cours** seulement
+
+**Ménage :** AppleDouble `._CarnetWidget*` retiré ; archives PII **REPORTÉ** (utilité historique).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **318/318** (75 fichiers, 0 failure).  
+**Classpath :** `buildEnvironment` + `:app:dependencies` → protobuf **3.25.9**, commons-io **2.22.0**, netty **4.1.139.Final**, bcprov **1.86**, jdom2 **2.0.6.1**, jose4j **0.9.7**. `releaseRuntimeClasspath` : **0** de ces jars (pas APK).  
+**Version :** `0.1.0-6.80` · `versionCode` 85.  
+**Pas un claim « 9/10 dans la main ».**
 
 ### 2026-10-23 — 6.79 P0 widget One UI (RemoteViews)
 

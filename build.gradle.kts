@@ -6,22 +6,38 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.52" apply false
 }
 
-// Dependabot : jars transitifs AGP / lint / UTP (pas dans l’APK runtime).
-// Force versions patchées — CVE-2024-7254 (protobuf), CVE-2024-47554 (commons-io),
-// alertes netty 4.1.93. Ne pas monter protobuf en 4.x (casse outil AGP).
-subprojects {
-    configurations.configureEach {
-        resolutionStrategy {
-            force(
-                "com.google.protobuf:protobuf-java:3.25.5",
-                "commons-io:commons-io:2.18.0",
-            )
-            eachDependency {
-                if (requested.group == "io.netty") {
-                    useVersion("4.1.118.Final")
-                    because("Dependabot CVE — netty 4.1.93 transitif AGP/grpc")
-                }
-            }
+// Dependabot : jars transitifs AGP / lint / UTP (classpath build — pas APK runtime).
+// Ne pas monter protobuf en 4.x (casse outil AGP).
+val patchedForces = arrayOf(
+    "com.google.protobuf:protobuf-java:3.25.9",
+    "commons-io:commons-io:2.22.0",
+    "org.bouncycastle:bcprov-jdk18on:1.86",
+    "org.jdom:jdom2:2.0.6.1",
+    "org.bitbucket.b_c:jose4j:0.9.7",
+    "io.netty:netty-handler:4.1.139.Final",
+    "io.netty:netty-codec:4.1.139.Final",
+    "io.netty:netty-codec-http:4.1.139.Final",
+    "io.netty:netty-codec-http2:4.1.139.Final",
+    "io.netty:netty-common:4.1.139.Final",
+    "io.netty:netty-buffer:4.1.139.Final",
+    "io.netty:netty-transport:4.1.139.Final",
+    "io.netty:netty-transport-native-unix-common:4.1.139.Final",
+    "io.netty:netty-handler-proxy:4.1.139.Final",
+    "io.netty:netty-codec-socks:4.1.139.Final",
+)
+
+fun org.gradle.api.artifacts.ResolutionStrategy.applyPatchedForces() {
+    force(*patchedForces)
+    eachDependency {
+        if (requested.group == "io.netty") {
+            useVersion("4.1.139.Final")
+            because("Dependabot CVE — aligner toute la famille netty")
         }
+    }
+}
+
+allprojects {
+    configurations.configureEach {
+        resolutionStrategy.applyPatchedForces()
     }
 }

@@ -490,6 +490,7 @@ fun HomeScreen(
             onGoToCurrentMonth = viewModel::goToCurrentMonth,
             onOpenSettings = onOpenSettings,
             dossierCount = state.dossierCount,
+            hasDossiers = state.hasDossiers,
             pendingLetterCount = state.pendingLetterCount,
             onOpenDossiers = onOpenDossiers,
             onOpenUpcoming = onOpenUpcoming,
@@ -1353,19 +1354,22 @@ private fun ExpenseRow(
             .fillMaxWidth()
             .then(borderMod)
     ) {
-        Row(
-            modifier = Modifier.padding(rowPad),
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
+        // H01 : pastille FAIT dans sa bande sous la rangée titre/montant/bouton
+        // (plus de collision avec libellé / − montant sur S938B compact).
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(rowPad),
+            verticalArrangement = Arrangement.spacedBy(lineGap)
         ) {
-            DayBadge(item.dayLabel, compact = compact)
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(lineGap)
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
             ) {
+                DayBadge(item.dayLabel, compact = compact)
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .weight(1f)
                         .clickable(
                             role = Role.Button,
                             onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
@@ -1429,72 +1433,71 @@ private fun ExpenseRow(
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
-                ExpenseStatusLine(
-                    item = item,
-                    hideAgreementChip = compact && item.isAgreement
-                )
-                // H05 : Copier / Photo en 2ᵉ rangée légère (liens), pas au niveau FAIT.
-                val showNote = item.paymentNote.isNotBlank()
-                val showPhoto = item.hasReceipt
-                if (showNote || showPhoto) {
-                    // H05 : liens ancrés à gauche (pas Photo flottante à droite si seule).
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        if (showNote) {
-                            Text(
-                                text = item.paymentNote,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f, fill = false)
-                            )
-                            QuietLinkA11y(
-                                text = "Copier",
-                                onClick = onCopyNote,
-                                fillMaxWidth = false,
-                                onClickLabel = "Copier la communication"
-                            )
+                if (!readOnlyPreview) {
+                    val faitModifier = Modifier
+                        .widthIn(min = 96.dp)
+                        .semantics {
+                            contentDescription = if (item.isDone) {
+                                "Remettre à payer"
+                            } else {
+                                "Marquer FAIT"
+                            }
                         }
-                        if (showPhoto) {
-                            QuietLinkA11y(
-                                text = if (compact) "Photo" else "Voir la photo",
-                                onClick = onOpenReceipt,
-                                fillMaxWidth = false,
-                                onClickLabel = "Voir la photo de la facture"
-                            )
-                        }
+                    if (item.isDone) {
+                        SecondaryA11yButton(
+                            text = "Remettre",
+                            onClick = onToggle,
+                            fillMaxWidth = false,
+                            modifier = faitModifier
+                        )
+                    } else {
+                        PrimaryA11yButton(
+                            text = "FAIT ✓",
+                            onClick = onToggle,
+                            fillMaxWidth = false,
+                            containerColor = A11yTokens.AccentOk,
+                            modifier = faitModifier
+                        )
                     }
                 }
             }
-            if (!readOnlyPreview) {
-                val faitModifier = Modifier
-                    .widthIn(min = 96.dp)
-                    .semantics {
-                        contentDescription = if (item.isDone) {
-                            "Remettre à payer"
-                        } else {
-                            "Marquer FAIT"
-                        }
+            ExpenseStatusLine(
+                item = item,
+                hideAgreementChip = compact && item.isAgreement
+            )
+            // H05 : Copier / Photo en 2ᵉ rangée légère (liens), pas au niveau FAIT.
+            val showNote = item.paymentNote.isNotBlank()
+            val showPhoto = item.hasReceipt
+            if (showNote || showPhoto) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    if (showNote) {
+                        Text(
+                            text = item.paymentNote,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        QuietLinkA11y(
+                            text = "Copier",
+                            onClick = onCopyNote,
+                            fillMaxWidth = false,
+                            onClickLabel = "Copier la communication"
+                        )
                     }
-                if (item.isDone) {
-                    SecondaryA11yButton(
-                        text = "Remettre",
-                        onClick = onToggle,
-                        fillMaxWidth = false,
-                        modifier = faitModifier
-                    )
-                } else {
-                    PrimaryA11yButton(
-                        text = "FAIT ✓",
-                        onClick = onToggle,
-                        fillMaxWidth = false,
-                        containerColor = A11yTokens.AccentOk,
-                        modifier = faitModifier
-                    )
+                    if (showPhoto) {
+                        QuietLinkA11y(
+                            text = if (compact) "Photo" else "Voir la photo",
+                            onClick = onOpenReceipt,
+                            fillMaxWidth = false,
+                            onClickLabel = "Voir la photo de la facture"
+                        )
+                    }
                 }
             }
         }
