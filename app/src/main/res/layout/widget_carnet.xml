@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_carnet_bg"
     android:orientation="vertical"
-    android:paddingStart="22dp"
-    android:paddingTop="20dp"
-    android:paddingEnd="22dp"
-    android:paddingBottom="20dp">
+    android:paddingStart="24dp"
+    android:paddingTop="18dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="18dp">
 
     <!-- WDG01 : libellé discret — le montant commande. RemoteViews = système (pas BrandSerif). -->
     <TextView
@@ -16,33 +16,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:fontFamily="sans-serif"
-        android:letterSpacing="0.02"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.04"
         android:maxLines="1"
         android:text="Reste"
         android:textAllCaps="false"
         android:textColor="@color/widget_muted"
-        android:textSize="12sp" />
+        android:textSize="11sp" />
 
     <TextView
         android:id="@+id/widget_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
         android:includeFontPadding="false"
         android:maxLines="1"
         android:text="—"
         android:textColor="@color/widget_ink"
-        android:textSize="34sp" />
+        android:textSize="36sp" />
 
     <View
         android:id="@+id/widget_rule"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/widget_rule" />
 
     <TextView

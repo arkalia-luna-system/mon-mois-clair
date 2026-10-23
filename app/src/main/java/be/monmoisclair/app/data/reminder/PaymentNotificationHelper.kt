@@ -66,7 +66,8 @@ class PaymentNotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.book_stat)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(CONTEXT_TEAL)
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
@@ -97,7 +98,8 @@ class PaymentNotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.book_stat)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(CONTEXT_TEAL)
             .setContentTitle("$label — noté FAIT")
             .setContentText("Touchez Remettre si c’était une erreur.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -126,6 +128,8 @@ class PaymentNotificationHelper @Inject constructor(
 
     companion object {
         const val CHANNEL_ID = "paiements"
+        /** Teal charte — teinte shade / icône (silhouette claire sur fond). */
+        private const val CONTEXT_TEAL = 0xFF1B4D4E.toInt()
         private const val MARK_DONE_REQUEST_OFFSET = 100_000
         private const val UNDO_REQUEST_OFFSET = 200_000
     }

@@ -5,9 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.settings.DeviceCareCopy
@@ -44,7 +43,6 @@ fun ReminderHealthScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
-    val tipPad = fit.tipPadLg
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -55,16 +53,9 @@ fun ReminderHealthScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
-        // HLTH01 : pas de wordmark (déjà Menu → Réglages).
+        CarnetPageTitle("Alertes")
         Text(
-            text = "Alertes",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
-        Text(
-            text = "3 j avant · jour J · chaque matin si impayé. " +
-                "Les pastilles disent si le téléphone laisse sonner.",
+            text = "Pastilles : le téléphone laisse-t-il sonner ?",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -102,7 +93,7 @@ fun ReminderHealthScreen(
             }
             if (!r.safBackupOk) {
                 Text(
-                    text = "La sauvegarde se vérifie dans Réglages.",
+                    text = "Sauvegarde : voir Réglages.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()
@@ -140,7 +131,6 @@ fun ReminderHealthScreen(
         }
 
         SecondaryA11yButton(text = "Actualiser", onClick = { viewModel.refresh() })
-        // Une seule primaire dans l’app = actions de correction en secondaire (contour).
         if (report?.notificationsGranted == false) {
             SecondaryA11yButton(
                 text = "Réglages notifications",

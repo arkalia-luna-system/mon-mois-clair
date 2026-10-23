@@ -316,7 +316,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    /** Retour famille → Athalia (joindre une capture dans Gmail). */
+    /** Retour famille → Arkalia Système (joindre une capture dans Gmail). */
     fun writeSupportMail() {
         if (_uiState.value.busy) return
         pendingShareKind = PendingShareKind.Other
@@ -350,7 +350,12 @@ class SettingsViewModel @Inject constructor(
                 Intent.ACTION_SENDTO,
                 Uri.parse(SupportMailComposer.mailtoUri(draft))
             )
-            _shareIntents.emit(Intent.createChooser(intent, "Écrire à Athalia"))
+            _shareIntents.emit(
+                Intent.createChooser(
+                    intent,
+                    "Écrire à ${SupportMailComposer.SUPPORT_DISPLAY_NAME}"
+                )
+            )
         }
     }
 

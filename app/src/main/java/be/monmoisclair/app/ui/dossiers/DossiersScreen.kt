@@ -42,6 +42,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 import be.monmoisclair.app.domain.usecase.DossierListItem
+import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -82,11 +84,7 @@ fun DossiersScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        Text(
-            text = "Mes dossiers",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Mes dossiers")
         Text(
             text = "Reste dû des accords — pas sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
@@ -124,11 +122,12 @@ fun DossiersScreen(
         }
 
         if (snap.items.isEmpty() && pending.isEmpty()) {
-            // Empty tip = InkMuted, pas de tip-box.
+            // Empty = Tip/Body InkMuted (pas titleLarge Ink type HubRow).
             Text(
                 text = "Aucun accord pour le moment.",
-                style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.Ink
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = "Sur une facture : « Retard ou accord », puis le reste dû. " +
@@ -294,12 +293,7 @@ fun DossiersScreen(
 
 @Composable
 private fun DossierSectionHeader(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleLarge,
-        color = A11yTokens.Ink,
-        modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
-    )
+    CarnetSectionTitle(title)
 }
 
 @Composable

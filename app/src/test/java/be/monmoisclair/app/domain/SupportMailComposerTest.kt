@@ -6,7 +6,7 @@ import org.junit.Test
 class SupportMailComposerTest {
 
     @Test
-    fun build_targetsAthalia_andIncludesVersion() {
+    fun build_targetsArkaliaSysteme_andIncludesVersion() {
         val draft = SupportMailComposer.build(
             versionName = "0.1.0-6.42",
             versionCode = 47,
@@ -17,6 +17,8 @@ class SupportMailComposerTest {
         assertThat(draft.subject).contains("0.1.0-6.42")
         assertThat(draft.body).contains("SM-S938B")
         assertThat(draft.body).contains("Octobre 2026")
+        assertThat(draft.body).contains("Arkalia Système")
+        assertThat(draft.body).doesNotContain("Athalia")
         assertThat(draft.body).contains("capture")
         val uri = SupportMailComposer.mailtoUri(draft)
         assertThat(uri).startsWith("mailto:arkalia.luna.system@gmail.com?")

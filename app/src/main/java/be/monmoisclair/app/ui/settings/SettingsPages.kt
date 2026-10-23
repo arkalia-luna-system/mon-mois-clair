@@ -49,6 +49,7 @@ import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.domain.model.ThemePreference
 import be.monmoisclair.app.ui.components.CarnetBannerKind
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
@@ -182,7 +183,8 @@ fun SettingsSavingsScreen(
     ) {
         SettingsPageTitle(SettingsHubCopy.SAVINGS)
         Text(
-            text = "Chaque mois, ce montant compte dans le Reste (autre compte).",
+            text = "Montant aussi depuis Accueil (ligne sous Courses). Ici : jour et retrait. " +
+                "Chaque mois, ce montant compte dans le Reste (autre compte).",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -543,11 +545,7 @@ fun SettingsHelpScreen(
             onClick = onOpenHowItWorks,
             enabled = !state.busy
         )
-        SecondaryA11yButton(
-            text = "Un souci avec l’app ?",
-            onClick = viewModel::writeSupportMail,
-            enabled = !state.busy
-        )
+        // Contact = Menu Accueil uniquement (pas de doublon Aide / HowItWorks).
         state.flashMessage?.let { msg ->
             CarnetStateBanner(
                 text = msg,
@@ -560,13 +558,8 @@ fun SettingsHelpScreen(
 
 @Composable
 internal fun SettingsPageTitle(title: String) {
-    val fit = rememberDisplayFit()
-    Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
-    Text(
-        text = title,
-        style = MaterialTheme.typography.headlineMedium,
-        color = A11yTokens.Ink
-    )
+    // PageTitle ≠ HubRow : titleLarge + InkMuted (modèle Menu).
+    CarnetPageTitle(title)
 }
 
 private fun savingsActionLabel(busy: Boolean, active: Boolean): String = when {

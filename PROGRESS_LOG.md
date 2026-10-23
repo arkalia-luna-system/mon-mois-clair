@@ -9,15 +9,33 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.71** (calendrier mois Accueil · Menu allégé · widget carnet · horizon ~2 ans) |
+| Dernière étape terminée | **6.72** (typo PageTitle · sticky/widget/notif · snackbar · contact Menu · épargne Accueil) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt calendrier / Menu / widget sur S25 · S26 · claim premium non |
-| Audit premium | Matrice audits **FAIT** code (6.68–6.69) + UX **6.70–6.71** · **pas** « premium parfait » · **299/299** |
+| Prochaine sous-étape | Smoke doigt 6.72 (notif icon · snackbar · épargne sticky · Menu contact) · S26 · claim premium non |
+| Audit premium | Matrice **6.68–6.72** · **pas** « premium parfait » · **304/304** |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.72 Typo PageTitle · polish signalés · contact · épargne Accueil
+
+**Décisions DA appliquées :**
+1. **Typo** : `CarnetPageTitle` / `CarnetSectionTitle` — PageTitle = titleLarge + InkMuted (modèle Menu) ≠ HubRow Ink+› ; empty Dossiers Tip ; QuietLink Copier/Photo ; test `CarnetTitleTokensTest`.
+2. **Widget** : pads 24/18, Reste 36 sp, filet toujours (hors verrou), stroke/coins raffinés, nuit/jour alignés tokens.
+3. **Notif** : `ic_notification` silhouette blanche + teal canal ; `book_stat` retiré (mort).
+4. **Sticky** : PaperWarm + air ; pas logo ; Reste hero ; Courses + **Mettre de côté** lignes sticky.
+5. **Snackbar FAIT** : Short (~4 s) + dismiss ; placement sous sticky ; papier compact ; Annuler claire.
+6. **Contact** : une entrée = Menu QuietLink « Un souci avec l’app ? » → **Arkalia Système** ; retiré Aide / HowItWorks.
+7. **Aide / Alertes** : corps raccourcis ; Alertes PageTitle + intro courte.
+8. **Épargne** : sheet Accueil comme Courses ; Réglages = jour / retrait / détail.
+
+**Cleanup :** `book_stat.webp` mort ; `.gitignore` déjà apk/keystore/tmp ; docs alignés.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **304/304** (72 fichiers, 0 failure).  
+**Version :** `0.1.0-6.72` · `versionCode` 77.  
+**Pas un claim « premium parfait ».**
 
 ### 2026-10-22 — 6.71 Calendrier mois · Menu allégé · widget
 

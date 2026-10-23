@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.usecase.UpcomingLine
 import be.monmoisclair.app.domain.usecase.UpcomingMonth
 import be.monmoisclair.app.ui.components.CarnetHubRow
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -75,11 +76,7 @@ fun UpcomingScreen(
             return@PinnedBackScaffold
         }
 
-        Text(
-            text = "À venir",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("À venir")
         Text(
             text = "Prochains mois (lecture seule). Plus loin : Accueil → calendrier.",
             style = MaterialTheme.typography.bodyLarge,
@@ -131,11 +128,7 @@ fun UpcomingScreen(
 
 @Composable
 private fun UpcomingMonthDetail(month: UpcomingMonth) {
-    Text(
-        text = month.monthLabel,
-        style = MaterialTheme.typography.headlineMedium,
-        color = A11yTokens.Ink
-    )
+    CarnetPageTitle(month.monthLabel)
     Text(
         text = "Lecture seule — pas de FAIT ici.",
         style = MaterialTheme.typography.bodyLarge,

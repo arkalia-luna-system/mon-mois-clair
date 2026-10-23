@@ -46,7 +46,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 ## Dans l’app
 
 Pas de téléchargement automatique (l’app n’a **pas** Internet).  
-Pour un souci : Réglages → **« Un souci avec l’app ? »** → mail à Athalia (joindre une capture dans Gmail).
+Pour un souci : Accueil → Menu → **« Un souci avec l’app ? »** → mail à **Arkalia Système** (joindre une capture dans Gmail).
 
 ## Annexe — Athalia avec USB (option)
 

@@ -47,7 +47,7 @@ fun CarnetHubRow(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.titleLarge,
+            style = CarnetTitleTokens.hubRowLabelStyle(MaterialTheme.typography),
             color = labelColor,
             modifier = Modifier.weight(1f)
         )

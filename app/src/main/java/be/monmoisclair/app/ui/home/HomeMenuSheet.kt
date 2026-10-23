@@ -10,14 +10,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.CarnetHubRow
+import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -25,8 +25,8 @@ import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
 /**
  * Hub hors ledger — outils + lien calendrier (pas de mur de mois ici).
- * Aide / restore : dans Réglages. Alertes = signal en tête si bloquées.
- * Titre « Menu » = InkMuted, distinct des [CarnetHubRow] cliquables.
+ * Aide / restore : dans Réglages. Contact = QuietLink bas (≠ Restore).
+ * Titre « Menu » = PageTitle (InkMuted), distinct des [CarnetHubRow] cliquables.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +43,8 @@ fun HomeMenuSheet(
     onOpenDossiers: () -> Unit = {},
     onOpenUpcoming: () -> Unit = {},
     remindersBlocked: Boolean = false,
-    onOpenHealth: () -> Unit = {}
+    onOpenHealth: () -> Unit = {},
+    onOpenSupport: () -> Unit = {}
 ) {
     val showDossiers = dossierCount > 0 || pendingLetterCount > 0
     val menuDossierLabel = when {
@@ -75,11 +76,7 @@ fun HomeMenuSheet(
                 .padding(horizontal = A11yTokens.screenPadding)
                 .padding(bottom = 8.dp)
         ) {
-            Text(
-                text = "Menu",
-                style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.InkMuted
-            )
+            CarnetPageTitle("Menu", withTopSpacer = false)
             Spacer(modifier = Modifier.height(menuGap))
 
             if (remindersBlocked) {
@@ -137,6 +134,16 @@ fun HomeMenuSheet(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
+            Spacer(modifier = Modifier.height(menuGap))
+            QuietLinkA11y(
+                text = "Un souci avec l’app ?",
+                onClick = {
+                    onDismiss()
+                    onOpenSupport()
+                },
+                onClickLabel = "Écrire à Arkalia Système"
+            )
         }
     }
 }

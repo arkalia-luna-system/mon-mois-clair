@@ -1161,7 +1161,7 @@ private fun EntryFormScaffold(
                 Text(
                     "Fréquence",
                     style = MaterialTheme.typography.titleMedium,
-                    color = A11yTokens.Ink
+                    color = A11yTokens.InkMuted
                 )
                 if (showFrequencyEdit) {
                     Text(

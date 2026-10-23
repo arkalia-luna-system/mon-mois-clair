@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -79,11 +80,7 @@ fun HomeCoursesSheet(
                 .padding(bottom = 8.dp),
             verticalArrangement = Arrangement.spacedBy(gap)
         ) {
-            Text(
-                text = "Courses",
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
+            CarnetPageTitle("Courses", withTopSpacer = false)
             val statusLine = when {
                 diversSpentCents > 0L && afterDiversCents < 0L ->
                     "Noté ${MoneyFormat.formatCents(diversSpentCents)} · après " +

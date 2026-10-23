@@ -4,7 +4,7 @@
     <color name="ic_launcher_background">#F6F3E8</color>
     <color name="paper_cream">#F6F3E8</color>
     <color name="widget_ink">#1E1B18</color>
-    <color name="widget_muted">#4A453C</color>
+    <color name="widget_muted">#3F3A33</color>
     <color name="widget_danger">#8E3418</color>
-    <color name="widget_rule">#D9D2C3</color>
+    <color name="widget_rule">#C9C0B0</color>
 </resources>

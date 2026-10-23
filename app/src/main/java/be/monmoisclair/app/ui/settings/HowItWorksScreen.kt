@@ -25,15 +25,15 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.AppWordmark
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
-import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 fun HowItWorksScreen(
     onBack: () -> Unit,
-    onOpenSupport: (() -> Unit)? = null
+    @Suppress("UNUSED_PARAMETER") onOpenSupport: (() -> Unit)? = null
 ) {
     val fit = rememberDisplayFit()
     val sectionGap = if (fit.compactHomeChrome) 12.dp else 16.dp
@@ -42,11 +42,8 @@ fun HowItWorksScreen(
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
-        Text(
-            text = HowItWorksCopy.TITLE,
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        // PageTitle ≠ titres de section (titleLarge Ink, tappables).
+        CarnetPageTitle(HowItWorksCopy.TITLE, withTopSpacer = false)
         Text(
             text = "Touchez un titre pour lire.",
             style = MaterialTheme.typography.bodyMedium,
@@ -108,12 +105,6 @@ fun HowItWorksScreen(
             }
             Spacer(modifier = Modifier.height(sectionGap))
         }
-        if (onOpenSupport != null) {
-            HorizontalDivider(color = A11yTokens.PaperBorder)
-            QuietLinkA11y(
-                text = "Un souci avec l’app ?",
-                onClick = onOpenSupport
-            )
-        }
+        // Contact = Menu Accueil (QuietLink) — pas de doublon ici.
     }
 }

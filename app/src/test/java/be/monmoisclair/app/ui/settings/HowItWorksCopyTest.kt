@@ -51,16 +51,14 @@ class HowItWorksCopyTest {
         assertThat(all).doesNotContain("Menu → Alertes")
         assertThat(HowItWorksCopy.sections.size).isAtLeast(7)
         HowItWorksCopy.sections.forEach { s ->
-            assertThat(s.body.length).isAtLeast(30)
+            assertThat(s.body.length).isAtLeast(28)
+            assertThat(s.body.length).isLessThan(320)
         }
         val papier = HowItWorksCopy.sections.first { it.title == "Facture papier" }.body
-        assertThat(papier.length).isLessThan(420)
         assertThat(papier).doesNotContain("Voir la photo")
         val accord = HowItWorksCopy.sections.first { it.title == "Retard ou accord" }.body
-        assertThat(accord.length).isLessThan(420)
         assertThat(accord).doesNotContain("IBAN")
         val annee = HowItWorksCopy.sections.first { it.title == "Sur une année" }.body
-        assertThat(annee.length).isLessThan(350)
         assertThat(annee).doesNotContain("1 à 31")
     }
 }

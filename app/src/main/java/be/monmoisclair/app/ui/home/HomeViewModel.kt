@@ -3,6 +3,8 @@ package be.monmoisclair.app.ui.home
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.dao.InstanceDao
@@ -20,9 +22,11 @@ import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.MonthSummary
 import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.ReceiptPathList
+import be.monmoisclair.app.domain.SupportMailComposer
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.AdjustDiversResult
 import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
+import be.monmoisclair.app.domain.usecase.ConfigureSavingsResult
 import be.monmoisclair.app.domain.usecase.ConfigureSavingsUseCase
 import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneResult
@@ -85,6 +89,7 @@ class HomeViewModel @Inject constructor(
     private val pendingLetterDao: PendingLetterDao,
     private val toggleDone: ToggleExpenseDoneUseCase,
     private val adjustDivers: AdjustDiversUseCase,
+    private val configureSavings: ConfigureSavingsUseCase,
     private val listNextMonthPeriodics: ListNextMonthPeriodicsUseCase,
     private val reminderHealth: ReminderHealthChecker,
     private val receiptPhotos: ReceiptPhotoStore
@@ -102,8 +107,14 @@ class HomeViewModel @Inject constructor(
     val diversBusy: StateFlow<Boolean> = _diversBusy.asStateFlow()
     private val _diversFieldCleared = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val diversFieldCleared: SharedFlow<Unit> = _diversFieldCleared.asSharedFlow()
+    private val _savingsBusy = MutableStateFlow(false)
+    val savingsBusy: StateFlow<Boolean> = _savingsBusy.asStateFlow()
+    private val _savingsError = MutableStateFlow<String?>(null)
+    val savingsError: StateFlow<String?> = _savingsError.asStateFlow()
     private val _userMessages = MutableSharedFlow<String>(extraBufferCapacity = 1)
     val userMessages: SharedFlow<String> = _userMessages.asSharedFlow()
+    private val _shareIntents = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
+    val shareIntents: SharedFlow<Intent> = _shareIntents.asSharedFlow()
 
     val uiState: StateFlow<HomeUiState> = combine(
         selectedMonth.flatMapLatest { ym ->
@@ -424,6 +435,92 @@ class HomeViewModel @Inject constructor(
 
     fun clearDiversError() {
         _diversError.value = null
+    }
+
+    fun clearSavingsError() {
+        _savingsError.value = null
+    }
+
+    /** Forfait « Mettre de côté » depuis le sticky (jour conservé / défaut 1). */
+    fun saveSavingsFromHome(eurosText: String) {
+        if (_savingsBusy.value) return
+        val current = AppClock.currentYearMonth()
+        if (MonthNavigation.isFuturePreview(selectedMonth.value, current)) {
+            _userMessages.tryEmit("Aperçu seulement — l’épargne se règle sur le mois en cours.")
+            return
+        }
+        if (MoneyFormat.tooManyFractionDigits(eurosText)) {
+            _savingsError.value = MoneyFormat.FRACTION_HINT
+            return
+        }
+        val cents = MoneyFormat.parseToCents(eurosText)
+        if (cents == null || cents <= 0L) {
+            _savingsError.value = "Indiquez un montant à mettre de côté."
+            return
+        }
+        if (MoneyFormat.isOverLineMax(cents)) {
+            _savingsError.value = MoneyFormat.LINE_MAX_HINT
+            return
+        }
+        _savingsBusy.value = true
+        _savingsError.value = null
+        viewModelScope.launch {
+            try {
+                val day = configureSavings.read().dayOfMonth.coerceIn(1, 31)
+                when (val result = configureSavings.save(cents, day)) {
+                    ConfigureSavingsResult.Saved -> {
+                        _savingsError.value = null
+                        _userMessages.tryEmit("Mettre de côté noté.")
+                    }
+                    is ConfigureSavingsResult.InvalidInput ->
+                        _savingsError.value = result.message
+                    ConfigureSavingsResult.Removed -> Unit
+                }
+            } finally {
+                _savingsBusy.value = false
+            }
+        }
+    }
+
+    /** Contact Menu → Arkalia Système (mailto). */
+    fun writeSupportMail() {
+        viewModelScope.launch {
+            val pm = appContext.packageManager
+            val pkg = appContext.packageName
+            val info = runCatching {
+                if (Build.VERSION.SDK_INT >= 33) {
+                    pm.getPackageInfo(pkg, android.content.pm.PackageManager.PackageInfoFlags.of(0))
+                } else {
+                    @Suppress("DEPRECATION")
+                    pm.getPackageInfo(pkg, 0)
+                }
+            }.getOrNull()
+            val versionName = info?.versionName ?: "?"
+            val versionCode = if (info != null) {
+                if (Build.VERSION.SDK_INT >= 28) info.longVersionCode.toInt() else {
+                    @Suppress("DEPRECATION")
+                    info.versionCode
+                }
+            } else {
+                0
+            }
+            val draft = SupportMailComposer.build(
+                versionName = versionName,
+                versionCode = versionCode,
+                deviceModel = Build.MODEL.orEmpty(),
+                monthLabel = DayLabelFormat.monthTitle(selectedMonth.value)
+            )
+            val intent = Intent(
+                Intent.ACTION_SENDTO,
+                Uri.parse(SupportMailComposer.mailtoUri(draft))
+            )
+            _shareIntents.emit(
+                Intent.createChooser(
+                    intent,
+                    "Écrire à ${SupportMailComposer.SUPPORT_DISPLAY_NAME}"
+                )
+            )
+        }
     }
 
     fun copyPaymentNote(note: String) {

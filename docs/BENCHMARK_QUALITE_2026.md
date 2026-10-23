@@ -1,12 +1,12 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-22 (état code : **6.71**).  
+Date : 2026-10-23 (état code : **6.72**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.70** Menu/À venir/hub · **6.71** calendrier mois Accueil · Menu lien · widget carnet · WDG02 accepté (serif RemoteViews) |
+| **Fait** | … · **6.71** calendrier · **6.72** PageTitle · widget/notif · sticky · snackbar FAIT · contact Menu Arkalia · épargne Accueil |
 | **Pas fait** | S26 en main · biométrie / widget home / scan caméra au doigt · claim premium terminé · scission god-files |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
@@ -62,22 +62,17 @@ Prochain geste produit : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md). Smoke :
 | Note technique | |
 |----------------|--|
 | Widget nuit hors process | Android ne livre pas `CONFIGURATION_CHANGED` au manifeste — refresh au prochain réveil de l’app |
+| Small icon notif | Silhouette claire `ic_notification` + couleur teal canal |
 
-## 5. Inspection des pages — 2026-10-22
-
-Accueil vu sur le S25 (jour). Les autres pages lues dans le Compose.
+## 5. Inspection des pages — 2026-10-23
 
 | Page | À modifier ? |
 |------|----------------|
-| Accueil | Sticky allégé (Plus/Moins) ; Courses unifiées en liste ; tips sans boîte ; BrandMark hors alertes |
-| Menu | Titre seul · tip sans box · **Mois récents** (filets) + **Autres mois** (années) · `SheetBottomClearance` · pastilles seulement hors bande récente |
-| Réglages, Aide | Hub 3 groupes · tips = InkMuted (boîtes = états seulement) |
-| À venir | Liste de mois → détail lecture seule (plus de blocs empilés d’emblée) |
-| Dossier de sauvegarde | Non. Il n’y a pas de page Téléchargements : un bouton « Choisir un dossier » |
-| Alertes fiables | Pastilles Prêt/À régler = StampShape |
-| Restaurer | CTA Danger (hors teal) ; tip intro sans boîte |
-| Mise à jour | Il n’y a pas cet écran (APK familial) |
-
-Corrigé quand même, parce que ce n’était pas au niveau du papier : le splash n’était pas le crème du carnet, et le premier frame suivait la nuit du téléphone même si Apparence est Clair.
+| Accueil | Sticky PaperWarm · Courses + Mettre de côté · snackbar sous sticky · pas logo |
+| Menu | PageTitle · QuietLink contact Arkalia · pas Aide/Restore |
+| Réglages, Aide | Hub 3 groupes · Aide sans doublon contact · HowItWorks corps courts |
+| À venir | Liste → détail (6.70) |
+| Alertes | PageTitle · intro courte · pastilles |
+| Widget | Pads / filet / 36 sp Reste |
 
 Volontairement dehors : banque, catégories, graphiques, grille calendrier, OCR montant, synchro, thème fluo.

@@ -1,12 +1,13 @@
 package be.monmoisclair.app.domain
 
 /**
- * Retour famille → Athalia (aucun serveur : intent Mail / Gmail).
+ * Retour famille → Arkalia Système (aucun serveur : intent Mail / Gmail).
  * Pièce jointe (capture) : l’utilisatrice l’ajoute dans Gmail après ouverture.
  */
 object SupportMailComposer {
 
     const val SUPPORT_EMAIL = "arkalia.luna.system@gmail.com"
+    const val SUPPORT_DISPLAY_NAME = "Arkalia Système"
 
     data class Draft(
         val to: String = SUPPORT_EMAIL,
@@ -22,7 +23,7 @@ object SupportMailComposer {
     ): Draft {
         val subject = "Mon Mois Clair — retour ($versionName)"
         val body = buildString {
-            appendLine("Bonjour Athalia,")
+            appendLine("Bonjour $SUPPORT_DISPLAY_NAME,")
             appendLine()
             appendLine("Voici ce qui ne va pas (texte ou capture jointe dans Mail) :")
             appendLine()

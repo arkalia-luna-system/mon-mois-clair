@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.CarnetHubRow
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -43,12 +44,7 @@ fun SettingsScreen(
     SettingsResumeRefresh(viewModel)
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
-        Text(
-            text = SettingsHubCopy.TITLE,
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle(SettingsHubCopy.TITLE)
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_ACCOUNT,
             onClick = onOpenAccountGroup

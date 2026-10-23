@@ -93,7 +93,8 @@ object A11yTokens {
         paperBorder = Color(0xFF6E6458),
         fieldLine = Color(0xFFC4B8A8),
         ink = Color(0xFFF6F3E8),
-        inkMuted = Color(0xFFD4C7B4),
+        // Un cran plus mat que l’encre (écart PageTitle / corps) ; warm reste ≥ 7:1.
+        inkMuted = Color(0xFFD1C1B1),
         accentOkSoft = Color(0xFF1C3326),
         accentOk = Color(0xFF1E5631),
         accentOkInk = Color(0xFF9AD9B6),

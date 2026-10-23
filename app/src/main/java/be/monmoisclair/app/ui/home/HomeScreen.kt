@@ -85,6 +85,7 @@ import be.monmoisclair.app.MainActivity
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -110,6 +111,8 @@ fun HomeScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val diversError by viewModel.diversError.collectAsStateWithLifecycle()
     val diversBusy by viewModel.diversBusy.collectAsStateWithLifecycle()
+    val savingsError by viewModel.savingsError.collectAsStateWithLifecycle()
+    val savingsBusy by viewModel.savingsBusy.collectAsStateWithLifecycle()
     val remindersBlocked by viewModel.remindersBlocked.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val listAlpha = remember { Animatable(1f) }
@@ -119,8 +122,8 @@ fun HomeScreen(
             skipMonthFade = false
             return@LaunchedEffect
         }
-        listAlpha.snapTo(0.45f)
-        listAlpha.animateTo(1f, tween(180))
+        listAlpha.snapTo(0.72f)
+        listAlpha.animateTo(1f, tween(160))
     }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -130,14 +133,26 @@ fun HomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var diversInput by remember { mutableStateOf("") }
+    var savingsInput by remember { mutableStateOf("") }
     /** Unique UI Courses : sheet depuis le sticky (pas de formulaire en bas de liste). */
     var coursesSheetOpen by remember { mutableStateOf(false) }
-    /** Sticky : Reste + 1 statut (+ Courses) ; le reste derrière « Plus ». */
+    var savingsSheetOpen by remember { mutableStateOf(false) }
+    /** Sticky : Reste + Courses + épargne ; le reste derrière « Plus ». */
     var stickyDetailsOpen by remember { mutableStateOf(false) }
     LaunchedEffect(state.isFuturePreview) {
         if (state.isFuturePreview) {
             coursesSheetOpen = false
+            savingsSheetOpen = false
             stickyDetailsOpen = false
+        }
+    }
+    LaunchedEffect(state.savingsMonthlyCents, savingsSheetOpen) {
+        if (savingsSheetOpen) {
+            savingsInput = if (state.savingsMonthlyCents > 0L) {
+                MoneyFormat.centsToEditable(state.savingsMonthlyCents)
+            } else {
+                ""
+            }
         }
     }
     var menuOpen by remember { mutableStateOf(false) }
@@ -171,7 +186,16 @@ fun HomeScreen(
         viewModel.userMessages.collect { msg ->
             // Pendant « Annuler » FAIT : ignorer « Copié » (sinon le bandeau disparaît).
             if (faitUndoActive) return@collect
-            snackbarHostState.showSnackbar(msg)
+            snackbarHostState.showSnackbar(
+                message = msg,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.shareIntents.collect { intent ->
+            runCatching { context.startActivity(intent) }
         }
     }
 
@@ -249,7 +273,8 @@ fun HomeScreen(
                         "Remis à payer"
                     },
                     actionLabel = "Annuler",
-                    duration = SnackbarDuration.Long
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Short
                 )
                 if (result == SnackbarResult.ActionPerformed) {
                     viewModel.undoToggleDone(expenseId)
@@ -419,7 +444,8 @@ fun HomeScreen(
                                             "Remis à payer"
                                         },
                                         actionLabel = "Annuler",
-                                        duration = SnackbarDuration.Long
+                                        withDismissAction = true,
+                                        duration = SnackbarDuration.Short
                                     )
                                     if (result == SnackbarResult.ActionPerformed) {
                                         viewModel.undoToggleDone(id)
@@ -458,7 +484,8 @@ fun HomeScreen(
             onOpenDossiers = onOpenDossiers,
             onOpenUpcoming = onOpenUpcoming,
             remindersBlocked = remindersBlocked,
-            onOpenHealth = onOpenHealth
+            onOpenHealth = onOpenHealth,
+            onOpenSupport = viewModel::writeSupportMail
         )
     }
     if (monthPickerOpen) {
@@ -485,6 +512,21 @@ fun HomeScreen(
             onDismiss = { coursesSheetOpen = false }
         )
     }
+    if (savingsSheetOpen && !state.isFuturePreview) {
+        HomeSavingsSheet(
+            monthlyCents = state.savingsMonthlyCents,
+            input = savingsInput,
+            onInputChange = {
+                savingsInput = it
+                viewModel.clearSavingsError()
+            },
+            error = savingsError,
+            busy = savingsBusy,
+            onSave = { viewModel.saveSavingsFromHome(savingsInput) },
+            onOpenDetails = onOpenSavings,
+            onDismiss = { savingsSheetOpen = false }
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -493,17 +535,17 @@ fun HomeScreen(
                 .background(A11yTokens.PaperCream)
                 .imePadding()
         ) {
-            // Relief uniquement sous le bandeau (pas d’ombre 4 côtés → capsule grise
-            // figée sur le bord gauche, hauteur du sticky ~120 dp).
+            // Sticky papier chaud (pas logo) — contraste mois / filet ; Reste = hero.
             Column(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(A11yTokens.PaperCream)
+                        .background(A11yTokens.PaperWarm)
                         .padding(horizontal = fit.stickyPaddingHorizontal)
-                        .padding(vertical = fit.stickyPaddingVertical)
+                        .padding(vertical = fit.stickyPaddingVertical),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
-                // ‹ mois › + calendrier discret — pas de logo / wordmark (charte sticky ledger).
+                // ‹ mois › + calendrier — pas de logo / wordmark (charte sticky ledger).
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -528,7 +570,7 @@ fun HomeScreen(
                                 role = Role.Button,
                                 onClickLabel = "Choisir un mois"
                             ) { monthPickerOpen = true }
-                            .padding(horizontal = 4.dp, vertical = 8.dp)
+                            .padding(horizontal = 4.dp, vertical = 6.dp)
                     )
                     MonthStep(
                         iconRes = R.drawable.ic_calendar_month,
@@ -632,6 +674,44 @@ fun HomeScreen(
                         )
                     }
                 }
+                stickySavingsLabel(
+                    savingsMonthlyCents = state.savingsMonthlyCents,
+                    futurePreview = state.isFuturePreview
+                )?.let { savingsLabel ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = A11yTokens.minTouchHeight)
+                            .clickable(
+                                role = Role.Button,
+                                onClickLabel = "Modifier mettre de côté"
+                            ) { savingsSheetOpen = true }
+                            .padding(vertical = 4.dp)
+                            .semantics {
+                                contentDescription = if (state.savingsMonthlyCents > 0L) {
+                                    "$savingsLabel. Modifier"
+                                } else {
+                                    "Mettre de côté. Choisir un montant"
+                                }
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = savingsLabel,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = "›",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = A11yTokens.Link
+                        )
+                    }
+                }
                 // Mode aperçu = contexte, toujours visible (pas derrière « Plus »).
                 if (state.isFuturePreview) {
                     val previewLabel =
@@ -653,12 +733,10 @@ fun HomeScreen(
                     stillToPayCents = state.summary.stillToPayCents,
                     futurePreview = state.isFuturePreview
                 )
-                val hasSavings = state.savingsMonthlyCents > 0L
                 val needIncomeTip = !state.isFuturePreview &&
                     state.summary.remainingCents < 0L &&
                     state.timeline.none { it is TimelineItem.Income }
                 val hasStickyExtras = afterFaitLabel != null ||
-                    hasSavings ||
                     needIncomeTip ||
                     state.nextMonthWarning != null ||
                     state.pendingLetterCount > 0
@@ -710,25 +788,6 @@ fun HomeScreen(
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.semantics { contentDescription = label }
-                            )
-                        }
-                        if (hasSavings) {
-                            val savLabel =
-                                "Mis de côté : ${MoneyFormat.formatCents(state.savingsMonthlyCents)} / mois"
-                            Text(
-                                text = savLabel,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.InkMuted,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = A11yTokens.minTouchHeight)
-                                    .clickable(
-                                        role = Role.Button,
-                                        onClickLabel = "modifier l’épargne"
-                                    ) { onOpenSavings() }
-                                    .semantics { contentDescription = savLabel }
                             )
                         }
                         if (needIncomeTip) {
@@ -795,6 +854,26 @@ fun HomeScreen(
             }
             // Un seul filet sous le sticky (plus de double séparateur dégradé + divider).
             HorizontalDivider(color = A11yTokens.PaperBorder)
+
+            // FAIT : bandeau papier compact sous le sticky (pas barre basse géante).
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = fit.screenPadding)
+                    .padding(top = 6.dp, bottom = 2.dp)
+            ) { data ->
+                Snackbar(
+                    snackbarData = data,
+                    shape = MaterialTheme.shapes.small,
+                    containerColor = A11yTokens.PaperCard,
+                    contentColor = A11yTokens.Ink,
+                    actionColor = A11yTokens.Link,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.small)
+                )
+            }
 
             LazyColumn(
                 state = listState,
@@ -1079,23 +1158,6 @@ fun HomeScreen(
                 }
             }
         }
-
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = if (keyboardOpen) 8.dp else 88.dp)
-        ) { data ->
-            // H12 : snackbar papier (pas barre noire Material).
-            Snackbar(
-                snackbarData = data,
-                shape = MaterialTheme.shapes.medium,
-                containerColor = A11yTokens.PaperCard,
-                contentColor = A11yTokens.Ink,
-                actionColor = A11yTokens.Link,
-                modifier = Modifier.border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
-            )
-        }
     }
 }
 
@@ -1371,39 +1433,19 @@ private fun ExpenseRow(
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f, fill = false)
                             )
-                            Text(
+                            QuietLinkA11y(
                                 text = "Copier",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.Link,
-                                modifier = Modifier
-                                    .heightIn(min = A11yTokens.minTouchHeight)
-                                    .clickable(
-                                        role = Role.Button,
-                                        onClickLabel = "Copier la communication",
-                                        onClick = onCopyNote
-                                    )
-                                    .padding(horizontal = 4.dp, vertical = 10.dp)
-                                    .semantics {
-                                        contentDescription = "Copier la communication"
-                                    }
+                                onClick = onCopyNote,
+                                fillMaxWidth = false,
+                                onClickLabel = "Copier la communication"
                             )
                         }
                         if (showPhoto) {
-                            Text(
+                            QuietLinkA11y(
                                 text = if (compact) "Photo" else "Voir la photo",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.Link,
-                                modifier = Modifier
-                                    .heightIn(min = A11yTokens.minTouchHeight)
-                                    .clickable(
-                                        role = Role.Button,
-                                        onClickLabel = "Voir la photo de la facture",
-                                        onClick = onOpenReceipt
-                                    )
-                                    .padding(horizontal = 4.dp, vertical = 10.dp)
-                                    .semantics {
-                                        contentDescription = "Voir la photo de la facture"
-                                    }
+                                onClick = onOpenReceipt,
+                                fillMaxWidth = false,
+                                onClickLabel = "Voir la photo de la facture"
                             )
                         }
                     }
