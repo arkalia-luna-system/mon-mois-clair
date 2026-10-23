@@ -1,10 +1,11 @@
 # Audits premium — statut smoke
 
-Lots visuels 6.16 → 6.28 **clos côté code**.  
-Journal produit fermé : **6.55** (`0.1.0-6.55`, schéma Room **8**, unitaires **281/281**).  
-Phrase rythme : domaine + UI fiche / Mes dossiers (pas de smoke device dédié pour cette phrase seule).  
+**Version / tests vivants :** lire [`PROGRESS_LOG.md`](../PROGRESS_LOG.md) et le README (ne pas figer un `versionName` ici).  
+Lots visuels 6.16 → 6.28 **clos côté code**. Tables ci-dessous = historique smoke Galaxy (figé).  
 Dossiers / accords (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
-Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
+Punch list visuelle : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
+
+**Contact support (6.72+) :** Menu Accueil QuietLink « Un souci… » → Arkalia Système — **pas** dans Réglages / Aide.
 
 | Vague | État |
 |-------|------|
@@ -51,7 +52,7 @@ Punch list visuelle détaillée : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PRE
 |---|-------|----------|
 | 22 | Menu → À venir (3 mois lecture seule) | ✅ 6.39 |
 | 23 | Mes dossiers : En cours / Soldés + « Vers … » | ✅ 6.39 |
-| 24 | Réglages → « Un souci avec l’app ? » | ✅ 6.39 |
+| 24 | Contact « Un souci… » (était Réglages 6.39 ; **Menu** depuis 6.72) | ✅ code 6.72 · smoke à revalider |
 | 25 | Sticky Mis de côté + sheet Courses | ✅ 6.39 |
 | 26 | Après courses négatif = brique ; Courses = lien | ✅ 6.40 |
 | 27 | Flèche › / Menu → mois futur : aperçu lecture seule | ✅ 6.41 |

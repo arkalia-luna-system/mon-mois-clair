@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.AppWordmark
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -54,11 +55,7 @@ fun SafSetupScreen(
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
-        Text(
-            text = "Dossier de sauvegarde",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Dossier de sauvegarde", withTopSpacer = false)
         // ONB01 : 2 phrases.
         Text(
             text = "Choisissez un dossier dans Documents (pas Téléchargements). " +

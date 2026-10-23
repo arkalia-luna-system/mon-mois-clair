@@ -22,6 +22,10 @@ class CarnetTitleTokensTest {
         assertThat(CarnetTitleTokens.sectionTitleColor(day)).isEqualTo(day.inkMuted)
         assertThat(CarnetTitleTokens.pageTitleColor(night)).isEqualTo(night.inkMuted)
         assertThat(CarnetTitleTokens.hubRowLabelColor(night)).isEqualTo(night.ink)
+        // Nuit : InkMuted ≠ Ink (écart PageTitle / corps) — même exigence qu’en jour.
+        assertThat(night.inkMuted).isNotEqualTo(night.ink)
+        assertThat(CarnetTitleTokens.pageTitleColor(night))
+            .isNotEqualTo(CarnetTitleTokens.hubRowLabelColor(night))
     }
 
     @Test

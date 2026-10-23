@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
@@ -155,12 +156,7 @@ fun RestoreBackupScreen(
 
     val fit = rememberDisplayFit()
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
-        Text(
-            text = "Restaurer une sauvegarde",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Restaurer une sauvegarde")
         Text(
             text = "Après réinstallation ou nouveau téléphone. " +
                 "Remplace tout ce qui est dans l’app — confirmation demandée.",

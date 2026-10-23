@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-23 (lot **6.73** — correctifs audit 6.72 : photo · sticky compact · copy).
+Mise à jour : 2026-10-23 (lot **6.74** — hiérarchie typo PageTitle partout · docs alignés).
 
 ## 1. Vision
 
@@ -94,6 +94,21 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.71** | Calendrier mois Accueil · Menu lien calendrier · widget carnet · horizon ~2 ans | ✅ |
 | **6.72** | PageTitle InkMuted · widget/notif · sticky · snackbar FAIT · contact Menu · épargne Accueil | ✅ |
 | **6.73** | Photo multi-ligne · sticky S26 Plus · snackbar compact · Dossiers/Aide · À venir cartes | ✅ |
+| **6.74** | PageTitle Lock/Scan/onboarding/fiches · SectionTitle Fréquence · charte tokens typo | ✅ |
+
+## 4bis. Hiérarchie typo (verrouillé 6.72–6.74)
+
+| Rôle | Composant / token | Style | Couleur | Usage |
+|------|-------------------|-------|---------|-------|
+| **PageTitle** | `CarnetPageTitle` / `SettingsPageTitle` | `titleLarge` | **InkMuted** | Menu, hub Réglages, groupes, sous-pages, À venir, sheets (Courses / épargne / calendrier), Alertes, Lock, Scan, onboarding, Restore, EditTemplate, fiche, HowItWorks **titre de page** |
+| **SectionTitle** | `CarnetSectionTitle` | `titleMedium` | **InkMuted** | En-têtes non tappables (Dossiers, Fréquence, Prochaine échéance, années calendrier) |
+| **HubRow** | `CarnetHubRow` | `titleLarge` + › | **Ink** (label) | Lignes cliquables hub (Menu, Réglages) |
+| **Disclosure** | titre + ▾/▴ | `titleLarge` | **Ink** | Accordion HowItWorks, sections fiche repliables — **≠** PageTitle |
+| **Tip / Body** | texte courant | `bodyMedium` / `bodyLarge` | **InkMuted** | Empty Dossiers, intros, tips (pas de tip-box sauf ok/warn/erreur) |
+| **QuietLink** | `QuietLinkA11y` | `bodyLarge` | **Link** | Copier / Photo / Contact Menu (« Un souci… » → Arkalia Système) |
+
+**Nuit :** `InkMuted` ≠ `Ink` (écart PageTitle / corps) ; contraste muted ≥ 7:1 sur crème nuit.  
+**Interdit :** PageTitle en Ink (look HubRow) ; logo / wordmark sur sticky Accueil ; Aide/Restore dans Menu Accueil (contact QuietLink OK).
 
 ## 5. Branches Git (verrouillé)
 

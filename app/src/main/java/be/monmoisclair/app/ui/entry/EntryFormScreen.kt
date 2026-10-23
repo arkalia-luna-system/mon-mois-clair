@@ -70,6 +70,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
@@ -484,11 +486,7 @@ fun EditEntryScreen(
                 if (missFit.compactHomeChrome) 12.dp else 16.dp
             )
         ) {
-            Text(
-                text = "Cette ligne n’est plus là.",
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
+            CarnetPageTitle("Cette ligne n’est plus là.", withTopSpacer = false)
             Text(
                 text = "Elle a peut-être déjà été retirée. Retournez à l’accueil.",
                 style = MaterialTheme.typography.bodyLarge,
@@ -1018,11 +1016,7 @@ private fun EntryFormScaffold(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(formGap)
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
+            CarnetPageTitle(title, withTopSpacer = false)
 
             if (showRecurring) {
                 val chipGap = if (fit.compactHomeChrome) 6.dp else 8.dp
@@ -1166,11 +1160,7 @@ private fun EntryFormScaffold(
             }
 
             if ((showRecurring || showFrequencyEdit) && onRecurrence != null) {
-                Text(
-                    "Fréquence",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = A11yTokens.InkMuted
-                )
+                CarnetSectionTitle("Fréquence")
                 if (showFrequencyEdit) {
                     Text(
                         text = "Mois déjà créés : cochez « Aussi les mois suivants ».",
@@ -1201,11 +1191,7 @@ private fun EntryFormScaffold(
                     }
                 }
                 if (showNextDueMonth) {
-                    Text(
-                        "Prochaine échéance",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = A11yTokens.InkMuted
-                    )
+                    CarnetSectionTitle("Prochaine échéance")
                     @OptIn(ExperimentalLayoutApi::class)
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),

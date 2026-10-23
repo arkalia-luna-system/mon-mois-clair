@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -88,11 +89,7 @@ fun PendingLetterFormScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        Text(
-            text = "Courrier sans plan",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Courrier sans plan", withTopSpacer = false)
         Text(
             text = "Qui, pour quoi, photo — pas de montant, hors Reste.",
             style = MaterialTheme.typography.bodyLarge,

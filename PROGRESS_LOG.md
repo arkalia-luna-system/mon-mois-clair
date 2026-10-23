@@ -9,15 +9,39 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.73** (audit 6.72 P0/P1 code · photo multi-ligne · sticky S26 · copy) |
+| Dernière étape terminée | **6.74** (PageTitle Lock/Scan/onboarding/fiches · charte §4bis · docs) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt 6.73 (photo loyer3 · sticky Plus épargne · snackbar · notif) · S26 · claim premium non |
-| Audit premium | Matrice **6.68–6.73** · **pas** « premium parfait » · **305/305** |
+| Prochaine sous-étape | Smoke doigt 6.74 (photo · sticky · snackbar · notif · PageTitle) · S26 · claim premium non |
+| Audit premium | Matrice typo **6.74** · demandes **6.72–6.73** tenues · **305/305** · **pas** « premium parfait » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
+
+Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.74 Hiérarchie typo complète + docs
+
+**Matrice typo (Top 10 + tableau B) — code :**
+| Point | État | Preuve |
+|-------|------|--------|
+| PageTitle / SettingsPageTitle InkMuted | **FAIT** | `CarnetPageTitle` hub/groupes/sous-pages/À venir/Courses/Alertes/HowItWorks + Lock/Scan/onboarding/Restore/EditTemplate/fiche/PendingLetter |
+| SectionTitle InkMuted | **FAIT** | `CarnetSectionTitle` Dossiers / Fréquence / Prochaine échéance ; années calendrier ; Jour du mois muted |
+| Empty Dossiers Tip/Body | **FAIT** | `DossiersScreen` body InkMuted |
+| HowItWorks PageTitle ≠ section | **FAIT** | PageTitle muted vs disclosure titleLarge Ink |
+| Night InkMuted ≠ Ink WCAG | **FAIT** | `A11yTokens.Night` + tests contrast / title tokens |
+| Copier/Photo QuietLinkA11y | **FAIT** | `EntryFormScreen` QuietLink |
+| Test PageTitle ≠ HubRow | **FAIT** | `CarnetTitleTokensTest` |
+| Années calendrier SectionTitle | **FAIT** | `HomeMonthPickerSheet` (6.73) |
+
+**Demandes 6.72 (ré-audit) :** widget · notif · sticky sans logo · snackbar · contact Menu Arkalia · Aide/Alertes courts · épargne Accueil · photo multi-ligne · sticky Plus · calendrier PageTitle — **OK code**, smoke doigt encore requis.
+
+**Docs :** CHARTE §4bis tokens · BENCHMARK / AUDIT_STATUS / PLAN / README anti-contradiction · AppleDouble locaux nettoyés.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **305/305** (72 fichiers, 0 failure).  
+**Version :** `0.1.0-6.74` · `versionCode` 79.  
+**Pas un claim « premium parfait ».**
 
 ### 2026-10-23 — 6.73 Correctifs audit premium 6.72 (code)
 

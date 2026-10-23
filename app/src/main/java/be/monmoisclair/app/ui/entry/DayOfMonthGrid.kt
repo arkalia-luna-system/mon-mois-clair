@@ -47,11 +47,11 @@ fun DayOfMonthGrid(
     // Écart serré : 31 cases doivent pouvoir défiler sans masquer Enregistrer.
     val dayGap = if (fit.compactHomeChrome) 4.dp else 6.dp
     Column(modifier = modifier) {
-        // Titre section (pas tip) — la grille parle d’elle-même.
+        // SectionTitle = titleMedium + InkMuted (comme Fréquence / Dossiers).
         Text(
             text = "Jour du mois",
             style = MaterialTheme.typography.titleMedium,
-            color = A11yTokens.Ink,
+            color = A11yTokens.InkMuted,
             modifier = Modifier.padding(bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
         )
         FlowRow(

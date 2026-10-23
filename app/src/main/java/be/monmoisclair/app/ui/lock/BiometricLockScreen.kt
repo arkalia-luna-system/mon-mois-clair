@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentActivity
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.ui.components.AppWordmark
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -102,11 +103,7 @@ fun BiometricLockScreen(
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 12.dp else 32.dp))
         // LOCK01 : une composition, pas deux cartes empilées.
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 260.dp)
-        Text(
-            text = "Application verrouillée",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Application verrouillée", withTopSpacer = false)
         Text(
             text = "Empreinte, code ou visage. Si rien ne s’ouvre : le bouton ci-dessous.",
             style = MaterialTheme.typography.bodyLarge,

@@ -63,5 +63,8 @@ class WcagContrastTest {
         assertThat(WcagContrast.ratio(night.onGold, night.accentAuto)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(night.ink, night.accentOkSoft)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(night.accentOkInk, night.accentOkSoft)).isAtLeast(7.0)
+        // PageTitle nuit : muted distinct de l’encre, toujours ≥ 7:1 sur crème.
+        assertThat(night.inkMuted).isNotEqualTo(night.ink)
+        assertThat(WcagContrast.ratio(night.inkMuted, night.paperCream)).isAtLeast(7.0)
     }
 }

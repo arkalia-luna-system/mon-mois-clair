@@ -19,11 +19,11 @@ Lots **A→F** et le détail de construction sont **clos** :
 ## Pas encore « objet fini dans la main »
 
 - S26 de maman tenu en main.
-- Smoke doigt encore partiel (revalider photo loyer3 ; fondu FAIT au doigt).
-- Tests d’écran instrumentés.
+- Smoke doigt encore partiel (photo loyer3 après 6.73 ; snackbar / sticky Plus ; notif ; fondu FAIT).
+- Tests d’écran instrumentés · scission god-files Home/Entry.
 
 ## Prochain geste
 
-Revalider « Voir la photo » (loyer3) sur S25, puis le S26 quand il est là.
+Smoke doigt 6.74 (PageTitle / photo / sticky compact) sur S25, puis S26 quand il est là.
 
 Constats dossiers (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.

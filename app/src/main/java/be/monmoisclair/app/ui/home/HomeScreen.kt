@@ -85,6 +85,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.MainActivity
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.BrandMark
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -905,14 +906,13 @@ fun HomeScreen(
                                     if (fit.compactHomeChrome) 6.dp else 8.dp
                                 )
                             ) {
-                                Text(
-                                    text = if (state.isFuturePreview) {
+                                CarnetPageTitle(
+                                    if (state.isFuturePreview) {
                                         "Rien de prévu ce mois-là"
                                     } else {
                                         "Rien encore ce mois"
                                     },
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    color = A11yTokens.Ink
+                                    withTopSpacer = false
                                 )
                                 Text(
                                     text = if (state.isFuturePreview) {

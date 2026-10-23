@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
@@ -51,11 +52,7 @@ fun ConvertPendingLetterScreen(
     // Chargement / courrier disparu : Retour seul (pas d’action primaire).
     if (state.loading || (state.who.isBlank() && state.error != null)) {
         PinnedBackScaffold(onBack = onBack) {
-            Text(
-                text = "Fixer un versement",
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
+            CarnetPageTitle("Fixer un versement", withTopSpacer = false)
             if (state.loading) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -87,10 +84,9 @@ fun ConvertPendingLetterScreen(
                         if (fit.compactHomeChrome) 6.dp else 8.dp
                     )
                 ) {
-                    Text(
-                        text = state.error ?: "Ce courrier n’est plus là.",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = A11yTokens.Ink
+                    CarnetPageTitle(
+                        state.error ?: "Ce courrier n’est plus là.",
+                        withTopSpacer = false
                     )
                     Text(
                         text = "Déjà converti ou retiré.",
@@ -114,11 +110,7 @@ fun ConvertPendingLetterScreen(
         onSecondary = onBack,
         secondaryEnabled = !state.saving
     ) {
-        Text(
-            text = "Fixer un versement",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Fixer un versement", withTopSpacer = false)
         Text(
             text = state.who.ifBlank { "Courrier" },
             style = MaterialTheme.typography.titleLarge,

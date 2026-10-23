@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.RecurrenceAnchor
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -200,11 +201,7 @@ fun EditTemplateScreen(
                 .padding(A11yTokens.screenPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Cette échéance n’est plus là.",
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
+            CarnetPageTitle("Cette échéance n’est plus là.", withTopSpacer = false)
             Text(
                 text = "Elle a peut-être déjà été retirée. Retournez à l’accueil ou aux Réglages.",
                 style = MaterialTheme.typography.bodyLarge,
@@ -231,11 +228,7 @@ fun EditTemplateScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(formGap)
         ) {
-            Text(
-                text = "Modifier l’échéance",
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink
-            )
+            CarnetPageTitle("Modifier l’échéance", withTopSpacer = false)
             // SYS01 : tip courant = texte InkMuted (pas de tip-box).
             Text(
                 text = state.intervalHint,

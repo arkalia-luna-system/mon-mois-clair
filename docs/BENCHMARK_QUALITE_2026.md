@@ -1,12 +1,12 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-23 (état code : **6.73**).  
+Date : 2026-10-23 (état code : **6.74**).  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.72** PageTitle / sticky / snackbar / contact · **6.73** photo multi-ligne · sticky S26 Plus · copy Dossiers/Aide · À venir cartes |
+| **Fait** | … · **6.72** PageTitle / sticky / snackbar / contact · **6.73** photo multi-ligne · sticky S26 · **6.74** PageTitle Lock/Scan/onboarding/fiches |
 | **Pas fait** | S26 en main · biométrie / widget home / scan caméra au doigt · claim premium terminé · scission god-files |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
@@ -51,28 +51,30 @@ Fond jour `#F6F3E8`, cartes `#FFFDF9`, encre `#1E1B18`, teal `#1B4D4E`. Nuit : f
 |----|------|
 | V01–V08 | **Fait** (cartes/ombre, rayons, pastilles, socle, FAIT forêt, `tnum`, fondus, nuit) |
 
-Pas de dégradé teal, pas d’icône seule Menu/FAIT, pas de 2ᵉ hero, pas de rouge sang.
+Pas de dégradé teal, pas d’icône seule Menu/FAIT, pas de 2ᵉ hero, pas de rouge sang.  
+Typo : voir charte **§4bis** (PageTitle InkMuted ≠ HubRow Ink).
 
 ---
 
 ## 4. Ce qui reste au doigt
 
-Prochain geste produit : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md). Smoke : [`AUDIT_STATUS.md`](AUDIT_STATUS.md).
+Prochain geste : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md). Smoke : [`AUDIT_STATUS.md`](AUDIT_STATUS.md).
 
 | Note technique | |
 |----------------|--|
-| Widget nuit hors process | Android ne livre pas `CONFIGURATION_CHANGED` au manifeste — refresh au prochain réveil de l’app |
-| Small icon notif | Silhouette claire `ic_notification` + couleur teal canal |
+| Widget nuit | `ACTION_CONFIGURATION_CHANGED` enregistré dans `MonMoisClairApp` (refresh process vivant) ; hors process = prochain réveil app |
+| Small icon notif | Silhouette claire `ic_notification` + teal canal |
 
 ## 5. Inspection des pages — 2026-10-23
 
-| Page | À modifier ? |
+| Page | État code 6.74 |
 |------|----------------|
 | Accueil | Sticky PaperWarm · Courses ; épargne sticky ou derrière Plus (compact) · snackbar compact · pas logo |
 | Menu | PageTitle · Dossiers (N) · QuietLink contact Arkalia · pas Aide/Restore |
-| Réglages, Aide | Hub 3 groupes · Aide « Menu → Dossiers » · HowItWorks corps courts |
+| Réglages, Aide | Hub 3 groupes · HowItWorks corps courts · contact = Menu seulement |
+| Lock / Scan / onboarding / fiches | PageTitle InkMuted (aligné Menu) |
 | À venir | Liste → détail cartes papier (sans FAIT) |
 | Alertes | PageTitle · DeviceCare court · pastilles |
-| Widget | Pads / filet / 36 sp Reste (inchangé 6.73) |
+| Widget | Pads / filet / 36 sp Reste |
 
 Volontairement dehors : banque, catégories, graphiques, grille calendrier, OCR montant, synchro, thème fluo.

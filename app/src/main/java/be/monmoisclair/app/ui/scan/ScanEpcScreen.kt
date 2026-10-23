@@ -55,6 +55,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.monmoisclair.app.domain.EpcQrParser
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -216,11 +217,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
             .background(A11yTokens.PaperCream)
             .padding(A11yTokens.screenPadding)
     ) {
-        Text(
-            "Scanner une facture",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Scanner une facture", withTopSpacer = false)
         Text(
             text = "QR belge · lampe si besoin.",
             style = MaterialTheme.typography.bodyLarge,

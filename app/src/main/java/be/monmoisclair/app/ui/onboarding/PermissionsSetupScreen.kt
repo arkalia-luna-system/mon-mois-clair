@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.reminder.ReminderHealthReport
 import be.monmoisclair.app.ui.components.AppWordmark
+import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.settings.DeviceCareCopy
@@ -81,11 +82,7 @@ fun PermissionsSetupScreen(
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
-        Text(
-            text = "Alertes fiables",
-            style = MaterialTheme.typography.headlineMedium,
-            color = A11yTokens.Ink
-        )
+        CarnetPageTitle("Alertes fiables", withTopSpacer = false)
         Text(
             text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +
                 "le réveil à l’heure, et laissez la batterie non limitée pour cette application.",

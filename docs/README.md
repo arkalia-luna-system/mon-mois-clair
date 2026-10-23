@@ -7,7 +7,7 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | Fichier | Rôle |
 |---------|------|
 | [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | État + prochain geste (lots A→F = archive) |
-| [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème apps 2026 / visuel — **6.55** |
+| [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème apps 2026 / visuel (suivre version journal) |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy |
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Envoi / MAJ APK sans USB |
 | [`CI.md`](CI.md) | CI + Dependabot Security |
