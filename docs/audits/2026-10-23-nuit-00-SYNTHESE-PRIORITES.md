@@ -31,7 +31,7 @@ Carrière GitHub / S26 doigt **REPORTÉ**.
 | **6** | Smoke | FAIT + snackbar | **CODE FAIT** | FAIT 96 dp · Long · dump S25 OK |
 | **7** | Smoke | Notif silhouette + teal | **CODE FAIT** | tenu · **notif doigt REPORTÉ** |
 | **8** | Smoke | Widget Reste + nuit + bio | **CODE FAIT** | Serif + tokens · **widget doigt REPORTÉ** |
-| **9** | P1 UI | Widget = même Reste serif | **FAIT** | `@font/source_serif4_semibold` + muted/rule |
+| **9** | P1 UI | Widget Reste lisible One UI | **FAIT 6.79** | police **système** `serif` (plus `@font` — cassait le host) + muted/rule |
 | **10** | P1 UI | Quieting sticky + cartes | **FAIT** | Sticky crème · cartes **filet seul** (6.78) |
 | **11** | P1 a11y | Plafond hero fontScale | **FAIT** | `rememberDisplayFit` pré-compense sp |
 | **12** | P1 a11y/copy | FAIT 96 · Plus · Compte · après | **FAIT** | + À venir « N factures » (6.78) |

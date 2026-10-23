@@ -6,8 +6,8 @@ Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.75** Arkalia + PRIVACY · **6.76** B01–B03 · sticky quiet · widget serif · fontScale hero · FAIT 96 |
-| **Pas fait** | S26 en main · biométrie / widget / scan / notif au doigt · claim premium terminé · scission god-files |
+| **Fait** | … · **6.76** B01–B03 · sticky · **6.79** widget One UI (police système, plus `@font`) · fontScale hero · FAIT 96 |
+| **Pas fait** | S26 en main · biométrie / scan / notif au doigt · claim premium terminé · scission god-files |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 

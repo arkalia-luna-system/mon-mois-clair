@@ -24,27 +24,30 @@
         android:textColor="@color/widget_muted"
         android:textSize="11sp" />
 
-    <!-- Même serif que le Reste in-app (Source Serif 4) — signature carnet hors process. -->
+    <!-- WDG02 : RemoteViews = police système seulement (@font casse One UI / host hors process). -->
     <TextView
         android:id="@+id/widget_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:ellipsize="end"
-        android:fontFamily="@font/source_serif4_semibold"
+        android:fontFamily="serif"
         android:includeFontPadding="false"
         android:maxLines="1"
         android:text="—"
         android:textColor="@color/widget_ink"
         android:textSize="36sp" />
 
-    <View
+    <!-- RemoteViews Android 12+ / One UI : android.view.View est refusé (« Class not allowed »). -->
+    <ImageView
         android:id="@+id/widget_rule"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="10dp"
-        android:background="@color/widget_rule" />
+        android:background="@color/widget_rule"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no" />
 
     <TextView
         android:id="@+id/widget_line"

@@ -4,6 +4,8 @@
     android:initialLayout="@layout/widget_carnet"
     android:minWidth="180dp"
     android:minHeight="110dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="110dp"
     android:previewLayout="@layout/widget_carnet"
     android:resizeMode="horizontal|vertical"
     android:targetCellHeight="2"

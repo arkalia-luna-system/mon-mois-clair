@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.78** (Dependabot force · smoke S25 P1 · cartes filet) |
+| Dernière étape terminée | **6.79** (P0 widget One UI · police système RemoteViews) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt S26 · notif/widget/photo · carrière GitHub hors repo |
-| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · **pas** « 9/10 dans la main » |
+| Prochaine sous-étape | Smoke doigt S26 · notif/photo · carrière GitHub hors repo |
+| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · P0 widget **validé SM-S938B** · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,23 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.79 P0 widget One UI (RemoteViews)
+
+**Cause (SM-S938B, log host) :** `InflateException` ligne filet — **`android.view.View` interdit** en RemoteViews (« Class not allowed to be inflated »). Pastille One UI « Impossible d'ajouter le widget. » (id 65→66). Facteur aggravant 6.76 : `@font/source_serif4_semibold` (contredit **WDG02**).
+
+**Fix :**
+- Filet → `ImageView` 1 dp (classe autorisée)
+- Montant → `fontFamily="serif"` système ; tests contrat anti-`@font/` + anti-`<View`
+- `carnet_widget_info` : `minResizeWidth/Height`
+- `CarnetWidgetProvider` : coquille RemoteViews synchrone avant refresh Hilt/async
+
+Manifest `exported=true` + `APPWIDGET_UPDATE` déjà corrects (pas la cause).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **318/318** (75 fichiers, 0 failure).  
+**Version :** `0.1.0-6.79` · `versionCode` 84.  
+**Device :** install release `0.1.0-6.79` · widget id 66 · **Reste 2 106 €** (uiautomator + screencap).  
+**Pas un claim « 9/10 dans la main ».**
 
 ### 2026-10-23 — 6.78 Dependabot + smoke S25 + carnet filet
 

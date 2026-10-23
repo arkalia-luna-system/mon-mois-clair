@@ -9,9 +9,9 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-315%2F315-success)](#statut-technique)
+[![Tests](https://img.shields.io/badge/tests-318%2F318-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.78-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.79-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,11 +48,11 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.78` |
-| Dernière étape | **6.78** Dependabot force · smoke S25 P1 · cartes filet |
-| Device | Smoke S25 Ultra partiel (`docs/audits/2026-10-23-smoke-device.md`). Photo / notif / widget / S26 **ouverts** — pas claim « 9/10 dans la main » |
+| Version | `0.1.0-6.79` |
+| Dernière étape | **6.79** P0 widget One UI (police système RemoteViews) |
+| Device | Smoke S25 Ultra partiel (`docs/audits/2026-10-23-smoke-device.md`). P0 widget **fix code** · photo / notif / S26 **ouverts** — pas claim « 9/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **315/315** OK (`--rerun-tasks`) |
+| Tests unitaires | **318/318** OK (`--rerun-tasks`) |
 | Schéma Room | **8** |
 
 Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)

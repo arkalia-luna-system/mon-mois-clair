@@ -4,6 +4,8 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.util.Log
+import android.widget.RemoteViews
+import be.monmoisclair.app.R
 import be.monmoisclair.app.domain.MonthCycleEngine
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +29,9 @@ class CarnetWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
+        // Coquille immédiate : One UI affiche « Impossible d'ajouter… » si le host
+        // n’a que initialLayout en échec d’inflation, ou si le refresh async tarde.
+        paintShell(context, appWidgetManager, appWidgetIds)
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             try {
@@ -38,6 +43,24 @@ class CarnetWidgetProvider : AppWidgetProvider() {
                 pending.finish()
             }
         }
+    }
+
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: android.os.Bundle?
+    ) {
+        onUpdate(context, appWidgetManager, intArrayOf(appWidgetId))
+    }
+
+    private fun paintShell(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
+        val shell = RemoteViews(context.packageName, R.layout.widget_carnet)
+        appWidgetManager.updateAppWidget(appWidgetIds, shell)
     }
 
     private companion object {

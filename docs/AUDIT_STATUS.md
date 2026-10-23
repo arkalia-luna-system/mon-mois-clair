@@ -20,6 +20,7 @@ Punch list visuelle : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (fi
 | Hauteur courte type S26 | ✅ sim. 360×780 dp + texte 1,3 (2026-10-21) |
 | 6.43–6.55 | ✅ code. Smoke S25 du 2026-10-22 : accueil nuit, widget, OCR, PDF. Photo loyer3 : revalider après 6.54/6.55. S26 : pas encore |
 | 6.78 | ✅ code + smoke S25 **partiel** adb — [`audits/2026-10-23-smoke-device.md`](audits/2026-10-23-smoke-device.md). S26 / notif / widget doigt : ouverts |
+| 6.79 | ✅ P0 widget One UI — `View`→`ImageView` + serif système · validé SM-S938B (Reste visible) |
 
 ## Smoke SM-S938B — 2026-10-21
 

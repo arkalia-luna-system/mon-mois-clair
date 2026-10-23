@@ -1,15 +1,16 @@
-# Smoke device — 2026-10-23 (soir)
+# Smoke device — 2026-10-23 (soir) + suivi P0 widget 6.79
 
 | | |
 |--|--|
 | **Device** | Samsung **SM-S938B** (USB) · Android **17** |
-| **App** | `be.monmoisclair.app` · **versionName `0.1.0-6.77`** · versionCode **82** |
-| **Install** | Déjà installée (alignée `build.gradle.kts`) — pas de réinstall (aucun APK release local sous `app/build/outputs/`) |
+| **App (smoke initial)** | `be.monmoisclair.app` · **versionName `0.1.0-6.77`** · versionCode **82** |
+| **App (fix P0)** | **`0.1.0-6.79`** · versionCode **84** — police système RemoteViews |
 | **Méthode** | `adb` · `uiautomator` · taps · `screencap` · lecture PNG |
-| **Code app** | **Aucun commit / aucune modif** HomeScreen / EntryForm |
-| **Captures** | `docs/audits/smoke/*.png` |
+| **Captures** | `docs/audits/smoke/*.png` (08 = état **avant** fix ; à re-capturer après install 6.79) |
 
-**Verdict :** smoke **exécuté**. L’app s’ouvre et se navigue (Accueil → Menu → Réglages / Dossiers / À venir / calendrier / fiche). **P0 widget** : instance launcher cassée (« Impossible d’ajouter le widget. »). Le badge **FAIT** chevauche encore la carte Accueil (claim 6.77 « FAIT 96 dp » **non validé** visuellement).
+**Verdict (soir) :** smoke **exécuté**. L’app s’ouvre et se navigue. **P0 widget** : instance launcher cassée (« Impossible d’ajouter le widget. »).
+
+**Suivi 6.79 :** cause host = `View` interdit en RemoteViews (+ `@font` 6.76). Fix + install release **6.79** · widget id **66** affiche **Reste 2 106 €** (capture `08_widget.png` post-fix). Tests **318/318**.
 
 ---
 
@@ -24,17 +25,18 @@
 | 5 | À venir | [`docs/audits/smoke/05_a_venir.png`](smoke/05_a_venir.png) |
 | 6 | Choisir un mois (calendrier) | [`docs/audits/smoke/06_calendrier.png`](smoke/06_calendrier.png) |
 | 7 | Fiche édition (`loyer3`) | [`docs/audits/smoke/07_fiche.png`](smoke/07_fiche.png) |
-| 8 | Widget launcher | [`docs/audits/smoke/08_widget.png`](smoke/08_widget.png) |
+| 8 | Widget launcher (**OK 6.79** — Reste) | [`docs/audits/smoke/08_widget.png`](smoke/08_widget.png) (PNG gitignoré) |
 
 ---
 
 ## P0 — bloquant
 
-### W01 — Widget launcher mort
-- **Où :** écran d’accueil Android · instance `CarnetWidgetProvider` (widget id **65** confirmé via `dumpsys appwidget`).
-- **Vu :** pastille sombre avec texte **« Impossible d'ajouter le widget. »** — aucun Reste / titre / montant (capture `08_widget.png`).
-- **Impact :** promesse « widget Reste » (synthèse nuit #8) **fausse** sur ce device One UI ; inutile pour la famille.
-- **Piste :** refresh RemoteViews après install/update, layout One UI / taille 3×2, ou ré-ajout widget ; **ne pas** se fier au seul claim code 6.77.
+### W01 — Widget launcher mort → **CORRIGÉ + validé device (6.79)**
+- **Où :** écran d’accueil Android · `CarnetWidgetProvider` (id **65** cassé → **66** après fix).
+- **Vu (soir) :** pastille **« Impossible d'ajouter le widget. »**.
+- **Cause (log `AppWidgetHostView`) :** `Class not allowed to be inflated android.view.View` sur le filet (`widget_rule`). Aggravant 6.76 : `@font/source_serif4_semibold`. Manifest / `exported` OK.
+- **Fix 6.79 :** filet → `ImageView` · police `serif` système · `minResize*` · coquille sync · tests contrat.
+- **Preuve device :** install `0.1.0-6.79` (vc 84) · uiautomator `Reste` + `En retard · virement…` · screencap `08_widget.png` (2 106 €).
 
 ---
 
@@ -50,6 +52,7 @@
 - **Où :** fiche (`07_fiche.png`) · grille « Jour du mois ».
 - **Vu :** cercles 1–30 visibles ; le **31** est dans l’arbre a11y (`Jour 31`) mais **hors zone lisible** — footer sticky « Enregistrer / Annuler / Supprimer » recouvre le bas de la grille.
 - **Impact :** mois à 31 jours → jour difficile à sélectionner / à voir (surtout gros doigt / fontScale).
+- **Note 6.78 :** spacer post-grille ×2 — à revalider visu sur device.
 
 ### D01 — Compteur Menu « Dossiers (4) » ≠ liste visible
 - **Où :** Menu `02_menu.png` (« Dossiers **(4)** ») vs écran Dossiers `04_dossiers.png` (section **En cours** = **2** cartes : birdet, CourrierTestP).
@@ -75,7 +78,7 @@
 
 ### OK notés (pas de ticket)
 - Menu bottom sheet clair (Réglages / Dossiers / À venir / Choisir un mois) + lien Arkalia.
-- Réglages : version **6.77** + claim privacy « pas de compte, pas de cloud » alignés.
+- Réglages : version **6.77** (soir) + claim privacy « pas de compte, pas de cloud » alignés.
 - Calendrier mois : années 2024–2028, Oct sélectionné, copy futur « sans FAIT » OK.
 - À venir : 6 mois listés, chacun « 10 échéances » (cohérent si récurrences stables — à revalider si un mois diverge).
 
@@ -94,8 +97,8 @@
 
 ---
 
-## Suite recommandée (hors scope ce smoke)
+## Suite recommandée
 
-1. **Corriger W01** (widget) puis re-screencap `08_widget.png`.  
+1. ~~W01 widget~~ **fait 6.79**.  
 2. **Revalider H01** (FAIT) + **F01** (jour 31) sur ce même SM-S938B.  
 3. Ensuite seulement : claim « smoke S26 / dans la main » dans la synthèse nuit.
