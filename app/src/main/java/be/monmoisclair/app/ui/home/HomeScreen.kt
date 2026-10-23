@@ -436,7 +436,7 @@ fun HomeScreen(
                                 try {
                                     val result = snackbarHostState.showSnackbar(
                                         message = if (pastMarkingDone) {
-                                            "Noté FAIT — la ligne reste"
+                                            "Noté FAIT"
                                         } else {
                                             "Remis à payer"
                                         },

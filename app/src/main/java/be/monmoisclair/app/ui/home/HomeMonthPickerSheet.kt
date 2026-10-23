@@ -35,6 +35,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetTitleTokens
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -93,8 +94,8 @@ fun HomeMonthPickerSheet(
                 HorizontalDivider(color = A11yTokens.PaperBorder)
                 Text(
                     text = if (expanded) "$year ▾" else "$year ›",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.Ink,
+                    style = CarnetTitleTokens.sectionTitleStyle(MaterialTheme.typography),
+                    color = A11yTokens.InkMuted,
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = A11yTokens.minTouchHeight)

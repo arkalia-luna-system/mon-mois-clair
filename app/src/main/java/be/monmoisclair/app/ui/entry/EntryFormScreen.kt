@@ -1204,7 +1204,7 @@ private fun EntryFormScaffold(
                     Text(
                         "Prochaine échéance",
                         style = MaterialTheme.typography.titleMedium,
-                        color = A11yTokens.Ink
+                        color = A11yTokens.InkMuted
                     )
                     @OptIn(ExperimentalLayoutApi::class)
                     FlowRow(

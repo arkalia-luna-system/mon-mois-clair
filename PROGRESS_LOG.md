@@ -31,6 +31,8 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 7. **À venir** détail : cartes papier type Accueil (sans FAIT).
 8. **Alertes** : `DeviceCareCopy.HINT` raccourci.
 
+**Micro-passe post ré-audit :** snackbar mois passé alignée ; années calendrier = SectionTitle ; fiche « Prochaine échéance » InkMuted.
+
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **305/305** (72 fichiers, 0 failure).  
 **Version :** `0.1.0-6.73` · `versionCode` 78.  
 **Pas un claim « premium parfait »** — smoke doigt (photo / S26 / notif) encore requis.
