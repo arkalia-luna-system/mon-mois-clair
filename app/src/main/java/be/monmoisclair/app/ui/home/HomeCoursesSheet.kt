@@ -83,11 +83,11 @@ fun HomeCoursesSheet(
             CarnetPageTitle("Courses", withTopSpacer = false)
             val statusLine = when {
                 diversSpentCents > 0L && afterDiversCents < 0L ->
-                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · après " +
+                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · il reste " +
                         "${MoneyFormat.formatCents(afterDiversCents)}"
                 diversSpentCents > 0L ->
-                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · hors Reste"
-                else -> "Hors du Reste"
+                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · hors du reste du mois"
+                else -> "Hors du reste du mois"
             }
             Text(
                 text = statusLine,

@@ -24,13 +24,14 @@
         android:textColor="@color/widget_muted"
         android:textSize="11sp" />
 
+    <!-- Même serif que le Reste in-app (Source Serif 4) — signature carnet hors process. -->
     <TextView
         android:id="@+id/widget_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/source_serif4_semibold"
         android:includeFontPadding="false"
         android:maxLines="1"
         android:text="—"

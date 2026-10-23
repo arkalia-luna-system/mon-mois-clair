@@ -8,6 +8,7 @@ import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.InstanceIds
 import be.monmoisclair.app.domain.MonthDayClamp
+import be.monmoisclair.app.domain.PaymentNotePolicy
 import be.monmoisclair.app.domain.RecurrenceRules
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.Instant
@@ -162,7 +163,11 @@ object AgreementFuturesSync {
                     remindJ3 = tpl.remindJ3,
                     remindJd = tpl.remindJd,
                     isAutoDebit = tpl.isAutoDebit,
-                    paymentNote = tpl.paymentNote,
+                    paymentNote = PaymentNotePolicy.noteForNewInstance(
+                        templatePaymentNote = tpl.paymentNote,
+                        openingRemainingCents = tpl.openingRemainingCents,
+                        isAutoDebit = tpl.isAutoDebit
+                    ),
                     receiptRelativePath = tpl.receiptRelativePath,
                     alarmJ3RequestCode = null,
                     alarmJdRequestCode = null,

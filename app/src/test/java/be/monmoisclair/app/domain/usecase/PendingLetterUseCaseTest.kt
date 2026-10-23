@@ -110,4 +110,20 @@ class PendingLetterUseCaseTest {
         assertThat(expenses.single().status).isEqualTo(ExpenseStatus.TODO)
     }
 
+    /** B02 — forfait 50 €, reste 30 € → ligne du mois = 30 €. */
+    @Test
+    fun convert_firstInstallment_cappedToRemaining() = runBlocking {
+        val created = create(who = "Taxe", what = "Ville") as CreatePendingLetterResult.Success
+        val result = convert(
+            letterId = created.id,
+            monthlyAmountCents = 5_000L,
+            openingRemainingCents = 3_000L,
+            dayOfMonth = 5
+        )
+        assertThat(result).isInstanceOf(ConvertPendingLetterResult.Success::class.java)
+        val tpl = db.templateDao().getAllExpenseTemplates().single()
+        assertThat(tpl.amountCents).isEqualTo(5_000L)
+        assertThat(db.instanceDao().getAllExpenses().single().amountCents).isEqualTo(3_000L)
+    }
+
 }

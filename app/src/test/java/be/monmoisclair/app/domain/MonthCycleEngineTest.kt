@@ -349,9 +349,9 @@ class MonthCycleEngineTest {
         assertThat(db.instanceDao().observeExpenses("2026-02").first()).isEmpty()
     }
 
-    /** Lot A : communication + photo du modèle suivent le mois nouveau. */
+    /** B01 : facture ordinaire — photo suit ; +++ ne suit pas (ref souvent morte). */
     @Test
-    fun ensureMonth_copiesPaymentNoteAndReceiptFromTemplate() = runBlocking {
+    fun ensureMonth_ordinary_clearsPaymentNote_keepsReceipt() = runBlocking {
         freezeAt("2026-02-01T10:00:00+01:00")
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(
@@ -368,8 +368,30 @@ class MonthCycleEngineTest {
         )
         engine.ensureMonthExists(YearMonth.of(2026, 2))
         val exp = db.instanceDao().observeExpenses("2026-02").first().single()
-        assertThat(exp.paymentNote).isEqualTo("+++000/0000/00097+++")
+        assertThat(exp.paymentNote).isEmpty()
         assertThat(exp.receiptRelativePath).isEqualTo("receipts/tpl-paper.webp")
+    }
+
+    /** B01 : dossier / prélèvement — communication stable recopiée. */
+    @Test
+    fun ensureMonth_dossier_copiesPaymentNote() = runBlocking {
+        freezeAt("2026-02-01T10:00:00+01:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-dossier-note",
+                label = "Loyer",
+                amountCents = 47_000L,
+                dayOfMonth = 1,
+                active = true,
+                paymentNote = "+++000/0000/00097+++",
+                openingRemainingCents = 940_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        engine.ensureMonthExists(YearMonth.of(2026, 2))
+        val exp = db.instanceDao().observeExpenses("2026-02").first().single()
+        assertThat(exp.paymentNote).isEqualTo("+++000/0000/00097+++")
     }
 
     private fun freezeAt(isoOffsetDateTime: String) {

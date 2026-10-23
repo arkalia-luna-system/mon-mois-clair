@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-23 (lot **6.75** — identité Arkalia · PRIVACY · contact Menu).
+Mise à jour : 2026-10-23 (lot **6.76** — P0 BE B01–B03 · sticky quiet · PRIVACY).
 
 ## 1. Vision
 
@@ -39,8 +39,8 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
 | **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
 | **Courses** (tap ≥48) | Montant divers du mois ; ouvre la sheet d’édition | Toujours hors aperçu futur (`Courses` ou `Courses X € · après Y €`) |
-| **Mettre de côté** (tap ≥48) | Forfait mensuel ; sheet montant (jour/retrait = Réglages) | Hors aperçu futur — **pas** 2ᵉ hero ; chrome compact (≤800 dp) : derrière **Plus** (accessible) |
-| **Après les FAIT** · alertes / courriers | Détail | Derrière **Plus / Moins** (pas de mini-dashboard) |
+| **Mettre de côté** (tap ≥48) | Forfait mensuel ; sheet montant (jour/retrait = Réglages) | Hors aperçu futur — **pas** 2ᵉ hero ; chrome compact (≤800 dp) : derrière **Autres infos** (accessible) |
+| **Après les FAIT** · alertes / courriers | Détail | Derrière **Autres infos / Masquer** (pas de mini-dashboard) |
 
 Courses / épargne : sheets depuis le sticky (›). Pas de 2ᵉ formulaire en bas de liste ; pas de logo / wordmark sur le sticky.
 
@@ -96,6 +96,8 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **6.72** | PageTitle InkMuted · widget/notif · sticky · snackbar FAIT · contact Menu · épargne Accueil | ✅ |
 | **6.73** | Photo multi-ligne · sticky S26 Plus · snackbar compact · Dossiers/Aide · À venir cartes | ✅ |
 | **6.74** | PageTitle Lock/Scan/onboarding/fiches · SectionTitle Fréquence · charte tokens typo | ✅ |
+| **6.75** | Identité Arkalia · PRIVACY · polish docs/contact | ✅ |
+| **6.76** | B01–B03 métier BE · sticky quiet · widget serif · fontScale · FAIT 96 | ✅ |
 
 ## 4bis. Hiérarchie typo (verrouillé 6.72–6.74)
 
@@ -167,7 +169,7 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomC
 
 ## 7. Hub Réglages & usage sur une année (verrouillé)
 
-**Forme (6.70) :** hub = **3 groupes** (Compte & données / Confort / Aide) → sujets (Apparence, Alertes→Santé, Échéances, Mettre de côté, Confidentialité, Résumé si utile, Sauvegarde). Aide ouvre Comment ça marche. Max **2 niveaux** après le hub. Pas tout empilé sur une page.
+**Forme (6.70 / 6.76) :** hub = **3 groupes** (Données & sauvegarde / Confort / Aide) → sujets (Apparence, Alertes→Santé, Échéances, Mettre de côté, Confidentialité, Préparer un résumé si utile, Sauvegarde). Aide ouvre Comment ça marche. Max **2 niveaux** après le hub. Pas tout empilé sur une page.
 
 ### Inventaire (indispensable vs redondant)
 
@@ -188,7 +190,7 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomC
 | Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
 | Feuilleter / sauter un mois | Accueil ‹ › + **calendrier** (ou Menu → Choisir un mois) | **Mois en cours** (Menu / calendrier) |
 | Rappels qui ne sonnent pas | Réglages → Confort → Alertes | Un seul hub (pas de doublon Menu) |
-| Aide / restore | Réglages → Aide / Compte & données → Sauvegarde | Menu ne liste plus Comment ça marche ni Restaurer |
+| Aide / restore | Réglages → Aide / Données & sauvegarde → Sauvegarde | Menu ne liste plus Comment ça marche ni Restaurer |
 
 Interdit : ajouter un 2ᵉ hub Device Care dans Réglages ; diluer Santé ; remettre Santé / Réglages / aide dans le scroll Home ; dupliquer Alertes ou Aide dans le Menu.
 
@@ -214,7 +216,7 @@ L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3
 | Jour d’échéance | Grille **1–31**, cibles ≥ 48 dp, qui se replie (7 colonnes de 48 dp ne tiennent pas sur le S26) |
 | Montant | Clavier décimal. Édition **ce mois-ci seul** par défaut |
 | Mois indépendants | Pas de report auto. Un revenu ponctuel « Reste du mois passé » si elle le veut |
-| Alertes | Hub **Réglages** (3 groupes : Compte & données / Confort / Aide) → **Confort → Alertes**. Bouton bas reste **« Menu »** ; badge `!` si notifs / alarmes bloquées + ligne Alertes en tête du sheet. Pas de pastille permanente pour la batterie Samsung |
+| Alertes | Hub **Réglages** (3 groupes : Données & sauvegarde / Confort / Aide) → **Confort → Alertes**. Bouton bas reste **« Menu »** ; badge `!` si notifs / alarmes bloquées + ligne Alertes en tête du sheet. Pas de pastille permanente pour la batterie Samsung |
 | Local-first | Zéro banque, zéro cloud, zéro pub |
 
 ### Refuser

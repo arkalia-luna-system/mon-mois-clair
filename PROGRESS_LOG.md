@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.75** (Arkalia · PRIVACY · polish docs/contact · 6.74 vérifié) |
+| Dernière étape terminée | **6.76** (P0 BE B01–B03 · sticky/a11y/widget · PRIVACY) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt 6.75 (photo · sticky · snackbar · notif · contact Menu · PageTitle) · S26 · claim premium non |
-| Audit premium | Matrice typo **6.74** OK · demandes **6.72–6.73** tenues · code prêt ~**8,5–9/10** · **pas** claim « 9/10 dans la main » sans smoke |
+| Prochaine sous-étape | Smoke doigt S26 (photo · sticky Autres infos · snackbar Long · notif · widget serif) · claim premium non |
+| Audit premium | P0 métier **FAIT** · UI smoke-ready **FAIT** · **pas** claim « 9/10 dans la main » sans smoke |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,30 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.76 P0 métier BE + smoke-ready UI (nuit audits)
+
+**P0 BE (nuit-08) :**
+| Id | État | Preuve |
+|----|------|--------|
+| **B02** 1ʳᵉ mensualité plafonnée | **FAIT** | `AddEntryUseCase` + `ConvertPendingLetterToDossierUseCase` → `installmentCents` ; tests add/convert |
+| **B03** EPC sans Purpose | **FAIT** | `EpcQrParser.resolveRemittance` + scan `+++` ; fixtures maigre / vide Purpose |
+| **B01** politique `+++` | **FAIT** | `PaymentNotePolicy` : dossiers / prélèvements seulement ; cycle + update + Aide tip |
+
+**Smoke-ready / a11y / DA :**
+- Sticky quiet : mois InkMuted titleLarge ; feuille crème (plus double PaperWarm) ; « Autres infos » / « Masquer »
+- FAIT compact **96 dp** ; snackbar FAIT **Long** ; Courses « il reste » ; Réglages « Données & sauvegarde » / « Préparer un résumé »
+- fontScale : plafond visuel hero (pré-compensation sp) ; DangerInk/Warn ≥ 7:1 sur PaperWarm
+- Widget : Source Serif 4 sur Reste + tokens InkMuted / PaperBorder / coins 16
+- PRIVACY : Room clair · widget · notifs · bio = UI gate (pas sur-promesse chiffrement)
+- P1 : IBAN dans résumé dossiers ; tip fiche communication ; god-files **REPORTÉ**
+
+**Top 15 synthèse :** matrice mise à jour dans `docs/audits/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md`.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **314/314** (73 fichiers, 0 failure).  
+**Version :** `0.1.0-6.76` · `versionCode` 81.  
+**Pas un claim « 9/10 dans la main »** — smoke S26 encore ouvert.  
+**Score honnête :** confiance métier ~**8,5** ; code carnet ~**9** ; dans la main = smoke.
 
 ### 2026-10-23 — 6.75 Identité Arkalia · PRIVACY · polish
 

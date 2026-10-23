@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
 import be.monmoisclair.app.data.db.entity.IncomeTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.InstanceIds
 import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.MonthDayClamp
@@ -133,13 +134,24 @@ class AddEntryUseCase @Inject constructor(
                 } else {
                     InstanceIds.oneOffExpense()
                 }
+                // B02 : 1ʳᵉ ligne d’accord = min(forfait, reste dû), comme le cycle.
+                val lineAmount = if (openingRemainingCents != null) {
+                    DossierRemaining.installmentCents(
+                        forfaitCents = amountCents,
+                        openingRemainingCents = openingRemainingCents,
+                        paidDoneCents = 0L,
+                        addedFeesCents = 0L
+                    )
+                } else {
+                    amountCents
+                }
                 instanceDao.insertExpense(
                     ExpenseInstanceEntity(
                         id = id,
                         ledgerId = ledgerId,
                         templateId = templateId,
                         label = trimmed,
-                        amountCents = amountCents,
+                        amountCents = lineAmount,
                         dayOfMonth = clamped,
                         status = ExpenseStatus.TODO,
                         doneAtEpochMs = null,

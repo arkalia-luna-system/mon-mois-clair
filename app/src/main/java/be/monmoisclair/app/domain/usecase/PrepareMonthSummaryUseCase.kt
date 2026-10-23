@@ -111,6 +111,10 @@ class PrepareMonthSummaryUseCase @Inject constructor(
                 if (ref.isNotBlank()) {
                     sb.appendLine("  Référence : $ref")
                 }
+                val iban = tpl?.iban?.trim().orEmpty()
+                if (iban.isNotEmpty()) {
+                    sb.appendLine("  IBAN : $iban")
+                }
             }
         }
         sb.appendLine()

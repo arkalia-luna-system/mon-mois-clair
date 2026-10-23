@@ -76,12 +76,19 @@ fun rememberDisplayFit(): DisplayFit {
         screenHeightDp = cfg.screenHeightDp
     )
     // Police système agrandie : resserrer le sticky sans règle « si Ultra ».
+    // P0 a11y : le hero est en `sp` → Compose le re-scale. On pré-compense pour
+    // plafonner la taille **visuelle** (sinon sticky mange la liste à 1,5–2×).
     if (fontScale < 1.25f) return base
+    val visualCap = when {
+        fontScale >= 1.8f -> 28f
+        fontScale >= 1.5f -> 30f
+        else -> min(base.remainingAmountSp, 34f)
+    }
     return base.copy(
         stickyPaddingVertical = minDp(base.stickyPaddingVertical, 8.dp),
         bannerPadding = minDp(base.bannerPadding, 8.dp),
         sectionGap = minDp(base.sectionGap, 4.dp),
-        remainingAmountSp = min(base.remainingAmountSp, 34f)
+        remainingAmountSp = visualCap / fontScale
     )
 }
 

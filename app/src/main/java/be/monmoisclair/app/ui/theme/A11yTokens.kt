@@ -70,10 +70,10 @@ object A11yTokens {
         accentOkSoft = Color(0xFFE3EFE6),
         accentOk = Color(0xFF1E5631),
         accentOkInk = Color(0xFF1E5631),
-        // Brun warn ≥ 7:1 sur crème (ex. #8A5A1E ≈ 5,3:1 — trop pâle).
-        accentWarn = Color(0xFF6B4515),
-        accentDanger = Color(0xFF8E3418),
-        dangerInk = Color(0xFF8E3418),
+        // Brun warn / déficit ≥ 7:1 sur crème **et** PaperWarm sticky (#EDE8DC).
+        accentWarn = Color(0xFF5A3A12),
+        accentDanger = Color(0xFF7A2C14),
+        dangerInk = Color(0xFF7A2C14),
         accentAuto = Color(0xFFD99B26),
         onGold = Color(0xFF1E1B18),
         buttonFill = Color(0xFF1B4D4E),

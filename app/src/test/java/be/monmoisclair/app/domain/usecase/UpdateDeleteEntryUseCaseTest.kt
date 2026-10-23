@@ -273,9 +273,13 @@ class UpdateDeleteEntryUseCaseTest {
         assertThat(db.templateDao().getExpenseById("tpl-auto")!!.isAutoDebit).isTrue()
     }
 
-    /** Lot A : note → modèle même sans « mois suivants » ; photo seulement avec. */
+    /**
+     * B01 : facture ordinaire — note → modèle sans « mois suivants »,
+     * mais **pas** les autres mois déjà créés (ref souvent variable).
+     * Photo seulement avec « Aussi les mois suivants ».
+     */
     @Test
-    fun update_paymentNote_alwaysSyncsTemplate_photoOnlyWhenApplyFollowing() = runBlocking {
+    fun update_paymentNote_ordinary_templateOnly_untilApplyFollowing() = runBlocking {
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(
                 id = "tpl-note",
@@ -303,8 +307,10 @@ class UpdateDeleteEntryUseCaseTest {
         val tplAfterNote = db.templateDao().getExpenseById("tpl-note")!!
         assertThat(tplAfterNote.paymentNote).isEqualTo("+++000/0000/00097+++")
         assertThat(tplAfterNote.receiptRelativePath).isEqualTo("")
-        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.paymentNote)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-10:tpl-note")!!.paymentNote)
             .isEqualTo("+++000/0000/00097+++")
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.paymentNote)
+            .isEmpty()
         assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-note")!!.receiptRelativePath)
             .isEqualTo("")
 

@@ -2,14 +2,15 @@ package be.monmoisclair.app.ui.settings
 
 /**
  * Libellés du hub Réglages.
- * Hub = 3 groupes (Compte & données / Confort / Aide) → sous-pages sujet.
+ * Hub = 3 groupes (Données & sauvegarde / Confort / Aide) → sous-pages sujet.
  * Alertes / Aide / Restaurer restent accessibles depuis ici, pas depuis le Menu Accueil.
  * Profondeur max : hub → groupe → sujet (2 niveaux après hub).
  */
 object SettingsHubCopy {
     const val TITLE = "Réglages"
 
-    const val GROUP_ACCOUNT = "Compte & données"
+    /** Pas « Compte » : l’app n’a pas de login / banque. */
+    const val GROUP_ACCOUNT = "Données & sauvegarde"
     const val GROUP_COMFORT = "Confort"
     const val GROUP_HELP = "Aide"
 
@@ -18,7 +19,7 @@ object SettingsHubCopy {
     const val PRIVACY = "Confidentialité"
     const val ALERTS = "Alertes"
     const val DEADLINES = "Échéances hors ce mois"
-    const val SUMMARY = "Résumé → Dossiers"
+    const val SUMMARY = "Préparer un résumé"
     const val BACKUP = "Sauvegarde"
     const val HELP = "Aide"
 

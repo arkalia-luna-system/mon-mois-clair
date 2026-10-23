@@ -88,4 +88,24 @@ class AddEntryUseCaseTest {
         )
         assertThat(result).isInstanceOf(AddEntryResult.InvalidInput::class.java)
     }
+
+    /** B02 — reste dû 30 €, forfait 50 € → 1ʳᵉ ligne = 30 € (pas 50). */
+    @Test
+    fun add_dossier_firstInstallment_cappedToRemaining() = runBlocking {
+        val result = add(
+            label = "Huissier",
+            amountCents = 5_000L,
+            dayOfMonth = 10,
+            isExpense = true,
+            recurring = true,
+            openingRemainingCents = 3_000L
+        )
+        assertThat(result).isInstanceOf(AddEntryResult.Success::class.java)
+        val expenses = db.instanceDao().observeExpenses("2026-10").first()
+        assertThat(expenses).hasSize(1)
+        assertThat(expenses[0].amountCents).isEqualTo(3_000L)
+        val tpl = db.templateDao().getAllExpenseTemplates().single()
+        assertThat(tpl.amountCents).isEqualTo(5_000L)
+        assertThat(tpl.openingRemainingCents).isEqualTo(3_000L)
+    }
 }

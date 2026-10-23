@@ -41,7 +41,8 @@ object HowItWorksCopy {
             title = "Facture papier",
             body = "« Scanner une facture » lit le QR belge. « Copier » pour la banque. " +
                 "Photo et PDF à côté. « Lire +++ sur la photo » = communication seulement — " +
-                "jamais le montant."
+                "jamais le montant. Eau / énergie : souvent une nouvelle +++ chaque mois " +
+                "(loyer ou prélèvement : la ref peut rester)."
         ),
         Section(
             title = "Retard ou accord",
@@ -51,7 +52,7 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Mettre de côté",
-            body = "Ligne sous le Reste (sticky, comme Courses ; sinon derrière Plus). " +
+            body = "Ligne sous le Reste (sticky, comme Courses ; sinon derrière « Autres infos »). " +
                 "Ou Réglages pour le jour. FAIT = virement fait. Pas d’argent dans l’app."
         ),
         Section(

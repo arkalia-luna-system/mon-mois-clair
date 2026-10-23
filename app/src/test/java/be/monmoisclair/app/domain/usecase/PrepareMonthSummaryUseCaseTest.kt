@@ -80,6 +80,7 @@ class PrepareMonthSummaryUseCaseTest {
                 causeLabel = "Hôpital",
                 openingRemainingCents = 60_000L,
                 paymentNote = "+++000/0000/00097+++",
+                iban = "BE68539007547034",
                 receiptRelativePath = "receipts/secret.webp",
                 createdAtEpochMs = 1L,
                 archivedAtEpochMs = null
@@ -113,6 +114,7 @@ class PrepareMonthSummaryUseCaseTest {
         assertThat(text).contains("si le versement reste de")
         assertThat(text).doesNotContain("fin prévue")
         assertThat(text).contains("Référence : +++000/0000/00097+++")
+        assertThat(text).contains("IBAN : BE68539007547034")
         assertThat(text).doesNotContain("receipts/")
         assertThat(text).doesNotContain("secret.webp")
         assertThat(text.lowercase()).doesNotContain("total des dettes")

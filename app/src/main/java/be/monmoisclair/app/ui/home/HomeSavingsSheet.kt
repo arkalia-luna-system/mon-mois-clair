@@ -83,9 +83,9 @@ fun HomeSavingsSheet(
             CarnetPageTitle("Mettre de côté", withTopSpacer = false)
             Text(
                 text = if (active) {
-                    "Noté ${MoneyFormat.formatCents(monthlyCents)} / mois · dans le Reste"
+                    "Noté ${MoneyFormat.formatCents(monthlyCents)} / mois · déjà retiré du reste"
                 } else {
-                    "Vers un autre compte — compte dans le Reste."
+                    "Vers un autre compte — ce montant est retiré du reste du mois."
                 },
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,

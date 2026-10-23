@@ -1271,6 +1271,14 @@ private fun EntryFormScaffold(
                             shape = MaterialTheme.shapes.medium,
                             colors = carnetOutlinedTextFieldColors(),
                         )
+                        if (!isAgreement) {
+                            Text(
+                                text = "Eau, énergie, télécom : souvent une nouvelle +++ chaque mois.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                         if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
                             QuietLinkA11y(
                                 text = "Copier la communication",

@@ -21,6 +21,6 @@ class StickyCoursesLabelTest {
     fun spent_shows_amount_and_after() {
         assertThat(
             stickyCoursesLabel(4_500L, 40_500L) { cents -> "${cents / 100} €" }
-        ).isEqualTo("Courses 45 € · après 405 €")
+        ).isEqualTo("Courses 45 € · il reste 405 €")
     }
 }

@@ -272,7 +272,7 @@ fun HomeScreen(
                     message = if (markingDone) "Noté FAIT" else "Remis à payer",
                     actionLabel = "Annuler",
                     withDismissAction = true,
-                    duration = SnackbarDuration.Short
+                    duration = SnackbarDuration.Long
                 )
                 if (result == SnackbarResult.ActionPerformed) {
                     viewModel.undoToggleDone(expenseId)
@@ -443,7 +443,7 @@ fun HomeScreen(
                                         },
                                         actionLabel = "Annuler",
                                         withDismissAction = true,
-                                        duration = SnackbarDuration.Short
+                                        duration = SnackbarDuration.Long
                                     )
                                     if (result == SnackbarResult.ActionPerformed) {
                                         viewModel.undoToggleDone(id)
@@ -533,12 +533,13 @@ fun HomeScreen(
                 .background(A11yTokens.PaperCream)
                 .imePadding()
         ) {
-            // Sticky papier chaud (pas logo) — contraste mois / filet ; Reste = hero.
+            // Sticky = même feuille crème que la liste (pas 2ᵉ bande PaperWarm) ;
+            // socle Menu/+ reste warm. Pas de logo — Reste = hero.
             Column(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(A11yTokens.PaperWarm)
+                        .background(A11yTokens.PaperCream)
                         .padding(horizontal = fit.stickyPaddingHorizontal)
                         .padding(vertical = fit.stickyPaddingVertical),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -556,8 +557,9 @@ fun HomeScreen(
                     )
                     Text(
                         text = state.monthLabel,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = A11yTokens.Ink,
+                        // Quiet sticky : mois muted — le Reste serif commande.
+                        style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.InkMuted,
                         textAlign = TextAlign.Center,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -704,7 +706,8 @@ fun HomeScreen(
                     state.pendingLetterCount > 0 ||
                     savingsBehindPlus
                 if (hasStickyExtras) {
-                    val detailsLabel = if (stickyDetailsOpen) "Moins" else "Plus"
+                    val detailsLabel =
+                        if (stickyDetailsOpen) "Masquer" else "Autres infos"
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -712,9 +715,9 @@ fun HomeScreen(
                             .clickable(
                                 role = Role.Button,
                                 onClickLabel = if (stickyDetailsOpen) {
-                                    "Replier le détail"
+                                    "Masquer épargne et détails"
                                 } else {
-                                    "Voir le détail"
+                                    "Voir épargne et détails"
                                 }
                             ) { stickyDetailsOpen = !stickyDetailsOpen }
                             .padding(vertical = 4.dp)
@@ -1467,7 +1470,7 @@ private fun ExpenseRow(
             }
             if (!readOnlyPreview) {
                 val faitModifier = Modifier
-                    .widthIn(min = if (compact) 88.dp else 96.dp)
+                    .widthIn(min = 96.dp)
                     .semantics {
                         contentDescription = if (item.isDone) {
                             "Remettre à payer"

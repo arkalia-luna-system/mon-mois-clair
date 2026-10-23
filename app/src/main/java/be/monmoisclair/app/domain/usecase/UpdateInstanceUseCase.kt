@@ -7,6 +7,7 @@ import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.MonthDayClamp
 import be.monmoisclair.app.domain.MonthNavigation
+import be.monmoisclair.app.domain.PaymentNotePolicy
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.YearMonth
@@ -200,12 +201,15 @@ class UpdateInstanceUseCase @Inject constructor(
                 // Lot B : causeLabel toujours ; openingRemaining seulement si encore null.
                 if (current.templateId != null) {
                     val templateId = current.templateId
-                    templateDao.getExpenseById(templateId)?.let { tpl ->
-                        val opening = when {
-                            tpl.openingRemainingCents != null -> tpl.openingRemainingCents
-                            setOpeningRemaining -> openingRemainingCents
-                            else -> null
-                        }
+                    val existingTpl = templateDao.getExpenseById(templateId)
+                    val openingForPropagate = when {
+                        existingTpl?.openingRemainingCents != null ->
+                            existingTpl.openingRemainingCents
+                        setOpeningRemaining -> openingRemainingCents
+                        else -> null
+                    }
+                    existingTpl?.let { tpl ->
+                        val opening = openingForPropagate
                         val addCents = feeAddCents.coerceAtLeast(0L)
                         val feesNote = if (addCents > 0L) {
                             feeNote.trim().ifBlank { tpl.addedFeesNote }
@@ -290,13 +294,20 @@ class UpdateInstanceUseCase @Inject constructor(
                             )
                         }
                     } else {
-                        // Mois déjà créés : la communication suit, pas la photo ni le montant.
-                        val others = instanceDao.expensesFromTemplateFromLedger(
-                            templateId,
-                            current.ledgerId
-                        ).filter { it.id != current.id && it.status == ExpenseStatus.TODO }
-                        for (item in others) {
-                            instanceDao.updateExpense(item.copy(paymentNote = note))
+                        // B01 : communication vers mois déjà créés seulement si dossier / prélèvement
+                        // (ref stable). Facture ordinaire = ce mois seul (sauf « Aussi les mois suivants »).
+                        val carryNote = PaymentNotePolicy.shouldCarryForward(
+                            openingRemainingCents = openingForPropagate,
+                            isAutoDebit = auto
+                        )
+                        if (carryNote) {
+                            val others = instanceDao.expensesFromTemplateFromLedger(
+                                templateId,
+                                current.ledgerId
+                            ).filter { it.id != current.id && it.status == ExpenseStatus.TODO }
+                            for (item in others) {
+                                instanceDao.updateExpense(item.copy(paymentNote = note))
+                            }
                         }
                     }
                     // Lot B trou audit : baisse montant / frais après FAIT qui avait

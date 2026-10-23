@@ -4,7 +4,7 @@ import be.monmoisclair.app.ui.format.MoneyFormat
 
 /**
  * Ligne Courses du sticky Accueil (hors aperçu futur).
- * Montant divers visible ; « après » = Reste − courses (brique côté UI si négatif).
+ * Montant divers visible ; solde après courses (brique côté UI si négatif).
  * Toujours une entrée (même à 0) pour ouvrir l’édition depuis la bannière.
  */
 fun stickyCoursesLabel(
@@ -15,7 +15,7 @@ fun stickyCoursesLabel(
 ): String? {
     if (futurePreview) return null
     return if (diversSpentCents > 0L) {
-        "Courses ${formatCents(diversSpentCents)} · après ${formatCents(afterDiversCents)}"
+        "Courses ${formatCents(diversSpentCents)} · il reste ${formatCents(afterDiversCents)}"
     } else {
         "Courses"
     }

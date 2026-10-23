@@ -30,14 +30,17 @@ class WcagContrastTest {
 
     @Test
     fun negativeRemaining_meetsPremiumContrast() {
-        // Montant négatif en AccentDanger (plus AccentWarn trop pâle).
-        assertThat(WcagContrast.ratio(day.accentDanger, day.paperCream)).isAtLeast(5.4)
+        // Montant négatif / déficit : ≥ 7:1 sur crème et sticky PaperWarm.
+        assertThat(WcagContrast.ratio(day.dangerInk, day.paperCream)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(day.dangerInk, day.paperWarm)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(day.accentDanger, day.paperCream)).isAtLeast(7.0)
     }
 
     @Test
-    fun accentWarnDay_meetsAaaOnCream() {
-        // Brun warn lisible sur crème (≥ 7:1) — identité warn, pas danger.
+    fun accentWarnDay_meetsAaaOnCreamAndWarm() {
+        // Brun warn lisible sur crème et sticky PaperWarm (≥ 7:1).
         assertThat(WcagContrast.ratio(day.accentWarn, day.paperCream)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(day.accentWarn, day.paperWarm)).isAtLeast(7.0)
     }
 
     @Test

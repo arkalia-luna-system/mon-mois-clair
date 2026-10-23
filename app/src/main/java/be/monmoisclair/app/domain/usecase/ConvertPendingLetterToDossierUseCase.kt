@@ -4,6 +4,7 @@ import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.MonthDayClamp
 import be.monmoisclair.app.domain.InstanceIds
@@ -80,13 +81,20 @@ class ConvertPendingLetterToDossierUseCase @Inject constructor(
             val instanceId = if (materializeNow) {
                 val clamped = MonthDayClamp.clamp(dayOfMonth, ym)
                 val id = InstanceIds.expenseFromTemplate(ledgerId, tid)
+                // B02 : 1ʳᵉ mensualité plafonnée au reste dû (comme MonthCycleEngine).
+                val lineAmount = DossierRemaining.installmentCents(
+                    forfaitCents = monthlyAmountCents,
+                    openingRemainingCents = openingRemainingCents,
+                    paidDoneCents = 0L,
+                    addedFeesCents = 0L
+                )
                 instanceDao.insertExpense(
                     ExpenseInstanceEntity(
                         id = id,
                         ledgerId = ledgerId,
                         templateId = tid,
                         label = letter.who,
-                        amountCents = monthlyAmountCents,
+                        amountCents = lineAmount,
                         dayOfMonth = clamped,
                         status = ExpenseStatus.TODO,
                         doneAtEpochMs = null,
