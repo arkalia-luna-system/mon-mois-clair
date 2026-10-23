@@ -144,7 +144,7 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() },
                 onOpenAccountGroup = { navController.navigate(AppRoute.SettingsAccountGroup) },
                 onOpenComfortGroup = { navController.navigate(AppRoute.SettingsComfortGroup) },
-                // Aide → Comment ça marche (support reste accessible depuis Aide).
+                // Aide → Comment ça marche (contact support = Menu Accueil seul).
                 onOpenHelp = { navController.navigate(AppRoute.HowItWorks) }
             )
         }

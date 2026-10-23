@@ -12,7 +12,7 @@ Tu es l’expert TESTEUR + CORRECTEUR de « Mon Mois Clair »
 (be.monmoisclair.app, Kotlin/Compose, sideload Samsung, hors-ligne).
 
 Profil : [ Chiant | Null | Perf | Hostile-doux | Fidélité 60 j ]
-Persona : [ Maman | Alex | Installateur | Médiateur | Base vide | Multi-dossiers ]
+Persona : [ Senior | Accords | Installateur | Médiateur | Base vide | Multi-dossiers ]
 Device : OBLIGATOIRE. Version cible journal : 0.1.0-6.42 (schéma 8).
 
 RÈGLES DURES
@@ -44,7 +44,7 @@ Pending : pas dans À payer ; bandeau ; conversion
 Mettre de côté : alerte déficit avant save ; montant conservé après aller-retour
 Écrire / IBAN : mailto réel ; IBAN checksum ; 12 chiffres si +++ valide
 Clavier : Enregistrer / +/− divers toujours atteignables
-Maman zéro dossier : pas Mes dossiers ; bloc retard quitté sans reste = rien créé
+Senior zéro dossier : pas Mes dossiers ; bloc retard quitté sans reste = rien créé
 
 ## Preuves device
 

@@ -18,8 +18,8 @@ Un chat = **1** tempérament + **1** persona. Rapport : les deux en tête + ≥ 
 
 | Persona | Matrice prioritaire | Échec immédiat si… |
 |---------|---------------------|-------------------|
-| **Maman** | C*, S4–S6, V* | Huissier / Mes dossiers à 0 / € dette Home |
-| **Alex** | D* (dont rythme 6.37), P* | « fin prévue » / « 3 sur 12 » |
+| **Senior** | C*, S4–S6, V* | Huissier / Mes dossiers à 0 / € dette Home |
+| **Accords** | D* (dont rythme 6.37), P* | « fin prévue » / « 3 sur 12 » |
 | **Installateur** | S1–S3, onboarding | Download conseillé / jargon |
 | **Médiateur** | E*, F*, D3–D4 | Résumé qui mélange tirelire et dette |
 | **Base vide** | C1–C6 | Menu fantôme dossiers |
@@ -31,9 +31,9 @@ Un chat = **1** tempérament + **1** persona. Rapport : les deux en tête + ≥ 
 |------|--------|--------|---------|
 | 1 | Correcteur | Hostile-doux | Multi-dossiers |
 | 1 | Correcteur | Null | Base vide |
-| 2 | Visuel | Chiant | Maman |
-| 2 | Visuel | Perf | Alex |
-| 3 | Produit | Fidélité 60 j | Maman |
+| 2 | Visuel | Chiant | Senior |
+| 2 | Visuel | Perf | Accords |
+| 3 | Produit | Fidélité 60 j | Senior |
 | 3 | Produit | Fidélité 60 j | Médiateur |
-| 4 | Senior | Senior One UI | Maman |
+| 4 | Senior | Senior One UI | Senior |
 | fin | Validation | — | — |

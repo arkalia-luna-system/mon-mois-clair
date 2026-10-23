@@ -44,8 +44,8 @@ Mesurer une cible : hauteur bounds ≥ `48 * densité / 160` px.
 
 | Persona | Qui | Objectif | Interdit à l’écran |
 |---------|-----|---------|-------------------|
-| **Maman** | Carnet simple | Reste, FAIT, courses | Huissier, Mes dossiers si 0, € dette sur Home |
-| **Alex** | Retards + accords | IBAN, Écrire, rythme « si », soldé | « 3 sur 12 », « fin prévue », total dettes hero |
+| **Senior** | Carnet simple | Reste, FAIT, courses | Huissier, Mes dossiers si 0, € dette sur Home |
+| **Accords** | Retards + accords | IBAN, Écrire, rythme « si », soldé | « 3 sur 12 », « fin prévue », total dettes hero |
 | **Installateur** | Sideload | SAF Documents, backup, bio OFF | Jargon WorkManager / SAF |
 | **Médiateur** | Mois cassé | Résumé honnête | PDF CPAS, date certaine |
 | **Base vide** | `pm clear` seulement si demandé | Onboarding → Home vide | Menus fantômes |
@@ -138,11 +138,11 @@ Mesurer une cible : hauteur bounds ≥ `48 * densité / 160` px.
 |---|--------|-------|--------------|
 | 1a | Correcteur | Hostile + Multi-dossiers | D*, P*, C2, double-tap |
 | 1b | Correcteur | Null + Base vide | C*, onboarding (clear seulement si OK humain) |
-| 2a | Visuel | Chiant + Maman | S4–S6, V*, Home |
-| 2b | Visuel | Perf + Alex | C8, caméra, Mes dossiers, fiche longue |
-| 3a | Produit | Fidélité + Maman | C5–C6, abandon, zéro pixel |
+| 2a | Visuel | Chiant + Senior | S4–S6, V*, Home |
+| 2b | Visuel | Perf + Accords | C8, caméra, Mes dossiers, fiche longue |
+| 3a | Produit | Fidélité + Senior | C5–C6, abandon, zéro pixel |
 | 3b | Produit | Fidélité + Médiateur | E*, F*, D3–D4 |
-| 4 | Senior | Maman | Peurs, jargon, Device Care |
+| 4 | Senior | Senior | Peurs, jargon, Device Care |
 | fin | Validation | Claims 6.37 + 233/233 + P0/P1 | Lecture rapports |
 
 ## 4. Interdits

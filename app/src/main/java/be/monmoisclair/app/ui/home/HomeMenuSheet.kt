@@ -138,12 +138,12 @@ fun HomeMenuSheet(
 
             Spacer(modifier = Modifier.height(menuGap))
             QuietLinkA11y(
-                text = "Un souci avec l’app ?",
+                text = "Un souci ? Écrire à Arkalia Système",
                 onClick = {
                     onDismiss()
                     onOpenSupport()
                 },
-                onClickLabel = "Écrire à Arkalia Système"
+                onClickLabel = "Écrire à Arkalia Système — bug, idée ou question"
             )
         }
     }

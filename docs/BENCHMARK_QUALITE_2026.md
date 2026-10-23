@@ -1,12 +1,12 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-23 (état code : **6.74**).  
-Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md).  
+Date : 2026-10-23 (état code : **6.75**).  
+Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) · [`PRIVACY.md`](../PRIVACY.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.72** PageTitle / sticky / snackbar / contact · **6.73** photo multi-ligne · sticky S26 · **6.74** PageTitle Lock/Scan/onboarding/fiches |
+| **Fait** | … · **6.72–6.74** typo / sticky / snackbar / contact / photo · **6.75** Arkalia + PRIVACY + polish docs |
 | **Pas fait** | S26 en main · biométrie / widget home / scan caméra au doigt · claim premium terminé · scission god-files |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
@@ -22,7 +22,7 @@ Deux familles d’apps, pas une.
 | **Argent complet** | Banque, catégories, patrimoine | Monarch, YNAB, Copilot, Origin | Barème **visuel** seulement |
 | **Carnet de factures** | Rappels, récurrence, payé | Smart Bill Reminder, Billiary, Flying Bills, AllPaid | Vrais pairs |
 
-« Premium » pour maman sur Galaxy = **objet papier terminé**, calme, un chiffre qui commande — pas le look Copilot.
+« Premium » sur Galaxy (usage principal) = **objet papier terminé**, calme, un chiffre qui commande — pas le look Copilot.
 
 ---
 
@@ -67,10 +67,10 @@ Prochain geste : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md). Smoke : [`AUDIT
 
 ## 5. Inspection des pages — 2026-10-23
 
-| Page | État code 6.74 |
+| Page | État code 6.75 |
 |------|----------------|
 | Accueil | Sticky PaperWarm · Courses ; épargne sticky ou derrière Plus (compact) · snackbar compact · pas logo |
-| Menu | PageTitle · Dossiers (N) · QuietLink contact Arkalia · pas Aide/Restore |
+| Menu | PageTitle · Dossiers (N) · QuietLink « Un souci ? Écrire à Arkalia Système » · pas Aide/Restore |
 | Réglages, Aide | Hub 3 groupes · HowItWorks corps courts · contact = Menu seulement |
 | Lock / Scan / onboarding / fiches | PageTitle InkMuted (aligné Menu) |
 | À venir | Liste → détail cartes papier (sans FAIT) |

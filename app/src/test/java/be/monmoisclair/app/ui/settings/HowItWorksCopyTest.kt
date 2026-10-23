@@ -38,7 +38,9 @@ class HowItWorksCopyTest {
         // Sortis de l’aide (vitent ailleurs / trop longs) :
         assertThat(all).doesNotContain("widget")
         assertThat(all).doesNotContain("Apparence")
-        assertThat(all).doesNotContain("Un souci avec l’app")
+        assertThat(all).doesNotContain("Un souci")
+        assertThat(all).doesNotContain("Arkalia Système")
+        assertThat(all).doesNotContain("Athalia")
         assertThat(all).doesNotContain("encore environ N mois si")
         assertThat(all).doesNotContain("Vers mois année")
         assertThat(all).doesNotContain("Ranger sans plan")

@@ -1,9 +1,9 @@
 # Distribution famille — APK sans USB
 
-Pour Alex / maman : **pas besoin** de brancher le téléphone sur le Mac.  
-Athalia build chez elle → envoie le fichier → ils mettent à jour **chez eux**.
+Les destinataires de l’APK **n’ont pas besoin** de brancher le téléphone sur le Mac.  
+**Arkalia** construit chez elle → envoie le fichier → mise à jour **chez eux**.
 
-## 1. Athalia (Mac) — build
+## 1. Arkalia (Mac) — build
 
 ```bash
 COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
@@ -13,13 +13,13 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 - Toujours l’APK **release** signé (jamais debug).
 - **Même keystore** qu’avant = mise à jour sans perdre les données Room.
 - Vérifier la version dans le fichier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`
-  (ex. `versionName='0.1.0-6.42'`).
+  (ex. `versionName='0.1.0-6.75'`).
 
 ## 2. Envoyer (sans USB)
 
 | Canal | Comment |
 |-------|---------|
-| **Google Drive** | Déposer l’APK → partager le lien (ou le fichier) avec Alex / maman |
+| **Google Drive** | Déposer l’APK → partager le lien (ou le fichier) avec la famille |
 | **WhatsApp** | Envoyer le document `.apk` (parfois renommé / bloqué selon version WA → préférer Drive) |
 | **Mail** | Pièce jointe si &lt; limite du fournisseur ; sinon Drive |
 
@@ -30,7 +30,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 3. **Ouvrir** `MonMoisClair-release.apk`.
 4. Si demandé : autoriser l’installation d’apps de cette source (une seule fois).
 5. Toucher **Installer** ou **Mettre à jour**.
-6. Ouvrir Mon Mois Clair → Menu → **Réglages** → vérifier que la version affichée est la nouvelle (ex. **6.42**).
+6. Ouvrir Mon Mois Clair → Menu → **Réglages** → vérifier que la version affichée est la nouvelle (ex. **6.75**).
 7. Vérifier le mois en cours (Reste, factures).
 
 ## Pièges
@@ -46,9 +46,9 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 ## Dans l’app
 
 Pas de téléchargement automatique (l’app n’a **pas** Internet).  
-Pour un souci : Accueil → Menu → **« Un souci avec l’app ? »** → mail à **Arkalia Système** (joindre une capture dans Gmail).
+Pour un souci : Accueil → Menu → **« Un souci ? Écrire à Arkalia Système »** → mail (joindre une capture dans Gmail).
 
-## Annexe — Athalia avec USB (option)
+## Annexe — USB (option, poste Arkalia)
 
 Même fichier que pour la famille, pour tester sur ton tel :
 

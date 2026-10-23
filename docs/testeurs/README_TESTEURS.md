@@ -15,7 +15,7 @@ Version cible : lire **`PROGRESS_LOG.md`** (versionName + schéma Room).
 
 ```text
 Profil du jour : Chiant | Null | Perf | Hostile-doux | Fidélité 60 j | Senior One UI
-Persona : Maman | Alex | Installateur | Médiateur | Base vide | Multi-dossiers
+Persona : Senior | Accords | Installateur | Médiateur | Base vide | Multi-dossiers
 Device : OBLIGATOIRE — téléphone branché, release = versionName du journal
 Interdit : valider sans geste adb + preuve ; minimum 8 frictions
 ```
@@ -35,11 +35,11 @@ Interdit : valider sans geste adb + preuve ; minimum 8 frictions
 ```text
 1a Correcteur Hostile × Multi-dossiers
 1b Correcteur Null × Base vide   (pm clear SEULEMENT si OK humain)
-2a Visuel Chiant × Maman
-2b Visuel Perf × Alex
-3a Produit Fidélité × Maman
+2a Visuel Chiant × Senior
+2b Visuel Perf × Accords
+3a Produit Fidélité × Senior
 3b Produit Fidélité × Médiateur
-4  Senior × Maman
+4  Senior × Senior
 fin Validation → push si demandé
 ```
 

@@ -1,17 +1,18 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-23 (lot **6.74** — hiérarchie typo PageTitle partout · docs alignés).
+Mise à jour : 2026-10-23 (lot **6.75** — identité Arkalia · PRIVACY · contact Menu).
 
 ## 1. Vision
 
-App **locale, privée, hors-ligne** (Samsung One UI). Sideload **release signé**.
+App **locale, privée, hors-ligne** (Samsung One UI). Sideload **release signé**.  
+Contact bug / idée / question : Menu → **Arkalia Système** (voir [`PRIVACY.md`](PRIVACY.md)).
 
-### Persona (verrouillé)
+### Persona (verrouillé — anonymisé)
 
 | Qui | Appareil | Priorité affichage |
 |-----|----------|--------------------|
-| **Maman** (cadeau) | **Galaxy S26** écran normal **6,3″ FHD+** | **Priorité n°1** |
-| Athalia / Alex | **Galaxy S25 Ultra** **6,9″ QHD+** | Doit rester confortable |
+| **Usage principal** (cadeau famille) | **Galaxy S26** écran normal **6,3″ FHD+** | **Priorité n°1** |
+| **Ultra** (dev / second téléphone) | **Galaxy S25 Ultra** **6,9″ QHD+** | Doit rester confortable |
 
 | Question | Réponse |
 |----------|---------|
@@ -26,12 +27,12 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
 | ‹ **mois** › + icône **calendrier** (tap → « Choisir un mois ») puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
-| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Dossiers** (si N>0) · **Choisir un mois ›** · QuietLink contact bas (« Un souci… » → Arkalia Système). Titre « Menu » = PageTitle InkMuted. **Pas** Aide/Restore dans Menu |
+| Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Dossiers** (si N>0) · **Choisir un mois ›** · QuietLink contact bas (« Un souci ? Écrire à Arkalia Système »). Titre « Menu » = PageTitle InkMuted. **Pas** Aide/Restore dans Menu |
 | Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
 
 **Calendrier mois (6.71)** : feuille carnet (années + pastilles), **pas** agenda Google ni grille 31 jours. Horizon ~**24 mois** passé + **24 mois** futur (assez pour une facture annuelle l’année suivante). Futur = aperçu. **Pas** de logo / wordmark / nom d’app sur le sticky Accueil.
 
-**Sticky (verrouillé 6.27, densité 6.56) — maman lit sans calculer :**
+**Sticky (verrouillé 6.27, densité 6.56) — lecture sans calculer :**
 
 | Ligne | Sens | Quand |
 |-------|------|--------|
@@ -105,7 +106,7 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 | **HubRow** | `CarnetHubRow` | `titleLarge` + › | **Ink** (label) | Lignes cliquables hub (Menu, Réglages) |
 | **Disclosure** | titre + ▾/▴ | `titleLarge` | **Ink** | Accordion HowItWorks, sections fiche repliables — **≠** PageTitle |
 | **Tip / Body** | texte courant | `bodyMedium` / `bodyLarge` | **InkMuted** | Empty Dossiers, intros, tips (pas de tip-box sauf ok/warn/erreur) |
-| **QuietLink** | `QuietLinkA11y` | `bodyLarge` | **Link** | Copier / Photo / Contact Menu (« Un souci… » → Arkalia Système) |
+| **QuietLink** | `QuietLinkA11y` | `bodyLarge` | **Link** | Copier / Photo / Contact Menu (« Un souci ? Écrire à Arkalia Système ») |
 
 **Nuit :** `InkMuted` ≠ `Ink` (écart PageTitle / corps) ; contraste muted ≥ 7:1 sur crème nuit.  
 **Interdit :** PageTitle en Ink (look HubRow) ; logo / wordmark sur sticky Accueil ; Aide/Restore dans Menu Accueil (contact QuietLink OK).
@@ -123,8 +124,8 @@ Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRO
 
 | Appareil | Diagonale (officiel) | Résolution | Notes |
 |----------|----------------------|------------|-------|
-| **Galaxy S26** | **6,3″** plein rectangle / **6,1″** coins arrondis | **2340×1080 FHD+** · 120 Hz · Dynamic AMOLED 2X | Cible maman |
-| **Galaxy S25 Ultra** | **6,9″** / **6,8″** coins | **3120×1440 QHD+** · 120 Hz · Dynamic AMOLED 2X | Athalia / Alex |
+| **Galaxy S26** | **6,3″** plein rectangle / **6,1″** coins arrondis | **2340×1080 FHD+** · 120 Hz · Dynamic AMOLED 2X | Cible principale |
+| **Galaxy S25 Ultra** | **6,9″** / **6,8″** coins | **3120×1440 QHD+** · 120 Hz · Dynamic AMOLED 2X | Ultra (dev / second) |
 
 Sources : pages produit Samsung (S26 SM-S942… ; S25 Ultra SM-S938…).  
 Mesure diagonale « full rectangle » ; zone visible un peu moindre (coins + trou caméra).
@@ -199,7 +200,7 @@ La leçon utile de l’étude tient : ce qui retient, c’est la **charge de sai
 
 Le chiffre « plus de 75 % abandonnent en 60 jours » est une formule de marché **sans source vérifiable**. On garde la leçon, pas le pourcentage comme fait mesuré.
 
-L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3″** (maman). Les règles pouce One UI s’appliquent aux deux ; les cibles de 48 dp doivent tenir dans ~360 dp de large, pas dans un écran Ultra.
+L’étude parle d’un S25 / S25 Ultra. La cible n°1 reste le **Galaxy S26 6,3″** (usage principal). Les règles pouce One UI s’appliquent aux deux ; les cibles de 48 dp doivent tenir dans ~360 dp de large, pas dans un écran Ultra.
 
 ### Adopter (codé)
 

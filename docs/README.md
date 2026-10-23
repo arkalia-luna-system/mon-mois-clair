@@ -14,7 +14,7 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 
-Racine : `README.md` · `PROGRESS_LOG.md` · `CHARTE_ET_ARCHITECTURE.md` · `SECURITY.md`.
+Racine : `README.md` · `PROGRESS_LOG.md` · `CHARTE_ET_ARCHITECTURE.md` · `PRIVACY.md` · `SECURITY.md` · `CONTRIBUTING.md`.
 
 ## Qui dit quoi (anti-doublon)
 

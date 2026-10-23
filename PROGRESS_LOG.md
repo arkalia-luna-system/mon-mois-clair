@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.74** (PageTitle Lock/Scan/onboarding/fiches · charte §4bis · docs) |
+| Dernière étape terminée | **6.75** (Arkalia · PRIVACY · polish docs/contact · 6.74 vérifié) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt 6.74 (photo · sticky · snackbar · notif · PageTitle) · S26 · claim premium non |
-| Audit premium | Matrice typo **6.74** · demandes **6.72–6.73** tenues · **305/305** · **pas** « premium parfait » |
+| Prochaine sous-étape | Smoke doigt 6.75 (photo · sticky · snackbar · notif · contact Menu · PageTitle) · S26 · claim premium non |
+| Audit premium | Matrice typo **6.74** OK · demandes **6.72–6.73** tenues · code prêt ~**8,5–9/10** · **pas** claim « 9/10 dans la main » sans smoke |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,25 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.75 Identité Arkalia · PRIVACY · polish
+
+**Vérif 6.74 (matrice typo + demandes) :** relecture code — PageTitle Lock/Scan/onboarding/fiches/Restore/EditTemplate ; SectionTitle Dossiers/Fréquence/années ; QuietLink Copier/Photo ; sticky sans logo ; Menu sans Aide/Restore ; contact Menu seul — **FAIT**, rien à rouvrir.
+
+**Identité (profil GitHub `arkalia-luna-system` / README « Arkalia Luna ») :**
+- Ortho contact retenue : **Arkalia** / **Arkalia Système** (pas Athalia).
+- Docs vivants + DISTRIBUTION + CHARTE personas anonymisés (Senior / Accords / usage principal).
+- Menu QuietLink : « Un souci ? Écrire à Arkalia Système ».
+- Archives figées inchangées (historique).
+
+**Docs :** `PRIVACY.md` (local, pas INTERNET, backups, presse-papiers) · `CONTRIBUTING.md` court · README vitrine · liens CHARTE / docs/README.
+
+**Polish :** commentaire AppNavHost (contact ≠ Aide) · DisplayFit sans prénom.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **305/305** (72 fichiers, 0 failure).  
+**Version :** `0.1.0-6.75` · `versionCode` 80.  
+**Pas un claim « premium parfait » ni « 9/10 dans la main »** — smoke doigt encore requis.  
+**Score honnête :** code ~**8,5–9/10** (polish docs + 6.74 tenu) ; **dans la main** = smoke demain.
 
 ### 2026-10-23 — 6.74 Hiérarchie typo complète + docs
 

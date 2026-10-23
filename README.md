@@ -1,128 +1,69 @@
 # Mon Mois Clair
 
-> Suivi des paiements mensuels — **local, privé, hors ligne**  
-> Kotlin · Jetpack Compose · Room · Samsung Galaxy (One UI)
+**Le carnet du mois, sur le téléphone — pas une banque.**
+
+Reste après factures · FAIT ✓ · rappels exacts · photo & PDF · **100 % hors ligne**.  
+Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-305%2F305-success)](#statut)
+[![Tests](https://img.shields.io/badge/tests-305%2F305-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.74-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.75-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Application Android pour gérer revenus et dépenses du mois **sans banque, sans cloud, sans compte**.  
-Saisie manuelle · backup local (JSON + archive ZIP avec photos) · rappels exacts · distribution familiale par APK.
+Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
+Mon Mois Clair reste sur l’appareil : saisie manuelle, sauvegarde locale (JSON + ZIP photos), distribution par APK.
 
-> **Statut dépôt :** privé (usage familial). README / charte / tests tenus à jour comme pour un dépôt public.
+Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
+
+> Dépôt privé (usage familial). Docs / charte / tests tenus comme un dépôt public.
 
 ---
 
-## Statut
+## Ce que l’app fait
+
+| | |
+|--|--|
+| **Reste sticky** | Gros chiffre du mois · À payer · Courses · Mettre de côté |
+| **Factures** | Récurrence · FAIT le JJ/MM · En retard · Prélèvement · grille jour 1–31 |
+| **Papier belge** | QR EPC · communication mod 97 · photo WebP · PDF courrier · OCR `+++` |
+| **Accords** | Pastille · reste dû · IBAN · Écrire · frais datés · Mes dossiers |
+| **Sérénité** | Backup SAF · biométrie · `FLAG_SECURE` · widget · encre de nuit · Alertes |
+
+Hors scope volontaire : banque, catégories, graphiques, synchro, Play Store.
+
+---
+
+## Confidentialité
+
+Voir **[`PRIVACY.md`](PRIVACY.md)** — pas d’`INTERNET`, backups SAF, presse-papiers sensible.  
+Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
+
+---
+
+## Statut technique
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.74` |
-| Dernière étape | **6.74** PageTitle partout (Lock/Scan/onboarding/fiches) · charte tokens typo |
-| Device | Smoke **6.39–6.42** puis S25 Ultra (`SM-S938B`) 2026-10-22 : widget, OCR, PDF. Photo / sticky / notif **6.73–6.74** à fumer. S26 pas en main |
-| Distribution | Sideload familial **release signé** (hors Play Store) — voir [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **305/305** OK (`--rerun-tasks`) |
-| Schéma Room | **8** — `expense_fee_events` (+ 7 : courriers ; 6 : IBAN / e-mail / cumul frais) |
+| Version | `0.1.0-6.75` |
+| Dernière étape | **6.75** identité Arkalia · PRIVACY · polish docs/contact · code 6.74 tenu |
+| Device | Smoke historique S25 Ultra (`SM-S938B`). Photo / sticky / notif **6.73–6.75** à fumer. S26 pas en main |
+| Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
+| Tests unitaires | **305/305** OK (`--rerun-tasks`) — à recompter à chaque bump |
+| Schéma Room | **8** |
 
-Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Audit dossiers (figé) : [`docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md) · Audit visuel (figé) : [`docs/archive/AUDIT_PREMIUM.md`](docs/archive/AUDIT_PREMIUM.md)
+Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
----
-
-## Pourquoi
-
-Un bloc-notes ne suffit pas pour voir clairement **ce qu’il reste à vivre** et **ce qui reste à payer**.  
-Mon Mois Clair reste sur l’appareil : zéro serveur tiers, zéro connexion bancaire.
-
----
-
-## Fonctionnalités
-
-| Fonction | État |
-|----------|------|
-| **Reste après factures** sticky | ✅ |
-| **Courses / divers** (+/−) | ✅ |
-| **En retard** (badge, pas des capitales) + relance | ✅ |
-| **Prélèvement auto** (icône + notif) | ✅ |
-| **Récurrence** une fois / mois / N mois / an | ✅ |
-| **Liste chronologique** du mois | ✅ |
-| **FAIT ✓** (confirm sur mois passé) | ✅ |
-| **Ajout / édition / suppression** | ✅ |
-| **Backup SAF** (3 versions, SHA-256) | ✅ (validé device) |
-| **Restaurer** (dernière sauvegarde / JSON ou archive ZIP) | ✅ |
-| **Biométrie** + `FLAG_SECURE` multitâche | ✅ |
-| **Hub Réglages** (3 groupes → sujets ; aide · bio · Alertes · échéances · sauvegarde) | ✅ |
-| **Menu** (outils + lien calendrier mois, barre basse) | ✅ |
-| **Calendrier mois** (‹ › + icône → feuille carnet ~2 ans) | ✅ |
-| **+ Ajouter** (barre pouce) | ✅ |
-| **FAIT le JJ/MM** (preuve) | ✅ |
-| **Jour 1–31** (grille, pas le clavier) | ✅ |
-| **Menu · Alertes** (notifs / alarmes exactes) | ✅ |
-| **Revenir au mois en cours** (Menu) | ✅ |
-| **Rappels** J−3 / Jour J / overdue + reconcile update/heure/feu | ✅ |
-| **Prochaine échéance (mois)** trimestriel / annuel | ✅ |
-| **Partage copie de sécurité** (WhatsApp / Mail) | ✅ |
-| **Onboarding** SAF + permissions + Santé | ✅ |
-| **Home freeze** (pas de nouvelles options quotidiennes) | ✅ |
-| **Comment ça marche** (Réglages → aide) | ✅ |
-| **Scanner facture** (QR EPC Belgique) | ✅ |
-| **Communication + Copier** (banque, mod 97) | ✅ |
-| **Photo facture** (WebP SAF) + courriers en plus (accord) | ✅ |
-| **PDF courrier** (ajout + édition, toute facture) | ✅ |
-| **PDF du résumé** (Mes dossiers / Réglages) | ✅ |
-| **Widget** (Reste + prochaine ligne) | ✅ |
-| **Encre de nuit** (suit One UI / Réglages Apparence) | ✅ |
-| **Lire +++ sur la photo** (OCR, jamais le montant) | ✅ |
-| **Accord / retard** (replié, pastille, reste dû, arrêt si soldé) | ✅ |
-| **IBAN · Écrire · frais** (fiche accord) | ✅ |
-| **Bandeau « mois prochain »** (périodiques) | ✅ |
-| **Mes dossiers** (Menu si N>0 ou courriers) | ✅ |
-| **Courriers sans plan** (bandeau + conversion) | ✅ |
-| **Mettre de côté** (Réglages, facture mensuelle) | ✅ |
-| **Résumé à envoyer** (Mes dossiers / Réglages) | ✅ |
-| **Phrase rythme** (fiche / Mes dossiers, avec « si ») | ✅ |
+Archives figées (historique) : [`docs/archive/`](docs/archive/) — noms de personas d’époque ; le contact vivant = **Arkalia**.
 
 ---
 
 ## Stack
 
-| Couche | Choix |
-|--------|--------|
-| Langage / UI | Kotlin + Jetpack Compose |
-| Persistance | Room (SQLite) |
-| Async | Coroutines + Flow |
-| DI | Hilt |
-| Backup | SAF + WorkManager |
-| Rappels | `AlarmManager` exact + BootReceiver |
-| Fuseau | `Europe/Brussels` |
-| Package | `be.monmoisclair.app` |
-
----
-
-## Avancement
-
-Le parcours familial est en place : mois, reste, FAIT, rappels, sauvegarde, facture papier.
-
-```text
-1–5       socle, ledger, rappels, sauvegarde, aide     ✅
-6.0–6.29  scan, photo, Galaxy, audit premium           ✅
-6.30      Lot A — mémoire papier (note/photo modèle)   ✅
-6.31      Lot B — dossier / pastille Accord            ✅
-6.32      Lot C — IBAN, mail, frais, courriers         ✅
-6.33      Mes dossiers (liste) · EuroFormat · mailto   ✅
-6.34      Lot D — courriers sans plan (schéma 7)       ✅
-6.35      Lot E — Mettre de côté                       ✅
-6.36      Lot F — résumé texte                         ✅
-6.37      Phrase rythme dossier (si / environ)         ✅
-Smoke « Écrire » + FAIT ≥ 48 dp (Ultra)                ✅ 2026-10-21
-Hauteur courte type S26 (sim. 360×780 + texte 1,3)      ✅ 2026-10-21
-```
-
+Kotlin · Jetpack Compose · Room · Hilt · SAF + WorkManager · `AlarmManager` exact · `Europe/Brussels` · `be.monmoisclair.app`
 
 ---
 
@@ -130,38 +71,21 @@ Hauteur courte type S26 (sim. 360×780 + texte 1,3)      ✅ 2026-10-21
 
 ```bash
 export COPYFILE_DISABLE=1
-# Sur le volume T7 : préférer ./scripts/git-safe.sh <commande git>
-# (purge les sidecars AppleDouble ._ dans .git → évite « non-monotonic index » au push)
-# Signature release (une fois) : copier keystore.properties.example → keystore.properties
-# et générer release/monmoisclair-release.jks (jamais committer le .jks)
+# Volume T7 : préférer ./scripts/git-safe.sh <commande git>
 ./gradlew :app:testDebugUnitTest --rerun-tasks
 ./gradlew :app:assembleRelease
 adb install -r dist/MonMoisClair-release.apk
 ```
 
-> `local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK dans `dist/` ignoré par git.
-
-**CI (phase 1, léger) :** à chaque push sur **`develop`** (et `main` si merge explicite), GitHub Actions compile le debug et lance les tests unitaires.  
-Feuille de route (lint / sécu plus tard) : [`docs/CI.md`](docs/CI.md). Travail quotidien = branche **`develop`** (charte §5).
-
----
-
-## Confidentialité
-
-- Données sur l’appareil + dossier Documents (SAF)
-- JSON non chiffré (volontaire)
-- Pas d’analytics / serveur / banque
-
-Voir aussi [`SECURITY.md`](SECURITY.md).
+`local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK dans `dist/` ignoré.  
+CI : push **`develop`** → compile + tests. Feuille de route : [`docs/CI.md`](docs/CI.md).
 
 ---
 
 ## Licence
 
-[MIT](LICENSE) — © 2026 Athalia / arkalia-luna-system.
-
----
+[MIT](LICENSE) — © 2026 **Arkalia Luna** / [arkalia-luna-system](https://github.com/arkalia-luna-system).
 
 <p align="center">
-  <sub>Belgique · privacy-first · sideload familial · validé S25 Ultra</sub>
+  <sub>Belgique · local-first · sideload familial · validé S25 Ultra</sub>
 </p>

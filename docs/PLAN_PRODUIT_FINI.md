@@ -9,21 +9,23 @@ Lots **A→F** et le détail de construction sont **clos** :
 | [`PROGRESS_LOG.md`](../PROGRESS_LOG.md) | Journal / version / tests |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy |
 | [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème qualité 2026 |
+| [`PRIVACY.md`](../PRIVACY.md) | Local-first · pas INTERNET |
 
 ## Fini (rappel)
 
 - Accueil = ledger (Reste, FAIT, courses) — pas un tableau de bord.
 - Dossiers / accords, Mettre de côté, résumé texte+PDF, OCR `+++`, widget, Apparence.
+- Contact Menu → **Arkalia Système**.
 - Schéma Room **8** · version courante : lire le journal.
 
 ## Pas encore « objet fini dans la main »
 
-- S26 de maman tenu en main.
+- S26 (cible principale) tenu en main.
 - Smoke doigt encore partiel (photo loyer3 après 6.73 ; snackbar / sticky Plus ; notif ; fondu FAIT).
 - Tests d’écran instrumentés · scission god-files Home/Entry.
 
 ## Prochain geste
 
-Smoke doigt 6.74 (PageTitle / photo / sticky compact) sur S25, puis S26 quand il est là.
+Smoke doigt 6.75 (PageTitle / photo / sticky compact / contact Arkalia) sur S25, puis S26 quand il est là.
 
-Constats dossiers (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.
+Constats dossiers (figé, historique) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.

@@ -10,7 +10,7 @@ import kotlin.math.min
 
 /**
  * Ajustement d’affichage selon la **fenêtre** (pas le modèle Samsung).
- * Priorité maman = écran « normal » (~S26 6,3″) : header Home plus compact.
+ * Priorité usage principal = écran « normal » (~S26 6,3″) : header Home plus compact.
  *
  * **Zone boutons système (obligatoire)** : gérée une seule fois dans `MainActivity`
  * (`safeDrawing` + `tappableElement` + [A11yTokens.bottomSystemClearance]) —

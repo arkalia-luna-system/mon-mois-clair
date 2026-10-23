@@ -5,7 +5,7 @@ Lots visuels 6.16 → 6.28 **clos côté code**. Tables ci-dessous = historique 
 Dossiers / accords (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
 Punch list visuelle : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
 
-**Contact support (6.72+) :** Menu Accueil QuietLink « Un souci… » → Arkalia Système — **pas** dans Réglages / Aide.
+**Contact support (6.75) :** Menu Accueil QuietLink « Un souci ? Écrire à Arkalia Système » — **pas** dans Réglages / Aide.
 
 | Vague | État |
 |-------|------|

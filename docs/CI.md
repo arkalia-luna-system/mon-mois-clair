@@ -48,7 +48,7 @@ workflow CI** (`ci.yml` / tests). La garde produit reste `:app:testDebugUnitTest
 Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security Updates
 (ils sont distincts des PRs « version updates » hebdo).
 
-**Procédure Athalia (GitHub UI)** — pour faire taire le rouge sans faux correctif app :
+**Procédure Arkalia (GitHub UI)** — pour faire taire le rouge sans faux correctif app :
 
 1. Ouvrir le dépôt → **Security** → **Dependabot** / alertes.
 2. Pour une alerte sur `netty` / `protobuf` / `commons-io` / `bouncycastle` **sans**

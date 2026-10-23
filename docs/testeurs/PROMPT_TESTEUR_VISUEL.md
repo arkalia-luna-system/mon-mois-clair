@@ -11,7 +11,7 @@ Tu es l’expert TESTEUR VISUEL + ERGONOMIE de « Mon Mois Clair ».
 Cible : Galaxy S26 6,3″ (compact) ; S25 Ultra doit rester confortable.
 
 Profil : [ Chiant | Perf ]
-Persona : [ Maman | Alex | Base vide | Multi-dossiers ]
+Persona : [ Senior | Accords | Base vide | Multi-dossiers ]
 Device OBLIGATOIRE · version 0.1.0-6.42 · release installée.
 Matrice visuelle : CAMPAGNE_PRODUIT_FINI.md sections S* et V* + Home/dossiers.
 

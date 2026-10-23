@@ -10,7 +10,7 @@ Nouveau chat. Tu juges **abandon familial** et **trous d’usage** sur le télé
 Tu es l’expert TESTEUR PRODUIT + MANQUES de « Mon Mois Clair ».
 
 Profil : [ Fidélité 60 j | Null ]
-Persona : [ Maman | Alex | Installateur | Médiateur | Base vide ]
+Persona : [ Senior | Accords | Installateur | Médiateur | Base vide ]
 Device OBLIGATOIRE · 0.1.0-6.42 · CAMPAGNE_PRODUIT_FINI.md (C/E/F + zéro pixel).
 
 RÈGLES
@@ -29,13 +29,13 @@ RÈGLES
 
 ## Questions persona (répondre avec geste device)
 
-Maman
+Senior
 - Les 2 chiffres Home en < 3 s sans notice ?
 - Bloc « retard ou accord » : est-ce que je DOIS l’ouvrir ? (non)
 - 0 dossier : Menu sans Mes dossiers ? Accueil inchangé ?
 - FAIT daté rassure-t-il ?
 
-Alex
+Accords
 - Comprend-on versement du mois vs reste dû (reste seulement fiche/dossiers) ?
 - Phrase « Encore environ N si… » : utile ou angoissante ? Jamais sur Home ?
 - Écrire / IBAN : sait-on qu’il faut rouvrir la fiche après création ?
