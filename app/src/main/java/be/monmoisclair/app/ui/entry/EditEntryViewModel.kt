@@ -383,12 +383,20 @@ class EditEntryViewModel @Inject constructor(
         val amountText = payment.amountCents?.let { MoneyFormat.centsToEditable(it) }
             ?: _state.value.amountText
         _state.update {
+            val keepIbanHint = it.openingRemainingText.isBlank() &&
+                payment.iban.isNotBlank() &&
+                !it.dossierExpanded
             it.copy(
                 label = payment.beneficiaryName.ifBlank { it.label },
                 amountText = amountText,
                 paymentNote = payment.remittance.ifBlank { it.paymentNote },
                 iban = payment.iban.ifBlank { it.iban },
-                error = null
+                error = null,
+                copyMessage = if (keepIbanHint) {
+                    "IBAN lu — ouvrez « Retard ou accord » pour le garder."
+                } else {
+                    it.copyMessage
+                }
             )
         }
     }

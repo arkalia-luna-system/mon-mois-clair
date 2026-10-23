@@ -16,7 +16,7 @@
 | Histoire publique | **Python / Flutter / Azure en apprentissage** |
 | Artefact le plus fort | **Mon Mois Clair** (Kotlin/Compose, 305 tests, privacy-first BE) — **dépôt privé → invisible** |
 | Risque brand | Bio + pins = « autodidacte / pas encore certifiée » ; zéro Kotlin en vitrine |
-| Risque PII si un jour public | Archives famille (`maman` / `Alex` / Athalia), journal, device |
+| Risque PII si un jour public | Archives famille (`Senior` / `Accords` / prénom civil), journal, device |
 
 **Conclusion :** le craft Android est réel ; la **vitrine le cache**. Demain = aligner bio/pins/README **sans** ouvrir le dépôt.
 
@@ -104,7 +104,7 @@ Azure AZ-900 · AZ-104 en cours
 | 4 | `az104-portfolio` | Azure — **en 4ᵉ**, pas en 1ᵉ |
 | 5–6 | (libre) | Éviter `nours_interface` / templates / logos |
 
-**Si un jour MMC public (plus tard) :** pin #1 = `mon-mois-clair`, description produit empowerment (pas « app familiale pour maman »).
+**Si un jour MMC public (plus tard) :** pin #1 = `mon-mois-clair`, description produit empowerment (pas « app familiale pour Senior »).
 
 ---
 
@@ -154,7 +154,7 @@ Dépôt privé (usage contrôlé) ; stack et discipline doc/tests tenues comme u
 | « usage familial » / « sideload familial » | Hobby / dépendance familiale | « distribution contrôlée (sideload) » / « local-first Belgique » |
 | « Dépôt privé (usage familial) » | Exclut le lecteur pro | « Dépôt privé — docs/tests tenus au standard public » |
 | CONTRIBUTING « Les PR externes ne sont en général pas attendues » | Fermé | OK en privé ; en public : « contributions ciblées bienvenues après lecture charte » |
-| Archives nommées personas famille | PII + ton « on corrige pour maman » | Déjà partiellement géré (« Archives figées… contact = Arkalia ») — **renforcer** |
+| Archives nommées personas famille | PII + ton « on corrige pour Senior » | Déjà partiellement géré (« Archives figées… contact = Arkalia ») — **renforcer** |
 
 ### Angle produit recruteur (une phrase)
 
@@ -170,17 +170,17 @@ Dépôt privé (usage contrôlé) ; stack et discipline doc/tests tenues comme u
 
 | Zone | Exemples | Action |
 |------|----------|--------|
-| `docs/archive/*` | `AUDIT_ALEX_MAMAN_*`, feedback famille, prénoms, modèles S25/S26 « maman » | Garder hors arbre public **ou** anonymiser (User A / User B) + retirer liens README |
-| `PROGRESS_LOG.md` | Mentions Athalia / maman / Alex / smokes perso | Version « public » allégée **ou** rester privé |
+| `docs/archive/*` | `AUDIT_ALEX_MAMAN_*`, feedback famille, prénoms, modèles S25/S26 « usage principal » | Garder hors arbre public **ou** anonymiser (User A / User B) + retirer liens README |
+| `PROGRESS_LOG.md` | Mentions prénom civil / Senior / Accords / smokes perso | Version « public » allégée **ou** rester privé |
 | Device IDs | `SM-S938B` dans badges README | Remplacer par « Galaxy S25 Ultra (smoke interne) » sans serial |
 | Mail | `arkalia.luna.system@gmail.com` dans code support | OK produit ; documenter comme contact **marque**, pas perso civil |
-| Nom civil | Profil GitHub `Siwek Athalia` | Choix perso : OK pro BE ; sinon display name = Arkalia Luna |
+| Nom civil | Profil GitHub (nom civil) | Choix perso : OK pro BE ; sinon display name = Arkalia Luna |
 
 ### Déjà bien
 
 - `PRIVACY.md` : pas de serveur, pas d’analytics.
 - `SECURITY.md` : « Ne pas recopier le numéro de série… »
-- Tests : `HowItWorksCopyTest` refuse « Athalia » dans copy UI.
+- Tests : `HowItWorksCopyTest` refuse le prénom civil dans copy UI.
 - Contact produit = **Arkalia Système** (ortho tenue).
 
 ### Checklist « go public » (plus tard)
@@ -190,7 +190,7 @@ Dépôt privé (usage contrôlé) ; stack et discipline doc/tests tenues comme u
 - [ ] Topics OK (`android`, `kotlin`, `jetpack-compose`, `privacy`, `offline-first`) — déjà présents
 - [ ] Description GitHub repo = empowerment + BE (pas « familial »)
 - [ ] Archive folder soit retirée du default branch public, soit marquée `historical / anonymized`
-- [ ] Relecture ton : 0× « je galère », 0× « débutante », 0× « pour maman » en surface
+- [ ] Relecture ton : 0× « je galère », 0× « débutante », 0× « pour Senior » en surface
 
 ---
 
@@ -220,7 +220,7 @@ Dépôt privé (usage contrôlé) ; stack et discipline doc/tests tenues comme u
 
 - autodidacte / débutante / « pour débutants »  
 - « je ne gère pas mes finances » / galère / dettes comme identité  
-- « app pour maman » / « usage familial » comme pitch #1  
+- « app pour Senior » / « usage familial » comme pitch #1  
 - « pas encore certifiée » en **premier** pin  
 - emojis pédagogiques type `nours_interface` (🎓📚🌐)  
 

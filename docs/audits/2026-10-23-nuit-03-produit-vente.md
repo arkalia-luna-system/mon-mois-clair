@@ -31,7 +31,7 @@
 | **100 % offline, 0 INTERNET, 0 pub, 0 compte** | Promesse rare et **vérifiable** (manifeste) — crédible face aux « privacy washing » Play | Distribution sideload = friction install / MAJ |
 | **Papier belge** (QR EPC, `+++`, OCR `+++` seulement) | Geste métier : coller → banque sur le **même** téléphone. Les pairs génériques ne font pas ça | Niche = marché plus petit ; peu d’effet viral hors BE/LU/FR frontaliers |
 | **Accueil = ledger** (Reste · À payer · FAIT · Courses) | Répond en &lt; 2 s aux 2 questions qui retiennent : *quoi payer* / *combien reste* | Exige discipline produit : toute feature hors ledger tue la clarté |
-| **Dossiers / accords** (reste dû, IBAN, Écrire, frais datés, Mes dossiers) | Cas Alex : retards / acomptes sans snowball ni coach dette | Invisible pour maman (0 dossier = 0 ligne Menu) — **bonne** chose, mais peu de démo store |
+| **Dossiers / accords** (reste dû, IBAN, Écrire, frais datés, Mes dossiers) | Cas Accords : retards / acomptes sans snowball ni coach dette | Invisible pour Senior (0 dossier = 0 ligne Menu) — **bonne** chose, mais peu de démo store |
 | **Preuve** (photo WebP + PDF courrier, résumé PDF gros caractères) | Confiance familiale + médiation / courrier — pas un camembert | PDF ≠ formulaire CPAS ; ne pas sur-promettre |
 | **Sideload famille** (APK ~14 Mo, même keystore) | Cadeau / cercle restreint sans Play | Pas de découverte organique ; support = mail Arkalia |
 | **Sérénité** (biométrie, `FLAG_SECURE`, backup SAF, contraste ≥ 7:1, One UI 48 dp) | Premium **crédible** sans abonnement SaaS | Smoke S26 (cible n°1) encore manquant |
@@ -138,7 +138,7 @@ Seuil psychologique BE : autour de **10 €** « je m’offre un carnet qui rest
 
 1. Smoke **S26** (persona n°1) vert sur P0 doigt.
 2. Install sideload **&lt; 5 min** avec `DISTRIBUTION_FAMILLE` (ou Play interne).
-3. Une phrase PRIVACY lisible par maman.
+3. Une phrase PRIVACY lisible par Senior.
 4. Pas de claim « 9/10 » tant que le journal dit le contraire.
 
 ---
@@ -155,7 +155,7 @@ Seuil psychologique BE : autour de **10 €** « je m’offre un carnet qui rest
 | **Support mail seul** (Arkalia) | Moyenne | QuietLink Menu déjà là ; volume = limiter cercle ou FAQ |
 | **Keystore / MAJ cassée** | Haute ops | Même keystore ; doc DISTRIBUTION ; jamais debug famille |
 | **Backups en clair** | Moyenne confiance | Transparence PRIVACY ; chiffrement = phase ultérieure |
-| **Dossiers sous-utilisés** (maman) | Basse–moyenne | OK produit ; pitch marketing séparé « si accords » |
+| **Dossiers sous-utilisés** (Senior) | Basse–moyenne | OK produit ; pitch marketing séparé « si accords » |
 | **Dette tech god-files** | Moyenne vélocité | Après smoke ; pas bloquant vente foyer |
 
 ---

@@ -24,6 +24,7 @@ object HowItWorksCopy {
         Section(
             title = "Marquer FAIT",
             body = "Payé : « FAIT ✓ », puis « FAIT le … ». « Remettre » si erreur. " +
+                "Prélèvement : cochez quand vous voyez le débit, pas le jour prévu. " +
                 "Autre montant ce mois : ouvrez la ligne — seul ce mois change, " +
                 "sauf « Aussi les mois suivants »."
         ),
@@ -40,9 +41,9 @@ object HowItWorksCopy {
         Section(
             title = "Facture papier",
             body = "« Scanner une facture » lit le QR belge. « Copier » pour la banque. " +
-                "Photo et PDF à côté. « Lire +++ sur la photo » = communication seulement — " +
-                "jamais le montant. Eau / énergie : souvent une nouvelle +++ chaque mois " +
-                "(loyer ou prélèvement : la ref peut rester)."
+                "Photo et PDF à côté. « Lire la communication sur la photo » = " +
+                "communication seulement — jamais le montant. Eau / énergie : souvent " +
+                "une nouvelle +++ chaque mois (loyer ou prélèvement : la ref peut rester)."
         ),
         Section(
             title = "Retard ou accord",

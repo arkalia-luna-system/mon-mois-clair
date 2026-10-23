@@ -2,7 +2,7 @@
 
 | | |
 |--|--|
-| **Profil** | UX researcher senior · public **maman 60+** · Galaxy **S26** (cible) / **S25 Ultra** (second) · One UI |
+| **Profil** | UX researcher senior · public **Senior 60+** · Galaxy **S26** (cible) / **S25 Ultra** (second) · One UI |
 | **Périmètre** | Accueil · Courses · épargne · calendrier mois · Menu · hub Réglages · fiche · FAIT · snackbar · dossiers · À venir · onboarding |
 | **Base** | Code ~**0.1.0-6.75** (lecture seule) · charte §6–7 · `DisplayFit` compact ≤ 800 dp |
 | **Méthode** | Parcours mental « doigt » + copy visible · **pas** smoke téléphone · **pas** claim premium |
@@ -30,7 +30,7 @@ Critères : 1) trouve-t-elle le geste en ≤ 2 taps depuis Accueil ? 2) le libel
 | A1 | Sur hauteur courte (`compactHomeChrome`), **Mettre de côté** est derrière **Plus** | L’épargne n’est déjà pas un réflexe ; un 2ᵉ tap abstrait (« Plus ») la fait disparaître du premier regard |
 | A2 | Libellé **Plus** / **Moins** | Ne dit pas *quoi* est caché (épargne, tip salaire, courrier…). Sensation de menu technique |
 | A3 | Ligne Courses : `Courses 40 € · après 210 €` | « Après » = Reste − courses, pas « après avoir payé les factures ». Ambigu avec « Après les FAIT » (sous Plus) |
-| A4 | Trois chemins pour changer de mois (‹ ›, icône calendrier, titre cliquable) + encore Menu → Choisir un mois | Surapprentissage OK pour power user ; pour maman, **trop d’équivalents** sans bénéfice clair |
+| A4 | Trois chemins pour changer de mois (‹ ›, icône calendrier, titre cliquable) + encore Menu → Choisir un mois | Surapprentissage OK pour power user ; pour Senior, **trop d’équivalents** sans bénéfice clair |
 | A5 | Recherche facture seulement si ≥ 4 lignes | Invisible les premiers mois ; OK produit, mais surprise quand elle apparaît |
 | A6 | Snackbar FAIT **sous** le sticky, durée Short (~4 s) | Yeux sur la carte / le pouce ; le bandeau peut disparaître avant lecture + Annuler |
 
@@ -49,7 +49,7 @@ Critères : 1) trouve-t-elle le geste en ≤ 2 taps depuis Accueil ? 2) le libel
 | E1 | Montant Accueil (sheet) vs jour / retrait **Réglages → Compte & données → Mettre de côté** | 3–4 taps pour le jour du virement ; oubli fréquent |
 | E2 | Copy sheet inactive : « Vers un autre compte — **compte** dans le Reste » | Phrase un peu tordue ; risque de lire « compte bancaire dans l’app » |
 | E3 | FAIT sur la ligne épargne = « j’ai viré » | Pas dit sur l’Accueil ; seulement en fiche / Aide — confusion avec « j’ai déjà l’argent de côté » |
-| E4 | Sur S26, découverte initiale de l’épargne = Plus ou Réglages | Contredit le besoin Athalia « ne pas rechercher 1 € » si la ligne n’est jamais vue |
+| E4 | Sur S26, découverte initiale de l’épargne = Plus ou Réglages | Contredit le besoin produit « ne pas rechercher 1 € » si la ligne n’est jamais vue |
 
 ### Calendrier mois (`Choisir un mois`)
 
@@ -82,7 +82,7 @@ Critères : 1) trouve-t-elle le geste en ≤ 2 taps depuis Accueil ? 2) le libel
 | Id | Friction | Pourquoi |
 |----|----------|----------|
 | F1 | Fiche longue (fréquence, paiement, accord, frais…) | Sections repliées aident ; scroll + clavier One UI = fatigue et oubli d’**Enregistrer** |
-| F2 | **Lire +++ sur la photo** | Jargon belge correct métier ; pour maman = « lire quoi ? » |
+| F2 | **Lire +++ sur la photo** | Jargon belge correct métier ; pour Senior = « lire quoi ? » |
 | F3 | **Ranger sans plan** | Idiome produit ; pas le verbe du quotidien (« mettre de côté le courrier ») |
 | F4 | **Aussi les mois suivants** (décoché = ce mois) | Double négation mentale ; erreur classique de montant |
 | F5 | Photo multi-lignes / « Ouvrir à part » | Correctif 6.73 présent ; reste un parcours de secours — à **fumer** |
@@ -208,7 +208,7 @@ Ordre **praticité famille**, pas backlog technique. Aucun item n’est « codé
 
 ## 6. Synthèse chercheur
 
-L’app se comporte déjà comme un **carnet du mois**, pas une banque — c’est le bon cadre mental pour maman.  
+L’app se comporte déjà comme un **carnet du mois**, pas une banque — c’est le bon cadre mental pour Senior.  
 Les risques praticité restants sont surtout : **(1)** épargne et détails **cachés derrière Plus** sur S26, **(2)** **profondeur Réglages** + libellé « Compte », **(3)** **snackbar FAIT trop brève / trop haute**, **(4)** **onboarding permissions** Samsung qui laisse des rappels morts, **(5)** quelques **mots ledger** (après, +++, Ranger).
 
 Score honnête **lecture code seule** : praticité Accueil ~ **8/10** si smoke Plus/snackbar OK ; parcours secondaire (épargne jour, dossiers 1ʳᵉ fois, onboarding) ~ **6,5–7/10**.  

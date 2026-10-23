@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -138,6 +139,8 @@ fun QuietLinkA11y(
         modifier = modifier
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
+            // Largeur min = cible pouce même si le libellé est court (Copier / Photo).
+            .then(if (!fillMaxWidth) Modifier.widthIn(min = A11yTokens.minTouchHeight) else Modifier)
             .clickable(
                 enabled = enabled,
                 role = Role.Button,

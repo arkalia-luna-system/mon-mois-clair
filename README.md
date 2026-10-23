@@ -9,9 +9,9 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-314%2F314-success)](#statut-technique)
+[![Tests](https://img.shields.io/badge/tests-315%2F315-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.76-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.77-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,11 +48,11 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.76` |
-| Dernière étape | **6.76** P0 métier BE (B01–B03) · sticky/a11y/widget · PRIVACY |
+| Version | `0.1.0-6.77` |
+| Dernière étape | **6.77** clôture audits nuit · MigrationTest · scrub PII vivants |
 | Device | Smoke historique S25 Ultra (`SM-S938B`). Photo / sticky / notif / S26 **encore à fumer** — pas claim « 9/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **314/314** OK (`--rerun-tasks`) — à recompter à chaque bump |
+| Tests unitaires | **315/315** OK (`--rerun-tasks`) — à recompter à chaque bump |
 | Schéma Room | **8** |
 
 Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)

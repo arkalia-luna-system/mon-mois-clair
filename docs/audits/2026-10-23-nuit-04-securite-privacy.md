@@ -109,14 +109,14 @@ Pas de deep link / intent-filter custom dangereux observé.
 Aligné code : local, pas INTERNET, backups clair, clipboard, bio + `FLAG_SECURE`, contact Arkalia.  
 Manques pour trust premium / public : notifications (montants sur lockscreen), widget (montants si bio OFF), Room non chiffrée, e-mail support en clair dans le binaire.
 
-### 2.10 PII docs (maman / Alex / Athalia)
+### 2.10 PII docs (Senior / Accords / prénom civil)
 
 | Zone | État |
 |------|------|
-| Code / strings UI / tests contact | « Athalia » **exclu** des drafts (`SupportMailComposerTest`, `HowItWorksCopyTest`) — OK 6.75 |
+| Code / strings UI / tests contact | « Athalia » (prénom civil) **exclu** des drafts (`SupportMailComposerTest`, `HowItWorksCopyTest`) — OK 6.75 |
 | Docs vivants produit (`CHARTE`, `PRIVACY`, `DISTRIBUTION`, README) | Personas anonymisés / Arkalia — OK |
-| `PROGRESS_LOG.md` (vivant, historique) | Mentions **maman / Alex / Athalia** encore présentes (entrées antérieures) |
-| `docs/archive/*` | **Concentré** : `AUDIT_ALEX_MAMAN_*`, `FEEDBACK_TEST_FAMILLE_*`, `RECHERCHE_OUTILS_*`, checklist « S25 Ultra de Athalia », etc. |
+| `PROGRESS_LOG.md` (vivant, historique) | Mentions **Senior / Accords / prénom civil** encore présentes (entrées antérieures) |
+| `docs/archive/*` | **Concentré** : `AUDIT_ALEX_MAMAN_*`, `FEEDBACK_TEST_FAMILLE_*`, `RECHERCHE_OUTILS_*`, checklist « S25 Ultra de test », etc. |
 | Liens vivants → archive | `docs/AUDIT_STATUS.md`, `docs/PLAN_PRODUIT_FINI.md` pointent encore vers `AUDIT_ALEX_MAMAN_…` |
 
 Pour un dépôt **privé / famille** : acceptable (archives figées). Pour **GitHub public** : risque réputationnel + vie privée des proches (prénoms, modèles, usages dettes / huissier).
@@ -129,7 +129,7 @@ Pour un dépôt **privé / famille** : acceptable (archives figées). Pour **Git
 
 | ID | Finding | Preuve | Remède recommandé |
 |----|---------|--------|-------------------|
-| **P0-DOC-1** | Archives + journal portent des **noms / contextes familiaux** (maman, Alex, Athalia) + détails device | `docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md`, `FEEDBACK_TEST_FAMILLE_*`, `PROGRESS_LOG.md` historique | Avant public : scrub / remplacer par personas (Senior / Accords) **ou** exclure `docs/archive/` + historiser le journal ; ne pas laisser le filename `AUDIT_ALEX_MAMAN` indexé |
+| **P0-DOC-1** | Archives + journal portent des **noms / contextes familiaux** (Senior, Accords, prénom civil) + détails device | `docs/archive/AUDIT_ALEX_MAMAN_2026-10-21.md`, `FEEDBACK_TEST_FAMILLE_*`, `PROGRESS_LOG.md` historique | Avant public : scrub / remplacer par personas (Senior / Accords) **ou** exclure `docs/archive/` + historiser le journal ; ne pas laisser le filename `AUDIT_ALEX_MAMAN` indexé |
 | **P0-DOC-2** | Claim implicite « archive de **sécurité** » vs ZIP **non chiffré** (IBAN + photos) | `BackupSecurityArchive.SHARE_ZIP_NAME`, `PRIVACY.md` | Garder « en clair » partout (UI partage, README) ; éventuellement renommer copy « copie de secours » ; option future : chiffrement passphrase (hors scope 6.75) |
 
 *Aucun P0 d’exploitation réseau / composant exporté critique trouvé dans le code auditée.*
@@ -166,7 +166,7 @@ Pour un dépôt **privé / famille** : acceptable (archives figées). Pour **Git
 
 ## 5. Checklist « avant public GitHub »
 
-- [ ] Scrub / gated `docs/archive/**` contenant maman·Alex·Athalia (ou repo privé archive).
+- [ ] Scrub / gated `docs/archive/**` contenant Senior·Accords·prénom civil (ou repo privé archive).
 - [ ] Passer `PROGRESS_LOG.md` (ou tronquer l’historique public) pour les mêmes noms.
 - [ ] Relire filenames / liens `AUDIT_ALEX_MAMAN_*` depuis docs vivants.
 - [ ] `PRIVACY.md` : notifs, widget, Room clair, partage = hors périmètre app.
@@ -195,7 +195,7 @@ Pour un dépôt **privé / famille** : acceptable (archives figées). Pour **Git
 
 ## 7. Méthode
 
-Relecture statique : `AndroidManifest.xml`, biometric / clipboard / backup / widget / notifications / FileProvider / `DatabaseModule`, `PRIVACY.md`, `SECURITY.md`, `.gitignore`, `keystore.properties.example`, grep PII `maman|Alex|Athalia` (vivants vs `docs/archive`), absence de secrets dans l’index git.
+Relecture statique : `AndroidManifest.xml`, biometric / clipboard / backup / widget / notifications / FileProvider / `DatabaseModule`, `PRIVACY.md`, `SECURITY.md`, `.gitignore`, `keystore.properties.example`, grep PII `Senior|Accords|prénom` (vivants vs `docs/archive`), absence de secrets dans l’index git.
 
 **Audit only** — aucun correctif code dans cette passe.
 )

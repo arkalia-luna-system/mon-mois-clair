@@ -12,7 +12,7 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 
 - Pas de serveur, pas d’analytics, pas d’API tierce.
 - Les backups JSON dans Documents (SAF) sont **en clair** (décision produit) — le téléphone + le dossier Documents sont la frontière de confiance.
-- Biométrie optionnelle + `FLAG_SECURE` si activée (aperçu multitâche masqué).
+- Biométrie optionnelle = **porte UI** seulement (pas de chiffrement Room / backups) + `FLAG_SECURE` si activée (aperçu multitâche masqué).
 - Keystore de signature release : **jamais** dans git (`*.jks`, `keystore.properties`).
 - Pas de permission `INTERNET`. `android:allowBackup="false"`. Release minifiée.
 - `FLAG_SECURE` seulement quand le verrouillage est activé. Sans verrou, l’aperçu des tâches peut montrer le mois.

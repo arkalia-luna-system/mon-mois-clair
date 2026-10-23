@@ -39,6 +39,11 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 - Si le verrouillage est activé : `FLAG_SECURE` (aperçu multitâche masqué).
 - Sans verrou : l’aperçu des tâches peut montrer le mois ouvert.
 
+## Batterie (alertes)
+
+- Sur Galaxy / One UI, les rappels fiables peuvent demander d’**ignorer l’optimisation batterie** pour Mon Mois Clair (parcours Réglages → Alertes).
+- Ce n’est **pas** un accès réseau : uniquement pour que les alarmes locales sonnent malgré la mise en veille agressive Samsung.
+
 ## Contact
 
 Bug, idée ou question : Accueil → **Menu** → **« Un souci ? Écrire à Arkalia Système »**  

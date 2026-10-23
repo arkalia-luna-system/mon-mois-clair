@@ -268,8 +268,16 @@ fun HomeScreen(
         scope.launch {
             faitUndoActive = true
             try {
+                val agreementRemettre = !markingDone &&
+                    state.timeline.filterIsInstance<TimelineItem.Expense>()
+                        .any { it.id == expenseId && it.isAgreement }
                 val result = snackbarHostState.showSnackbar(
-                    message = if (markingDone) "Noté FAIT" else "Remis à payer",
+                    message = when {
+                        markingDone -> "Noté FAIT"
+                        agreementRemettre ->
+                            "Dossier rouvert — les mois suivants peuvent revenir"
+                        else -> "Remis à payer"
+                    },
                     actionLabel = "Annuler",
                     withDismissAction = true,
                     duration = SnackbarDuration.Long
@@ -435,11 +443,16 @@ fun HomeScreen(
                             scope.launch {
                                 faitUndoActive = true
                                 try {
+                                    val agreementRemettre = !pastMarkingDone &&
+                                        state.timeline
+                                            .filterIsInstance<TimelineItem.Expense>()
+                                            .any { it.id == id && it.isAgreement }
                                     val result = snackbarHostState.showSnackbar(
-                                        message = if (pastMarkingDone) {
-                                            "Noté FAIT"
-                                        } else {
-                                            "Remis à payer"
+                                        message = when {
+                                            pastMarkingDone -> "Noté FAIT"
+                                            agreementRemettre ->
+                                                "Dossier rouvert — les mois suivants peuvent revenir"
+                                            else -> "Remis à payer"
                                         },
                                         actionLabel = "Annuler",
                                         withDismissAction = true,
@@ -679,7 +692,7 @@ fun HomeScreen(
                 // Mode aperçu = contexte, toujours visible (pas derrière « Plus »).
                 if (state.isFuturePreview) {
                     val previewLabel =
-                        "Aperçu — factures et rentrées prévues ; pas de FAIT ni d’ajout."
+                        "Aperçu — montants d’après la dernière saisie ; pas de FAIT ni d’ajout."
                     Text(
                         text = previewLabel,
                         style = MaterialTheme.typography.bodyMedium,

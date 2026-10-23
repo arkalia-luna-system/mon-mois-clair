@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.76** (P0 BE B01–B03 · sticky/a11y/widget · PRIVACY) |
+| Dernière étape terminée | **6.77** (clôture audits nuit · MigrationTest · scrub PII vivants) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt S26 (photo · sticky Autres infos · snackbar Long · notif · widget serif) · claim premium non |
-| Audit premium | P0 métier **FAIT** · UI smoke-ready **FAIT** · **pas** claim « 9/10 dans la main » sans smoke |
+| Prochaine sous-étape | Smoke doigt S26 · carrière GitHub hors repo · archives PII avant public |
+| Audit premium | Code audits **FAIT** · **pas** claim « 9/10 dans la main » sans smoke |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,30 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-23 — 6.77 Clôture audits nuit (code 100 % faisable)
+
+**Écarts 6.76 encore PARTIEL → FAIT :**
+| Id | Preuve |
+|----|--------|
+| Widget tokens P1-W2 | `widget_muted` `#4A453C` · `widget_rule` `#E2DDD2` (= InkMuted / PaperBorder) |
+| B04 tip IBAN QR | `applyEpc` → « ouvrez Retard ou accord pour le garder » |
+| B06 tip aperçu | sticky « montants d’après la dernière saisie » |
+| B07 Remettre accord | snackbar « Dossier rouvert — les mois suivants peuvent revenir » |
+| B08 prélèvement | Aide « cochez quand vous voyez le débit » |
+| Copy UX | « Lire la communication… » · « Garder le courrier… » · « N échéances » |
+| QuietLink largeur | `widthIn(min = 48.dp)` si compact |
+| Eng P0/P1 min | `EntryFormChrome.kt` + `RoomMigrationTest` 7→8 |
+| PRIVACY / SECURITY | batterie Alertes · bio = porte UI |
+| Scrub PII vivants | PROGRESS_LOG · DISTRIBUTION · audits nuit ; archives **REPORTÉ** |
+
+**REPORTÉ OK :** carrière GitHub profil · smoke doigt · archives `docs/archive/*` · god-file Home.
+
+**Top 15 :** matrice 100 % code dans `docs/audits/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md`.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **315/315** (74 fichiers, 0 failure).  
+**Version :** `0.1.0-6.77` · `versionCode` 82.  
+**Pas un claim « 9/10 dans la main ».**
 
 ### 2026-10-23 — 6.76 P0 métier BE + smoke-ready UI (nuit audits)
 
@@ -440,7 +464,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ### 2026-10-22 — 6.51 PDF résumé à gros caractères
 
-**Vu :** le PDF résumé était en 11/14 pt, polices système, fond blanc — illisible pour maman / impression.
+**Vu :** le PDF résumé était en 11/14 pt, polices système, fond blanc — illisible pour impression / usage familial.
 
 **Codé :**
 - `MonthSummaryPdfWriter` : papier `#F6F3E8`, encre, Source Sans 3 / Serif 4 via `ResourcesCompat.getFont`
@@ -580,7 +604,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ### 2026-10-22 — 6.41 Aperçu mois futurs (feedback §4)
 
-**Vu :** « À venir » listait bien Nov+… mais le **calendrier / flèche ›** refusaient encore tout mois > courant — Athalia n’avait pas l’accès demandé (factures + rentrées dans le mois futur).
+**Vu :** « À venir » listait bien Nov+… mais le **calendrier / flèche ›** refusaient encore tout mois > courant — l’accès demandé n’était pas là (factures + rentrées dans le mois futur).
 
 **Codé :**
 - `MonthNavigation` : jusqu’à **M+3** sélectionnable ; `isFuturePreview`
@@ -608,7 +632,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ### 2026-10-22 — 6.39 Feedback famille (test 21 oct.)
 
-**Demandes :** mail Athalia · soldés · date « Vers… » + recalcul · à venir · épargne sticky · rythme Home · courses accessibles · doc APK sans USB.
+**Demandes :** mail contact · soldés · date « Vers… » + recalcul · à venir · épargne sticky · rythme Home · courses accessibles · doc APK sans USB.
 
 **Codé :**
 - Réglages → « Un souci avec l’app ? » (`SupportMailComposer` → `arkalia.luna.system@gmail.com`)
@@ -639,7 +663,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ### 2026-10-21 — Fin de journée : main = develop + APK 6.38
 
 **Vérif :** **235/235**. Fix E* partiel. `main` = `develop`. APK 6.38 sur SM-S938B.  
-**Reporté :** S26 maman · `androidTest` · pas de re-smoke adb (doigt humain seulement).
+**Reporté :** S26 usage principal · `androidTest` · pas de re-smoke adb (doigt humain seulement).
 
 ### 2026-10-21 — Campagne suite_pe : P2 / D2 / D11
 
@@ -724,7 +748,7 @@ Le logo est le carnet ouvert du fichier dans Téléchargements (encre, filet or,
 
 ### 2026-10-21 — 6.37 Phrase rythme dossier
 
-**Problème :** sans estimation honnête, Alex invente une date de fin ; avec une date certaine, on ment dès qu’un mois diverge.
+**Problème :** sans estimation honnête, l’utilisatrice invente une date de fin ; avec une date certaine, on ment dès qu’un mois diverge.
 
 **Codé :**
 - `DossierRemaining.pacePhrase` — « Encore environ N mois si le versement reste de X » (mensuel) ou « N versements » (autre rythme) ; toujours « environ » ; jamais « fin prévue »
@@ -735,7 +759,7 @@ Le logo est le carnet ouvert du fichier dans Téléchargements (encre, filet or,
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **231/231** (59 fichiers, 0 échec)  
 **Version :** `0.1.0-6.37` · `versionCode` 42  
-**Pas encore :** S26 maman en main · tests instrumentés
+**Pas encore :** S26 usage principal en main · tests instrumentés
 
 ### 2026-10-21 — Correctifs après 6.36 (absorbés dans 6.37)
 
@@ -963,7 +987,7 @@ IBAN checksum, e-mail, anti double-tap, photos, frais, Mettre de côté, total d
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **165/165** (47 fichiers, 0 échec)  
 **Version :** `0.1.0-6.28` · `versionCode` 33
 
-### 2026-10-21 — 6.27 Retours manuels maman (photo, fréquence, menu, sticky)
+### 2026-10-21 — 6.27 Retours manuels usage principal (photo, fréquence, menu, sticky)
 
 **Confirmé OK (manuel) :** notifications · biométrie.
 
@@ -1146,7 +1170,7 @@ IBAN checksum, e-mail, anti double-tap, photos, frais, Mettre de côté, total d
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **130/130 OK**  
 **Version :** `0.1.0-6.12` · `versionCode` 18  
-**Reste device :** smoke S25 des écrans 6.10–6.12 + **S26 maman encore ouvert**.
+**Reste device :** smoke S25 des écrans 6.10–6.12 + **S26 usage principal encore ouvert**.
 
 ### 2026-10-20 — 6.11 Rythme visuel
 
@@ -1244,7 +1268,7 @@ IBAN checksum, e-mail, anti double-tap, photos, frais, Mettre de côté, total d
 **Corrigé :** message « Copié » en vert (plus en rouge erreur) · mois d’échéance en `FlowRow` · SAF/Permissions titres adaptés compact · nav mois ‹ › sur écran court.  
 **Vérifié :** zone boutons système toujours via MainActivity ; **120/120** tests.
 
-### 2026-10-20 — 6.4 affichage multi-Galaxy (priorité S26 maman)
+### 2026-10-20 — 6.4 affichage multi-Galaxy (priorité S26 usage principal)
 
 **Recherche :** specs Samsung S26 6,3″ FHD+ / S25 Ultra 6,9″ QHD+ ; One UI marges ≥24 dp ; Window Compact &lt;600 dp.
 
@@ -1297,7 +1321,7 @@ Branche jetable `wip/6.x-assistant-papiers` remplacée par `develop` (lot 6.3 + 
 **Fix CI :** `android-actions/setup-android` sans package obsolète `tools` (échec sdkmanager).  
 **Pas encore :** lint bloquant, detekt, scan CVE (volontairement pour éviter un mur de corrections).
 
-### 2026-10-19 — Polish familial « parfait maman » (sur 5.4.1)
+### 2026-10-19 — Polish familial « carnet usage principal » (sur 5.4.1)
 
 **UI / confiance :**
 - Divers : message d’erreur si montant vide ; champ vidé seulement si OK

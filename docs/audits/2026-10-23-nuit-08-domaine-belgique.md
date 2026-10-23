@@ -5,7 +5,7 @@
 | **Date** | 2026-10-23 (nuit) |
 | **Profil** | Expert métier factures belges (OGM/VCS, QR EPC/Girocode, prélèvement SEPA, accords/retards, échéances hors mois, dossiers courrier) |
 | **État code** | `0.1.0-6.75` · schéma Room **8** · **305/305** unit · claim premium « dans la main » **non** |
-| **Sources** | Code (`EpcQrParser`, `BelgianStructuredCommunication`, `ToggleExpenseDone`, `MonthCycleEngine`, `AgreementFuturesSync`, `DossierRemaining`, `PrepareMonthSummary`, dossiers / pending letters, rappels) · `CHARTE_ET_ARCHITECTURE.md` · `HowItWorksCopy` · archives Alex/maman |
+| **Sources** | Code (`EpcQrParser`, `BelgianStructuredCommunication`, `ToggleExpenseDone`, `MonthCycleEngine`, `AgreementFuturesSync`, `DossierRemaining`, `PrepareMonthSummary`, dossiers / pending letters, rappels) · `CHARTE_ET_ARCHITECTURE.md` · `HowItWorksCopy` · archives Accords/Senior |
 | **Portée** | **AUDIT ONLY** — aucun commit code app. Améliorations **charte-compatibles** seulement (pas de banque, pas d’OCR montant, pas de total dettes sur Accueil). |
 
 ---
@@ -191,7 +191,7 @@ Hors P0 métier mais déjà plan produit : smoke doigt S26 (photo / sticky / sna
 | Geste banque BE (copie / mod 97 / OCR `+++`) | **8,5** | Excellent socle ; propagation `+++` = dette de confiance |
 | QR EPC | **7** | Marche sur fixtures ; fragile hors purpose |
 | FAIT / mois / futur | **9** | Règles claires, alignées charte |
-| Accords / courriers | **8** | Très bon pour Alex ; trou 1ʳᵉ mensualité partielle |
+| Accords / courriers | **8** | Très bon pour Accords ; trou 1ʳᵉ mensualité partielle |
 | Hors mois / annuel | **8** | Inventaire + aperçu OK ; montants futurs figés |
 | Résumé PDF médiation | **7,5** | Utile ; IBAN manquant |
 | Confiance « app chère » globale métier | **~7,5** | Au-dessus des carnets génériques ; P0 B01–B03 avant claim premium |

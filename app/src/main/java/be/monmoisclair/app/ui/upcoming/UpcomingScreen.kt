@@ -121,7 +121,7 @@ fun UpcomingScreen(
         }
         state.months.forEach { month ->
             val count = month.lines.size
-            val suffix = if (count == 1) "1 ligne" else "$count lignes"
+            val suffix = if (count == 1) "1 échéance" else "$count échéances"
             CarnetHubRow(
                 label = "${month.monthLabel} · $suffix",
                 onClick = { selectedYmKey = month.yearMonth.toString() }
