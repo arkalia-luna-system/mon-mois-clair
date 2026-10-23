@@ -48,6 +48,9 @@ Alertes GitHub Security peuvent rester **jusqu’au rescan** Dependabot même si
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **318/318** (75 fichiers, 0 failure).  
 **Classpath :** `buildEnvironment` + `:app:dependencies` → protobuf **3.25.9**, commons-io **2.22.0**, netty **4.1.139.Final**, bcprov **1.86**, jdom2 **2.0.6.1**, jose4j **0.9.7**. `releaseRuntimeClasspath` : **0** de ces jars (pas APK).  
 **Version :** `0.1.0-6.80` · `versionCode` 85.  
+**SHA :** `d30b1b5` (`develop` + `main` ff).  
+**Device :** install release SM-S938B · provider widget + instance id 62 RemoteViews OK.  
+**Dependabot GitHub :** push signale encore **59** alertes jusqu’au **rescan** (force local ≠ dismiss UI).  
 **Pas un claim « 9/10 dans la main ».**
 
 ### 2026-10-23 — 6.79 P0 widget One UI (RemoteViews)
