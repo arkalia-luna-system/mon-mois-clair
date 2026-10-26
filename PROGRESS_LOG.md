@@ -35,6 +35,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **332/332** (79 XML, 0 failure).  
 **Version :** `0.1.0-6.83` · `versionCode` 88.  
+**SHA :** `b37af4d` (`develop` poussé).  
 **Device :** release install SM-S938B `0.1.0-6.83`.  
 **Pas un claim « 9/10 dans la main ».** Preuves : `docs/audits/2026-10-26-final-07-verification-execution.md`.
 

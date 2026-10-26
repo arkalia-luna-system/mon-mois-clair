@@ -3,7 +3,7 @@
 | | |
 |--|--|
 | **Date** | 2026-10-26 |
-| **Branche** | `develop` |
+| **Branche** | `develop` · SHA `b37af4d` |
 | **Version** | `0.1.0-6.83` · `versionCode` 88 |
 | **Tests** | `./gradlew :app:testDebugUnitTest --rerun-tasks` → **332/332** (79 XML, 0 failure) |
 | **APK** | `dist/MonMoisClair-release.apk` · aapt `versionName='0.1.0-6.83'` |
