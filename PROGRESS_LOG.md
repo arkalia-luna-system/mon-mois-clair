@@ -29,6 +29,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **367 exécutés** / 368 déclarés (1 skipped), 87 XML, 0 failure.  
 **Version :** `0.1.0-6.87` · `versionCode` 92.  
+**SHA :** `e78e1c9` (`develop` poussé).  
 **Preuve :** [`docs/audits/2026-10-26-final-11-ui-md-ci-ship.md`](docs/audits/2026-10-26-final-11-ui-md-ci-ship.md).  
 **Pas un claim « 9/10 dans la main ».** Reste : S26 Athalia · restore doigt.
 

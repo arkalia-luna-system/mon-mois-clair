@@ -37,14 +37,14 @@ Pas de claims « 9/10 dans la main ».
 
 ---
 
-## 3. CI / git (à compléter après push)
+## 3. CI / git
 
 | Champ | Valeur |
 |-------|--------|
 | Branche travail | `develop` |
-| SHA develop | _(après push)_ |
-| SHA main | _(après ff-only)_ |
-| CI develop | _(après `gh run`)_ |
+| SHA develop | `e78e1c9` |
+| SHA main | _(après ff-only quand CI vert)_ |
+| CI develop | _(en cours / `gh run`)_ |
 | Install device | _(après adb)_ |
 
 ---
