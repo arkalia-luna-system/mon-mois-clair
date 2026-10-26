@@ -163,8 +163,8 @@ fun RestoreBackupScreen(
         CarnetPageTitle("Restaurer une sauvegarde")
         Text(
             text = "Après réinstallation ou nouveau téléphone. " +
-                "Remplace tout ce qui est dans l’app — confirmation demandée. " +
-                "Copie reçue par WhatsApp : saisissez le code de copie du téléphone d’origine.",
+                "Remplace tout le carnet — confirmation demandée. " +
+                "Copie reçue (WhatsApp, mail…) : tapez le code noté sur le téléphone d’origine.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier
@@ -178,8 +178,8 @@ fun RestoreBackupScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.busy,
             singleLine = true,
-            label = { Text("Code de copie (si reçu d’ailleurs)") },
-            placeholder = { Text("8 chiffres") },
+            label = { Text("Code de copie") },
+            placeholder = { Text("8 chiffres du téléphone d’origine") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
         )
 

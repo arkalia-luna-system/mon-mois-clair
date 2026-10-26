@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.81** (chiffrement local P0/P1/P2) |
+| Dernière étape terminée | **6.82** (polish premium post-crypto) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt 1ʳᵉ ouverture / backup MMC / WhatsApp / restore · S26 · rescan Dependabot |
-| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · P0 widget **OK** · polish carnet **6.80** · **pas** « 9/10 dans la main » |
+| Prochaine sous-étape | Smoke doigt 1ʳᵉ ouverture / code de copie / WhatsApp / restore · S26 · rescan Dependabot |
+| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · P0 widget **OK** · polish carnet **6.80–6.82** · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.82 Polish premium (copy code · carnet · widget)
+
+**Vérif crypto 6.81 (code) :** SQLCipher + migration ; SAF `MMC1B64` ; partage `.mmc` ; restore code + grace claires ; receipts MRF1 ; notifs montant masqué si bio ON — **pas de régression « restore/clair accidentel »** sur écritures neuves.
+
+**Copy maman 60+ :** code de copie gros + « notez une fois » ; Sauvegarde / Restore / Aide / partage sans jargon « chiffré » ; À venir C02 ; message mauvais code clarifié.
+
+**Micro carnet :** Annuler fiche = QuietLink centré (C03) ; Menu contact un peu plus d’air ; widget crème / filet / densités RemoteViews (contrats One UI tenus).
+
+**Docs :** README / PROGRESS alignés 6.82 (PRIVACY/SECURITY déjà crypto).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **332/332** (79 fichiers XML, 0 failure).  
+**Version :** `0.1.0-6.82` · `versionCode` 87.  
+**Pas un claim « 9/10 dans la main ».**
 
 ### 2026-10-26 — 6.81 Chiffrement local (P0 DB · P1 backups · P2 photos)
 

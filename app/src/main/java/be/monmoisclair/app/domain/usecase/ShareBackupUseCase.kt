@@ -76,14 +76,14 @@ class ShareBackupUseCase @Inject constructor(
             }
             val send = ShareFileIntents.encryptedCopy(
                 uri = uri,
-                subject = "Copie Mon Mois Clair (chiffrée)",
+                subject = "Copie Mon Mois Clair",
                 text = "Copie Mon Mois Clair — $photoLine " +
-                    "Sans le code de copie (affiché dans Réglages → Sauvegarde sur le téléphone " +
-                    "qui a créé la copie), ce fichier est illisible. " +
-                    "À restaurer via Réglages → Restaurer."
+                    "Sans le code de copie (Réglages → Sauvegarde sur le téléphone " +
+                    "qui a créé la copie), ce fichier ne peut pas être rouvert. " +
+                    "À restaurer via Réglages → Restaurer une sauvegarde."
             )
             ShareBackupResult.Ready(
-                Intent.createChooser(send, "Envoyer une copie (chiffrée)")
+                Intent.createChooser(send, "Envoyer une copie")
             )
         } catch (e: BackupFailure) {
             Log.e(TAG, "Partage BackupFailure: ${e.message}", e)

@@ -81,7 +81,8 @@ fun UpcomingScreen(
 
         CarnetPageTitle("À venir")
         Text(
-            text = "Prochains mois en lecture seule. Un mois précis : Accueil → calendrier.",
+            text = "Aperçu des mois suivants (sans FAIT). Pour un mois précis, " +
+                "ouvrez le calendrier sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()

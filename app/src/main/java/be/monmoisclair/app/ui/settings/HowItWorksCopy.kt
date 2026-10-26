@@ -64,11 +64,13 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Sauvegarde",
-            body = "Documents (3 versions chiffrées) + « Envoyer une copie » (code requis). Nouveau téléphone : Restaurer."
+            body = "Documents garde 3 copies protégées. « Envoyer une copie » demande le code " +
+                "affiché dans Réglages → Sauvegarde. Nouveau téléphone : Restaurer + ce code."
         ),
         Section(
             title = "Empreinte",
-            body = "Optionnel : cochez pour cacher le mois aux autres."
+            body = "Optionnel : cochez pour cacher le mois aux autres. " +
+                "Les alertes masquent alors les montants."
         )
     )
 }

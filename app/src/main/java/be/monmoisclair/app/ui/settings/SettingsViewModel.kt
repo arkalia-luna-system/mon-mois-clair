@@ -400,7 +400,8 @@ class SettingsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             busy = false,
-                            backupMessage = "Choisissez l’app d’envoi.",
+                            backupMessage = "Choisissez l’app d’envoi. " +
+                                "Gardez le code ci-dessus : sans lui, la copie ne se rouvre pas.",
                             backupMessageError = false
                         )
                     }

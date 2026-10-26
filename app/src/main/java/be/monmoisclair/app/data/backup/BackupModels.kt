@@ -68,6 +68,7 @@ sealed class RestoreResult {
 
     companion object {
         const val DEFAULT_BAD_CODE =
-            "Ce code ne permet pas d’ouvrir la copie. Vérifiez les chiffres, ou utilisez le téléphone qui a créé la copie."
+            "Ce code ne permet pas d’ouvrir la copie. " +
+                "Vérifiez les 8 chiffres, ou rouvrez depuis le téléphone qui a créé la copie."
     }
 }

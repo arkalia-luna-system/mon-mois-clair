@@ -139,7 +139,7 @@ fun HomeMenuSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(menuGap))
+            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 14.dp else 18.dp))
             QuietLinkA11y(
                 text = "Un souci ? Écrire à Arkalia Système",
                 onClick = {

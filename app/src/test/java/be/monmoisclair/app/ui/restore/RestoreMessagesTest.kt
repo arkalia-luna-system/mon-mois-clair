@@ -70,7 +70,9 @@ class RestoreMessagesTest {
     fun badShareCode_plain_language() {
         val msg = RestoreMessages.from(RestoreResult.BadShareCode())
         assertThat(msg.lowercase()).contains("code")
+        assertThat(msg).contains("8 chiffres")
         assertThat(msg.lowercase()).doesNotContain("aes")
         assertThat(msg.lowercase()).doesNotContain("gcm")
+        assertThat(msg.lowercase()).doesNotContain("passphrase")
     }
 }

@@ -44,4 +44,20 @@ class ShareFileIntentsTest {
         assertThat(intent.clipData!!.getItemAt(0).uri).isEqualTo(uri)
         assertThat(intent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION).isNotEqualTo(0)
     }
+
+    @Test
+    fun encryptedCopy_isOctetStream_notReadableZip() {
+        val uri = Uri.parse("content://be.monmoisclair.app.fileprovider/share/copie.mmc")
+        val intent = ShareFileIntents.encryptedCopy(
+            uri,
+            "Copie Mon Mois Clair",
+            "Sans le code de copie, ce fichier ne peut pas être rouvert."
+        )
+        assertThat(intent.type).isEqualTo("application/octet-stream")
+        assertThat(intent.getStringExtra(Intent.EXTRA_SUBJECT)).doesNotContain("chiffr")
+        assertThat(intent.getStringExtra(Intent.EXTRA_TEXT)).contains("code de copie")
+        @Suppress("DEPRECATION")
+        assertThat(intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)).isEqualTo(uri)
+        assertThat(intent.clipData).isNotNull()
+    }
 }

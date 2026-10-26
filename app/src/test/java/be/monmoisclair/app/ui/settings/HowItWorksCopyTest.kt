@@ -36,6 +36,13 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Échéances hors ce mois")
         assertThat(all).contains("Envoyer une copie")
         assertThat(all).contains("Restaurer")
+        assertThat(all).contains("protégées")
+        assertThat(all).contains("Réglages → Sauvegarde")
+        // Jargon crypto (pas le mot courant « chiffre » du sticky).
+        assertThat(all.lowercase()).doesNotContain("chiffré")
+        assertThat(all.lowercase()).doesNotContain("chiffrement")
+        assertThat(all.lowercase()).doesNotContain("sqlcipher")
+        assertThat(all.lowercase()).doesNotContain("aes-gcm")
         // Sortis de l’aide (vitent ailleurs / trop longs) :
         assertThat(all).doesNotContain("widget")
         assertThat(all).doesNotContain("Apparence")

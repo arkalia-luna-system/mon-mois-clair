@@ -48,11 +48,11 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.81` |
-| Dernière étape | **6.81** Chiffrement local (SQLCipher · backups MMC · photos MRF1 · CryptoObject) |
-| Device | Smoke S25 Ultra partiel (`docs/audits/2026-10-23-smoke-device.md`). P0 widget **OK** · chiffrement 6.81 à valider doigt — pas claim « 9/10 dans la main » |
+| Version | `0.1.0-6.82` |
+| Dernière étape | **6.82** Polish premium post-crypto (copy code · carnet · widget) |
+| Device | Smoke S25 Ultra partiel (`docs/audits/2026-10-23-smoke-device.md`). P0 widget **OK** · crypto 6.81 + polish 6.82 à valider doigt — pas claim « 9/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **329/329** OK (`--rerun-tasks`, 79 fichiers XML) |
+| Tests unitaires | **332/332** OK (`--rerun-tasks`, 79 fichiers XML) |
 | Schéma Room | **8** |
 
 Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)

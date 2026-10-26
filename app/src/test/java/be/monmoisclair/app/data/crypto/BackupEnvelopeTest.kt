@@ -45,6 +45,20 @@ class BackupEnvelopeTest {
         assertThat(asText.contains("BE00")).isFalse()
     }
 
+    @Test
+    fun plaintext_json_is_not_mistaken_for_sealed() {
+        val plain = """{"schemaVersion":8,"payload":{}}"""
+        assertThat(BackupEnvelope.looksLikeText(plain)).isFalse()
+        assertThat(BackupEnvelope.looksLikeBinary(plain.toByteArray())).isFalse()
+    }
+
+    @Test
+    fun sealed_utf8_always_starts_with_mmc_prefix() {
+        val sealed = BackupEnvelope.sealToUtf8("{}", "11223344".toCharArray())
+        assertThat(sealed).startsWith(BackupEnvelope.TEXT_PREFIX)
+        assertThat(sealed).doesNotContain("schemaVersion")
+    }
+
     private fun BackupSecurityArchiveLooksLikeZip(bytes: ByteArray): Boolean =
         bytes.size >= 4 &&
             bytes[0] == 0x50.toByte() &&

@@ -296,8 +296,8 @@ fun SettingsPrivacyScreen(
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.PRIVACY)
         Text(
-            text = "Le carnet est chiffré sur le téléphone. " +
-                "Le verrou ci-dessous masque aussi l’écran, le widget et les montants des alertes.",
+            text = "Le carnet est protégé sur le téléphone. " +
+                "Le verrou ci-dessous cache aussi l’écran, le widget et les montants des alertes.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -484,8 +484,8 @@ fun SettingsBackupScreen(
         }
         if (state.backupHealth != BackupHealth.NOT_CONFIGURED) {
             Text(
-                text = "3 copies chiffrées dans Documents. « Envoyer une copie » = WhatsApp / Mail " +
-                    "(illisible sans le code ci-dessous).",
+                text = "3 copies protégées dans Documents. « Envoyer une copie » (WhatsApp / Mail) " +
+                    "ne se rouvre qu’avec le code ci-dessous.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()
@@ -493,16 +493,23 @@ fun SettingsBackupScreen(
         }
         state.shareCopyCode?.let { code ->
             Text(
-                text = "Code de copie : $code",
-                style = MaterialTheme.typography.titleLarge,
+                text = "Votre code de copie",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = code,
+                style = MaterialTheme.typography.headlineMedium,
                 color = A11yTokens.Ink,
                 modifier = Modifier
                     .fillMaxWidth()
                     .semantics { contentDescription = "Code de copie $code" }
             )
             Text(
-                text = "Notez-le (agenda, carnet papier). Sans ce code, une copie reçue par WhatsApp " +
-                    "ne peut pas être rouverte. Code oublié + téléphone mort = données perdues.",
+                text = "Notez-le une fois (agenda ou carnet papier), comme un code PIN. " +
+                    "Sans ce code, une copie reçue ailleurs ne peut pas être rouverte. " +
+                    "Code oublié et téléphone mort = données perdues.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()

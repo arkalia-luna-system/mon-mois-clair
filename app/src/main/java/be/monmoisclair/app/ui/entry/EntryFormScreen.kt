@@ -1770,25 +1770,18 @@ private fun EntryFormScaffold(
         ) {
             PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
             if (!keyboardOpen) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
+                // C03 : QuietLink centré entre Primary et Danger — moins écrasé.
+                Spacer(modifier = Modifier.height(6.dp))
+                QuietLinkA11y(
                     text = "Annuler",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (primaryEnabled) A11yTokens.Link else A11yTokens.InkMuted,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = A11yTokens.minTouchHeight)
-                        .clickable(
-                            enabled = primaryEnabled,
-                            role = Role.Button,
-                            onClickLabel = "Annuler sans enregistrer",
-                            onClick = onCancel
-                        )
-                        .padding(vertical = 12.dp)
-                        .semantics { contentDescription = "Annuler" }
+                    onClick = onCancel,
+                    enabled = primaryEnabled,
+                    fillMaxWidth = false,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClickLabel = "Annuler sans enregistrer"
                 )
                 if (onDelete != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                     DangerA11yButton(
                         text = deleteLabel,
                         onClick = onDelete,
