@@ -26,3 +26,9 @@
 -keep class com.google.mlkit.** { *; }
 -dontwarn com.google.mlkit.**
 -keep class androidx.camera.** { *; }
+
+# SQLCipher
+-keep class net.sqlcipher.** { *; }
+-keep class net.zetetic.** { *; }
+-dontwarn net.sqlcipher.**
+-dontwarn net.zetetic.**

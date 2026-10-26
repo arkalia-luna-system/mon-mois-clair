@@ -56,7 +56,8 @@ Pas de plaque colorée, pas de nom d’app dans l’en-tête. Tips courants = te
 
 ### Stack
 
-Kotlin + Compose + Room + Hilt · ML Kit Barcode offline + CameraX · `Europe/Brussels` · `be.monmoisclair.app`
+Kotlin + Compose + Room (SQLCipher) + Hilt · ML Kit Barcode offline + CameraX · `Europe/Brussels` · `be.monmoisclair.app`  
+Chiffrement local (6.81+) : DB SQLCipher + Keystore ; copies SAF/WhatsApp AES-GCM (code de copie) ; pièces jointes MRF1. Pas un coffre parfait — voir `PRIVACY.md` / `SECURITY.md`.
 
 ## 2. Décisions
 

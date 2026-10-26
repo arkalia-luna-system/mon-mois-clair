@@ -62,5 +62,12 @@ sealed class RestoreResult {
     data class InvalidChecksum(val expected: String, val actual: String) : RestoreResult()
     data class UnsupportedSchema(val version: Int) : RestoreResult()
     data class IoError(val message: String) : RestoreResult()
+    /** Copie chiffrée : code manquant ou incorrect. */
+    data class BadShareCode(val message: String = DEFAULT_BAD_CODE) : RestoreResult()
     data object NotConfigured : RestoreResult()
+
+    companion object {
+        const val DEFAULT_BAD_CODE =
+            "Ce code ne permet pas d’ouvrir la copie. Vérifiez les chiffres, ou utilisez le téléphone qui a créé la copie."
+    }
 }

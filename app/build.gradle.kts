@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 85
-        versionName = "0.1.0-6.80"
+        versionCode = 86
+        versionName = "0.1.0-6.81"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -87,6 +87,7 @@ android {
                 "**/libbarhopper_v3.so",
                 "**/libimage_processing_util_jni.so",
                 "**/libsurface_util_jni.so",
+                "**/libsqlcipher.so",
             )
         }
     }
@@ -132,6 +133,10 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+
+    // SQLCipher (Room SupportOpenHelperFactory) — chiffrement au repos du carnet.
+    implementation("net.zetetic:sqlcipher-android:4.6.1")
+    implementation("androidx.sqlite:sqlite:2.4.0")
 
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")

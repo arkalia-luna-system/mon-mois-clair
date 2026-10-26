@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.80** (Dependabot force · widget premium · P1 smoke) |
+| Dernière étape terminée | **6.81** (chiffrement local P0/P1/P2) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt S26 · notif/photo · carrière GitHub hors repo · rescan Dependabot GitHub |
+| Prochaine sous-étape | Smoke doigt 1ʳᵉ ouverture / backup MMC / WhatsApp / restore · S26 · rescan Dependabot |
 | Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · P0 widget **OK** · polish carnet **6.80** · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,22 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.81 Chiffrement local (P0 DB · P1 backups · P2 photos)
+
+**P0 — Room SQLCipher :** `net.zetetic:sqlcipher-android` + `SupportOpenHelperFactory` ; passphrase 32 o enveloppée Keystore (`mmc_db_wrap_v1`) ; migration one-shot clair → chiffré (`EncryptedDbMigrator` / `sqlcipher_export`) ; fallback claire si migration échoue (données conservées).
+
+**Bio liée crypto :** `BiometricPrompt` + `CryptoObject` (clé `mmc_unlock_v1`, STRONG \| DEVICE_CREDENTIAL) ; fallback porte UI si strong indisponible. Notifs : montant masqué si bio ON (aligné widget).
+
+**P1 — Backups / ZIP :** enveloppe `MMC1` AES-GCM + PBKDF2 (code de copie 8 chiffres) ; SAF `MMC1B64:` ; partage `.mmc` (`mon-mois-clair-copie.mmc`) ; restore code + grace copies claires pré-6.81.
+
+**P2 — Photos/PDF :** `LocalFileCipher` magic `MRF1` local + SAF ; migration dossier `receipts/` ; VIEW via cache `view/` déchiffré.
+
+**Docs :** PRIVACY / SECURITY / CHARTE / README honnêtes (limites widget/notifs/RAM/root).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **329/329** (79 fichiers XML, 0 failure).  
+**Version :** `0.1.0-6.81` · `versionCode` 86.  
+**Pas un claim « coffre parfait ».**
 
 ### 2026-10-23 — 6.80 Dependabot + widget premium + P1 smoke
 

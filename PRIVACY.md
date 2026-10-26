@@ -12,14 +12,16 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 
 | Où | Quoi |
 |----|------|
-| **Room** (SQLite `mon_mois_clair.db`) | Mois, factures, libellés, montants, notes / `+++`, IBAN et e-mails créancier (dossiers), chemins photos — **en clair** sur le téléphone |
-| Dossier Documents (SAF) | Backups JSON + archives ZIP (photos) — **en clair** (choix produit, pas un coffre-fort chiffré) |
-| Photos / PDF reçus | `files/receipts/` via FileProvider (non exporté) |
+| **Room** (SQLite `mon_mois_clair.db`) | Mois, factures, libellés, montants, notes / `+++`, IBAN, chemins photos — **chiffré au repos** (SQLCipher ; clé enveloppée Android Keystore) |
+| Dossier Documents (SAF) | Backups JSON enveloppe AES-GCM (code de copie) + photos/PDF locaux enveloppés — **pas en clair** depuis 6.81 |
+| Photos / PDF reçus | `files/receipts/` chiffrés (MRF1) ; aperçu = déchiffrement temporaire dans le cache |
 | Presse-papiers | Communication / IBAN copiés : marqués sensibles (Android 13+) et **vidés après ~1 min** |
 
 `android:allowBackup="false"` : pas de sauvegarde cloud Android automatique de l’app.
 
-**Honnêteté :** Room et les backups SAF ne sont **pas** chiffrés (pas de SQLCipher). Sur un téléphone déverrouillé (ou avec accès root / backup OEM), les données du carnet sont lisibles. Le verrou biométrique **masque l’UI** ; il ne chiffre pas la base.
+**Honnêteté :** ce n’est **pas** un coffre parfait. Après déverrouillage, les données sont en RAM / à l’écran. Appareil root / malware puissant peut encore contourner. Code de copie oublié + téléphone mort **sans** autre copie = données perdues (pas de serveur de recovery).
+
+Anciennes copies ZIP/JSON **en clair** (pré-6.81) restent restaurables une version de grâce.
 
 ## Widget
 
@@ -29,13 +31,14 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 
 ## Notifications
 
-- Rappels J−3 / jour / retard : libellé + **montant** (utile pour payer).
-- Même si le verrou biométrique est ON : le texte de la notif n’est **pas** chiffré (limitation Android / choix produit).
+- Rappels J−3 / jour / retard : libellé + montant (utile pour payer).
+- Si le verrou biométrique est **ON** : montant remplacé par « Montant masqué » (aligné widget). Le texte système n’est pas chiffré (limitation Android).
 - Action « FAIT ✓ » depuis la notif possible sans ouvrir l’écran complet.
 
 ## Biométrie & multitâche
 
-- Empreinte / Face optionnelle (Réglages) — **porte UI** seulement (pas de `CryptoObject` / clé liée aux données).
+- Empreinte / Face / code écran optionnels (Réglages) — **porte UI** + **CryptoObject** (clé Keystore `mmc_unlock_v1`) quand le téléphone le permet (biométrie forte ou code).
+- La base reste chiffrée SQLCipher même sans verrou UI ; le verrou lie l’ouverture de session à l’empreinte/code.
 - Si le verrouillage est activé : `FLAG_SECURE` (aperçu multitâche masqué).
 - Sans verrou : l’aperçu des tâches peut montrer le mois ouvert.
 

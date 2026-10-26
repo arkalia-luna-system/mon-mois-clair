@@ -65,4 +65,12 @@ class RestoreMessagesTest {
         assertThat(msg).doesNotContain("disque plein")
         assertThat(msg).contains("n’a pas été modifié")
     }
+
+    @Test
+    fun badShareCode_plain_language() {
+        val msg = RestoreMessages.from(RestoreResult.BadShareCode())
+        assertThat(msg.lowercase()).contains("code")
+        assertThat(msg.lowercase()).doesNotContain("aes")
+        assertThat(msg.lowercase()).doesNotContain("gcm")
+    }
 }

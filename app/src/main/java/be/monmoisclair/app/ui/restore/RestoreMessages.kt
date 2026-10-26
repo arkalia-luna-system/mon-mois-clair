@@ -14,6 +14,7 @@ object RestoreMessages {
             "Cette copie est abîmée ou a été modifiée. Le mois en cours n’a pas été modifié."
         is RestoreResult.IoError ->
             "Impossible de lire cette sauvegarde. Le mois en cours n’a pas été modifié."
+        is RestoreResult.BadShareCode -> result.message
     }
 
     private fun successMessage(result: RestoreResult.Success): String {

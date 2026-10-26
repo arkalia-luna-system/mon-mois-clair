@@ -1,6 +1,7 @@
 package be.monmoisclair.app.domain.usecase
 
 import android.content.Context
+import be.monmoisclair.app.data.crypto.KeystoreAesKey
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.BiometricFlagCache
@@ -27,8 +28,12 @@ class BiometricPreferenceUseCase @Inject constructor(
 
     /**
      * Persiste le choix et déclenche un backup (sans reprogrammer les rappels).
+     * Active : provisionne la clé Keystore [KeystoreAesKey.UNLOCK_ALIAS] pour CryptoObject.
      */
     suspend fun setEnabled(enabled: Boolean) {
+        if (enabled) {
+            KeystoreAesKey.getOrCreateUnlockKey()
+        }
         BiometricFlagCache.write(appContext, enabled)
         mutatingRepository.mutate(rescheduleReminders = false) {
             appMetaDao.upsert(

@@ -1,10 +1,12 @@
 package be.monmoisclair.app.data.reminder
 
 import android.util.Log
+import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.domain.EuroFormat
 import be.monmoisclair.app.domain.ExpenseOverdue
+import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.model.ReminderKind
 import javax.inject.Inject
@@ -13,17 +15,19 @@ import javax.inject.Singleton
 @Singleton
 class ReminderSchedulerImpl @Inject constructor(
     private val instanceDao: InstanceDao,
-    private val alarmGateway: ExactAlarmGateway
+    private val alarmGateway: ExactAlarmGateway,
+    private val appMetaDao: AppMetaDao
 ) : ReminderScheduler {
 
     override suspend fun reconcileAll() {
         val expenses = instanceDao.getAllExpenses()
+        val hideAmounts = appMetaDao.get(AppMetaKeys.BIOMETRIC_ENABLED)?.value == "true"
         for (expense in expenses) {
             // P3-R01 : une facture mal datée ne doit pas couper toute la boucle.
             runCatching {
                 when (expense.status) {
                     ExpenseStatus.DONE -> cancelFor(expense.id)
-                    ExpenseStatus.TODO -> scheduleForTodo(expense)
+                    ExpenseStatus.TODO -> scheduleForTodo(expense, hideAmounts)
                 }
             }.onFailure { Log.e(TAG, "rappel ignoré pour ${expense.id}", it) }
         }
@@ -35,7 +39,7 @@ class ReminderSchedulerImpl @Inject constructor(
         alarmGateway.cancel(ReminderRequestCodes.of(expenseId, ReminderKind.OVERDUE))
     }
 
-    private fun scheduleForTodo(expense: ExpenseInstanceEntity) {
+    private fun scheduleForTodo(expense: ExpenseInstanceEntity, hideAmounts: Boolean) {
         val yearMonth = runCatching {
             ReminderTiming.yearMonthFromLedgerId(expense.ledgerId)
         }.getOrNull() ?: return
@@ -44,13 +48,15 @@ class ReminderSchedulerImpl @Inject constructor(
             expense = expense,
             kind = ReminderKind.J3,
             enabled = expense.remindJ3,
-            triggerEpochMs = ReminderTiming.j3Instant(yearMonth, expense.dayOfMonth)?.toEpochMilli()
+            triggerEpochMs = ReminderTiming.j3Instant(yearMonth, expense.dayOfMonth)?.toEpochMilli(),
+            hideAmounts = hideAmounts
         )
         reconcileKind(
             expense = expense,
             kind = ReminderKind.JD,
             enabled = expense.remindJd,
-            triggerEpochMs = ReminderTiming.jdInstant(yearMonth, expense.dayOfMonth)?.toEpochMilli()
+            triggerEpochMs = ReminderTiming.jdInstant(yearMonth, expense.dayOfMonth)?.toEpochMilli(),
+            hideAmounts = hideAmounts
         )
 
         val overdue = ExpenseOverdue.isOverdue(
@@ -66,7 +72,8 @@ class ReminderSchedulerImpl @Inject constructor(
                 ReminderTiming.nextOverdueInstant().toEpochMilli()
             } else {
                 null
-            }
+            },
+            hideAmounts = hideAmounts
         )
     }
 
@@ -74,7 +81,8 @@ class ReminderSchedulerImpl @Inject constructor(
         expense: ExpenseInstanceEntity,
         kind: ReminderKind,
         enabled: Boolean,
-        triggerEpochMs: Long?
+        triggerEpochMs: Long?,
+        hideAmounts: Boolean
     ) {
         val code = ReminderRequestCodes.of(expense.id, kind)
         if (!enabled || triggerEpochMs == null) {
@@ -85,7 +93,7 @@ class ReminderSchedulerImpl @Inject constructor(
             expenseInstanceId = expense.id,
             kind = kind,
             title = titleFor(kind, expense.label),
-            body = bodyFor(expense, kind)
+            body = bodyFor(expense, kind, hideAmounts)
         )
         alarmGateway.schedule(code, triggerEpochMs, payload)
     }
@@ -96,8 +104,12 @@ class ReminderSchedulerImpl @Inject constructor(
         ReminderKind.OVERDUE -> "En retard : $label"
     }
 
-    private fun bodyFor(expense: ExpenseInstanceEntity, kind: ReminderKind): String {
-        val amount = EuroFormat.formatCents(expense.amountCents)
+    private fun bodyFor(
+        expense: ExpenseInstanceEntity,
+        kind: ReminderKind,
+        hideAmounts: Boolean
+    ): String {
+        val amount = if (hideAmounts) "Montant masqué" else EuroFormat.formatCents(expense.amountCents)
         val day = expense.dayOfMonth
         val auto = expense.isAutoDebit
         // Le titre porte déjà le libellé : le corps reste montant + action.

@@ -11,12 +11,15 @@ interface BiometricAuthGateway {
 
     /**
      * Affiche le prompt système. [onResult] est appelé sur le thread principal.
+     * Si [preferCrypto] : tente [androidx.biometric.BiometricPrompt.CryptoObject]
+     * (clé Keystore liée empreinte/code) ; sinon porte UI seule.
      */
     fun authenticate(
         activity: FragmentActivity,
         title: String,
         subtitle: String,
         negativeButton: String,
+        preferCrypto: Boolean = true,
         onResult: (BiometricAuthResult) -> Unit
     )
 }

@@ -9,6 +9,7 @@ import be.monmoisclair.app.data.backup.BackupHealthStore
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.data.crypto.ShareSecretVault
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.ShareFileIntents
 import be.monmoisclair.app.domain.model.BackupHealth
@@ -68,7 +69,9 @@ data class SettingsUiState(
     val savingsMessageError: Boolean = false,
     /** Lot F — visible si déficit ou au moins un dossier. */
     val showSummaryButton: Boolean = false,
-    val summaryBusy: Boolean = false
+    val summaryBusy: Boolean = false,
+    /** Code de copie (8 chiffres) pour rouvrir une copie WhatsApp / autre téléphone. */
+    val shareCopyCode: String? = null
 )
 
 @HiltViewModel
@@ -83,7 +86,8 @@ class SettingsViewModel @Inject constructor(
     private val configureSavings: ConfigureSavingsUseCase,
     private val prepareMonthSummary: PrepareMonthSummaryUseCase,
     private val listDossiers: ListDossiersUseCase,
-    private val summaryPdfWriter: MonthSummaryPdfWriter
+    private val summaryPdfWriter: MonthSummaryPdfWriter,
+    private val shareSecretVault: ShareSecretVault
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -109,6 +113,9 @@ class SettingsViewModel @Inject constructor(
             val savings = configureSavings.read()
             val summary = prepareMonthSummary()
             val dossierCount = listDossiers().count
+            val shareCode = withContext(Dispatchers.IO) {
+                runCatching { shareSecretVault.peekDisplayCode() }.getOrNull()
+            }
             _uiState.update { cur ->
                 val dirtyNow = savingsDraftDirty
                 val keepDraft = dirtyNow || cur.savingsBusy || dirtyAtStart != dirtyNow
@@ -135,7 +142,8 @@ class SettingsViewModel @Inject constructor(
                     },
                     savingsDeficit = if (keepDraft) cur.savingsDeficit else null,
                     savingsNextMonthNote = if (keepDraft) cur.savingsNextMonthNote else null,
-                    showSummaryButton = summary.isDeficit || dossierCount > 0
+                    showSummaryButton = summary.isDeficit || dossierCount > 0,
+                    shareCopyCode = shareCode
                 )
             }
         }
@@ -422,7 +430,8 @@ class SettingsViewModel @Inject constructor(
                         it.copy(
                             biometricEnabled = true,
                             busy = false,
-                            message = "Verrouillage activé.",
+                            message = "Verrouillage activé. Empreinte ou code liés à la protection du carnet. " +
+                                "Les montants des alertes et du widget sont masqués.",
                             isError = false
                         )
                     }

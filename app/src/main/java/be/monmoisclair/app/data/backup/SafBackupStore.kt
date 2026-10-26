@@ -3,6 +3,9 @@ package be.monmoisclair.app.data.backup
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import be.monmoisclair.app.data.crypto.BackupEnvelope
+import be.monmoisclair.app.data.crypto.LocalFileCipher
+import be.monmoisclair.app.data.crypto.ShareSecretVault
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.domain.model.AppMetaKeys
@@ -17,7 +20,8 @@ class SafBackupStore @Inject constructor(
     private val appMetaDao: AppMetaDao,
     private val codec: BackupJsonCodec,
     private val rotator: BackupRotator,
-    private val healthStore: BackupHealthStore
+    private val healthStore: BackupHealthStore,
+    private val shareSecretVault: ShareSecretVault
 ) {
 
     fun buildOpenDocumentTreeIntent(): Intent {
@@ -62,27 +66,37 @@ class SafBackupStore @Inject constructor(
     suspend fun writeRotatedBackup(document: BackupDocument) {
         val tree = openTreeOrThrow()
         val json = codec.encodeDocument(document)
+        val secret = shareSecretVault.getOrCreateSecretChars()
         try {
-            rotator.writeRotated(tree, json)
+            val sealed = BackupEnvelope.sealToUtf8(json, secret)
+            rotator.writeRotated(tree, sealed)
         } catch (e: BackupFailure) {
             healthStore.markBroken()
             throw e
         } catch (e: Exception) {
             healthStore.markBroken()
             throw BackupFailure.Io("Impossible d’écrire la sauvegarde dans Documents.", e)
+        } finally {
+            secret.fill('\u0000')
         }
     }
 
     suspend fun readLatestValidBackup(): BackupDocument {
         val tree = openTreeOrThrow()
-        for (name in BackupFileNames.rotatedNewestFirst) {
-            if (!tree.exists(name)) continue
-            try {
-                val raw = tree.readUtf8(name)
-                return codec.decodeAndVerify(raw)
-            } catch (_: Exception) {
-                // Essayer le fichier de rotation suivant.
+        val secret = shareSecretVault.getOrCreateSecretChars()
+        try {
+            for (name in BackupFileNames.rotatedNewestFirst) {
+                if (!tree.exists(name)) continue
+                try {
+                    val raw = tree.readUtf8(name)
+                    val json = decodeMaybeSealedUtf8(raw, secret)
+                    return codec.decodeAndVerify(json)
+                } catch (_: Exception) {
+                    // Essayer le fichier de rotation suivant.
+                }
             }
+        } finally {
+            secret.fill('\u0000')
         }
         healthStore.markBroken()
         throw BackupFailure.Integrity(
@@ -93,7 +107,8 @@ class SafBackupStore @Inject constructor(
     suspend fun writeBinaryRelative(relativePath: String, bytes: ByteArray) {
         val tree = openTreeOrThrow() as? SafDocumentBackupTree
             ?: throw BackupFailure.Io("Dossier Documents requis pour les photos.")
-        tree.writeBinaryRelative(relativePath, bytes)
+        // Documents SAF : même enveloppe locale (MRF1) pour ne pas laisser la photo en clair hors app.
+        tree.writeBinaryRelative(relativePath, LocalFileCipher.seal(bytes))
     }
 
     suspend fun uriForRelative(relativePath: String): Uri? {
@@ -103,30 +118,49 @@ class SafBackupStore @Inject constructor(
         }.getOrNull()
     }
 
-    /** Photos présentes dans le dossier SAF (pour partage ZIP). */
+    /** Photos présentes dans le dossier SAF (pour partage) — déchiffrées si MRF1. */
     suspend fun listReceiptBinaries(): Map<String, ByteArray> {
         val tree = openTreeOrThrow() as? SafDocumentBackupTree
             ?: return emptyMap()
-        return tree.listReceiptBinaries()
+        return tree.listReceiptBinaries().mapValues { (_, bytes) ->
+            LocalFileCipher.open(bytes)
+        }
     }
 
-    /** Contenu brut du dernier backup valide (pour partage T8). */
+    /**
+     * JSON **en clair** du dernier backup valide (pour construire le ZIP/MMC de partage).
+     * Les fichiers SAF peuvent être chiffrés (MMC1B64) — on déchiffre avec le code local.
+     */
     suspend fun readLatestValidBackupUtf8(): String {
         val tree = openTreeOrThrow()
-        for (name in BackupFileNames.rotatedNewestFirst) {
-            if (!tree.exists(name)) continue
-            try {
-                val raw = tree.readUtf8(name)
-                codec.decodeAndVerify(raw)
-                return raw
-            } catch (_: Exception) {
-                // Essayer le fichier de rotation suivant.
+        val secret = shareSecretVault.getOrCreateSecretChars()
+        try {
+            for (name in BackupFileNames.rotatedNewestFirst) {
+                if (!tree.exists(name)) continue
+                try {
+                    val raw = tree.readUtf8(name)
+                    val json = decodeMaybeSealedUtf8(raw, secret)
+                    codec.decodeAndVerify(json)
+                    return json
+                } catch (_: Exception) {
+                    // Essayer le fichier de rotation suivant.
+                }
             }
+        } finally {
+            secret.fill('\u0000')
         }
         healthStore.markBroken()
         throw BackupFailure.Integrity(
             "Aucune sauvegarde valide à partager."
         )
+    }
+
+    /** Déchiffre MMC1B64 si besoin ; sinon grace copies claires pré-6.81. */
+    private fun decodeMaybeSealedUtf8(raw: String, secret: CharArray): String {
+        if (BackupEnvelope.looksLikeText(raw)) {
+            return BackupEnvelope.openUtf8(raw, secret)
+        }
+        return raw
     }
 
     private suspend fun readTreeUri(): Uri? {

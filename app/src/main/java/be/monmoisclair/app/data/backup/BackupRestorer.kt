@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.room.withTransaction
+import be.monmoisclair.app.data.crypto.BackupEnvelope
+import be.monmoisclair.app.data.crypto.LocalFileCipher
+import be.monmoisclair.app.data.crypto.ShareSecretVault
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
@@ -25,6 +28,7 @@ import javax.inject.Singleton
  * - Conserver l'URI SAF **locale** du téléphone (ne pas écraser avec celle du backup).
  * - En succès : health OK, reconcile rappels, enqueue un nouveau backup (état restauré).
  * - En échec de validation : DB inchangée.
+ * - Copies chiffrées (MMC) : [shareCode] requis si ce n’est pas le code local du coffre.
  */
 @Singleton
 class BackupRestorer @Inject constructor(
@@ -35,7 +39,8 @@ class BackupRestorer @Inject constructor(
     private val reminderScheduler: ReminderScheduler,
     private val backupScheduler: BackupScheduler,
     private val healthStore: BackupHealthStore,
-    private val widgetSink: CarnetWidgetSink
+    private val widgetSink: CarnetWidgetSink,
+    private val shareSecretVault: ShareSecretVault
 ) {
 
     suspend fun restoreFromLatest(): RestoreResult {
@@ -52,15 +57,15 @@ class BackupRestorer @Inject constructor(
         }
     }
 
-    suspend fun restoreFromUri(fileUri: Uri): RestoreResult {
+    /**
+     * @param shareCode code de copie saisi (autre téléphone) ; si null, tente le code local Keystore.
+     */
+    suspend fun restoreFromUri(fileUri: Uri, shareCode: String? = null): RestoreResult {
         return try {
             val bytes = readUriBytes(fileUri)
-            val (json, receipts) = if (BackupSecurityArchive.looksLikeZip(bytes)) {
-                val unpacked = BackupSecurityArchive.unpack(bytes)
-                unpacked.jsonUtf8 to unpacked.receipts
-            } else {
-                bytes.toString(Charsets.UTF_8) to emptyMap()
-            }
+            val opened = openIncomingBytes(bytes, shareCode)
+                ?: return RestoreResult.BadShareCode()
+            val (json, receipts) = opened
             val document = codec.decodeAndVerify(json)
             val applied = applyDocument(document)
             if (applied !is RestoreResult.Success) return applied
@@ -77,6 +82,64 @@ class BackupRestorer @Inject constructor(
         }
     }
 
+    /**
+     * Déchiffre MMC si besoin, puis ZIP ou JSON clair (grace pré-6.81).
+     * @return null si enveloppe chiffrée mais code incorrect / manquant.
+     */
+    private fun openIncomingBytes(
+        bytes: ByteArray,
+        shareCode: String?
+    ): Pair<String, Map<String, ByteArray>>? {
+        val asUtf8Preview = runCatching {
+            // Seulement pour détecter le préfixe ASCII MMC1B64 (pas pour du binaire ZIP/MMC).
+            if (bytes.size >= BackupEnvelope.TEXT_PREFIX.length &&
+                bytes.copyOfRange(0, BackupEnvelope.TEXT_PREFIX.length)
+                    .toString(Charsets.US_ASCII) == BackupEnvelope.TEXT_PREFIX
+            ) {
+                bytes.toString(Charsets.UTF_8)
+            } else {
+                null
+            }
+        }.getOrNull()
+
+        val plainBytes: ByteArray = when {
+            BackupEnvelope.looksLikeBinary(bytes) -> {
+                val secret = resolveShareSecret(shareCode) ?: return null
+                try {
+                    BackupEnvelope.open(bytes, secret)
+                } catch (_: Exception) {
+                    return null
+                } finally {
+                    secret.fill('\u0000')
+                }
+            }
+            asUtf8Preview != null && BackupEnvelope.looksLikeText(asUtf8Preview) -> {
+                val secret = resolveShareSecret(shareCode) ?: return null
+                try {
+                    BackupEnvelope.openUtf8(asUtf8Preview, secret).toByteArray(Charsets.UTF_8)
+                } catch (_: Exception) {
+                    return null
+                } finally {
+                    secret.fill('\u0000')
+                }
+            }
+            else -> bytes
+        }
+
+        return if (BackupSecurityArchive.looksLikeZip(plainBytes)) {
+            val unpacked = BackupSecurityArchive.unpack(plainBytes)
+            unpacked.jsonUtf8 to unpacked.receipts
+        } else {
+            plainBytes.toString(Charsets.UTF_8) to emptyMap()
+        }
+    }
+
+    private fun resolveShareSecret(shareCode: String?): CharArray? {
+        val trimmed = shareCode?.trim().orEmpty()
+        if (trimmed.isNotEmpty()) return trimmed.toCharArray()
+        return runCatching { shareSecretVault.getOrCreateSecretChars() }.getOrNull()
+    }
+
     /** @return nombre de photos réellement écrites (local et/ou Documents). */
     private suspend fun restoreReceiptsCounted(receipts: Map<String, ByteArray>): Int {
         // Évite d’afficher une ancienne facture locale après restore.
@@ -87,8 +150,7 @@ class BackupRestorer @Inject constructor(
             val safe = BackupSecurityArchive.sanitizeReceiptPath(relative) ?: continue
             val localOk = runCatching {
                 val file = File(context.filesDir, safe)
-                file.parentFile?.mkdirs()
-                file.writeBytes(data)
+                LocalFileCipher.writeEncrypted(file, data)
             }.isSuccess
             val safOk = if (hasSaf) {
                 runCatching { safBackupStore.writeBinaryRelative(safe, data) }.isSuccess

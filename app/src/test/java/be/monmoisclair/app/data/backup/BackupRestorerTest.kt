@@ -42,12 +42,14 @@ class BackupRestorerTest {
         reconcileCalls.set(0)
         backupCalls.set(0)
 
+        val shareVault = be.monmoisclair.app.data.crypto.ShareSecretVault(context)
         val safStore = SafBackupStore(
             context = context,
             appMetaDao = db.appMetaDao(),
             codec = codec,
             rotator = BackupRotator(),
-            healthStore = healthStore
+            healthStore = healthStore,
+            shareSecretVault = shareVault
         )
 
         restorer = BackupRestorer(
@@ -64,7 +66,8 @@ class BackupRestorerTest {
             },
             backupScheduler = BackupScheduler { backupCalls.incrementAndGet() },
             healthStore = healthStore,
-            widgetSink = CarnetWidgetSink.Noop
+            widgetSink = CarnetWidgetSink.Noop,
+            shareSecretVault = shareVault
         )
     }
 

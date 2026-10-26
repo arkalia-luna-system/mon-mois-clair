@@ -39,7 +39,8 @@ class OnboardingUseCasesTest {
             appMetaDao = db.appMetaDao(),
             codec = BackupJsonCodec(),
             rotator = BackupRotator(),
-            healthStore = health
+            healthStore = health,
+            shareSecretVault = be.monmoisclair.app.data.crypto.ShareSecretVault(context)
         )
         observe = ObserveOnboardingStateUseCase(db.appMetaDao(), safStore)
         complete = CompleteOnboardingUseCase(db.appMetaDao(), safStore)

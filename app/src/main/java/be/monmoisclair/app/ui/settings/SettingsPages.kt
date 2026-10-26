@@ -295,6 +295,13 @@ fun SettingsPrivacyScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.PRIVACY)
+        Text(
+            text = "Le carnet est chiffré sur le téléphone. " +
+                "Le verrou ci-dessous masque aussi l’écran, le widget et les montants des alertes.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted,
+            modifier = Modifier.fillMaxWidth()
+        )
         val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
         Row(
             modifier = Modifier
@@ -477,7 +484,25 @@ fun SettingsBackupScreen(
         }
         if (state.backupHealth != BackupHealth.NOT_CONFIGURED) {
             Text(
-                text = "3 copies dans Documents. « Envoyer une copie » = WhatsApp / Mail.",
+                text = "3 copies chiffrées dans Documents. « Envoyer une copie » = WhatsApp / Mail " +
+                    "(illisible sans le code ci-dessous).",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        state.shareCopyCode?.let { code ->
+            Text(
+                text = "Code de copie : $code",
+                style = MaterialTheme.typography.titleLarge,
+                color = A11yTokens.Ink,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = "Code de copie $code" }
+            )
+            Text(
+                text = "Notez-le (agenda, carnet papier). Sans ce code, une copie reçue par WhatsApp " +
+                    "ne peut pas être rouverte. Code oublié + téléphone mort = données perdues.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()

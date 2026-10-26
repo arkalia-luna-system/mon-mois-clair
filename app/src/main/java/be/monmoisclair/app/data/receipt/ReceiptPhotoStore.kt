@@ -11,11 +11,13 @@ import androidx.exifinterface.media.ExifInterface
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.backup.BackupSecurityArchive
 import be.monmoisclair.app.data.backup.SafBackupStore
+import be.monmoisclair.app.data.crypto.LocalFileCipher
 import be.monmoisclair.app.domain.ReceiptPathList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -102,18 +104,31 @@ class ReceiptPhotoStore @Inject constructor(
     }
 
     /**
-     * URI pour [Intent.ACTION_VIEW] : Documents si présent, sinon FileProvider local.
+     * URI pour [Intent.ACTION_VIEW] : déchiffre vers un cache temporaire (FileProvider),
+     * car le lecteur PDF/photo du système ne lit pas MRF1.
      */
     suspend fun viewUri(relativePath: String): Uri? {
         val path = resolvedPath(relativePath)
         if (path.isBlank()) return null
-        openUri(path)?.let { return it }
-        val file = localFile(path) ?: return null
-        if (!file.isFile) return null
+        val plain = readLocalBytes(path)
+            ?: openUri(path)?.let { uri ->
+                context.contentResolver.openInputStream(uri)?.use {
+                    LocalFileCipher.open(BackupSecurityArchive.readBounded(it, MAX_PDF_BYTES.toLong()))
+                }
+            }
+            ?: return null
+        val safe = BackupSecurityArchive.sanitizeReceiptPath(path) ?: return null
+        val viewDir = File(context.cacheDir, "view").also { it.mkdirs() }
+        // Purge aperçus > 1 h (évite fuite cache).
+        viewDir.listFiles()?.forEach { f ->
+            if (System.currentTimeMillis() - f.lastModified() > 60L * 60L * 1000L) f.delete()
+        }
+        val out = File(viewDir, safe.substringAfterLast('/'))
+        FileOutputStream(out).use { it.write(plain) }
         return FileProvider.getUriForFile(
             context,
             "${context.packageName}.fileprovider",
-            file
+            out
         )
     }
 
@@ -138,7 +153,10 @@ class ReceiptPhotoStore @Inject constructor(
         readLocal(path)?.let { return it }
         openUri(path)?.let { uri ->
             runCatching {
-                context.contentResolver.openInputStream(uri)?.use { decodeImageStream(it) }
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    val raw = BackupSecurityArchive.readBounded(input, MAX_DECODE_BYTES)
+                    decodeImageBytes(LocalFileCipher.open(raw))
+                }
             }.getOrNull()?.let { return it }
         }
         return null
@@ -153,16 +171,17 @@ class ReceiptPhotoStore @Inject constructor(
     private fun writeLocal(relativePath: String, bytes: ByteArray) {
         val file = localFile(relativePath)
             ?: throw BackupFailure.Io("Chemin photo invalide")
-        file.parentFile?.mkdirs()
-        file.writeBytes(bytes)
+        LocalFileCipher.writeEncrypted(file, bytes)
+    }
+
+    private fun readLocalBytes(relativePath: String): ByteArray? {
+        val file = localFile(relativePath) ?: return null
+        return LocalFileCipher.readDecrypted(file)
     }
 
     private fun readLocal(relativePath: String): Bitmap? {
-        val file = localFile(relativePath) ?: return null
-        if (!file.isFile) return null
-        return runCatching {
-            file.inputStream().use { decodeImageStream(it) }
-        }.getOrNull()
+        val bytes = readLocalBytes(relativePath) ?: return null
+        return runCatching { decodeImageBytes(bytes) }.getOrNull()
     }
 
     companion object {

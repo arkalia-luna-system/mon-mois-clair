@@ -34,7 +34,7 @@ class ReminderSchedulerImplTest {
             .allowMainThreadQueries()
             .build()
         gateway = RecordingExactAlarmGateway()
-        scheduler = ReminderSchedulerImpl(db.instanceDao(), gateway)
+        scheduler = ReminderSchedulerImpl(db.instanceDao(), gateway, db.appMetaDao())
         // 1er octobre 2026 → J−3 et Jour J du 5 encore futurs
         val instant = java.time.OffsetDateTime.parse("2026-10-01T12:00:00+02:00").toInstant()
         AppClock.clock = Clock.fixed(instant, brussels)

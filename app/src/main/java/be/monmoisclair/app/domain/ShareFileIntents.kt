@@ -17,8 +17,15 @@ object ShareFileIntents {
         }
 
     fun zip(uri: Uri, subject: String, text: String): Intent =
+        file(uri, subject, text, mime = "application/zip")
+
+    /** Copie chiffrée `.mmc` (enveloppe AES-GCM) — pas un ZIP lisible. */
+    fun encryptedCopy(uri: Uri, subject: String, text: String): Intent =
+        file(uri, subject, text, mime = "application/octet-stream")
+
+    private fun file(uri: Uri, subject: String, text: String, mime: String): Intent =
         Intent(Intent.ACTION_SEND).apply {
-            type = "application/zip"
+            type = mime
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, text)
             putExtra(Intent.EXTRA_STREAM, uri)

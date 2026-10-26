@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +30,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -131,7 +134,8 @@ fun RestoreBackupScreen(
                                 arrayOf(
                                     "application/zip",
                                     "application/json",
-                                    "application/octet-stream"
+                                    "application/octet-stream",
+                                    "*/*"
                                 )
                             )
                             null -> Unit
@@ -159,12 +163,24 @@ fun RestoreBackupScreen(
         CarnetPageTitle("Restaurer une sauvegarde")
         Text(
             text = "Après réinstallation ou nouveau téléphone. " +
-                "Remplace tout ce qui est dans l’app — confirmation demandée.",
+                "Remplace tout ce qui est dans l’app — confirmation demandée. " +
+                "Copie reçue par WhatsApp : saisissez le code de copie du téléphone d’origine.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = if (fit.compactHomeChrome) 6.dp else 8.dp)
+        )
+
+        OutlinedTextField(
+            value = state.shareCodeDraft,
+            onValueChange = viewModel::onShareCodeChange,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !state.busy,
+            singleLine = true,
+            label = { Text("Code de copie (si reçu d’ailleurs)") },
+            placeholder = { Text("8 chiffres") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
         )
 
         state.message?.let { msg ->

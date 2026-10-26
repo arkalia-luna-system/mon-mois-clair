@@ -19,7 +19,9 @@ data class RestoreUiState(
     val busy: Boolean = false,
     val message: String? = null,
     val isError: Boolean = false,
-    val success: Boolean = false
+    val success: Boolean = false,
+    /** Code saisi pour une copie reçue d’un autre téléphone. */
+    val shareCodeDraft: String = ""
 )
 
 @HiltViewModel
@@ -30,6 +32,12 @@ class RestoreBackupViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(RestoreUiState())
     val uiState: StateFlow<RestoreUiState> = _uiState.asStateFlow()
+
+    fun onShareCodeChange(value: String) {
+        _uiState.update {
+            it.copy(shareCodeDraft = value.filter { ch -> ch.isDigit() }.take(12))
+        }
+    }
 
     fun restoreFromLatest() {
         runRestore { restorer.restoreFromLatest() }
@@ -46,7 +54,8 @@ class RestoreBackupViewModel @Inject constructor(
             }
             return
         }
-        runRestore { restorer.restoreFromUri(uri) }
+        val code = _uiState.value.shareCodeDraft.trim().ifEmpty { null }
+        runRestore { restorer.restoreFromUri(uri, shareCode = code) }
     }
 
     fun clearMessage() {

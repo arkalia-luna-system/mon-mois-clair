@@ -8,6 +8,8 @@ import be.monmoisclair.app.data.backup.BackupCoordinator
 import be.monmoisclair.app.data.backup.BackupFailure
 import be.monmoisclair.app.data.backup.BackupSecurityArchive
 import be.monmoisclair.app.data.backup.SafBackupStore
+import be.monmoisclair.app.data.crypto.BackupEnvelope
+import be.monmoisclair.app.data.crypto.ShareSecretVault
 import be.monmoisclair.app.domain.ShareFileIntents
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -20,13 +22,15 @@ sealed class ShareBackupResult {
 }
 
 /**
- * Prépare un [Intent.ACTION_SEND] : archive ZIP (JSON + photos `receipts/`).
+ * Prépare un [Intent.ACTION_SEND] : archive ZIP (JSON + photos) puis enveloppe AES-GCM (.mmc).
+ * Sans le code de copie, WhatsApp / mail ne peuvent pas lire le fichier.
  */
 @Singleton
 class ShareBackupUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
     private val coordinator: BackupCoordinator,
-    private val safBackupStore: SafBackupStore
+    private val safBackupStore: SafBackupStore,
+    private val shareSecretVault: ShareSecretVault
 ) {
 
     suspend operator fun invoke(): ShareBackupResult {
@@ -48,25 +52,39 @@ class ShareBackupUseCase @Inject constructor(
             val json = safBackupStore.readLatestValidBackupUtf8()
             val receipts = safBackupStore.listReceiptBinaries()
             val shareDir = File(context.cacheDir, "share").also { it.mkdirs() }
-            val out = File(shareDir, BackupSecurityArchive.SHARE_ZIP_NAME)
-            val packed = BackupSecurityArchive.packToFile(out, json, receipts)
+            val zipTmp = File(shareDir, "pack-tmp.zip")
+            val packed = BackupSecurityArchive.packToFile(zipTmp, json, receipts)
+            val secret = shareSecretVault.getOrCreateSecretChars()
+            val mmcOut = File(shareDir, BackupEnvelope.SHARE_MMC_NAME)
+            try {
+                if (mmcOut.exists()) mmcOut.delete()
+                val sealed = BackupEnvelope.seal(packed.file.readBytes(), secret)
+                mmcOut.writeBytes(sealed)
+            } finally {
+                secret.fill('\u0000')
+                packed.file.delete()
+            }
             val uri = FileProvider.getUriForFile(
                 context,
                 "${context.packageName}.fileprovider",
-                packed.file
+                mmcOut
             )
             val photoLine = when (packed.photoCount) {
                 0 -> "Sans photo de facture pour l’instant."
                 1 -> "1 photo de facture incluse."
                 else -> "${packed.photoCount} photos de factures incluses."
             }
-            val send = ShareFileIntents.zip(
+            val send = ShareFileIntents.encryptedCopy(
                 uri = uri,
-                subject = "Sauvegarde Mon Mois Clair",
-                text = "Copie de sécurité Mon Mois Clair (mois + photos). $photoLine " +
+                subject = "Copie Mon Mois Clair (chiffrée)",
+                text = "Copie Mon Mois Clair — $photoLine " +
+                    "Sans le code de copie (affiché dans Réglages → Sauvegarde sur le téléphone " +
+                    "qui a créé la copie), ce fichier est illisible. " +
                     "À restaurer via Réglages → Restaurer."
             )
-            ShareBackupResult.Ready(Intent.createChooser(send, "Envoyer une copie de sécurité"))
+            ShareBackupResult.Ready(
+                Intent.createChooser(send, "Envoyer une copie (chiffrée)")
+            )
         } catch (e: BackupFailure) {
             Log.e(TAG, "Partage BackupFailure: ${e.message}", e)
             ShareBackupResult.Failed(ShareBackupMessages.FAILED)

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Partage ZIP, photos caméra temporaires, courriers locaux (webp / PDF). -->
+<!-- Partage MMC/ZIP, aperçu déchiffré, photos caméra, courriers locaux. -->
 <paths>
     <cache-path name="share" path="share/" />
+    <cache-path name="view" path="view/" />
     <cache-path name="camera" path="camera/" />
     <files-path name="receipts" path="receipts/" />
 </paths>

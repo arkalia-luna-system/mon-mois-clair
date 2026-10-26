@@ -64,7 +64,7 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Sauvegarde",
-            body = "Documents (3 versions) + « Envoyer une copie ». Nouveau téléphone : Restaurer."
+            body = "Documents (3 versions chiffrées) + « Envoyer une copie » (code requis). Nouveau téléphone : Restaurer."
         ),
         Section(
             title = "Empreinte",

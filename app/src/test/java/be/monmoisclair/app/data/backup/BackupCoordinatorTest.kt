@@ -54,7 +54,10 @@ class BackupCoordinatorTest {
             appMetaDao = db.appMetaDao(),
             codec = codec,
             rotator = rotator,
-            healthStore = healthStore
+            healthStore = healthStore,
+            shareSecretVault = be.monmoisclair.app.data.crypto.ShareSecretVault(
+                ApplicationProvider.getApplicationContext()
+            )
         )
         val coordinator = BackupCoordinator(
             snapshotReader = BackupSnapshotReader(
