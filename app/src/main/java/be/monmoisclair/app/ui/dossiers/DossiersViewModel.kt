@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.db.entity.PendingLetterEntity
+import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.ShareFileIntents
 import be.monmoisclair.app.domain.usecase.DossiersSnapshot
@@ -14,7 +15,6 @@ import be.monmoisclair.app.domain.usecase.ListPendingLettersUseCase
 import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -103,8 +103,8 @@ class DossiersViewModel @Inject constructor(
             try {
                 val result = prepareMonthSummary()
                 val file = withContext(Dispatchers.IO) {
-                    val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
-                    val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
+                    // PDF clair éphémère (cache/share) — wipe au lock ; pas files/ durable.
+                    val out = MonthSummaryPdfShare.prepareTarget(appContext.cacheDir)
                     summaryPdfWriter.write(result.text, out)
                 }
                 val uri = FileProvider.getUriForFile(

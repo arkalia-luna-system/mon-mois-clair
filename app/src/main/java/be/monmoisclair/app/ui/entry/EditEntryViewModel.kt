@@ -517,7 +517,7 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun save() {
-        if (_state.value.saving || _state.value.done) return
+        if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
         if (_state.value.futurePreviewReadOnly) {
             _state.update {
                 it.copy(
@@ -529,83 +529,40 @@ class EditEntryViewModel @Inject constructor(
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
-            if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
-                _state.update { it.copy(saving = false, error = MoneyFormat.FRACTION_HINT) }
+            val moneyDay = EntryFormCore.parseMoneyAndDay(s.amountText, s.dayText)
+            if (moneyDay is EntryFormCore.MoneyDay.Err) {
+                _state.update { it.copy(saving = false, error = moneyDay.message) }
                 return@launch
             }
-            val cents = MoneyFormat.parseToCents(s.amountText)
-            val day = s.dayText.trim().toIntOrNull()
-            if (cents == null || day == null) {
-                _state.update {
-                    it.copy(saving = false, error = "Vérifiez le montant et le jour (1 à 31).")
-                }
-                return@launch
-            }
-            if (MoneyFormat.isOverLineMax(cents)) {
-                _state.update { it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT) }
-                return@launch
-            }
+            val (cents, day) = moneyDay as EntryFormCore.MoneyDay.Ok
             var path = s.receiptRelativePath
             var extraAppend = ""
             var documentsHint: String? = null
             val cleared = s.receiptCleared && !receiptDraft.hasPhoto
             // null = inchangé ; -1 = une fois ; 1/3/12 = intervalle (crée le modèle si besoin).
-            val interval: Int? = if (!s.isExpense) {
-                null
-            } else {
-                when (s.recurrence) {
-                    RecurrenceChoice.Once -> if (s.hasTemplate) -1 else null
-                    RecurrenceChoice.Monthly -> 1
-                    RecurrenceChoice.Every3Months -> 3
-                    RecurrenceChoice.Yearly -> 12
-                }
-            }
+            val interval = EntryFormCore.editIntervalMonths(
+                isExpense = s.isExpense,
+                recurrence = s.recurrence,
+                hasTemplate = s.hasTemplate
+            )
             val wantOpening = s.isExpense && s.dossierExpanded && !s.isAgreement
-            val openingRaw = s.openingRemainingText.trim()
-            val openingCents = when {
-                !wantOpening || openingRaw.isEmpty() -> null
-                else -> MoneyFormat.parseToCents(openingRaw)
-            }
-            if (wantOpening && openingRaw.isNotEmpty() && openingCents == null) {
-                _state.update { it.copy(saving = false, error = "Vérifiez le reste dû (montant).") }
+            val openingParsed =
+                EntryFormCore.parseOpeningRemaining(wantOpening, s.openingRemainingText)
+            if (openingParsed is EntryFormCore.Opening.Err) {
+                _state.update { it.copy(saving = false, error = openingParsed.message) }
                 return@launch
             }
-            if (openingCents != null && MoneyFormat.isOverOpeningMax(openingCents)) {
-                _state.update { it.copy(saving = false, error = MoneyFormat.OPENING_MAX_HINT) }
+            val openingCents = (openingParsed as? EntryFormCore.Opening.Ok)?.cents
+            EntryFormCore.agreementRecurrenceError(openingCents, s.recurrence)?.let { msg ->
+                _state.update { it.copy(saving = false, error = msg) }
                 return@launch
             }
-            if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
-                _state.update {
-                    it.copy(
-                        saving = false,
-                        error = "Un accord doit être une facture qui revient " +
-                            "(mensuel, 3 mois ou annuel)."
-                    )
-                }
+            val feeParsed = EntryFormCore.parseFeeAdd(s.isAgreement, s.feeAddText, s.feeNoteText)
+            if (feeParsed is EntryFormCore.FeeAdd.Err) {
+                _state.update { it.copy(saving = false, error = feeParsed.message) }
                 return@launch
             }
-            val feeRaw = s.feeAddText.trim()
-            val feeAdd = when {
-                !s.isAgreement || feeRaw.isEmpty() -> 0L
-                else -> MoneyFormat.parseToCents(feeRaw)
-            }
-            if (s.isAgreement && feeRaw.isNotEmpty() && (feeAdd == null || feeAdd <= 0L)) {
-                _state.update { it.copy(saving = false, error = "Vérifiez le montant des frais.") }
-                return@launch
-            }
-            if (feeAdd != null && feeAdd > 0L && MoneyFormat.isOverLineMax(feeAdd)) {
-                _state.update { it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT) }
-                return@launch
-            }
-            if (s.isAgreement && feeRaw.isEmpty() && s.feeNoteText.isNotBlank()) {
-                _state.update {
-                    it.copy(
-                        saving = false,
-                        error = "Indiquez le montant des frais avec le motif."
-                    )
-                }
-                return@launch
-            }
+            val feeAdd = (feeParsed as EntryFormCore.FeeAdd.Ok).cents
             val owner = if (s.applyToFollowing || s.isSavingsLine) {
                 instanceDao.getExpenseById(s.id)?.templateId ?: s.id
             } else {
@@ -707,7 +664,7 @@ class EditEntryViewModel @Inject constructor(
                     iban = if (syncCreditor) s.iban else "",
                     creditorEmail = if (syncCreditor) s.creditorEmail else "",
                     syncCreditorDetails = syncCreditor,
-                    feeAddCents = feeAdd ?: 0L,
+                    feeAddCents = feeAdd,
                     feeNote = s.feeNoteText,
                     extraReceiptAppend = extraAppend,
                     extraReceiptPathsReplace = extrasReplace,
@@ -735,7 +692,7 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun delete() {
-        if (_state.value.saving || _state.value.done) return
+        if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
         if (_state.value.futurePreviewReadOnly) {
             _state.update {
                 it.copy(

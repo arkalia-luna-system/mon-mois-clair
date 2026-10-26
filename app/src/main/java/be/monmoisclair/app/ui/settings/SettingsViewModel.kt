@@ -10,6 +10,7 @@ import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.data.crypto.ShareSecretVault
+import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.ShareFileIntents
 import be.monmoisclair.app.domain.model.BackupHealth
@@ -27,7 +28,6 @@ import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -361,8 +361,8 @@ class SettingsViewModel @Inject constructor(
             try {
                 val result = prepareMonthSummary()
                 val file = withContext(Dispatchers.IO) {
-                    val dir = File(appContext.cacheDir, "share").also { it.mkdirs() }
-                    val out = File(dir, MonthSummaryPdfWriter.FILE_NAME)
+                    // PDF clair éphémère (cache/share) — wipe au lock ; pas files/ durable.
+                    val out = MonthSummaryPdfShare.prepareTarget(appContext.cacheDir)
                     summaryPdfWriter.write(result.text, out)
                 }
                 val uri = FileProvider.getUriForFile(

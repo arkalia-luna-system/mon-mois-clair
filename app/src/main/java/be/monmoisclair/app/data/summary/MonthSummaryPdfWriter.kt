@@ -20,8 +20,9 @@ import javax.inject.Singleton
  * Les titres de section (Revenus, mois, Déficit…) sont en semibold ;
  * le corps n’est pas entièrement à 18 pt (pied 14 pt, titre doc 22 pt).
  *
- * **Honnêteté sécu :** le PDF est généré **en clair** (hors enveloppe MMC1) —
- * watermark [SENSITIVE_MARK] ; ne pas le traiter comme une copie chiffrée.
+ * **Honnêteté sécu :** PDF **clair** (MMC1/MRF1 le rendrait illisible hors app) —
+ * écrit uniquement sous `cache/share/` via [MonthSummaryPdfShare] (éphémère,
+ * wipe au verrou + TTL) ; watermark [SENSITIVE_MARK] ; pas une copie `.mmc`.
  */
 @Singleton
 class MonthSummaryPdfWriter @Inject constructor(
@@ -159,7 +160,7 @@ class MonthSummaryPdfWriter @Inject constructor(
 
         const val FILE_NAME = "mon-mois-clair-resume.pdf"
 
-        /** Filigrane pied de page — PDF résumé = clair, pas une copie .mmc. */
+        /** Filigrane pied de page — PDF résumé = clair éphémère, pas une copie .mmc. */
         const val SENSITIVE_MARK = "données sensibles"
 
         private val MONTH_TITLE =

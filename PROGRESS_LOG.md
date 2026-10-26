@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.85** (perfection code vague 2 — découpe &lt;700 · refus cleartext · skip migration 1→N) |
+| Dernière étape terminée | **6.86** (perfection code vague 3 — EntryFormCore · PDF share wipe · androidTest assemble · notif mask) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail — puis GO cadeau |
-| Audit premium | final-09 structure ~7,5/10 · sécu résiduelle ~8/10 · **pas** « 9/10 dans la main » · S26 / restore doigt ouverts |
+| Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail · connected androidTest (debug) — puis GO cadeau |
+| Audit premium | final-10 structure ~8/10 · sécu résiduelle ~8,3/10 · **pas** « 9/10 dans la main » · S26 / restore doigt / connected ouverts |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.86 Perfection code vague 3 (final-10)
+
+**A — Cœur Add/Edit :** `EntryFormCore` (validation save, intervals, pending letter, anti-doublon) + tests ; UI inchangée.
+
+**B — PDF résumé :** clair volontaire (lisible hors app) mais `cache/share/` + TTL 15 min + wipe au lock ; PRIVACY/SECURITY.
+
+**C — androidTest :** 3 smokes (package · PDF wipe · cleartext reject) ; `assembleDebugAndroidTest` OK ; `connected` bloqué (UTP BouncyCastle host + APK release device — pas de désinstall famille).
+
+**D — Notif :** `ReminderNotifCopy` + tests masking ; pas de TODO dangereux.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **367 exécutés** / 368 déclarés (1 skipped), 87 XML, 0 failure.  
+**Version :** `0.1.0-6.86` · `versionCode` 91.  
+**Preuve :** [`docs/audits/2026-10-26-final-10-perfection-code-v3.md`](docs/audits/2026-10-26-final-10-perfection-code-v3.md).  
+**Pas un claim « 9/10 dans la main ».**
 
 ### 2026-10-26 — 6.85 Perfection code vague 2 (final-09)
 

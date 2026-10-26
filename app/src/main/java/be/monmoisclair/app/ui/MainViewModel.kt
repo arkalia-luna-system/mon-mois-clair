@@ -1,16 +1,19 @@
 package be.monmoisclair.app.ui
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
+import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.domain.model.ThemePreference
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
 import be.monmoisclair.app.domain.usecase.ObserveOnboardingStateUseCase
 import be.monmoisclair.app.domain.usecase.StartDestination
 import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +41,7 @@ data class MainUiState(
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val observeOnboarding: ObserveOnboardingStateUseCase,
     private val biometricPreference: BiometricPreferenceUseCase,
     private val themePreference: ThemePreferenceUseCase,
@@ -131,8 +135,11 @@ class MainViewModel @Inject constructor(
             val availability = biometricAuth.availability()
             val mustLock = enabled && availability == BiometricAvailability.Ready
             if (mustLock) {
-                // Cache view/ = clair pour lecteur système — wipe au lock.
-                withContext(Dispatchers.IO) { receiptPhotos.purgeViewCache() }
+                // Caches clairs (aperçu pièces + PDF résumé share) — wipe au lock.
+                withContext(Dispatchers.IO) {
+                    receiptPhotos.purgeViewCache()
+                    MonthSummaryPdfShare.wipeSharePdfs(appContext.cacheDir)
+                }
             }
             _uiState.update {
                 it.copy(

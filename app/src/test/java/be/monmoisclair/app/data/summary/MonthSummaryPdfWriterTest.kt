@@ -76,4 +76,10 @@ class MonthSummaryPdfWriterTest {
     fun sensitiveMark_documentsCleartextPdfHonesty() {
         assertThat(MonthSummaryPdfWriter.SENSITIVE_MARK.lowercase()).contains("sensible")
     }
+
+    @Test
+    fun sharePath_isEphemeralCacheOnly() {
+        assertThat(MonthSummaryPdfShare.SHARE_SUBDIR).isEqualTo("share")
+        assertThat(MonthSummaryPdfShare.SHARE_TTL_MS).isEqualTo(15L * 60L * 1000L)
+    }
 }

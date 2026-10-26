@@ -21,7 +21,6 @@ import be.monmoisclair.app.domain.usecase.AddEntryUseCase
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterResult
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterUseCase
 import be.monmoisclair.app.ui.format.DayLabelFormat
-import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -262,30 +261,29 @@ class AddEntryViewModel @Inject constructor(
      * Visible seulement si le bloc accord est ouvert et le reste dû est vide.
      */
     fun saveAsPendingLetter() {
-        if (_state.value.saving || _state.value.saved) return
+        if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.saved)) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
-            if (!s.isExpense || !s.dossierExpanded) {
-                _state.update { it.copy(saving = false) }
-                return@launch
-            }
-            if (s.openingRemainingText.trim().isNotEmpty()) {
-                _state.update {
-                    it.copy(
-                        saving = false,
-                        error = "Videz le reste dû pour ranger sans plan, ou Enregistrer un accord."
-                    )
+            when (
+                val gate = EntryFormCore.pendingLetterCheck(
+                    isExpense = s.isExpense,
+                    dossierExpanded = s.dossierExpanded,
+                    openingRemainingText = s.openingRemainingText,
+                    whoLabel = s.label
+                )
+            ) {
+                EntryFormCore.PendingLetterCheck.AbortSilent -> {
+                    _state.update { it.copy(saving = false) }
+                    return@launch
                 }
-                return@launch
+                is EntryFormCore.PendingLetterCheck.Abort -> {
+                    _state.update { it.copy(saving = false, error = gate.message) }
+                    return@launch
+                }
+                EntryFormCore.PendingLetterCheck.Proceed -> Unit
             }
             val who = s.label.trim()
-            if (who.isEmpty()) {
-                _state.update {
-                    it.copy(saving = false, error = "Indiquez à qui (le nom en haut).")
-                }
-                return@launch
-            }
             when (
                 val result = createPendingLetter(
                     who = who,
@@ -319,7 +317,7 @@ class AddEntryViewModel @Inject constructor(
     }
 
     fun save() {
-        if (_state.value.saving || _state.value.saved) return
+        if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.saved)) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val existingId = createdInstanceId
@@ -328,66 +326,38 @@ class AddEntryViewModel @Inject constructor(
                 return@launch
             }
             val s = _state.value
-            if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
-                _state.update { it.copy(saving = false, error = MoneyFormat.FRACTION_HINT) }
+            val moneyDay = EntryFormCore.parseMoneyAndDay(s.amountText, s.dayText)
+            if (moneyDay is EntryFormCore.MoneyDay.Err) {
+                _state.update { it.copy(saving = false, error = moneyDay.message) }
                 return@launch
             }
-            val cents = MoneyFormat.parseToCents(s.amountText)
-            val day = s.dayText.trim().toIntOrNull()
-            if (cents == null || day == null) {
-                _state.update {
-                    it.copy(saving = false, error = "Vérifiez le montant et le jour (1 à 31).")
-                }
+            val (cents, day) = moneyDay as EntryFormCore.MoneyDay.Ok
+            val wantOpening = s.isExpense && s.dossierExpanded
+            val openingParsed =
+                EntryFormCore.parseOpeningRemaining(wantOpening, s.openingRemainingText)
+            if (openingParsed is EntryFormCore.Opening.Err) {
+                _state.update { it.copy(saving = false, error = openingParsed.message) }
                 return@launch
             }
-            if (MoneyFormat.isOverLineMax(cents)) {
-                _state.update { it.copy(saving = false, error = MoneyFormat.LINE_MAX_HINT) }
-                return@launch
-            }
-            val openingRaw = s.openingRemainingText.trim()
-            val openingCents = when {
-                !s.isExpense || !s.dossierExpanded || openingRaw.isEmpty() -> null
-                else -> MoneyFormat.parseToCents(openingRaw)
-            }
-            if (s.isExpense && s.dossierExpanded && openingRaw.isNotEmpty() && openingCents == null) {
-                _state.update {
-                    it.copy(saving = false, error = "Vérifiez le reste dû (montant).")
-                }
-                return@launch
-            }
-            if (openingCents != null && MoneyFormat.isOverOpeningMax(openingCents)) {
-                _state.update { it.copy(saving = false, error = MoneyFormat.OPENING_MAX_HINT) }
-                return@launch
-            }
+            val openingCents = (openingParsed as? EntryFormCore.Opening.Ok)?.cents
             // IBAN / e-mail (souvent via QR) ne doivent pas disparaître en silence
             // si le reste dû est encore vide — sinon on croit avoir créé un dossier.
-            val hasCreditorBits = s.iban.isNotBlank() || s.creditorEmail.isNotBlank()
-            if (s.isExpense && s.dossierExpanded && openingCents == null && hasCreditorBits) {
-                _state.update {
-                    it.copy(
-                        saving = false,
-                        error = "Indiquez le reste dû, ou « Ranger sans plan », " +
-                            "ou videz l’IBAN et l’e-mail."
-                    )
-                }
+            EntryFormCore.creditorBitsWithoutOpeningError(
+                isExpense = s.isExpense,
+                dossierExpanded = s.dossierExpanded,
+                openingCents = openingCents,
+                iban = s.iban,
+                creditorEmail = s.creditorEmail
+            )?.let { msg ->
+                _state.update { it.copy(saving = false, error = msg) }
                 return@launch
             }
-            if (openingCents != null && s.recurrence == RecurrenceChoice.Once) {
-                _state.update {
-                    it.copy(
-                        saving = false,
-                        error = "Un accord doit être une facture qui revient " +
-                            "(mensuel, 3 mois ou annuel)."
-                    )
-                }
+            EntryFormCore.agreementRecurrenceError(openingCents, s.recurrence)?.let { msg ->
+                _state.update { it.copy(saving = false, error = msg) }
                 return@launch
             }
             val recurring = s.recurrence != RecurrenceChoice.Once
-            val interval = when (s.recurrence) {
-                RecurrenceChoice.Once, RecurrenceChoice.Monthly -> 1
-                RecurrenceChoice.Every3Months -> 3
-                RecurrenceChoice.Yearly -> 12
-            }
+            val interval = EntryFormCore.intervalMonths(s.recurrence)
             val anchor = when {
                 !recurring -> null
                 s.needsNextDueMonth ->

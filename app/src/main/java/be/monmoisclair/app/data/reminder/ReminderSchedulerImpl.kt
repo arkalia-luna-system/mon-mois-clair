@@ -4,7 +4,6 @@ import android.util.Log
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
-import be.monmoisclair.app.domain.EuroFormat
 import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
@@ -92,47 +91,16 @@ class ReminderSchedulerImpl @Inject constructor(
         val payload = ReminderPayload(
             expenseInstanceId = expense.id,
             kind = kind,
-            title = titleFor(kind, expense.label),
-            body = bodyFor(expense, kind, hideAmounts)
+            title = ReminderNotifCopy.title(kind, expense.label),
+            body = ReminderNotifCopy.body(
+                kind = kind,
+                amountCents = expense.amountCents,
+                dayOfMonth = expense.dayOfMonth,
+                isAutoDebit = expense.isAutoDebit,
+                hideAmounts = hideAmounts
+            )
         )
         alarmGateway.schedule(code, triggerEpochMs, payload)
-    }
-
-    private fun titleFor(kind: ReminderKind, label: String): String = when (kind) {
-        ReminderKind.J3 -> "Dans 3 jours : $label"
-        ReminderKind.JD -> "Aujourd’hui : $label"
-        ReminderKind.OVERDUE -> "En retard : $label"
-    }
-
-    private fun bodyFor(
-        expense: ExpenseInstanceEntity,
-        kind: ReminderKind,
-        hideAmounts: Boolean
-    ): String {
-        val amount = if (hideAmounts) "Montant masqué" else EuroFormat.formatCents(expense.amountCents)
-        val day = expense.dayOfMonth
-        val auto = expense.isAutoDebit
-        // Le titre porte déjà le libellé : le corps reste montant + action.
-        return when (kind) {
-            ReminderKind.J3 ->
-                if (auto) {
-                    "$amount — le $day. Vérifiez le prélèvement."
-                } else {
-                    "$amount — le $day. Pensez à payer."
-                }
-            ReminderKind.JD ->
-                if (auto) {
-                    "$amount — vérifiez le prélèvement aujourd’hui (le $day)."
-                } else {
-                    "$amount — à payer aujourd’hui (le $day)."
-                }
-            ReminderKind.OVERDUE ->
-                if (auto) {
-                    "$amount — prélèvement prévu le $day non confirmé. Vérifiez votre compte."
-                } else {
-                    "$amount — le $day est passé. À régler."
-                }
-        }
     }
 
     companion object {

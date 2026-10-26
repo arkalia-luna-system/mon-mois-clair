@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 90
-        versionName = "0.1.0-6.85"
+        versionCode = 91
+        versionName = "0.1.0-6.86"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -166,4 +166,13 @@ dependencies {
     testImplementation("androidx.work:work-testing:2.12.0")
     testImplementation("com.google.truth:truth:1.4.4")
     testImplementation("org.json:json:20240303")
+
+    // androidTest : smoke stables (pas de Compose/Hilt flaky). connected = Athalia si device.
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:core:1.6.1")
+    androidTestImplementation("com.google.truth:truth:1.4.4")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    androidTestImplementation("androidx.room:room-runtime:$roomVersion")
+    androidTestImplementation("androidx.room:room-ktx:$roomVersion")
 }
