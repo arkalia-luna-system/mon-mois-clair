@@ -39,12 +39,21 @@ object EncryptedDbMigrator {
                 null,
                 null
             )
+            val plainUserVersion = try {
+                plain.version
+            } catch (_: Exception) {
+                0
+            }
             try {
                 val keyLiteral = escapeSqlString(String(passphrase))
                 plain.rawExecSQL(
                     "ATTACH DATABASE '${tmpEncrypted.absolutePath}' AS encrypted KEY '$keyLiteral';"
                 )
                 plain.rawExecSQL("SELECT sqlcipher_export('encrypted');")
+                // sqlcipher_export ne garantit pas user_version → Room verrait 0 → onCreate.
+                if (plainUserVersion > 0) {
+                    plain.rawExecSQL("PRAGMA encrypted.user_version = $plainUserVersion;")
+                }
                 plain.rawExecSQL("DETACH DATABASE encrypted;")
             } finally {
                 plain.close()
@@ -64,6 +73,24 @@ object EncryptedDbMigrator {
                 tmpEncrypted.delete()
             }
             deleteSidecars(File(dbFile.parentFile, DbPassphraseVault.DB_NAME))
+            // Filet si le PRAGMA attach a échoué : réécrit user_version sur le fichier final.
+            if (plainUserVersion > 0) {
+                runCatching {
+                    val enc = SQLiteDatabase.openOrCreateDatabase(
+                        dbFile.absolutePath,
+                        String(passphrase),
+                        null,
+                        null
+                    )
+                    try {
+                        if (enc.version != plainUserVersion) {
+                            enc.version = plainUserVersion
+                        }
+                    } finally {
+                        enc.close()
+                    }
+                }.onFailure { Log.w(TAG, "user_version post-migration", it) }
+            }
             vault.markDbEncrypted()
             return MigrationOutcome.Migrated
         } catch (e: Exception) {

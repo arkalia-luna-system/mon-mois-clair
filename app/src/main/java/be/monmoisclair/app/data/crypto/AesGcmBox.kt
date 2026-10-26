@@ -11,6 +11,11 @@ import javax.crypto.spec.SecretKeySpec
 /**
  * AES-256-GCM utilitaire (IV aléatoire préfixé au ciphertext).
  * Pas de logging du plaintext / clé.
+ *
+ * **Android Keystore** : les clés avec `setRandomizedEncryptionRequired(true)`
+ * refusent un IV fourni par l’appelant en ENCRYPT (`Caller-provided IV not permitted`).
+ * L’IV est donc toujours généré par le [Cipher] (`init` sans params), puis préfixé.
+ * Le déchiffrement fournit bien l’IV (obligatoire Keystore / GCM).
  */
 object AesGcmBox {
 
@@ -27,9 +32,12 @@ object AesGcmBox {
     }
 
     fun encrypt(key: SecretKey, plaintext: ByteArray): ByteArray {
-        val iv = randomBytes(IV_BYTES)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        cipher.init(Cipher.ENCRYPT_MODE, key, GCMParameterSpec(TAG_BITS, iv))
+        // Pas de GCMParameterSpec ici : compatible AndroidKeyStore (CALLER_NONCE interdit).
+        cipher.init(Cipher.ENCRYPT_MODE, key)
+        val iv = cipher.iv
+            ?: error("AES-GCM sans IV généré par le provider")
+        require(iv.size == IV_BYTES) { "IV GCM inattendu: ${iv.size} octets" }
         val sealed = cipher.doFinal(plaintext)
         return iv + sealed
     }

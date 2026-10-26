@@ -56,16 +56,22 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
    ou désactiver **Dependabot security updates** si le bruit reste permanent.
 3. Garder Dependabot **version updates** (Actions + Gradle) dans `dependabot.yml`.
 
-**Mitigation repo (6.80+) :** `build.gradle.kts` racine force via `resolutionStrategy`
-(transitifs UTP/AGP — **pas** dans l’APK runtime) :
+**Mitigation repo (6.80+) :** `build.gradle.kts` + `settings.gradle.kts` forcent via
+`resolutionStrategy` (transitifs UTP/AGP — **pas** dans l’APK runtime) :
 `protobuf-java:3.25.9`, `commons-io:2.22.0`, `commons-compress:1.26.0`,
-`io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`, `bcpkix-jdk18on:1.86`,
-`jdom2:2.0.6.1`, `jose4j:0.9.7`.
-**Alerte #54 `kotlin-gradle-plugin` ≥2.4.20-Beta1 :** exige aussi KSP 2.3 + Room 2.8 +
-Hilt ≥2.59 → **AGP 9** — reporté (tentative 6.89 WIP annulée). Rester Kotlin **2.0.21**.
-Vérifier avec `./gradlew :app:dependencies`. Si Dependabot Security reste rouge malgré
-le force : dismiss UI (transitive) — la garde produit reste les tests. Alertes GitHub
-peuvent rester jusqu’au **rescan** Dependabot même si le classpath local est patché.
+`commons-lang3:3.18.0` (**#60**), `io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`,
+`bcpkix-jdk18on:1.86`, `jdom2:2.0.6.1`, `jose4j:0.9.7`.
+
+**Alerte #54 `kotlin-gradle-plugin` :** premier patch Dependabot = **`2.4.20-Beta1`**
+(désérialisation cache Kotlin). Aucun backport stable &lt; 2.4.20. Bump Kotlin 2.4.x
+exige aussi KSP 2.3 + Room 2.8 + Hilt ≥2.59 → **AGP 9** — **incompatible** stack
+actuelle (AGP **8.7.3**, Kotlin / KSP / Compose plugin **2.0.21**, Hilt **2.52**).
+**Pin documenté :** rester **2.0.21** jusqu’à migration AGP 9 coordonnée. Risque
+limité au **classpath build** (pas APK runtime). Dismiss UI possible (raison :
+fixing pin + hors runtime) après rescan.
+
+Vérifier avec `./gradlew :app:dependencies`. Alertes GitHub peuvent rester rouges
+jusqu’au **rescan** Dependabot même si le force local est OK.
 
 ## Phase 4 — plus corsé (optionnel)
 

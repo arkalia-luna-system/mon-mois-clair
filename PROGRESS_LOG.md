@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.89** (Gradle 8.14.4 · robolectric 4.17 · ship main) |
+| Dernière étape terminée | **6.90** (crash open Keystore IV + SQLCipher onCreate · force lang3 #60) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail · connected androidTest (debug) — puis GO cadeau |
 | Audit premium | final-11 UI/MD/CI ship · **pas** « 9/10 dans la main » · S26 / restore doigt / connected ouverts |
@@ -20,6 +20,25 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.90 crash ouverture + Dependabot #60
+
+**Crash (SM-S938B, post-6.89) :** `Unable to create application` →
+`InvalidAlgorithmParameterException: Caller-provided IV not permitted`
+(AndroidKeystore, ENCRYPT avec IV caller alors que `setRandomizedEncryptionRequired(true)`).
+Puis, après 1ʳᵉ correction : `UNIQUE constraint failed: app_meta.key` — Room `onCreate`
+après `sqlcipher_export` (user_version 0).
+
+**Fix :** `AesGcmBox.encrypt` init sans IV caller (IV = `cipher.iv`) ;
+`INSERT OR IGNORE` seeds `app_meta` ; migrator recopie `user_version`.
+
+**Dependabot :** force `commons-lang3:3.18.0` (#60). **#54** kotlin-gradle-plugin
+resté pin **2.0.21** (patch min = 2.4.20-Beta1 → AGP 9) — doc `docs/CI.md`.
+
+**Tests :** **368 exécutés** / 369 (1 skipped), 87 XML, 0 failure.  
+**Version :** `0.1.0-6.90` · `versionCode` 95.  
+**Install :** SM-S938B release OK, MainActivity resumed, 0 FATAL (sans wipe).  
+**Preuve :** [`docs/audits/2026-10-26-crash-open-fix.md`](docs/audits/2026-10-26-crash-open-fix.md).
 
 ### 2026-10-26 — 6.89 Gradle 8.14.4 + ship
 

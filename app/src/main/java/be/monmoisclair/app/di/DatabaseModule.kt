@@ -117,12 +117,14 @@ object DatabaseModule {
     ) = object : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
+            // OR IGNORE : après sqlcipher_export, Room peut rappeler onCreate si
+            // user_version=0 (UNIQUE app_meta.key sinon → crash à l’ouverture).
             db.execSQL(
-                "INSERT INTO app_meta (`key`, value) VALUES (?, ?)",
+                "INSERT OR IGNORE INTO app_meta (`key`, value) VALUES (?, ?)",
                 arrayOf(AppMetaKeys.SCHEMA_VERSION, AppMetaKeys.CURRENT_SCHEMA_VERSION)
             )
             db.execSQL(
-                "INSERT INTO app_meta (`key`, value) VALUES (?, ?)",
+                "INSERT OR IGNORE INTO app_meta (`key`, value) VALUES (?, ?)",
                 arrayOf(AppMetaKeys.BACKUP_HEALTH, BackupHealth.NOT_CONFIGURED.name)
             )
         }
