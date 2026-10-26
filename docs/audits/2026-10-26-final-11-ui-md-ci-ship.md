@@ -39,10 +39,10 @@
 
 | Champ | Valeur |
 |-------|--------|
-| SHA develop | _(après push 6.89)_ |
-| SHA main | _(ff-only)_ |
-| CI develop | _(gh run)_ |
-| Install device | _(adb release)_ |
+| SHA develop | `69bafef` |
+| SHA main | `69bafef` (ff-only) |
+| CI develop | **success** · [run 40334976512](https://github.com/arkalia-luna-system/mon-mois-clair/actions/runs/40334976512) |
+| Install device | **OK** SM-S938B · `0.1.0-6.89` / vc 94 (sans wipe) |
 
 ---
 

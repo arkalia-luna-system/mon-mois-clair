@@ -27,7 +27,9 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 **Deps app :** robolectric **4.17** (PR #11).  
 **Dependabot :** #3/#4 compress + #20/#25 bcpkix déjà forcés en 6.88 ; #54 kotlin-gradle-plugin **reporté** (besoin AGP 9 + Hilt ≥2.59). PR #12/#13/#14/#15 closes (AGP 9.1 / Kotlin seul).  
 **Tests :** **367 exécutés** / 368 (1 skipped), 87 XML, 0 failure.  
-**Version :** `0.1.0-6.89` · `versionCode` 94.
+**Version :** `0.1.0-6.89` · `versionCode` 94.  
+**SHA :** `69bafef` (`develop` = `main`, ff-only). CI verte. Install SM-S938B OK.  
+**Preuve :** [`docs/audits/2026-10-26-final-11-ui-md-ci-ship.md`](docs/audits/2026-10-26-final-11-ui-md-ci-ship.md).
 
 ### 2026-10-26 — 6.88 NewApi URLEncoder + Dependabot forces
 
