@@ -111,7 +111,7 @@ dependencies {
     val roomVersion = "2.6.1"
     val hiltVersion = "2.52"
 
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.19.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.12.0")
