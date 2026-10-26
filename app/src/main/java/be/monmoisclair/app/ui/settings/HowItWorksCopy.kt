@@ -53,7 +53,7 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Mettre de côté",
-            body = "Ligne sous le Reste (sticky, comme Courses ; sinon derrière « Autres infos »). " +
+            body = "Ligne sous le Reste (sticky, comme Courses ; sinon derrière « Détails »). " +
                 "Ou Réglages pour le jour. FAIT = virement fait. Pas d’argent dans l’app."
         ),
         Section(

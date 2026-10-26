@@ -12,7 +12,7 @@ Décisions vivantes : `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `docs/PLAN
 | `RECHERCHE_OUTILS_2026-10-21.md` | Sources matin |
 | `CHECKLIST_S25_2026-10-19.md` | Passage device 5.4.1 (19 oct) |
 | `campagnes-2026-10-20/` | Rapports testeurs 6.26 |
-| `audits-2026-10-23/` | Nuit-01…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 (bandeau figé) |
+| `audits-2026-10-23/` | Nuit-00…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 (bandeau figé) |
 
 Ne pas rouvrir pour décider d’un correctif. Reporter dans le journal ou la charte.  
-Audits vivants post-6.82 : `docs/audits/2026-10-26-final-0*.md`.
+Audits vivants post-6.82 : `docs/audits/2026-10-26-final-0*.md` (+ final-10/11).

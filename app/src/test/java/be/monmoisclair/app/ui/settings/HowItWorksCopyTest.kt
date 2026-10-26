@@ -30,7 +30,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Menu → Dossiers")
         assertThat(all).contains("Mettre de côté")
         assertThat(all).contains("Pas d’argent dans l’app")
-        assertThat(all).contains("Autres infos")
+        assertThat(all).contains("Détails")
         assertThat(all).contains("À venir")
         assertThat(all).contains("tous les 3 mois")
         assertThat(all).contains("Échéances hors ce mois")

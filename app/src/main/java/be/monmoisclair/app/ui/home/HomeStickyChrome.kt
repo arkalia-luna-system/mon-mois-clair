@@ -52,10 +52,11 @@ internal fun StickyLinkRow(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
+        // P1-S3 : › discret (InkMuted) — ne rivalise pas avec le Reste / Danger courses.
         Text(
             text = "›",
-            style = MaterialTheme.typography.titleLarge,
-            color = A11yTokens.Link
+            style = MaterialTheme.typography.titleMedium,
+            color = A11yTokens.InkMuted
         )
     }
 }

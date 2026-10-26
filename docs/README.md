@@ -10,7 +10,9 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème apps 2026 / visuel (suivre version journal) |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy |
 | [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md) | Brief oral cadeau (code papier · Arkalia) |
-| [`audits/2026-10-26-final-00-synthese-taches.md`](audits/2026-10-26-final-00-synthese-taches.md) | Backlog final + états (preuve : final-07) |
+| [`audits/2026-10-26-final-00-synthese-taches.md`](audits/2026-10-26-final-00-synthese-taches.md) | Backlog final + états |
+| [`audits/2026-10-26-final-10-perfection-code-v3.md`](audits/2026-10-26-final-10-perfection-code-v3.md) | Preuve code 6.86 |
+| [`audits/2026-10-26-final-11-ui-md-ci-ship.md`](audits/2026-10-26-final-11-ui-md-ci-ship.md) | UI/MD/CI ship 6.87 |
 | [`audits/2026-10-23-smoke-device.md`](audits/2026-10-23-smoke-device.md) | Smoke S25 Ultra (vivant) |
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Envoi / MAJ APK sans USB |
 | [`CI.md`](CI.md) | CI + Dependabot Security (force protobuf/netty) |

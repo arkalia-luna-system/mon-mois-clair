@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.86** (perfection code vague 3 — EntryFormCore · PDF share wipe · androidTest assemble · notif mask) |
+| Dernière étape terminée | **6.87** (UI quiet P1 · MD archive nuit-00 · ship develop=main · install release) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail · connected androidTest (debug) — puis GO cadeau |
-| Audit premium | final-10 structure ~8/10 · sécu résiduelle ~8,3/10 · **pas** « 9/10 dans la main » · S26 / restore doigt / connected ouverts |
+| Audit premium | final-11 UI/MD/CI ship · **pas** « 9/10 dans la main » · S26 / restore doigt / connected ouverts |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,17 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.87 UI quiet + MD + ship (final-11)
+
+**UI (P1 restants final-01) :** sticky « Détails » (ex « Autres infos ») · › Courses/épargne `titleMedium` InkMuted · Aide + charte alignées. P0 sticky/cartes/socle/sheets déjà faits en 6.83–6.85 — pas de redesign.
+
+**MD :** `nuit-00` → `docs/archive/audits-2026-10-23/` · AppleDouble `._*` purgés · index docs/archive · ex. version campagne → journal.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **367 exécutés** / 368 déclarés (1 skipped), 87 XML, 0 failure.  
+**Version :** `0.1.0-6.87` · `versionCode` 92.  
+**Preuve :** [`docs/audits/2026-10-26-final-11-ui-md-ci-ship.md`](docs/audits/2026-10-26-final-11-ui-md-ci-ship.md).  
+**Pas un claim « 9/10 dans la main ».** Reste : S26 Athalia · restore doigt.
 
 ### 2026-10-26 — 6.86 Perfection code vague 3 (final-10)
 
@@ -181,7 +192,7 @@ Manifest `exported=true` + `APPWIDGET_UPDATE` déjà corrects (pas la cause).
 
 Force dans `build.gradle.kts` racine (`resolutionStrategy`).
 
-**Vérif CODE Top15 + B01–B03 + audits 01–08 :** matrice **FAIT** dans `docs/audits/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md` (re-croisé sources). Écarts smoke S25 → corrigés.
+**Vérif CODE Top15 + B01–B03 + audits 01–08 :** matrice **FAIT** dans `docs/archive/audits-2026-10-23/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md` (re-croisé sources). Écarts smoke S25 → corrigés.
 
 **Smoke S25 (`SM-S938B`) :** `docs/audits/2026-10-23-smoke-device.md` — P1 cartes / À venir / jour 31. PNG gitignorés (PII).
 
@@ -214,7 +225,7 @@ Force dans `build.gradle.kts` racine (`resolutionStrategy`).
 
 **REPORTÉ OK :** carrière GitHub profil · smoke doigt · archives `docs/archive/*` · god-file Home.
 
-**Top 15 :** matrice 100 % code dans `docs/audits/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md`.
+**Top 15 :** matrice 100 % code dans `docs/archive/audits-2026-10-23/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md`.
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **315/315** (74 fichiers, 0 failure).  
 **Version :** `0.1.0-6.77` · `versionCode` 82.  
@@ -237,7 +248,7 @@ Force dans `build.gradle.kts` racine (`resolutionStrategy`).
 - PRIVACY : Room clair · widget · notifs · bio = UI gate (pas sur-promesse chiffrement)
 - P1 : IBAN dans résumé dossiers ; tip fiche communication ; god-files **REPORTÉ**
 
-**Top 15 synthèse :** matrice mise à jour dans `docs/audits/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md`.
+**Top 15 synthèse :** matrice mise à jour dans `docs/archive/audits-2026-10-23/2026-10-23-nuit-00-SYNTHESE-PRIORITES.md`.
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **314/314** (73 fichiers, 0 failure).  
 **Version :** `0.1.0-6.76` · `versionCode` 81.  

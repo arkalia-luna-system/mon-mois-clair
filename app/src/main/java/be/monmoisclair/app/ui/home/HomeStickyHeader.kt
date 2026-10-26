@@ -217,8 +217,9 @@ internal fun HomeStickyHeader(
                 state.pendingLetterCount > 0 ||
                 savingsBehindPlus
             if (hasStickyExtras) {
+                // P1-S2 : libellé carnet (« Détails ») — moins chrome UI que « Autres infos ».
                 val detailsLabel =
-                    if (stickyDetailsOpen) "Masquer" else "Autres infos"
+                    if (stickyDetailsOpen) "Masquer" else "Détails"
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
