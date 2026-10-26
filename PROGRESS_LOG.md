@@ -33,6 +33,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **347 exécutés** / 348 déclarés (1 skipped), 84 XML, 0 failure.  
 **Version :** `0.1.0-6.85` · `versionCode` 90.  
+**SHA :** `a6f3eab` (`develop` poussé).  
 **Preuve :** [`docs/audits/2026-10-26-final-09-perfection-code-v2.md`](docs/audits/2026-10-26-final-09-perfection-code-v2.md).  
 **Pas un claim « 9/10 dans la main ».** Reste : reducer Add/Edit · PDF clair · S26 Athalia.
 

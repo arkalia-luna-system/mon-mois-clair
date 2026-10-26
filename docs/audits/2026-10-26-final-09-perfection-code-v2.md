@@ -4,7 +4,7 @@
 |--|--|
 | **Date** | 2026-10-26 · **final-09** |
 | **Produit** | `0.1.0-6.85` · `versionCode` 90 · **347 exécutés** / 348 déclarés (1 `@Ignore`) |
-| **Branche** | `develop` |
+| **Branche** | `develop` · SHA `a6f3eab` |
 | **Hors scope** | Smoke doigt S26 · redesign DA · Play Store · force-push `main` · claim GO cadeau / 9/10 |
 
 **Verdict :** découpe god-files **sous cible 700 L** ; restore cleartext **refusée par défaut** (opt-in) ; harness 1→N = **skip honnête**. Progrès réel, **pas** « parfait » ni « 9/10 dans la main ».
