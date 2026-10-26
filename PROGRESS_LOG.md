@@ -33,6 +33,8 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **332/332** (79 fichiers XML, 0 failure).  
 **Version :** `0.1.0-6.82` · `versionCode` 87.  
+**SHA :** `b15fffb` (`develop` + `main` ff).  
+**Device :** install release SM-S938B `0.1.0-6.82` (versionCode 87).  
 **Pas un claim « 9/10 dans la main ».**
 
 ### 2026-10-26 — 6.81 Chiffrement local (P0 DB · P1 backups · P2 photos)
