@@ -21,7 +21,9 @@ data class RestoreUiState(
     val isError: Boolean = false,
     val success: Boolean = false,
     /** Code saisi pour une copie reçue d’un autre téléphone. */
-    val shareCodeDraft: String = ""
+    val shareCodeDraft: String = "",
+    /** Opt-in explicite pour ZIP/JSON clairs pré-6.81. */
+    val allowCleartextLegacy: Boolean = false
 )
 
 @HiltViewModel
@@ -37,6 +39,10 @@ class RestoreBackupViewModel @Inject constructor(
         _uiState.update {
             it.copy(shareCodeDraft = value.filter { ch -> ch.isDigit() }.take(12))
         }
+    }
+
+    fun onAllowCleartextLegacyChange(value: Boolean) {
+        _uiState.update { it.copy(allowCleartextLegacy = value) }
     }
 
     fun restoreFromLatest() {
@@ -55,7 +61,14 @@ class RestoreBackupViewModel @Inject constructor(
             return
         }
         val code = _uiState.value.shareCodeDraft.trim().ifEmpty { null }
-        runRestore { restorer.restoreFromUri(uri, shareCode = code) }
+        val allowCleartext = _uiState.value.allowCleartextLegacy
+        runRestore {
+            restorer.restoreFromUri(
+                uri,
+                shareCode = code,
+                allowCleartextLegacy = allowCleartext
+            )
+        }
     }
 
     fun clearMessage() {

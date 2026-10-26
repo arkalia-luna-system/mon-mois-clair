@@ -59,24 +59,34 @@ class BackupRestorer @Inject constructor(
 
     /**
      * @param shareCode code de copie saisi (autre téléphone) ; si null, tente le code local Keystore.
+     * @param allowCleartextLegacy opt-in explicite « ancien format » pour ZIP/JSON clairs pré-6.81.
+     *   Sans opt-in → [RestoreResult.CleartextRejected] (DB inchangée).
      */
-    suspend fun restoreFromUri(fileUri: Uri, shareCode: String? = null): RestoreResult {
+    suspend fun restoreFromUri(
+        fileUri: Uri,
+        shareCode: String? = null,
+        allowCleartextLegacy: Boolean = false
+    ): RestoreResult {
         return try {
             val bytes = readUriBytes(fileUri)
-            val opened = openIncomingBytes(bytes, shareCode)
+            val opened = openIncomingBytes(bytes, shareCode, allowCleartextLegacy)
                 ?: return RestoreResult.BadShareCode()
-            val document = codec.decodeAndVerify(opened.json)
+            if (opened is OpenedIncoming.RejectedCleartext) {
+                return RestoreResult.CleartextRejected
+            }
+            val ok = opened as OpenedIncoming.Ok
+            val document = codec.decodeAndVerify(ok.json)
             val applied = applyDocument(document)
             if (applied !is RestoreResult.Success) return applied
-            val withGrace = if (opened.cleartextGrace) {
+            val withGrace = if (ok.cleartextGrace) {
                 applied.copy(cleartextGrace = true)
             } else {
                 applied
             }
-            if (opened.receipts.isEmpty()) return withGrace
-            val written = restoreReceiptsCounted(opened.receipts)
+            if (ok.receipts.isEmpty()) return withGrace
+            val written = restoreReceiptsCounted(ok.receipts)
             withGrace.copy(
-                photosExpected = opened.receipts.size,
+                photosExpected = ok.receipts.size,
                 photosWritten = written
             )
         } catch (e: BackupFailure) {
@@ -87,12 +97,13 @@ class BackupRestorer @Inject constructor(
     }
 
     /**
-     * Déchiffre MMC si besoin, puis ZIP ou JSON clair (grace pré-6.81).
+     * Déchiffre MMC si besoin ; ZIP/JSON clair seulement si [allowCleartextLegacy].
      * @return null si enveloppe chiffrée mais code incorrect / manquant.
      */
     private fun openIncomingBytes(
         bytes: ByteArray,
-        shareCode: String?
+        shareCode: String?,
+        allowCleartextLegacy: Boolean
     ): OpenedIncoming? {
         val asUtf8Preview = runCatching {
             // Seulement pour détecter le préfixe ASCII MMC1B64 (pas pour du binaire ZIP/MMC).
@@ -129,7 +140,10 @@ class BackupRestorer @Inject constructor(
                 }
             }
             else -> {
-                // ZIP / JSON clair pré-6.81 — encore accepté, signalé à l’UI.
+                // ZIP / JSON clair pré-6.81 — refuse sauf opt-in « ancien format ».
+                if (!allowCleartextLegacy) {
+                    return OpenedIncoming.RejectedCleartext
+                }
                 cleartextGrace = true
                 bytes
             }
@@ -137,9 +151,9 @@ class BackupRestorer @Inject constructor(
 
         return if (BackupSecurityArchive.looksLikeZip(plainBytes)) {
             val unpacked = BackupSecurityArchive.unpack(plainBytes)
-            OpenedIncoming(unpacked.jsonUtf8, unpacked.receipts, cleartextGrace)
+            OpenedIncoming.Ok(unpacked.jsonUtf8, unpacked.receipts, cleartextGrace)
         } else {
-            OpenedIncoming(
+            OpenedIncoming.Ok(
                 plainBytes.toString(Charsets.UTF_8),
                 emptyMap(),
                 cleartextGrace
@@ -147,11 +161,15 @@ class BackupRestorer @Inject constructor(
         }
     }
 
-    private data class OpenedIncoming(
-        val json: String,
-        val receipts: Map<String, ByteArray>,
-        val cleartextGrace: Boolean
-    )
+    private sealed class OpenedIncoming {
+        data class Ok(
+            val json: String,
+            val receipts: Map<String, ByteArray>,
+            val cleartextGrace: Boolean
+        ) : OpenedIncoming()
+
+        data object RejectedCleartext : OpenedIncoming()
+    }
 
     private fun resolveShareSecret(shareCode: String?): CharArray? {
         val trimmed = shareCode?.trim().orEmpty()

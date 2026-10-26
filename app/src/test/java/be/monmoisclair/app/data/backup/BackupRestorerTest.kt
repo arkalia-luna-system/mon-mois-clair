@@ -335,8 +335,16 @@ class BackupRestorerTest {
         file.writeText(json, Charsets.UTF_8)
         val uri = android.net.Uri.fromFile(file)
 
-        val result = restorer.restoreFromUri(uri)
+        // JSON clair : refusé par défaut (DB inchangée).
+        val rejected = restorer.restoreFromUri(uri)
+        assertThat(rejected).isEqualTo(RestoreResult.CleartextRejected)
+        assertThat(db.monthLedgerDao().getById("2026-11")).isNull()
+        assertThat(db.monthLedgerDao().getById("2026-01")).isNotNull()
+
+        // Opt-in « ancien format » : accepté + drapeau cleartextGrace.
+        val result = restorer.restoreFromUri(uri, allowCleartextLegacy = true)
         assertThat(result).isInstanceOf(RestoreResult.Success::class.java)
+        assertThat((result as RestoreResult.Success).cleartextGrace).isTrue()
         assertThat(db.monthLedgerDao().getById("2026-11")).isNotNull()
         assertThat(db.appMetaDao().get(AppMetaKeys.SAF_TREE_URI)?.value)
             .isEqualTo("content://tree/keep")

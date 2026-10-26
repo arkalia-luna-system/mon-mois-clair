@@ -58,8 +58,8 @@ sealed class RestoreResult {
         /** Photos réellement réécrites dans Documents. */
         val photosWritten: Int = 0,
         /**
-         * Restore d’une ancienne copie ZIP/JSON **claire** (pré-6.81).
-         * Acceptée encore (grace) mais l’UI doit prévenir fort.
+         * Restore d’une ancienne copie ZIP/JSON **claire** (pré-6.81)
+         * via opt-in explicite [BackupRestorer.restoreFromUri] `allowCleartextLegacy`.
          */
         val cleartextGrace: Boolean = false
     ) : RestoreResult()
@@ -69,6 +69,11 @@ sealed class RestoreResult {
     data class IoError(val message: String) : RestoreResult()
     /** Copie chiffrée : code manquant ou incorrect. */
     data class BadShareCode(val message: String = DEFAULT_BAD_CODE) : RestoreResult()
+    /**
+     * ZIP/JSON clair refusé par défaut (post-6.85).
+     * Réessayer avec l’opt-in « ancien format » dans Restaurer.
+     */
+    data object CleartextRejected : RestoreResult()
     data object NotConfigured : RestoreResult()
 
     companion object {

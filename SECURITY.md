@@ -12,7 +12,7 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 
 - Pas de serveur, pas d’analytics, pas d’API tierce.
 - **Room** : SQLCipher ; passphrase aléatoire enveloppée Android Keystore (`mmc_db_wrap_v1`). Migration one-shot des DB claires pré-6.81.
-- **Backups SAF / copie WhatsApp** : enveloppe AES-GCM (`MMC1`) dérivée du **code de copie** (8 chiffres, Keystore local). Sans ce code, un fichier partagé est **illisible**. Anciennes copies claires encore acceptées à la restore (grace) **avec warning UI** — pas un refus brutal (famille sideload).
+- **Backups SAF / copie WhatsApp** : enveloppe AES-GCM (`MMC1`) dérivée du **code de copie** (8 chiffres, Keystore local). Sans ce code, un fichier partagé est **illisible**. Anciennes copies ZIP/JSON claires : **refusées par défaut** ; opt-in explicite « Ancien format » à la restore (+ warning fort si acceptées).
 - **Photos / PDF reçus** : fichiers `receipts/` et copies SAF enveloppés (`MRF1`) avec la même clé wrap Keystore. Cache `view/` TTL 15 min + purge au verrou biométrique.
 - **PDF résumé mois** : **clair** (hors MMC1) ; watermark « données sensibles » — ne pas confondre avec une copie de sauvegarde.
 - Biométrie optionnelle = porte UI + **CryptoObject** (clé `mmc_unlock_v1`, AUTH_BIOMETRIC_STRONG \| DEVICE_CREDENTIAL) quand disponible ; sinon fallback porte UI (DB déjà chiffrée).
@@ -26,7 +26,7 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 - Pas de tests d’écran instrumentés. Le lint en CI ne bloque pas. Pas de scan CVE en garde.
 - Ne pas recopier le numéro de série d’un téléphone dans un markdown.
 
-**Limites restantes :** données déchiffrées en RAM après unlock ; widget/notifs hors process app ; cache `view/` (clair, TTL court) pour ouvrir un PDF système ; PDF résumé clair ; grace ZIP claires encore importables ; root / malware élevé ; pas de recovery cloud si code + téléphone perdus.
+**Limites restantes :** données déchiffrées en RAM après unlock ; widget/notifs hors process app ; cache `view/` (clair, TTL court) pour ouvrir un PDF système ; PDF résumé clair ; opt-in « Ancien format » laisse encore importer un ZIP/JSON clair ; root / malware élevé ; pas de recovery cloud si code + téléphone perdus.
 
 ## Dependabot Security Updates (bruit rouge)
 

@@ -2,38 +2,25 @@ package be.monmoisclair.app.ui.home
 
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
@@ -41,7 +28,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -52,12 +38,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -66,28 +50,19 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.MainActivity
-import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.components.CarnetPageTitle
-import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
-import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
-import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -287,196 +262,30 @@ fun HomeScreen(
         }
     }
 
-    if (receiptPathToShow != null) {
-        Dialog(
-            onDismissRequest = { receiptPathToShow = null },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            Surface(
-                color = A11yTokens.PaperCream,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(A11yTokens.screenPadding)
-            ) {
-                Column(
-                    modifier = Modifier.padding(if (fit.compactHomeChrome) 12.dp else 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(
-                        if (fit.compactHomeChrome) 8.dp else 12.dp
-                    )
-                ) {
-                    Text(
-                        text = receiptTitle,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = A11yTokens.Ink,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    when {
-                        receiptLoading -> {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
-                                    .semantics {
-                                        contentDescription = "Chargement de la photo"
-                                        liveRegion = LiveRegionMode.Polite
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(color = A11yTokens.Link)
-                            }
-                        }
-                        receiptBitmap != null -> {
-                            Image(
-                                bitmap = receiptBitmap!!.asImageBitmap(),
-                                contentDescription = "Photo de la facture",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(
-                                        min = if (fit.compactHomeChrome) 220.dp else 280.dp,
-                                        max = if (fit.compactHomeChrome) 420.dp else 520.dp
-                                    )
-                                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
-                            )
-                        }
-                        else -> {
-                            val photoErrShape = MaterialTheme.shapes.medium
-                            Text(
-                                text = "Impossible d’afficher cette photo ici. " +
-                                    "Essayez « Ouvrir à part », ou rouvrez la ligne pour en reprendre une.",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.DangerInk,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        1.dp,
-                                        A11yTokens.DangerInk.copy(alpha = 0.4f),
-                                        photoErrShape
-                                    )
-                                    .background(A11yTokens.PaperWarm, photoErrShape)
-                                    .padding(12.dp)
-                                    .semantics {
-                                        liveRegion = LiveRegionMode.Assertive
-                                        contentDescription =
-                                            "Impossible d’afficher cette photo. " +
-                                                "Essayez ouvrir à part, ou reprenez-en une."
-                                    }
-                            )
-                            SecondaryA11yButton(
-                                text = "Ouvrir à part",
-                                onClick = {
-                                    val path = receiptPathToShow
-                                    if (path.isNullOrBlank()) return@SecondaryA11yButton
-                                    scope.launch {
-                                        val intent = viewModel.viewReceiptIntent(path)
-                                        if (intent == null) {
-                                            snackbarHostState.showSnackbar(
-                                                "Fichier introuvable — reprenez une photo."
-                                            )
-                                        } else {
-                                            val ok = runCatching {
-                                                context.startActivity(
-                                                    Intent.createChooser(intent, "Voir la photo")
-                                                )
-                                            }.isSuccess
-                                            if (!ok) {
-                                                snackbarHostState.showSnackbar(
-                                                    "Aucune app pour ouvrir cette photo."
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            )
-                        }
-                    }
-                    SecondaryA11yButton(
-                        text = "Fermer",
-                        onClick = { receiptPathToShow = null }
-                    )
-                }
-            }
-        }
-    }
 
-    if (state.pendingPastToggleId != null) {
-        // H14 : même papier que le dialog photo (PaperCream).
-        AlertDialog(
-            onDismissRequest = viewModel::dismissPastToggle,
-            shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperCream,
-            title = {
-                Text(
-                    text = "Mois passé",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = A11yTokens.Ink
-                )
-            },
-            text = {
-                Text(
-                    text = if (pastMarkingDone) {
-                        "Vous êtes sur un mois passé (${state.monthLabel}). " +
-                            "Marquer cette ligne FAIT ?"
-                    } else {
-                        "Vous êtes sur un mois passé (${state.monthLabel}). " +
-                            "Remettre cette ligne à payer ?"
-                    },
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.Ink
-                )
-            },
-            confirmButton = {
-                PrimaryA11yButton(
-                    text = if (pastMarkingDone) "Marquer FAIT" else "Remettre à payer",
-                    onClick = {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        val id = state.pendingPastToggleId
-                        viewModel.confirmPastToggle()
-                        if (id != null) {
-                            scope.launch {
-                                faitUndoActive = true
-                                try {
-                                    val agreementRemettre = !pastMarkingDone &&
-                                        state.timeline
-                                            .filterIsInstance<TimelineItem.Expense>()
-                                            .any { it.id == id && it.isAgreement }
-                                    val result = snackbarHostState.showSnackbar(
-                                        message = when {
-                                            pastMarkingDone -> "Noté FAIT"
-                                            agreementRemettre ->
-                                                "Dossier rouvert — les mois suivants peuvent revenir"
-                                            else -> "Remis à payer"
-                                        },
-                                        actionLabel = "Annuler",
-                                        withDismissAction = true,
-                                        duration = SnackbarDuration.Long
-                                    )
-                                    if (result == SnackbarResult.ActionPerformed) {
-                                        viewModel.undoToggleDone(id)
-                                    }
-                                } finally {
-                                    faitUndoActive = false
-                                }
-                            }
-                        }
-                    },
-                    fillMaxWidth = false,
-                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
-                )
-            },
-            dismissButton = {
-                SecondaryA11yButton(
-                    text = "Annuler",
-                    onClick = viewModel::dismissPastToggle,
-                    fillMaxWidth = false,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            }
-        )
-    }
+    HomeReceiptDialog(
+        title = receiptTitle,
+        path = receiptPathToShow,
+        bitmap = receiptBitmap,
+        loading = receiptLoading,
+        fit = fit,
+        snackbarHostState = snackbarHostState,
+        scope = scope,
+        viewModel = viewModel,
+        onDismiss = { receiptPathToShow = null }
+    )
+    HomePastToggleDialog(
+        monthLabel = state.monthLabel,
+        pastMarkingDone = pastMarkingDone,
+        pendingId = state.pendingPastToggleId,
+        timeline = state.timeline,
+        haptics = haptics,
+        snackbarHostState = snackbarHostState,
+        scope = scope,
+        viewModel = viewModel,
+        onFaitUndoActive = { faitUndoActive = it },
+        onDismiss = viewModel::dismissPastToggle
+    )
 
     if (menuOpen) {
         HomeMenuSheet(
@@ -535,7 +344,6 @@ fun HomeScreen(
             onDismiss = { savingsSheetOpen = false }
         )
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -543,304 +351,19 @@ fun HomeScreen(
                 .background(A11yTokens.PaperCream)
                 .imePadding()
         ) {
-            // Sticky = même feuille crème que la liste (pas 2ᵉ bande PaperWarm) ;
-            // socle Menu/+ reste warm. Pas de logo — Reste = hero.
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(A11yTokens.PaperCream)
-                        .padding(horizontal = fit.stickyPaddingHorizontal)
-                        .padding(vertical = fit.stickyPaddingVertical),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                // ‹ mois › — calendrier via le libellé (plus de 4ᵉ cible). Pas de logo.
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    MonthStep(
-                        iconRes = R.drawable.ic_chevron_left,
-                        description = "Mois précédent",
-                        enabled = state.canGoPrev,
-                        onClick = viewModel::prevMonth
-                    )
-                    Text(
-                        text = state.monthLabel,
-                        // Quiet sticky : titleMedium muted — le Reste serif commande.
-                        style = MaterialTheme.typography.titleMedium,
-                        color = A11yTokens.InkMuted,
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .weight(1f)
-                            .defaultMinSize(minHeight = A11yTokens.minTouchHeight)
-                            .clickable(
-                                role = Role.Button,
-                                onClickLabel = "Choisir un mois"
-                            ) { monthPickerOpen = true }
-                            .padding(horizontal = 4.dp, vertical = 6.dp)
-                    )
-                    MonthStep(
-                        iconRes = R.drawable.ic_chevron_right,
-                        description = "Mois suivant",
-                        enabled = state.canGoNext,
-                        onClick = viewModel::nextMonth
-                    )
-                }
-                val remainingTitle = when {
-                    state.isFuturePreview && state.summary.remainingCents < 0L ->
-                        "Aperçu — déficit après factures"
-                    state.isFuturePreview -> "Aperçu — reste après factures"
-                    state.summary.remainingCents < 0L -> "Déficit après factures"
-                    else -> "Reste après factures"
-                }
-                val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
-                Text(
-                    text = remainingTitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
-                Text(
-                    text = remainingAmount,
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = fit.remainingAmountSp.sp,
-                        lineHeight = (fit.remainingAmountSp + 4f).sp,
-                        letterSpacing = (-0.02).em
-                    ),
-                    color = when {
-                        state.summary.remainingCents < 0L -> A11yTokens.DangerInk
-                        else -> A11yTokens.Ink
-                    },
-                    modifier = Modifier.semantics {
-                        contentDescription = "$remainingTitle : $remainingAmount"
-                    }
-                )
-                // H01 : 1 chiffre + 1 ligne statut ; Courses = entrée sticky (sheet unique).
-                stickyStillToPayLabel(
-                    stillToPayCents = state.summary.stillToPayCents,
-                    hasExpenses = state.timeline.any { it is TimelineItem.Expense },
-                    futurePreview = state.isFuturePreview
-                )?.let { label ->
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = when {
-                            state.summary.stillToPayCents == 0L -> A11yTokens.AccentOkInk
-                            else -> A11yTokens.InkMuted
-                        },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.semantics { contentDescription = label }
-                    )
-                }
-                stickyCoursesLabel(
-                    diversSpentCents = state.diversSpentCents,
-                    afterDiversCents = state.afterDiversCents,
-                    futurePreview = state.isFuturePreview
-                )?.let { coursesLabel ->
-                    StickyLinkRow(
-                        label = coursesLabel,
-                        labelColor = when {
-                            state.diversSpentCents > 0L && state.afterDiversCents < 0L ->
-                                A11yTokens.DangerInk
-                            else -> A11yTokens.InkMuted
-                        },
-                        compact = fit.compactHomeChrome,
-                        onClickLabel = "Modifier les courses",
-                        contentDescription = if (state.diversSpentCents > 0L) {
-                            "$coursesLabel. Modifier les courses"
-                        } else {
-                            "Courses. Noter un montant"
-                        },
-                        onClick = { coursesSheetOpen = true }
-                    )
-                }
-                // S26 / hauteur courte : épargne derrière Plus (toujours accessible).
-                val savingsLabelSticky = stickySavingsLabel(
-                    savingsMonthlyCents = state.savingsMonthlyCents,
-                    futurePreview = state.isFuturePreview
-                )
-                val savingsBehindPlus =
-                    fit.compactHomeChrome && savingsLabelSticky != null
-                if (!savingsBehindPlus) {
-                    savingsLabelSticky?.let { savingsLabel ->
-                        StickyLinkRow(
-                            label = savingsLabel,
-                            labelColor = A11yTokens.InkMuted,
-                            compact = fit.compactHomeChrome,
-                            onClickLabel = "Modifier mettre de côté",
-                            contentDescription = if (state.savingsMonthlyCents > 0L) {
-                                "$savingsLabel. Modifier"
-                            } else {
-                                "Mettre de côté. Choisir un montant"
-                            },
-                            onClick = { savingsSheetOpen = true }
-                        )
-                    }
-                }
-                // Mode aperçu = contexte, toujours visible (pas derrière « Plus »).
-                if (state.isFuturePreview) {
-                    val previewLabel =
-                        "Aperçu — montants d’après la dernière saisie ; pas de FAIT ni d’ajout."
-                    Text(
-                        text = previewLabel,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.AccentWarn,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.semantics {
-                            liveRegion = LiveRegionMode.Polite
-                            contentDescription = previewLabel
-                        }
-                    )
-                }
-                val afterFaitLabel = stickyWithoutUnpaidLabel(
-                    remainingCents = state.summary.remainingCents,
-                    stillToPayCents = state.summary.stillToPayCents,
-                    futurePreview = state.isFuturePreview
-                )
-                val needIncomeTip = !state.isFuturePreview &&
-                    state.summary.remainingCents < 0L &&
-                    state.timeline.none { it is TimelineItem.Income }
-                val hasStickyExtras = afterFaitLabel != null ||
-                    needIncomeTip ||
-                    state.nextMonthWarning != null ||
-                    state.pendingLetterCount > 0 ||
-                    savingsBehindPlus
-                if (hasStickyExtras) {
-                    val detailsLabel =
-                        if (stickyDetailsOpen) "Masquer" else "Autres infos"
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .clickable(
-                                role = Role.Button,
-                                onClickLabel = if (stickyDetailsOpen) {
-                                    "Masquer épargne et détails"
-                                } else {
-                                    "Voir épargne et détails"
-                                }
-                            ) { stickyDetailsOpen = !stickyDetailsOpen }
-                            .padding(vertical = 4.dp)
-                            .semantics { contentDescription = detailsLabel },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = detailsLabel,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 1
-                        )
-                        Icon(
-                            painter = painterResource(
-                                if (stickyDetailsOpen) R.drawable.ic_expand_less
-                                else R.drawable.ic_expand_more
-                            ),
-                            contentDescription = null,
-                            tint = A11yTokens.InkMuted,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-                AnimatedVisibility(visible = stickyDetailsOpen && hasStickyExtras) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
-                    ) {
-                        if (savingsBehindPlus) {
-                            savingsLabelSticky?.let { savingsLabel ->
-                                StickyLinkRow(
-                                    label = savingsLabel,
-                                    labelColor = A11yTokens.InkMuted,
-                                    compact = true,
-                                    onClickLabel = "Modifier mettre de côté",
-                                    contentDescription = if (state.savingsMonthlyCents > 0L) {
-                                        "$savingsLabel. Modifier"
-                                    } else {
-                                        "Mettre de côté. Choisir un montant"
-                                    },
-                                    onClick = { savingsSheetOpen = true }
-                                )
-                            }
-                        }
-                        afterFaitLabel?.let { label ->
-                            Text(
-                                text = label,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.AccentWarn,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.semantics { contentDescription = label }
-                            )
-                        }
-                        if (needIncomeTip) {
-                            Text(
-                                text = "Ajoutez un revenu (salaire).",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.AccentWarn,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.semantics {
-                                    liveRegion = LiveRegionMode.Polite
-                                    contentDescription = "Ajoutez un revenu (salaire)."
-                                }
-                            )
-                        }
-                        state.nextMonthWarning?.let { warning ->
-                            Text(
-                                text = warning,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.AccentWarn,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = A11yTokens.minTouchHeight)
-                                    .clickable(
-                                        role = Role.Button,
-                                        onClickLabel = "Voir les échéances hors ce mois"
-                                    ) { onOpenDeadlines() }
-                                    .semantics {
-                                        liveRegion = LiveRegionMode.Polite
-                                        contentDescription = warning
-                                    }
-                            )
-                        }
-                        if (state.pendingLetterCount > 0) {
-                            val pendingLabel = if (state.pendingLetterCount == 1) {
-                                "1 courrier sans plan · Voir"
-                            } else {
-                                "${state.pendingLetterCount} courriers sans plan · Voir"
-                            }
-                            Text(
-                                text = pendingLabel,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = A11yTokens.minTouchHeight)
-                                    .clickable(
-                                        role = Role.Button,
-                                        onClickLabel = "Ouvrir Dossiers"
-                                    ) { onOpenDossiers() }
-                                    .semantics {
-                                        liveRegion = LiveRegionMode.Polite
-                                        contentDescription = pendingLabel
-                                    }
-                            )
-                        }
-                    }
-                }
-            }
-            }
-            // Un seul filet sous le sticky (plus de double séparateur dégradé + divider).
-            HorizontalDivider(color = A11yTokens.PaperBorder)
-
+            HomeStickyHeader(
+                state = state,
+                fit = fit,
+                stickyDetailsOpen = stickyDetailsOpen,
+                onStickyDetailsOpenChange = { stickyDetailsOpen = it },
+                onOpenMonthPicker = { monthPickerOpen = true },
+                onPrevMonth = viewModel::prevMonth,
+                onNextMonth = viewModel::nextMonth,
+                onOpenCourses = { coursesSheetOpen = true },
+                onOpenSavings = { savingsSheetOpen = true },
+                onOpenDeadlines = onOpenDeadlines,
+                onOpenDossiers = onOpenDossiers
+            )
             // FAIT : bandeau papier compact sous le sticky (pas barre pleine largeur).
             SnackbarHost(
                 hostState = snackbarHostState,

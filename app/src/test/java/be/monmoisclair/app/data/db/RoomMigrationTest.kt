@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -17,9 +18,8 @@ import org.robolectric.RobolectricTestRunner
  * Sans MigrationTestHelper/assets (Robolectric ne les charge pas ici) — on exécute
  * le callback de migration sur une table v7 minimale.
  *
- * Chaîne 1→8 : **pas** de harness ici (schémas assets Room non chargés sous Robolectric).
- * Les [Migrations.MIGRATION_1_2] … [Migrations.MIGRATION_6_7] restent couverts
- * indirectement via installs réelles / sideload ; à instrumenter plus tard si besoin.
+ * Chaîne 1→8 : pas de harness fidèle sous Robolectric (schémas assets Room non chargés).
+ * Voir [documentChain1ToN_notHarnessedUnderRobolectric] — skip honnête, pas un faux vert.
  */
 @RunWith(RobolectricTestRunner::class)
 class RoomMigrationTest {
@@ -138,6 +138,21 @@ class RoomMigrationTest {
             assertThat(cursor.moveToFirst()).isTrue()
             assertThat(cursor.getInt(0)).isEqualTo(0)
         }
+    }
+
+    /**
+     * Documente l’absence volontaire d’un harness 1→N sous Robolectric.
+     * Ignoré (pas exécuté) : les schémas export Room / MigrationTestHelper
+     * ne chargent pas correctement ici ; un faux test flaky serait pire.
+     * Couverture réelle : [migrate7To8_backfillsFeeEventsFromAddedFees] + sideload.
+     */
+    @Ignore(
+        "Harness Room 1→N non fiable sous Robolectric sans assets schémas ; " +
+            "garder Ignore plutôt qu’un faux vert. Instrumenter via androidTest si besoin."
+    )
+    @Test
+    fun documentChain1ToN_notHarnessedUnderRobolectric() {
+        error("Ne doit pas s’exécuter — @Ignore documentaire.")
     }
 
     companion object {

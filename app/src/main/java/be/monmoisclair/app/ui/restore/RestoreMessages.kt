@@ -15,6 +15,7 @@ object RestoreMessages {
         is RestoreResult.IoError ->
             "Impossible de lire cette sauvegarde. Le mois en cours n’a pas été modifié."
         is RestoreResult.BadShareCode -> result.message
+        is RestoreResult.CleartextRejected -> CLEARTEXT_REJECTED
     }
 
     private fun successMessage(result: RestoreResult.Success): String {
@@ -37,7 +38,14 @@ object RestoreMessages {
         }
     }
 
-    /** Warning fort — grace pré-6.81 encore acceptée, à remplacer par une copie .mmc. */
+    /** Refus par défaut — cocher « Ancien format (ZIP/JSON clair) » pour forcer. */
+    const val CLEARTEXT_REJECTED =
+        "Cette copie est en clair (ancienne version). " +
+            "Cochez « Ancien format (ZIP/JSON clair) » pour l’accepter une fois, " +
+            "puis faites tout de suite une nouvelle copie chiffrée. " +
+            "Le mois en cours n’a pas été modifié."
+
+    /** Warning fort — grace pré-6.81 acceptée via opt-in, à remplacer par une copie .mmc. */
     const val CLEARTEXT_GRACE_WARNING =
         "Attention : cette copie était en clair (ancienne version). " +
             "Faites tout de suite une nouvelle copie chiffrée (Réglages → Envoyer une copie) " +

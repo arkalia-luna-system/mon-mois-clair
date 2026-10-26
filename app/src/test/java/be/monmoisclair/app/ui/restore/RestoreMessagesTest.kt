@@ -86,4 +86,13 @@ class RestoreMessagesTest {
         assertThat(msg.lowercase()).contains("clair")
         assertThat(msg.lowercase()).contains("jet")
     }
+
+    @Test
+    fun cleartextRejected_pointsToOptIn() {
+        val msg = RestoreMessages.from(RestoreResult.CleartextRejected)
+        assertThat(msg).isEqualTo(RestoreMessages.CLEARTEXT_REJECTED)
+        assertThat(msg.lowercase()).contains("clair")
+        assertThat(msg.lowercase()).contains("ancien format")
+        assertThat(msg).contains("n’a pas été modifié")
+    }
 }

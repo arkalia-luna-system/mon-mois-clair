@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.84** (perfection code — structure / filets / sécu résiduelle) |
+| Dernière étape terminée | **6.85** (perfection code vague 2 — découpe &lt;700 · refus cleartext · skip migration 1→N) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail — puis GO cadeau |
-| Audit premium | final-08 structure ~7/10 · sécu résiduelle ~7,5/10 · **pas** « 9/10 dans la main » · S26 / restore doigt ouverts |
+| Audit premium | final-09 structure ~7,5/10 · sécu résiduelle ~8/10 · **pas** « 9/10 dans la main » · S26 / restore doigt ouverts |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.85 Perfection code vague 2 (final-09)
+
+**Claims 6.84 :** version / 346 / fichiers découpés confirmés (écart doc : aucun).
+
+**Découpe :** `HomeStickyHeader` + `HomeDialogs` (Home 1098→622) ; `EntryFormRecurrence` / `Payment` / `Dossier` (Scaffold 1027→543). Zéro redesign.
+
+**Sécu :** restore ZIP/JSON clair **refusée** sauf opt-in « Ancien format » ; PRIVACY/SECURITY alignés.
+
+**Migrations :** `@Ignore` documentaire 1→N (pas de faux harness Robolectric).
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **347 exécutés** / 348 déclarés (1 skipped), 84 XML, 0 failure.  
+**Version :** `0.1.0-6.85` · `versionCode` 90.  
+**Preuve :** [`docs/audits/2026-10-26-final-09-perfection-code-v2.md`](docs/audits/2026-10-26-final-09-perfection-code-v2.md).  
+**Pas un claim « 9/10 dans la main ».** Reste : reducer Add/Edit · PDF clair · S26 Athalia.
 
 ### 2026-10-26 — 6.84 Perfection code (final-08)
 

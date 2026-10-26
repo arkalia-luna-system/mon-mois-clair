@@ -7,16 +7,13 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardActions
@@ -38,22 +34,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -67,7 +56,6 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.CarnetPageTitle
-import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
@@ -380,552 +368,80 @@ internal fun EntryFormScaffold(
                 )
             )
 
-            // Édition ponctuelle (sans modèle) : info seule.
-            if (!showRecurring && !showFrequencyEdit) {
-                recurrenceInfo?.let { info ->
-                    Text(text = "Fréquence", style = MaterialTheme.typography.bodyLarge, color = A11yTokens.InkMuted)
-                    Text(text = info, style = MaterialTheme.typography.bodyLarge)
-                }
-            }
 
-            if ((showRecurring || showFrequencyEdit) && onRecurrence != null) {
-                CarnetSectionTitle("Fréquence")
-                if (showFrequencyEdit) {
-                    Text(
-                        text = "Mois déjà créés : cochez « Aussi les mois suivants ».",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-                @OptIn(ExperimentalLayoutApi::class)
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
-                        onRecurrence(RecurrenceChoice.Once)
-                    }
-                    TypeChip(RecurrenceLabel.chipMonthly(), selected = recurrence == RecurrenceChoice.Monthly) {
-                        onRecurrence(RecurrenceChoice.Monthly)
-                    }
-                    TypeChip(
-                        RecurrenceLabel.chipEvery3Months(),
-                        selected = recurrence == RecurrenceChoice.Every3Months
-                    ) {
-                        onRecurrence(RecurrenceChoice.Every3Months)
-                    }
-                    TypeChip(RecurrenceLabel.chipYearly(), selected = recurrence == RecurrenceChoice.Yearly) {
-                        onRecurrence(RecurrenceChoice.Yearly)
-                    }
-                }
-                if (showNextDueMonth) {
-                    CarnetSectionTitle("Prochaine échéance")
-                    @OptIn(ExperimentalLayoutApi::class)
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        for (m in 1..12) {
-                            TypeChip(
-                                text = be.monmoisclair.app.domain.RecurrenceAnchor.frenchMonthLabel(m),
-                                selected = nextDueMonth == m
-                            ) {
-                                onNextDueMonth(m)
-                            }
-                        }
-                    }
-                }
-            } else if (showRecurring) {
-                CheckRow(
-                    checked = recurring,
-                    label = RecurrenceLabel.forIntervalMonths(1),
-                    onChecked = onRecurring
-                )
-            }
-            // FORM01 : qui → combien → jour (ci-dessus) → Paiement & preuve → Accord.
-            // Prélèvement vit dans Paiement (pas un tip cockpit entre grille et section).
-            if (showPaymentAssist) {
-                val hasPaymentContent =
-                    paymentNote.isNotBlank() ||
-                        hasReceiptPhoto ||
-                        hasPendingPhoto ||
-                        hasPendingPdf ||
-                        extraReceiptPaths.isNotEmpty() ||
-                        isAutoDebit
-                // Fermé par défaut : grille jours reste au premier plan ; pièce en attente → ouvre.
-                var paymentExpanded by remember {
-                    mutableStateOf(hasPendingPhoto || hasPendingPdf)
-                }
-                LaunchedEffect(hasPendingPhoto, hasPendingPdf) {
-                    if (hasPendingPhoto || hasPendingPdf) paymentExpanded = true
-                }
-                HorizontalDivider(color = A11yTokens.PaperBorder)
-                FormSectionToggle(
-                    title = "Paiement & preuve",
-                    expanded = paymentExpanded,
-                    closedHint = when {
-                        hasPaymentContent -> "Noté — touchez pour voir"
-                        else -> "QR, +++ , photo, PDF"
-                    },
-                    onToggle = { paymentExpanded = !paymentExpanded }
-                )
-                if (paymentExpanded) {
-                    // Secondary = QR / photo / PDF seulement ;
-                    // QuietLink = Copier / Voir / Enlever / OCR (2ᵉ rang).
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        if (showAutoDebit) {
-                            CheckRow(
-                                checked = isAutoDebit,
-                                label = "Prélèvement automatique",
-                                onChecked = onAutoDebit
-                            )
-                        }
-                        if (onScanEpc != null) {
-                            SecondaryA11yButton(text = "Scanner une facture (QR)", onClick = onScanEpc)
-                        }
-                        OutlinedTextField(
-                            value = paymentNote,
-                            onValueChange = onPaymentNote,
-                            label = { Text("Référence / communication") },
-                            placeholder = { Text("+++090/9337/55493+++") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight)
-                                .then(noteBring),
-                            textStyle = MaterialTheme.typography.bodyLarge,
-                            shape = MaterialTheme.shapes.medium,
-                            colors = carnetOutlinedTextFieldColors(),
-                        )
-                        if (!isAgreement) {
-                            Text(
-                                text = "Eau, énergie, télécom : souvent une nouvelle +++ chaque mois.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                        if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
-                            QuietLinkA11y(
-                                text = "Copier la communication",
-                                onClick = onCopyPaymentNote
-                            )
-                        }
-                        if (onReadCommFromPhoto != null) {
-                            QuietLinkA11y(
-                                text = if (ocrBusy) {
-                                    "Lecture de la photo…"
-                                } else {
-                                    "Lire la communication sur la photo"
-                                },
-                                onClick = onReadCommFromPhoto,
-                                enabled = !ocrBusy
-                            )
-                        }
-                        // Photo / PDF : CTA d’ajout seulement si absents ;
-                        // sinon via le bloc pièce (aperçu / reprendre / enlever).
-                        val noPhotoYet = !hasReceiptPhoto && !hasPendingPhoto
-                        val noPdfYet = !hasReceiptPhoto && !hasPendingPdf &&
-                            extraReceiptPaths.none { isPdfPath(it) }
-                        val appendOnAgreement =
-                            isAgreement && hasReceiptPhoto && !hasPendingPhoto && !hasPendingPdf
-                        if (onTakePhoto != null && (noPhotoYet || appendOnAgreement)) {
-                            SecondaryA11yButton(
-                                text = if (appendOnAgreement) {
-                                    "Ajouter un courrier (photo)"
-                                } else {
-                                    "Photo de la facture papier"
-                                },
-                                onClick = onTakePhoto
-                            )
-                        }
-                        if (onPickPdf != null && (noPdfYet || appendOnAgreement ||
-                                (hasReceiptPhoto && !receiptIsPdf && !hasPendingPdf))
-                        ) {
-                            // PDF absent, photo seule (joindre à côté), ou accord (ajouter).
-                            SecondaryA11yButton(text = "Joindre un PDF", onClick = onPickPdf)
-                        }
-                        if (hasPendingPhoto) {
-                            val photoOkShape = MaterialTheme.shapes.medium
-                            val photoOkText = if (isAgreement && hasReceiptPhoto) {
-                                "Photo prête — s’ajoute aux courriers à l’enregistrement."
-                            } else {
-                                "Photo prête — Enregistrer pour la garder."
-                            }
-                            Text(
-                                text = photoOkText,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.AccentOkInk,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        1.dp,
-                                        A11yTokens.AccentOkInk.copy(alpha = 0.35f),
-                                        photoOkShape
-                                    )
-                                    .background(A11yTokens.AccentOkSoft, photoOkShape)
-                                    .padding(10.dp)
-                                    .semantics {
-                                        liveRegion = LiveRegionMode.Polite
-                                        contentDescription = photoOkText
-                                    }
-                            )
-                            if (onTakePhoto != null) {
-                                QuietLinkA11y(
-                                    text = "Reprendre la photo",
-                                    onClick = onTakePhoto
-                                )
-                            }
-                        }
-                        if (hasPendingPdf) {
-                            val pdfOkShape = MaterialTheme.shapes.medium
-                            val pdfOkText = if (hasReceiptPhoto) {
-                                "PDF prêt — s’ajoute à côté de la photo à l’enregistrement."
-                            } else {
-                                "PDF prêt — Enregistrer pour le garder."
-                            }
-                            Text(
-                                text = pdfOkText,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.AccentOkInk,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        1.dp,
-                                        A11yTokens.AccentOkInk.copy(alpha = 0.35f),
-                                        pdfOkShape
-                                    )
-                                    .background(A11yTokens.AccentOkSoft, pdfOkShape)
-                                    .padding(10.dp)
-                                    .semantics {
-                                        liveRegion = LiveRegionMode.Polite
-                                        contentDescription = pdfOkText
-                                    }
-                            )
-                            if (onPickPdf != null) {
-                                QuietLinkA11y(text = "Changer le PDF", onClick = onPickPdf)
-                            }
-                            if (onClearPendingPdf != null) {
-                                QuietLinkA11y(
-                                    text = "Enlever ce courrier",
-                                    onClick = onClearPendingPdf
-                                )
-                            }
-                        }
-                        // Bloc pièce existante (aperçu / voir / reprendre / enlever).
-                        if (
-                            hasReceiptPhoto &&
-                            receiptPreview == null &&
-                            onViewReceipt != null &&
-                            !hasPendingPhoto &&
-                            !hasPendingPdf
-                        ) {
-                            QuietLinkA11y(
-                                text = if (receiptIsPdf) {
-                                    "Voir le courrier (PDF)"
-                                } else {
-                                    "Voir la photo de la facture"
-                                },
-                                onClick = onViewReceipt
-                            )
-                        }
-                        receiptPreview?.let { bmp ->
-                            // FORM06 : miniature seule — contentDescription / onClickLabel suffisent.
-                            Image(
-                                bitmap = bmp.asImageBitmap(),
-                                contentDescription = "Photo de la facture — touchez pour agrandir",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(120.dp)
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .background(A11yTokens.PaperWarm)
-                                    .then(
-                                        if (onViewReceipt != null) {
-                                            Modifier.clickable(
-                                                role = Role.Button,
-                                                onClickLabel = "Agrandir la facture",
-                                                onClick = onViewReceipt
-                                            )
-                                        } else {
-                                            Modifier
-                                        }
-                                    )
-                            )
-                        }
-                        if (hasReceiptPhoto && !hasPendingPhoto) {
-                            if (onTakePhoto != null && !receiptIsPdf) {
-                                QuietLinkA11y(
-                                    text = "Reprendre la photo de la facture",
-                                    onClick = onTakePhoto
-                                )
-                            }
-                            if (onPickPdf != null && receiptIsPdf) {
-                                QuietLinkA11y(
-                                    text = "Remplacer le PDF",
-                                    onClick = onPickPdf
-                                )
-                            }
-                            if (onClearReceipt != null) {
-                                QuietLinkA11y(
-                                    text = if (
-                                        !applyFollowing &&
-                                        !isSavingsLine &&
-                                        (isAgreement || hasTemplate)
-                                    ) {
-                                        if (receiptIsPdf) {
-                                            "Enlever le PDF de ce mois"
-                                        } else {
-                                            "Enlever la photo de ce mois"
-                                        }
-                                    } else if (receiptIsPdf) {
-                                        "Enlever le PDF"
-                                    } else {
-                                        "Enlever la photo"
-                                    },
-                                    onClick = onClearReceipt
-                                )
-                            }
-                        }
-                        if (extraReceiptPaths.isNotEmpty()) {
-                            Text(
-                                text = if (hasReceiptPhoto) "Autres courriers" else "Courriers",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.InkMuted
-                            )
-                            extraReceiptPaths.forEachIndexed { index, path ->
-                                val n = if (hasReceiptPhoto) index + 2 else index + 1
-                                val pdf = isPdfPath(path)
-                                @OptIn(ExperimentalLayoutApi::class)
-                                FlowRow(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    if (onViewExtraReceipt != null) {
-                                        QuietLinkA11y(
-                                            text = if (pdf) {
-                                                "Voir le courrier $n (PDF)"
-                                            } else {
-                                                "Voir le courrier $n"
-                                            },
-                                            onClick = { onViewExtraReceipt(path) },
-                                            fillMaxWidth = false
-                                        )
-                                    }
-                                    if (onRemoveExtraReceipt != null) {
-                                        QuietLinkA11y(
-                                            text = "Enlever le courrier $n",
-                                            onClick = { onRemoveExtraReceipt(path) },
-                                            fillMaxWidth = false
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } else if (showAutoDebit) {
-                CheckRow(
-                    checked = isAutoDebit,
-                    label = "Prélèvement automatique",
-                    onChecked = onAutoDebit
-                )
-            }
-
-            if (showDossierSection) {
-                // FORM04 / FORM01 : Accord après Paiement — filet + repli.
-                HorizontalDivider(color = A11yTokens.PaperBorder)
-                FormSectionToggle(
-                    title = "Retard ou accord",
-                    expanded = dossierExpanded,
-                    closedHint = "Huissier, hôpital, plan de paiement…",
-                    onToggle = { onDossierExpanded(!dossierExpanded) }
-                )
-                if (dossierExpanded) {
-                    // Accordion : champs ; reste/rythme déjà au-dessus de la grille si accord.
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                    if (!isAgreement) {
-                        if (isSettled) {
-                            Text(
-                                text = "Soldé",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.AccentOkInk
-                            )
-                        }
-                        remainingCents?.let { rem ->
-                            if (!isSettled) {
-                                Text(
-                                    text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = A11yTokens.InkMuted,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                if (!pacePhrase.isNullOrBlank()) {
-                                    Text(
-                                        text = pacePhrase,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = A11yTokens.InkMuted
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    OutlinedTextField(
-                        value = causeLabel,
-                        onValueChange = onCauseLabel,
-                        label = { Text("Pour quoi (ex. Hôpital 2025)") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .then(causeBring),
-                        textStyle = MaterialTheme.typography.bodyLarge,
-                        singleLine = true,
-                        shape = MaterialTheme.shapes.medium,
-                        colors = carnetOutlinedTextFieldColors(),
-                    )
-                    if (!isAgreement) {
-                        OutlinedTextField(
-                            value = openingRemainingText,
-                            onValueChange = onOpeningRemainingText,
-                            label = { Text("Combien reste-t-il aujourd’hui ?") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight)
-                                .then(remainingBring),
-                            textStyle = MaterialTheme.typography.bodyLarge,
-                            singleLine = true,
-                            shape = MaterialTheme.shapes.medium,
-                            colors = carnetOutlinedTextFieldColors(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                        )
-                        Text(
-                            text = "Vide = pas un accord. Le montant du haut = ce mois.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        if (onSaveAsPendingLetter != null &&
-                            openingRemainingText.isBlank()
-                        ) {
-                            QuietLinkA11y(
-                                text = "Garder le courrier (sans montant)",
-                                onClick = onSaveAsPendingLetter,
-                                enabled = primaryEnabled
-                            )
-                        }
-                    }
-                    // Lot C — IBAN / e-mail / frais (dossier seulement).
-                    OutlinedTextField(
-                        value = iban,
-                        onValueChange = onIban,
-                        label = { Text("IBAN") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight),
-                        textStyle = MaterialTheme.typography.bodyLarge,
-                        singleLine = true,
-                        shape = MaterialTheme.shapes.medium,
-                        colors = carnetOutlinedTextFieldColors(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = { focusManager.clearFocus() }
-                        )
-                    )
-                    if (onCopyIban != null && iban.isNotBlank()) {
-                        QuietLinkA11y(text = "Copier l’IBAN", onClick = onCopyIban)
-                    }
-                    OutlinedTextField(
-                        value = creditorEmail,
-                        onValueChange = onCreditorEmail,
-                        label = { Text("E-mail (pour Écrire)") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight),
-                        textStyle = MaterialTheme.typography.bodyLarge,
-                        singleLine = true,
-                        shape = MaterialTheme.shapes.medium,
-                        colors = carnetOutlinedTextFieldColors(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = { focusManager.clearFocus() }
-                        )
-                    )
-                    if (onWriteMail != null && creditorEmail.isNotBlank()) {
-                        QuietLinkA11y(text = "Écrire", onClick = onWriteMail)
-                    }
-                    if (isAgreement) {
-                        if (feeEvents.isNotEmpty() || addedFeesCents > 0L) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Text(
-                                    text = "Frais notés : ${MoneyFormat.formatCents(addedFeesCents)}",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.Ink
-                                )
-                                feeEvents.forEach { ev ->
-                                    val line = buildString {
-                                        append(ev.dateLabel)
-                                        append(" · ")
-                                        append(MoneyFormat.formatCents(ev.amountCents))
-                                        if (ev.note.isNotBlank()) {
-                                            append(" — ")
-                                            append(ev.note)
-                                        }
-                                    }
-                                    Text(
-                                        text = line,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = A11yTokens.InkMuted
-                                    )
-                                }
-                            }
-                        }
-                        OutlinedTextField(
-                            value = feeAddText,
-                            onValueChange = onFeeAddText,
-                            label = { Text("Ils ont ajouté un montant (€)") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight),
-                            textStyle = MaterialTheme.typography.bodyLarge,
-                            singleLine = true,
-                            shape = MaterialTheme.shapes.medium,
-                            colors = carnetOutlinedTextFieldColors(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                        )
-                        OutlinedTextField(
-                            value = feeNoteText,
-                            onValueChange = onFeeNoteText,
-                            label = { Text("Motif (ex. frais de rappel)") },
-                            supportingText = {
-                                Text("Chaque montant s’ajoute à la liste avec la date du jour.")
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight),
-                            textStyle = MaterialTheme.typography.bodyLarge,
-                            singleLine = true,
-                            shape = MaterialTheme.shapes.medium,
-                            colors = carnetOutlinedTextFieldColors(),
-                        )
-                    }
-                    } // fin carte dossier
-                }
-            }
+            EntryFormRecurrenceSection(
+                showRecurring = showRecurring,
+                showFrequencyEdit = showFrequencyEdit,
+                recurrence = recurrence,
+                onRecurrence = onRecurrence,
+                recurrenceInfo = recurrenceInfo,
+                nextDueMonth = nextDueMonth,
+                onNextDueMonth = onNextDueMonth,
+                showNextDueMonth = showNextDueMonth,
+                recurring = recurring,
+                onRecurring = onRecurring
+            )
+            EntryFormPaymentSection(
+                showPaymentAssist = showPaymentAssist,
+                showAutoDebit = showAutoDebit,
+                isAutoDebit = isAutoDebit,
+                onAutoDebit = onAutoDebit,
+                paymentNote = paymentNote,
+                onPaymentNote = onPaymentNote,
+                noteBring = noteBring,
+                isAgreement = isAgreement,
+                hasPendingPhoto = hasPendingPhoto,
+                hasPendingPdf = hasPendingPdf,
+                hasReceiptPhoto = hasReceiptPhoto,
+                receiptIsPdf = receiptIsPdf,
+                receiptPreview = receiptPreview,
+                extraReceiptPaths = extraReceiptPaths,
+                isPdfPath = isPdfPath,
+                applyFollowing = applyFollowing,
+                isSavingsLine = isSavingsLine,
+                hasTemplate = hasTemplate,
+                ocrBusy = ocrBusy,
+                onScanEpc = onScanEpc,
+                onTakePhoto = onTakePhoto,
+                onPickPdf = onPickPdf,
+                onClearPendingPdf = onClearPendingPdf,
+                onClearReceipt = onClearReceipt,
+                onViewReceipt = onViewReceipt,
+                onViewExtraReceipt = onViewExtraReceipt,
+                onRemoveExtraReceipt = onRemoveExtraReceipt,
+                onCopyPaymentNote = onCopyPaymentNote,
+                onReadCommFromPhoto = onReadCommFromPhoto
+            )
+            EntryFormDossierSection(
+                showDossierSection = showDossierSection,
+                dossierExpanded = dossierExpanded,
+                onDossierExpanded = onDossierExpanded,
+                isAgreement = isAgreement,
+                isSettled = isSettled,
+                remainingCents = remainingCents,
+                pacePhrase = pacePhrase,
+                causeLabel = causeLabel,
+                onCauseLabel = onCauseLabel,
+                causeBring = causeBring,
+                openingRemainingText = openingRemainingText,
+                onOpeningRemainingText = onOpeningRemainingText,
+                remainingBring = remainingBring,
+                primaryEnabled = primaryEnabled,
+                onSaveAsPendingLetter = onSaveAsPendingLetter,
+                iban = iban,
+                onIban = onIban,
+                onCopyIban = onCopyIban,
+                creditorEmail = creditorEmail,
+                onCreditorEmail = onCreditorEmail,
+                onWriteMail = onWriteMail,
+                feeAddText = feeAddText,
+                onFeeAddText = onFeeAddText,
+                feeNoteText = feeNoteText,
+                onFeeNoteText = onFeeNoteText,
+                addedFeesCents = addedFeesCents,
+                feeEvents = feeEvents,
+                focusManager = focusManager
+            )
             if (showApplyFollowing && hasTemplate) {
                 CheckRow(
                     checked = applyFollowing,

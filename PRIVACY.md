@@ -22,7 +22,7 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 
 **Honnêteté :** ce n’est **pas** un coffre parfait. Après déverrouillage, les données sont en RAM / à l’écran. Appareil root / malware puissant peut encore contourner. Code de copie oublié + téléphone mort **sans** autre copie = données perdues (pas de serveur de recovery).
 
-Anciennes copies ZIP/JSON **en clair** (pré-6.81) restent restaurables (grace) avec un **avertissement fort** à l’import — à remplacer par une copie `.mmc` puis à jeter.
+Anciennes copies ZIP/JSON **en clair** (pré-6.81) sont **refusées par défaut** à la restore ; opt-in explicite « Ancien format » + avertissement fort si acceptées — à remplacer par une copie `.mmc` puis à jeter.
 
 ## Widget
 

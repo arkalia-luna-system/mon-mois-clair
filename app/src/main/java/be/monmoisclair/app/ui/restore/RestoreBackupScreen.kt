@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -181,6 +182,26 @@ fun RestoreBackupScreen(
             placeholder = { Text("8 chiffres du téléphone d’origine") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
         )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Checkbox(
+                checked = state.allowCleartextLegacy,
+                onCheckedChange = viewModel::onAllowCleartextLegacyChange,
+                enabled = !state.busy
+            )
+            Text(
+                text = "Ancien format (ZIP/JSON clair)",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.weight(1f)
+            )
+        }
 
         state.message?.let { msg ->
             if (!showSuccessDialog) {
