@@ -1,7 +1,6 @@
 package be.monmoisclair.app.domain
 
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 /**
  * Lot C — texte pour l’app Mail (aucun fil stocké dans Mon Mois Clair).
@@ -54,8 +53,9 @@ object CreditorMailComposer {
      * Gmail et d’autres clients ignorent souvent les extras SENDTO.
      */
     fun mailtoUri(draft: Draft): String {
+        // Charset overload = API 33+ ; String "UTF-8" = API 1 (minSdk 26).
         fun q(value: String): String =
-            URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20")
+            URLEncoder.encode(value, "UTF-8").replace("+", "%20")
         val to = draft.to.trim()
         return "mailto:$to?subject=${q(draft.subject)}&body=${q(draft.body)}"
     }

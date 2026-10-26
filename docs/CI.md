@@ -58,8 +58,11 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
 
 **Mitigation repo (6.80+) :** `build.gradle.kts` racine force via `resolutionStrategy`
 (transitifs UTP/AGP — **pas** dans l’APK runtime) :
-`protobuf-java:3.25.9`, `commons-io:2.22.0`, `io.netty:*:4.1.139.Final`,
-`bcprov-jdk18on:1.86`, `jdom2:2.0.6.1`, `jose4j:0.9.7`.
+`protobuf-java:3.25.9`, `commons-io:2.22.0`, `commons-compress:1.26.0`,
+`io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`, `bcpkix-jdk18on:1.86`,
+`jdom2:2.0.6.1`, `jose4j:0.9.7`.
+**Pas** de force `kotlin-gradle-plugin` 2.4.x : CVE Dependabot exige ≥2.4.20-Beta1,
+incompatible avec AGP **8.7.3** + KSP **2.0.21** pinés — bump coordonné plus tard.
 Vérifier avec `./gradlew :app:dependencies`. Si Dependabot Security reste rouge malgré
 le force : dismiss UI (transitive) — la garde produit reste les tests. Alertes GitHub
 peuvent rester jusqu’au **rescan** Dependabot même si le classpath local est patché.

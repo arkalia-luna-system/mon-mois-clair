@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.87** (UI quiet P1 · MD archive nuit-00 · ship develop=main · install release) |
+| Dernière étape terminée | **6.88** (NewApi URLEncoder · force commons-compress/bcpkix · CI) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail · connected androidTest (debug) — puis GO cadeau |
 | Audit premium | final-11 UI/MD/CI ship · **pas** « 9/10 dans la main » · S26 / restore doigt / connected ouverts |
@@ -20,6 +20,17 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.88 NewApi URLEncoder + Dependabot forces
+
+**NewApi :** `URLEncoder.encode(…, StandardCharsets.UTF_8)` → `encode(…, "UTF-8")` (`CreditorMailComposer`, minSdk 26).
+
+**Forces (classpath build, pattern 6.80) :** `commons-compress:1.26.0` · `bcpkix-jdk18on:1.86` (aligné `bcprov` 1.86) dans `settings.gradle.kts` + `build.gradle.kts`.
+
+**Kotlin-gradle-plugin :** alerte Dependabot ≥`2.4.20-Beta1` — **pas** bumpé (AGP 8.7.3 + KSP 2.0.21) ; dismiss / bump coordonné plus tard.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **367 exécutés** / 368 (1 skipped), 87 XML, 0 failure. Lint NewApi **0** (URLEncoder).  
+**Version :** `0.1.0-6.88` · `versionCode` 93.
 
 ### 2026-10-26 — 6.87 UI quiet + MD + ship (final-11)
 
