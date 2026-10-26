@@ -71,4 +71,9 @@ class MonthSummaryPdfWriterTest {
     fun fileName_isStableShareTarget() {
         assertThat(MonthSummaryPdfWriter.FILE_NAME).endsWith(".pdf")
     }
+
+    @Test
+    fun sensitiveMark_documentsCleartextPdfHonesty() {
+        assertThat(MonthSummaryPdfWriter.SENSITIVE_MARK.lowercase()).contains("sensible")
+    }
 }

@@ -19,8 +19,8 @@ object RestoreMessages {
 
     private fun successMessage(result: RestoreResult.Success): String {
         val base = "Restauration réussie. Les données affichées viennent de la sauvegarde."
-        if (result.photosExpected <= 0) return base
-        return when {
+        val photos = when {
+            result.photosExpected <= 0 -> base
             result.photosWritten <= 0 ->
                 "$base Les photos n’ont pas pu être remises : vérifiez le dossier Documents."
             result.photosWritten < result.photosExpected ->
@@ -30,5 +30,16 @@ object RestoreMessages {
             else ->
                 "$base ${result.photosWritten} photos de factures remises."
         }
+        return if (result.cleartextGrace) {
+            "$photos $CLEARTEXT_GRACE_WARNING"
+        } else {
+            photos
+        }
     }
+
+    /** Warning fort — grace pré-6.81 encore acceptée, à remplacer par une copie .mmc. */
+    const val CLEARTEXT_GRACE_WARNING =
+        "Attention : cette copie était en clair (ancienne version). " +
+            "Faites tout de suite une nouvelle copie chiffrée (Réglages → Envoyer une copie) " +
+            "et jetez les vieux ZIP/JSON sur Drive ou WhatsApp."
 }

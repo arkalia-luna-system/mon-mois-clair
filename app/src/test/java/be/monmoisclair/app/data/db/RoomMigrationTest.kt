@@ -16,6 +16,10 @@ import org.robolectric.RobolectricTestRunner
  * Filet sideload famille : SQL [Migrations.MIGRATION_7_8] (frais datés + backfill).
  * Sans MigrationTestHelper/assets (Robolectric ne les charge pas ici) — on exécute
  * le callback de migration sur une table v7 minimale.
+ *
+ * Chaîne 1→8 : **pas** de harness ici (schémas assets Room non chargés sous Robolectric).
+ * Les [Migrations.MIGRATION_1_2] … [Migrations.MIGRATION_6_7] restent couverts
+ * indirectement via installs réelles / sideload ; à instrumenter plus tard si besoin.
  */
 @RunWith(RobolectricTestRunner::class)
 class RoomMigrationTest {

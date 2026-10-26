@@ -19,6 +19,9 @@ import javax.inject.Singleton
  *
  * Les titres de section (Revenus, mois, Déficit…) sont en semibold ;
  * le corps n’est pas entièrement à 18 pt (pied 14 pt, titre doc 22 pt).
+ *
+ * **Honnêteté sécu :** le PDF est généré **en clair** (hors enveloppe MMC1) —
+ * watermark [SENSITIVE_MARK] ; ne pas le traiter comme une copie chiffrée.
  */
 @Singleton
 class MonthSummaryPdfWriter @Inject constructor(
@@ -120,7 +123,7 @@ class MonthSummaryPdfWriter @Inject constructor(
 
     private fun drawFooter(canvas: Canvas, paint: Paint, pageIndex: Int) {
         val baseline = PAGE_HEIGHT - FOOTER_FROM_BOTTOM
-        canvas.drawText("Mon Mois Clair", MARGIN_LEFT, baseline, paint)
+        canvas.drawText("Mon Mois Clair — $SENSITIVE_MARK", MARGIN_LEFT, baseline, paint)
         val pageLabel = pageIndex.toString()
         val x = PAGE_WIDTH - MARGIN_RIGHT - paint.measureText(pageLabel)
         canvas.drawText(pageLabel, x, baseline, paint)
@@ -155,6 +158,9 @@ class MonthSummaryPdfWriter @Inject constructor(
         private const val MUTED = 0xFF4A453C.toInt()
 
         const val FILE_NAME = "mon-mois-clair-resume.pdf"
+
+        /** Filigrane pied de page — PDF résumé = clair, pas une copie .mmc. */
+        const val SENSITIVE_MARK = "données sensibles"
 
         private val MONTH_TITLE =
             Regex("""^[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\- ]+ \d{4}$""")

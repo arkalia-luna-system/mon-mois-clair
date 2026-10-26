@@ -1,0 +1,367 @@
+package be.monmoisclair.app.ui.home
+
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.ui.components.PrimaryA11yButton
+import be.monmoisclair.app.ui.components.QuietLinkA11y
+import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.StampShape
+import be.monmoisclair.app.ui.theme.rememberDisplayFit
+
+@Composable
+internal fun DayBadge(label: String, compact: Boolean = false) {
+    val shape = StampShape
+    Text(
+        text = label,
+        style = MaterialTheme.typography.bodyMedium,
+        color = A11yTokens.InkMuted,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .widthIn(min = if (compact) 48.dp else 56.dp)
+            .background(A11yTokens.PaperWarm, shape)
+            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .padding(
+                horizontal = if (compact) 4.dp else 6.dp,
+                vertical = if (compact) 4.dp else 4.dp
+            )
+            .semantics { contentDescription = "Échéance $label" }
+    )
+}
+
+@Composable
+internal fun StatusChip(
+    text: String,
+    container: Color,
+    content: Color,
+    outlined: Boolean = false,
+    compact: Boolean = false
+) {
+    val shape = StampShape
+    // H04 : air vertical pastille ≥ 4 dp même en compact (pas tampon écrasé).
+    val hPad = if (compact) 6.dp else 8.dp
+    val vPad = if (compact) 4.dp else 4.dp
+    Text(
+        text = text,
+        color = content,
+        style = MaterialTheme.typography.labelLarge,
+        modifier = Modifier
+            .semantics { contentDescription = "Statut : $text" }
+            .border(
+                1.dp,
+                if (outlined) A11yTokens.FieldLine else A11yTokens.PaperBorder,
+                shape
+            )
+            .background(container, shape)
+            .padding(horizontal = hPad, vertical = vPad)
+    )
+}
+
+@Composable
+internal fun IncomeRow(
+    item: TimelineItem.Income,
+    readOnlyPreview: Boolean = false,
+    onClick: () -> Unit
+) {
+    val fit = rememberDisplayFit()
+    val compact = fit.compactHomeChrome
+    // H04 : compact moins écrasé (10/14) — laisser respirer le papier.
+    val rowPad = if (compact) 10.dp else 14.dp
+    val shape = MaterialTheme.shapes.medium
+    // Charte carnet : filet seul (pas ombre Material) — relief « imprimé ».
+    Surface(
+        color = A11yTokens.PaperCard,
+        shape = shape,
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, A11yTokens.PaperBorder, shape)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = A11yTokens.minTouchHeight)
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
+                    onClick = onClick
+                )
+                .padding(rowPad),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
+        ) {
+            DayBadge(item.dayLabel, compact = compact)
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)
+            ) {
+                Text(
+                    text = item.label,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = if (compact) 1 else 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = item.amountLabel,
+                    color = A11yTokens.Ink,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+        }
+    }
+}
+
+@Composable
+internal fun ExpenseRow(
+    item: TimelineItem.Expense,
+    highlighted: Boolean,
+    readOnlyPreview: Boolean = false,
+    onToggle: () -> Unit,
+    onClick: () -> Unit,
+    onCopyNote: () -> Unit,
+    onOpenReceipt: () -> Unit
+) {
+    val fit = rememberDisplayFit()
+    val compact = fit.compactHomeChrome
+    val rowPad = if (compact) 10.dp else 14.dp
+    val shape = MaterialTheme.shapes.medium
+    val targetBg = when {
+        item.isDone -> A11yTokens.AccentOkSoft
+        // Lavis discret : le contour 2 dp porte déjà l’alerte (pas un fond « criard »).
+        item.isOverdue -> A11yTokens.DangerInk.copy(alpha = 0.10f)
+        else -> A11yTokens.PaperCard
+    }
+    val bg by animateColorAsState(
+        targetValue = targetBg,
+        animationSpec = tween(150),
+        label = "expenseRowBg"
+    )
+    // H10 : highlight notif = 2 dp doux. Retard = pastille + lavis (pas contour brique 2 dp).
+    // Charte carnet : filet seul (pas ombre + bordure Material).
+    val borderMod = when {
+        highlighted -> Modifier.border(2.dp, A11yTokens.Link.copy(alpha = 0.55f), shape)
+        else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+    }
+    val lineGap = if (compact) 4.dp else 6.dp
+    Surface(
+        color = bg,
+        shape = shape,
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(borderMod)
+    ) {
+        // H01 : pastille FAIT dans sa bande sous la rangée titre/montant/bouton
+        // (plus de collision avec libellé / − montant sur S938B compact).
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(rowPad),
+            verticalArrangement = Arrangement.spacedBy(lineGap)
+        ) {
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 10.dp)
+            ) {
+                DayBadge(item.dayLabel, compact = compact)
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
+                            onClick = onClick
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(lineGap)
+                ) {
+                    // Compact + accord : pastille sur la 1ʳᵉ ligne pour ne pas
+                    // pousser montant / FAIT (hauteur ~800 dp, plan sortie §3).
+                    if (compact && item.isAgreement) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = item.label,
+                                style = MaterialTheme.typography.bodyLarge,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f)
+                            )
+                            StatusChip(
+                                "Accord",
+                                A11yTokens.PaperWarm,
+                                A11yTokens.Ink,
+                                outlined = true,
+                                compact = true
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = item.label,
+                            style = MaterialTheme.typography.bodyLarge,
+                            maxLines = if (compact) 1 else 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    // P0-C1 : montant dominant juste sous le nom ; cause/cadence = 2ᵉ souffle.
+                    Text(
+                        text = item.amountLabel,
+                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    val meta = buildList {
+                        if (item.causeLabel.isNotBlank()) add(item.causeLabel)
+                        item.cadenceHint?.let { add(it) }
+                    }.joinToString(" · ")
+                    if (meta.isNotBlank()) {
+                        Text(
+                            text = meta,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                if (!readOnlyPreview) {
+                    val faitModifier = Modifier
+                        .widthIn(min = 96.dp)
+                        .semantics {
+                            contentDescription = if (item.isDone) {
+                                "Remettre à payer"
+                            } else {
+                                "Marquer FAIT"
+                            }
+                        }
+                    if (item.isDone) {
+                        SecondaryA11yButton(
+                            text = "Remettre",
+                            onClick = onToggle,
+                            fillMaxWidth = false,
+                            modifier = faitModifier
+                        )
+                    } else {
+                        PrimaryA11yButton(
+                            text = "FAIT ✓",
+                            onClick = onToggle,
+                            fillMaxWidth = false,
+                            containerColor = A11yTokens.AccentOk,
+                            modifier = faitModifier
+                        )
+                    }
+                }
+            }
+            ExpenseStatusLine(
+                item = item,
+                hideAgreementChip = compact && item.isAgreement
+            )
+            // H05 : Copier / Photo en 2ᵉ rangée légère (liens), pas au niveau FAIT.
+            val showNote = item.paymentNote.isNotBlank()
+            val showPhoto = item.hasReceipt
+            if (showNote || showPhoto) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    if (showNote) {
+                        Text(
+                            text = item.paymentNote,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f, fill = false)
+                        )
+                        QuietLinkA11y(
+                            text = "Copier",
+                            onClick = onCopyNote,
+                            fillMaxWidth = false,
+                            onClickLabel = "Copier la communication"
+                        )
+                    }
+                    if (showPhoto) {
+                        QuietLinkA11y(
+                            text = if (compact) "Photo" else "Voir la photo",
+                            onClick = onOpenReceipt,
+                            fillMaxWidth = false,
+                            onClickLabel = "Voir la photo de la facture"
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+internal fun ExpenseStatusLine(
+    item: TimelineItem.Expense,
+    hideAgreementChip: Boolean = false
+) {
+    val fit = rememberDisplayFit()
+    val compact = fit.compactHomeChrome
+    // H06 : ordre critique → Auto → Accord ; max 2 pastilles (photo = lien 2ᵉ rangée).
+    data class Chip(val text: String, val bg: Color, val fg: Color, val outlined: Boolean = false)
+    val chips = buildList {
+        when {
+            item.isOverdue && !item.isDone ->
+                add(Chip("En retard", A11yTokens.AccentDanger, A11yTokens.ButtonText))
+            item.isDone ->
+                add(
+                    Chip(
+                        item.doneLabel ?: "FAIT ✓",
+                        A11yTokens.AccentOk,
+                        A11yTokens.ButtonText
+                    )
+                )
+        }
+        if (item.isAutoDebit) {
+            add(Chip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.OnGold))
+        }
+        if (item.isAgreement && !hideAgreementChip && size < 2) {
+            add(Chip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true))
+        }
+    }.take(2)
+    if (chips.isEmpty()) return
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)
+    ) {
+        chips.forEach { chip ->
+            StatusChip(
+                chip.text,
+                chip.bg,
+                chip.fg,
+                outlined = chip.outlined,
+                compact = compact
+            )
+        }
+    }
+}

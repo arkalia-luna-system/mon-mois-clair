@@ -14,14 +14,12 @@ import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.EpcPayment
-import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterResult
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterUseCase
-import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,8 +31,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.YearMonth
 import javax.inject.Inject
-
-enum class RecurrenceChoice { Once, Monthly, Every3Months, Yearly }
 
 data class EntryFormState(
     val label: String = "",
@@ -116,8 +112,7 @@ class AddEntryViewModel @Inject constructor(
         )
     )
     val state: StateFlow<EntryFormState> = _state.asStateFlow()
-    @Volatile private var pendingBitmap: Bitmap? = null
-    @Volatile private var pendingPdfBytes: ByteArray? = null
+    private val receiptDraft = EntryFormReceiptDraft()
     /** Évite un 2ᵉ insert si la photo a échoué après un 1ᵉr enregistrement OK. */
     @Volatile private var createdInstanceId: String? = null
 
@@ -125,10 +120,7 @@ class AddEntryViewModel @Inject constructor(
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
     fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null) }
     fun setExpense(v: Boolean) {
-        if (!v) {
-            pendingPdfBytes = null
-            pendingBitmap = null
-        }
+        if (!v) receiptDraft.clearAll()
         _state.update {
             it.copy(
                 isExpense = v,
@@ -163,45 +155,40 @@ class AddEntryViewModel @Inject constructor(
         it.copy(openingRemainingText = v, error = null)
     }
     fun attachPreviewBitmap(b: Bitmap) {
-        pendingBitmap = b
+        receiptDraft.attachBitmap(b)
         _state.update { it.copy(hasPendingPhoto = true, error = null) }
     }
 
     fun attachPendingPdf(bytes: ByteArray) {
-        pendingPdfBytes = bytes
+        receiptDraft.attachPdf(bytes)
         _state.update { it.copy(hasPendingPdf = true, error = null) }
     }
 
     fun clearPendingPdf() {
-        pendingPdfBytes = null
+        receiptDraft.clearPdf()
         _state.update { it.copy(hasPendingPdf = false, error = null) }
     }
 
     fun setPhotoDecodeError() = _state.update {
-        it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
+        it.copy(error = EntryFormMessages.PHOTO_DECODE_ERROR)
     }
 
-    fun setPdfReadError(message: String = "Ce PDF n’a pas pu être lu. Réessayez.") =
+    fun setPdfReadError(message: String = EntryFormMessages.PDF_READ_ERROR_DEFAULT) =
         _state.update { it.copy(error = message) }
 
     fun copyPaymentNote() {
-        val prepared = BelgianStructuredCommunication.prepareCopy(_state.value.paymentNote)
-        if (prepared.clipboardText.isEmpty()) {
-            _state.update {
-                it.copy(error = prepared.userMessage, copyMessage = null)
-            }
+        val result = EntryFormPaymentNoteCopy.copy(appContext, _state.value.paymentNote)
+        if (!result.ok) {
+            _state.update { it.copy(error = result.message, copyMessage = null) }
             return
         }
-        SensitiveClipboard.setPlainText(appContext, "Communication", prepared.clipboardText)
-        _state.update {
-            it.copy(copyMessage = prepared.userMessage, error = null)
-        }
+        _state.update { it.copy(copyMessage = result.message, error = null) }
     }
 
     /** OCR +++ sur la photo en attente — jamais le montant. */
     fun readCommunicationFromPhoto() {
         if (_state.value.ocrBusy || !_state.value.isExpense) return
-        val bmp = pendingBitmap
+        val bmp = receiptDraft.peekBitmap()
         if (bmp == null) {
             _state.update {
                 it.copy(error = BelgianStructuredCommunication.OCR_NO_PHOTO, copyMessage = null)
@@ -235,33 +222,34 @@ class AddEntryViewModel @Inject constructor(
     }
 
     fun applyEpcRaw(raw: String) {
-        val p = EpcQrParser.parse(raw)
+        val p = EntryFormEpcApply.parseOrNull(raw)
         if (p == null) {
-            _state.update { it.copy(error = "Ce QR n’est pas une facture belge.") }
+            _state.update { it.copy(error = EntryFormMessages.INVALID_EPC_QR) }
             return
         }
         applyEpc(p)
     }
 
     fun applyEpc(payment: EpcPayment) {
-        val amountText = payment.amountCents?.let { MoneyFormat.centsToEditable(it) }
-            ?: _state.value.amountText
         _state.update {
-            val keepIbanHint = it.openingRemainingText.isBlank() &&
-                payment.iban.isNotBlank() &&
-                !it.dossierExpanded
+            val patch = EntryFormEpcApply.patch(
+                payment = payment,
+                currentLabel = it.label,
+                currentAmountText = it.amountText,
+                currentPaymentNote = it.paymentNote,
+                currentIban = it.iban,
+                currentCopyMessage = it.copyMessage,
+                openingRemainingText = it.openingRemainingText,
+                dossierExpanded = it.dossierExpanded
+            )
             it.copy(
                 isExpense = true,
-                label = payment.beneficiaryName.ifBlank { it.label },
-                amountText = amountText,
-                paymentNote = payment.remittance.ifBlank { it.paymentNote },
-                iban = payment.iban.ifBlank { it.iban },
+                label = patch.label,
+                amountText = patch.amountText,
+                paymentNote = patch.paymentNote,
+                iban = patch.iban,
                 error = null,
-                copyMessage = if (keepIbanHint) {
-                    "IBAN lu — ouvrez « Retard ou accord » pour le garder."
-                } else {
-                    it.copyMessage
-                }
+                copyMessage = patch.copyMessage
             )
         }
     }
@@ -311,7 +299,7 @@ class AddEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, error = result.message) }
                 }
                 is CreatePendingLetterResult.Success -> {
-                    val bmp = pendingBitmap
+                    val bmp = receiptDraft.peekBitmap()
                     if (bmp != null) {
                         runCatching {
                             val saved = receiptPhotos.saveBitmap(result.id, bmp)
@@ -322,7 +310,7 @@ class AddEntryViewModel @Inject constructor(
                                 )
                             }
                         }
-                        pendingBitmap = null
+                        receiptDraft.clearBitmap()
                     }
                     _state.update { it.copy(saving = false, saved = true, error = null) }
                 }
@@ -430,15 +418,15 @@ class AddEntryViewModel @Inject constructor(
                         recurring = s.recurrence != RecurrenceChoice.Once
                     )
                     // Garder le bitmap / PDF en échec pour un 2ᵉ Enregistrer (retry).
-                    if (photoOk) pendingBitmap = null
-                    if (pdfOk) pendingPdfBytes = null
+                    if (photoOk) receiptDraft.clearBitmap()
+                    if (pdfOk) receiptDraft.clearPdf()
                     val attachOk = photoOk && pdfOk
                     _state.update {
                         it.copy(
                             saving = false,
                             saved = attachOk,
-                            hasPendingPhoto = pendingBitmap != null,
-                            hasPendingPdf = pendingPdfBytes != null,
+                            hasPendingPhoto = receiptDraft.hasPhoto,
+                            hasPendingPdf = receiptDraft.hasPdf,
                             error = when {
                                 attachOk -> null
                                 !photoOk && !pdfOk ->
@@ -461,8 +449,8 @@ class AddEntryViewModel @Inject constructor(
     }
 
     private suspend fun retryAttachments(instanceId: String) {
-        val hasPhoto = pendingBitmap != null
-        val hasPdf = pendingPdfBytes != null
+        val hasPhoto = receiptDraft.hasPhoto
+        val hasPdf = receiptDraft.hasPdf
         if (!hasPhoto && !hasPdf) {
             _state.update {
                 it.copy(
@@ -478,15 +466,15 @@ class AddEntryViewModel @Inject constructor(
             (expense == null && templateDao.getExpenseById(instanceId) != null)
         val photoOk = if (hasPhoto) attachPendingPhoto(instanceId).first else true
         val pdfOk = if (hasPdf) attachPendingPdf(instanceId, recurring = recurring) else true
-        if (photoOk) pendingBitmap = null
-        if (pdfOk) pendingPdfBytes = null
+        if (photoOk) receiptDraft.clearBitmap()
+        if (pdfOk) receiptDraft.clearPdf()
         val ok = photoOk && pdfOk
         _state.update {
             it.copy(
                 saving = false,
                 saved = ok,
-                hasPendingPhoto = pendingBitmap != null,
-                hasPendingPdf = pendingPdfBytes != null,
+                hasPendingPhoto = receiptDraft.hasPhoto,
+                hasPendingPdf = receiptDraft.hasPdf,
                 error = when {
                     ok -> null
                     !photoOk && !pdfOk ->
@@ -500,7 +488,7 @@ class AddEntryViewModel @Inject constructor(
 
     /** @return Pair(ok, documentsCopyOk) — ok = écriture locale réussie. */
     private suspend fun attachPendingPhoto(instanceId: String): Pair<Boolean, Boolean> {
-        val bmp = pendingBitmap ?: return true to true
+        val bmp = receiptDraft.peekBitmap() ?: return true to true
         return runCatching {
             var documentsOk = true
             val expense = instanceDao.getExpenseById(instanceId)
@@ -544,7 +532,7 @@ class AddEntryViewModel @Inject constructor(
      * facture qui revient → courriers du modèle ; une fois → même champ instance.
      */
     private suspend fun attachPendingPdf(instanceId: String, recurring: Boolean): Boolean {
-        val pdf = pendingPdfBytes ?: return true
+        val pdf = receiptDraft.peekPdf() ?: return true
         return try {
             val expense = instanceDao.getExpenseById(instanceId)
             val templateOnly = if (expense == null && recurring) {

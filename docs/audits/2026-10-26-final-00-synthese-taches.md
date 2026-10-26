@@ -4,8 +4,8 @@
 |--|--|
 | **Date** | 2026-10-26 · **final-00** |
 | **Rôle** | Fusion dédupliquée des audits **final-01 → final-06** |
-| **Produit** | `0.1.0-6.83` · `versionCode` 88 · **332/332** (exécution final-07) |
-| **Mode** | Exécution backlog — voir [`final-07-verification-execution.md`](2026-10-26-final-07-verification-execution.md) |
+| **Produit** | `0.1.0-6.84` · `versionCode` 89 · **346/346** (exécution final-08) |
+| **Mode** | Exécution backlog — voir [`final-07`](2026-10-26-final-07-verification-execution.md) · [`final-08-perfection-code`](2026-10-26-final-08-perfection-code.md) |
 
 Sources : [`final-01-affichage`](2026-10-26-final-01-affichage.md) · [`final-02-securite`](2026-10-26-final-02-securite.md) · [`final-03-code-hygiene`](2026-10-26-final-03-code-hygiene.md) · [`final-04-docs-md`](2026-10-26-final-04-docs-md.md) · [`final-05-fichiers-captures`](2026-10-26-final-05-fichiers-captures.md) · [`final-06-livrable-famille`](2026-10-26-final-06-livrable-famille.md).
 
@@ -13,7 +13,7 @@ Sources : [`final-01-affichage`](2026-10-26-final-01-affichage.md) · [`final-02
 
 ## 1. Verdict global LIVRABLE
 
-**GO conditionnel (code)** — backlog V0 docs/APK + V1–V4 exécutés ; Ultra `0.1.0-6.83` installé.
+**GO conditionnel (code)** — backlog V0–V4 + perfection code **6.84** (filets / découpe / sécu résiduelle).
 
 **NO-GO cadeau sans Athalia** tant que smoke **S26** + **restore code papier** ne sont pas cochés au doigt.
 
@@ -27,7 +27,7 @@ Sources : [`final-01-affichage`](2026-10-26-final-01-affichage.md) · [`final-02
 |---|-------|:-:|:-:|-----|------|
 | V0-1 | **Smoke S26** (D1–D7 min.) | P0 | M | 01, 02, 06 | **À faire Athalia** |
 | V0-2 | **Restore + code de copie** (papier · `.mmc` · 2ᵉ device) | P0 | M | 02, 06 | **À faire Athalia** |
-| V0-3 | **Badges README** → tests/version journal | P0 | S | 03, 04, 06 | **Fait** (6.83 / 332) |
+| V0-3 | **Badges README** → tests/version journal | P0 | S | 03, 04, 06 | **Fait** (6.84 / 346) |
 | V0-4 | **Brief code / notice 2 min** | P0 | S | 02, 06 | **Fait** (`NOTICE_FAMILLE_2MIN` + Aide) |
 | V0-5 | **APK release** + aapt = journal · install Ultra | P0 | S | 02, 06 | **Fait** (S26 install cadeau : Athalia) |
 
@@ -63,8 +63,8 @@ Sources : [`final-01-affichage`](2026-10-26-final-01-affichage.md) · [`final-02
 |---|-------|:-:|:-:|-----|------|
 | V4-1 | 15 imports morts | P2 | S | 03 | **Fait** |
 | V4-2 | Param `todoAmounts` retiré | P2 | S | 03 | **Fait** |
-| V4-3 | Filets Upcoming / ShareBackup | P1 | M | 03 | **Reporté** (après cadeau) |
-| V4-4 | Découpe god-files | P2 | L | 01, 03, 06 | **Reporté** (après cadeau) |
+| V4-3 | Filets Upcoming / ShareBackup | P1 | M | 03 | **Fait** (6.84 · final-08) |
+| V4-4 | Découpe god-files | P2 | L | 01, 03, 06 | **Fait partiel** (6.84 · Home ~1098 · Scaffold ~1027 restants) |
 
 ### Déjà fait (ne pas rouvrir)
 
@@ -74,15 +74,15 @@ Sources : [`final-01-affichage`](2026-10-26-final-01-affichage.md) · [`final-02
 | Polish copy / Annuler QuietLink / widget serif | 6.82 | 01, 06 |
 | Palette / anti-purple / FAIT forêt | Charte | 01 |
 | `.gitignore` APK / PNG / `._*` | OK | 05 |
-| 332/332 unit | Journal 6.83 | 03, 06 |
+| 346/346 unit | Journal 6.84 | 03, 06, 08 |
 
 ---
 
 ## 4. Checklist « demain matin » (Athalia)
 
 ```
-☐ 1. Lire PROGRESS_LOG + Réglages = 0.1.0-6.83
-☐ 2. aapt dump badging = 6.83 (pas debug)
+☐ 1. Lire PROGRESS_LOG + Réglages = 0.1.0-6.84
+☐ 2. aapt dump badging = 6.84 (pas debug)
 ☐ 3. Install S26 (ou téléphone maman) via Drive
 ☐ 4. Smoke S26 D1–D7
 ☐ 5. Code de copie → papier
@@ -96,4 +96,4 @@ Sources : [`final-01-affichage`](2026-10-26-final-01-affichage.md) · [`final-02
 
 ---
 
-*Synthèse final-00 · mise à jour exécution 6.83 · voir final-07.*
+*Synthèse final-00 · mise à jour exécution 6.84 · voir final-07 + final-08.*

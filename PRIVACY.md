@@ -14,14 +14,15 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 |----|------|
 | **Room** (SQLite `mon_mois_clair.db`) | Mois, factures, libellés, montants, notes / `+++`, IBAN, chemins photos — **chiffré au repos** (SQLCipher ; clé enveloppée Android Keystore) |
 | Dossier Documents (SAF) | Backups JSON enveloppe AES-GCM (code de copie) + photos/PDF locaux enveloppés — **pas en clair** depuis 6.81 |
-| Photos / PDF reçus | `files/receipts/` chiffrés (MRF1) ; aperçu = déchiffrement temporaire dans le cache |
+| Photos / PDF reçus | `files/receipts/` chiffrés (MRF1) ; aperçu = déchiffrement temporaire dans `cache/view/` (TTL 15 min ; wipe au verrou) |
+| PDF résumé mois | Généré **en clair** (partage hors enveloppe `.mmc`) — filigrane « données sensibles » ; ce n’est **pas** une copie chiffrée |
 | Presse-papiers | Communication / IBAN copiés : marqués sensibles (Android 13+) et **vidés après ~1 min** |
 
 `android:allowBackup="false"` : pas de sauvegarde cloud Android automatique de l’app.
 
 **Honnêteté :** ce n’est **pas** un coffre parfait. Après déverrouillage, les données sont en RAM / à l’écran. Appareil root / malware puissant peut encore contourner. Code de copie oublié + téléphone mort **sans** autre copie = données perdues (pas de serveur de recovery).
 
-Anciennes copies ZIP/JSON **en clair** (pré-6.81) restent restaurables une version de grâce.
+Anciennes copies ZIP/JSON **en clair** (pré-6.81) restent restaurables (grace) avec un **avertissement fort** à l’import — à remplacer par une copie `.mmc` puis à jeter.
 
 ## Widget
 

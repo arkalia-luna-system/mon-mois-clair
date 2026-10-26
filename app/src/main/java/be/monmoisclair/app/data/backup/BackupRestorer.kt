@@ -65,14 +65,18 @@ class BackupRestorer @Inject constructor(
             val bytes = readUriBytes(fileUri)
             val opened = openIncomingBytes(bytes, shareCode)
                 ?: return RestoreResult.BadShareCode()
-            val (json, receipts) = opened
-            val document = codec.decodeAndVerify(json)
+            val document = codec.decodeAndVerify(opened.json)
             val applied = applyDocument(document)
             if (applied !is RestoreResult.Success) return applied
-            if (receipts.isEmpty()) return applied
-            val written = restoreReceiptsCounted(receipts)
-            applied.copy(
-                photosExpected = receipts.size,
+            val withGrace = if (opened.cleartextGrace) {
+                applied.copy(cleartextGrace = true)
+            } else {
+                applied
+            }
+            if (opened.receipts.isEmpty()) return withGrace
+            val written = restoreReceiptsCounted(opened.receipts)
+            withGrace.copy(
+                photosExpected = opened.receipts.size,
                 photosWritten = written
             )
         } catch (e: BackupFailure) {
@@ -89,7 +93,7 @@ class BackupRestorer @Inject constructor(
     private fun openIncomingBytes(
         bytes: ByteArray,
         shareCode: String?
-    ): Pair<String, Map<String, ByteArray>>? {
+    ): OpenedIncoming? {
         val asUtf8Preview = runCatching {
             // Seulement pour détecter le préfixe ASCII MMC1B64 (pas pour du binaire ZIP/MMC).
             if (bytes.size >= BackupEnvelope.TEXT_PREFIX.length &&
@@ -102,6 +106,7 @@ class BackupRestorer @Inject constructor(
             }
         }.getOrNull()
 
+        var cleartextGrace = false
         val plainBytes: ByteArray = when {
             BackupEnvelope.looksLikeBinary(bytes) -> {
                 val secret = resolveShareSecret(shareCode) ?: return null
@@ -123,16 +128,30 @@ class BackupRestorer @Inject constructor(
                     secret.fill('\u0000')
                 }
             }
-            else -> bytes
+            else -> {
+                // ZIP / JSON clair pré-6.81 — encore accepté, signalé à l’UI.
+                cleartextGrace = true
+                bytes
+            }
         }
 
         return if (BackupSecurityArchive.looksLikeZip(plainBytes)) {
             val unpacked = BackupSecurityArchive.unpack(plainBytes)
-            unpacked.jsonUtf8 to unpacked.receipts
+            OpenedIncoming(unpacked.jsonUtf8, unpacked.receipts, cleartextGrace)
         } else {
-            plainBytes.toString(Charsets.UTF_8) to emptyMap()
+            OpenedIncoming(
+                plainBytes.toString(Charsets.UTF_8),
+                emptyMap(),
+                cleartextGrace
+            )
         }
     }
+
+    private data class OpenedIncoming(
+        val json: String,
+        val receipts: Map<String, ByteArray>,
+        val cleartextGrace: Boolean
+    )
 
     private fun resolveShareSecret(shareCode: String?): CharArray? {
         val trimmed = shareCode?.trim().orEmpty()

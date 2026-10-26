@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.83** (backlog final livrable) |
+| Dernière étape terminée | **6.84** (perfection code — structure / filets / sécu résiduelle) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail — puis GO cadeau |
-| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · Ultra `0.1.0-6.83` installé · **S26 / restore doigt ouverts** · **pas** « 9/10 dans la main » |
+| Audit premium | final-08 structure ~7/10 · sécu résiduelle ~7,5/10 · **pas** « 9/10 dans la main » · S26 / restore doigt ouverts |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.84 Perfection code (final-08)
+
+**Vague A :** filets `ListUpcomingMonths` · `ShareBackup` · vaults Keystore · migration 1→8 documentée (harness = 7→8). PacePhrase déjà sans `todoAmounts`.
+
+**Vague B :** helpers partagés Add/Edit (`EntryFormReceiptDraft` · `EntryFormEpcApply` · `EntryFormPaymentNoteCopy` · messages · `RecurrenceChoice`).
+
+**Vague C :** découpe `HomeTimelineRows` / `HomeStickyChrome` / `HomeBottomBar` ; `EntryFormCapture` + `EntryFormScaffold` (Screen 1794→770 ; Home 1538→1098).
+
+**Vague D :** warning fort restore cleartext grace · cache `view/` TTL 15 min + wipe au lock · watermark PDF résumé + PRIVACY/SECURITY.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **346/346** (84 XML, 0 failure).  
+**Version :** `0.1.0-6.84` · `versionCode` 89.  
+**Preuve :** [`docs/audits/2026-10-26-final-08-perfection-code.md`](docs/audits/2026-10-26-final-08-perfection-code.md).  
+**Pas un claim « 9/10 dans la main ».** Reste : sticky Home / sections scaffold · S26 Athalia.
 
 ### 2026-10-26 — 6.83 Backlog final (audits final-00…06)
 

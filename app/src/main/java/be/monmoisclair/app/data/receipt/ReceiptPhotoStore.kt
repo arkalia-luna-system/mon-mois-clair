@@ -118,11 +118,9 @@ class ReceiptPhotoStore @Inject constructor(
             }
             ?: return null
         val safe = BackupSecurityArchive.sanitizeReceiptPath(path) ?: return null
-        val viewDir = File(context.cacheDir, "view").also { it.mkdirs() }
-        // Purge aperçus > 1 h (évite fuite cache).
-        viewDir.listFiles()?.forEach { f ->
-            if (System.currentTimeMillis() - f.lastModified() > 60L * 60L * 1000L) f.delete()
-        }
+        val viewDir = viewCacheDir().also { it.mkdirs() }
+        // Purge aperçus > TTL (évite fuite cache clair).
+        purgeStaleViewCache(viewDir)
         val out = File(viewDir, safe.substringAfterLast('/'))
         FileOutputStream(out).use { it.write(plain) }
         return FileProvider.getUriForFile(
@@ -130,6 +128,20 @@ class ReceiptPhotoStore @Inject constructor(
             "${context.packageName}.fileprovider",
             out
         )
+    }
+
+    /** Efface tout le cache `view/` (ex. au verrouillage biométrique). */
+    fun purgeViewCache() {
+        viewCacheDir().deleteRecursively()
+    }
+
+    private fun viewCacheDir(): File = File(context.cacheDir, VIEW_CACHE_DIR)
+
+    private fun purgeStaleViewCache(viewDir: File) {
+        val cutoff = System.currentTimeMillis() - VIEW_CACHE_TTL_MS
+        viewDir.listFiles()?.forEach { f ->
+            if (f.lastModified() < cutoff) f.delete()
+        }
     }
 
     fun viewIntent(uri: Uri, relativePath: String): Intent {
@@ -194,6 +206,10 @@ class ReceiptPhotoStore @Inject constructor(
 
         /** Plafond PDF (mail énergie / huissier) — hors ZIP 45 Mo. */
         const val MAX_PDF_BYTES = 12 * 1024 * 1024
+
+        /** Cache aperçu clair pour lecteur système — TTL court (15 min). */
+        const val VIEW_CACHE_DIR = "view"
+        const val VIEW_CACHE_TTL_MS = 15L * 60L * 1000L
 
         fun looksLikePdf(bytes: ByteArray): Boolean =
             bytes.size >= 5 &&

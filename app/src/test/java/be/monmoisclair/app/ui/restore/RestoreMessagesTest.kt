@@ -75,4 +75,15 @@ class RestoreMessagesTest {
         assertThat(msg.lowercase()).doesNotContain("gcm")
         assertThat(msg.lowercase()).doesNotContain("passphrase")
     }
+
+    @Test
+    fun cleartextGrace_warnsStrongly() {
+        val msg = RestoreMessages.from(
+            RestoreResult.Success(checksumSha256 = "abc", cleartextGrace = true)
+        )
+        assertThat(msg).contains("réussie")
+        assertThat(msg).contains(RestoreMessages.CLEARTEXT_GRACE_WARNING)
+        assertThat(msg.lowercase()).contains("clair")
+        assertThat(msg.lowercase()).contains("jet")
+    }
 }

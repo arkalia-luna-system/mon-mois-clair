@@ -56,7 +56,12 @@ sealed class RestoreResult {
         /** Photos attendues dans l’archive (0 si JSON seul). */
         val photosExpected: Int = 0,
         /** Photos réellement réécrites dans Documents. */
-        val photosWritten: Int = 0
+        val photosWritten: Int = 0,
+        /**
+         * Restore d’une ancienne copie ZIP/JSON **claire** (pré-6.81).
+         * Acceptée encore (grace) mais l’UI doit prévenir fort.
+         */
+        val cleartextGrace: Boolean = false
     ) : RestoreResult()
 
     data class InvalidChecksum(val expected: String, val actual: String) : RestoreResult()

@@ -18,7 +18,6 @@ import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EpcPayment
-import be.monmoisclair.app.domain.EpcQrParser
 import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.AppMetaKeys
@@ -130,8 +129,7 @@ class EditEntryViewModel @Inject constructor(
     private val isExpenseArg: Boolean = savedStateHandle.get<String>("isExpense") == "true"
     private val _state = MutableStateFlow(EditEntryState(id = entryId, isExpense = isExpenseArg))
     val state: StateFlow<EditEntryState> = _state.asStateFlow()
-    @Volatile private var pendingBitmap: Bitmap? = null
-    @Volatile private var pendingPdfBytes: ByteArray? = null
+    private val receiptDraft = EntryFormReceiptDraft()
 
     init { viewModelScope.launch { load() } }
 
@@ -299,7 +297,7 @@ class EditEntryViewModel @Inject constructor(
         )
     }
     fun attachPreviewBitmap(b: Bitmap) {
-        pendingBitmap = b
+        receiptDraft.attachBitmap(b)
         _state.update {
             it.copy(
                 hasPendingPhoto = true,
@@ -310,7 +308,7 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun attachPendingPdf(bytes: ByteArray) {
-        pendingPdfBytes = bytes
+        receiptDraft.attachPdf(bytes)
         _state.update {
             it.copy(
                 hasPendingPdf = true,
@@ -320,14 +318,14 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun setPhotoDecodeError() = _state.update {
-        it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
+        it.copy(error = EntryFormMessages.PHOTO_DECODE_ERROR)
     }
 
-    fun setPdfReadError(message: String = "Ce PDF n’a pas pu être lu. Réessayez.") =
+    fun setPdfReadError(message: String = EntryFormMessages.PDF_READ_ERROR_DEFAULT) =
         _state.update { it.copy(error = message) }
 
     fun clearReceiptPhoto() {
-        pendingBitmap = null
+        receiptDraft.clearBitmap()
         _state.update {
             it.copy(
                 hasPendingPhoto = false,
@@ -339,7 +337,7 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun clearPendingPdf() {
-        pendingPdfBytes = null
+        receiptDraft.clearPdf()
         _state.update { it.copy(hasPendingPdf = false, error = null) }
     }
 
@@ -370,32 +368,33 @@ class EditEntryViewModel @Inject constructor(
         receiptPhotos.decodeBitmap(relativePath)
 
     fun applyEpcRaw(raw: String) {
-        val p = EpcQrParser.parse(raw)
+        val p = EntryFormEpcApply.parseOrNull(raw)
         if (p == null) {
-            _state.update { it.copy(error = "Ce QR n’est pas une facture belge.") }
+            _state.update { it.copy(error = EntryFormMessages.INVALID_EPC_QR) }
             return
         }
         applyEpc(p)
     }
 
     fun applyEpc(payment: EpcPayment) {
-        val amountText = payment.amountCents?.let { MoneyFormat.centsToEditable(it) }
-            ?: _state.value.amountText
         _state.update {
-            val keepIbanHint = it.openingRemainingText.isBlank() &&
-                payment.iban.isNotBlank() &&
-                !it.dossierExpanded
+            val patch = EntryFormEpcApply.patch(
+                payment = payment,
+                currentLabel = it.label,
+                currentAmountText = it.amountText,
+                currentPaymentNote = it.paymentNote,
+                currentIban = it.iban,
+                currentCopyMessage = it.copyMessage,
+                openingRemainingText = it.openingRemainingText,
+                dossierExpanded = it.dossierExpanded
+            )
             it.copy(
-                label = payment.beneficiaryName.ifBlank { it.label },
-                amountText = amountText,
-                paymentNote = payment.remittance.ifBlank { it.paymentNote },
-                iban = payment.iban.ifBlank { it.iban },
+                label = patch.label,
+                amountText = patch.amountText,
+                paymentNote = patch.paymentNote,
+                iban = patch.iban,
                 error = null,
-                copyMessage = if (keepIbanHint) {
-                    "IBAN lu — ouvrez « Retard ou accord » pour le garder."
-                } else {
-                    it.copyMessage
-                }
+                copyMessage = patch.copyMessage
             )
         }
     }
@@ -458,17 +457,12 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun copyPaymentNote() {
-        val prepared = BelgianStructuredCommunication.prepareCopy(_state.value.paymentNote)
-        if (prepared.clipboardText.isEmpty()) {
-            _state.update {
-                it.copy(error = prepared.userMessage, copyMessage = null)
-            }
+        val result = EntryFormPaymentNoteCopy.copy(appContext, _state.value.paymentNote)
+        if (!result.ok) {
+            _state.update { it.copy(error = result.message, copyMessage = null) }
             return
         }
-        SensitiveClipboard.setPlainText(appContext, "Communication", prepared.clipboardText)
-        _state.update {
-            it.copy(copyMessage = prepared.userMessage, error = null)
-        }
+        _state.update { it.copy(copyMessage = result.message, error = null) }
     }
 
     /**
@@ -482,7 +476,7 @@ class EditEntryViewModel @Inject constructor(
             _state.update {
                 it.copy(ocrBusy = true, error = null, copyMessage = BelgianStructuredCommunication.OCR_BUSY)
             }
-            val fromPending = pendingBitmap
+            val fromPending = receiptDraft.peekBitmap()
             val path = _state.value.receiptRelativePath
             val bmp = fromPending
                 ?: if (receiptPhotos.isPdf(path)) {
@@ -554,7 +548,7 @@ class EditEntryViewModel @Inject constructor(
             var path = s.receiptRelativePath
             var extraAppend = ""
             var documentsHint: String? = null
-            val cleared = s.receiptCleared && pendingBitmap == null
+            val cleared = s.receiptCleared && !receiptDraft.hasPhoto
             // null = inchangé ; -1 = une fois ; 1/3/12 = intervalle (crée le modèle si besoin).
             val interval: Int? = if (!s.isExpense) {
                 null
@@ -617,7 +611,7 @@ class EditEntryViewModel @Inject constructor(
             } else {
                 s.id
             }
-            pendingBitmap?.let { bmp ->
+            receiptDraft.peekBitmap()?.let { bmp ->
                 if (s.isAgreement && path.isNotBlank() && !cleared) {
                     val saved = receiptPhotos.saveBitmap(
                         "$owner-extra-${AppClock.nowEpochMs()}",
@@ -644,7 +638,7 @@ class EditEntryViewModel @Inject constructor(
                 s.isAgreement -> s.extraReceiptPaths
                 else -> null
             }
-            pendingPdfBytes?.let { pdf ->
+            receiptDraft.peekPdf()?.let { pdf ->
                 val expenseRow = instanceDao.getExpenseById(s.id)
                 val ownerId = expenseRow?.templateId ?: s.id
                 try {
@@ -681,7 +675,7 @@ class EditEntryViewModel @Inject constructor(
                 }
             }
             // Facture une fois : recomposer photo + courriers déjà en state (sans nouveau PDF).
-            if (!s.hasTemplate && pendingPdfBytes == null) {
+            if (!s.hasTemplate && !receiptDraft.hasPdf) {
                 path = ReceiptPathList.encode(
                     buildList {
                         if (path.isNotBlank() && !cleared) add(path)
@@ -721,8 +715,7 @@ class EditEntryViewModel @Inject constructor(
                 )
             ) {
                 UpdateInstanceResult.Success -> {
-                    pendingBitmap = null
-                    pendingPdfBytes = null
+                    receiptDraft.clearAll()
                     _state.update {
                         it.copy(
                             saving = false,
