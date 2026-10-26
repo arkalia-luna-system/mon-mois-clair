@@ -35,6 +35,8 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **329/329** (79 fichiers XML, 0 failure).  
 **Version :** `0.1.0-6.81` · `versionCode` 86.  
+**SHA :** `f9b6ea8` (`develop` poussé).  
+**Device :** `assembleRelease` + install SM-S938B `0.1.0-6.81` (versionCode 86).  
 **Pas un claim « coffre parfait ».**
 
 ### 2026-10-23 — 6.80 Dependabot + widget premium + P1 smoke
