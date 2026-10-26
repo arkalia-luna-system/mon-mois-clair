@@ -38,6 +38,7 @@ resté pin **2.0.21** (patch min = 2.4.20-Beta1 → AGP 9) — doc `docs/CI.md`.
 **Tests :** **368 exécutés** / 369 (1 skipped), 87 XML, 0 failure.  
 **Version :** `0.1.0-6.90` · `versionCode` 95.  
 **Install :** SM-S938B release OK, MainActivity resumed, 0 FATAL (sans wipe).  
+**SHA :** `1faeaa2` (`develop` = `main`, ff-only).  
 **Preuve :** [`docs/audits/2026-10-26-crash-open-fix.md`](docs/audits/2026-10-26-crash-open-fix.md).
 
 ### 2026-10-26 — 6.89 Gradle 8.14.4 + ship

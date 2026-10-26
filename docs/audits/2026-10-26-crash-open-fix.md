@@ -46,4 +46,4 @@ Deux défauts en chaîne au cold start Hilt → `DatabaseModule` :
 ## Version / SHA
 
 - Version installée : **`0.1.0-6.90`** (versionCode **95**)
-- SHA : renseigné après push (`develop` = `main`, ff-only)
+- SHA : **`1faeaa2`** (`develop` = `main`, ff-only)
