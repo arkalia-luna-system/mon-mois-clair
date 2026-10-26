@@ -57,7 +57,6 @@ object DossierRemaining {
         remainingCents: Long,
         intervalMonths: Int = 1,
         doneAmounts: List<Long> = emptyList(),
-        @Suppress("UNUSED_PARAMETER") todoAmounts: List<Long> = emptyList(),
         fromYearMonth: YearMonth = AppClock.currentYearMonth()
     ): String? {
         if (forfaitCents <= 0L || remainingCents <= 0L) return null

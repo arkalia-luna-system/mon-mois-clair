@@ -994,7 +994,7 @@ private fun EntryFormScaffold(
         "Nom (ex. Loyer)"
     }
     val fit = rememberDisplayFit()
-    val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
+    val formGap = if (fit.compactHomeChrome) 10.dp else 14.dp
     val tipPad = fit.tipPad
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(

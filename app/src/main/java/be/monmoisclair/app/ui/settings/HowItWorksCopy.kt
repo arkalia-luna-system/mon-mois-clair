@@ -64,8 +64,10 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Sauvegarde",
-            body = "Documents garde 3 copies protégées. « Envoyer une copie » demande le code " +
-                "affiché dans Réglages → Sauvegarde. Nouveau téléphone : Restaurer + ce code."
+            body = "Documents garde 3 copies protégées. Notez le code (Réglages → Sauvegarde) " +
+                "une fois sur papier. « Envoyer une copie » : jamais le code et le .mmc " +
+                "dans le même message. Nouveau téléphone : Restaurer + ce code. " +
+                "Anciennes ZIP claires : à jeter quand une bonne copie est notée."
         ),
         Section(
             title = "Empreinte",

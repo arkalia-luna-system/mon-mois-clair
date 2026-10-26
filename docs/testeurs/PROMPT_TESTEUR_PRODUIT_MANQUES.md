@@ -11,7 +11,7 @@ Tu es l’expert TESTEUR PRODUIT + MANQUES de « Mon Mois Clair ».
 
 Profil : [ Fidélité 60 j | Null ]
 Persona : [ Senior | Accords | Installateur | Médiateur | Base vide ]
-Device OBLIGATOIRE · 0.1.0-6.42 · CAMPAGNE_PRODUIT_FINI.md (C/E/F + zéro pixel).
+Device OBLIGATOIRE · version = PROGRESS_LOG · CAMPAGNE_PRODUIT_FINI.md (C/E/F + zéro pixel).
 
 RÈGLES
 - Parcours réels sur le tel (pas seulement lire l’aide).
@@ -21,7 +21,7 @@ RÈGLES
 
 ## Mission
 
-1. versionName 6.37 confirmé adb
+1. versionName = PROGRESS_LOG confirmé adb
 2. Enfiler le persona 15–25 min sur le device comme un proche
 3. Chaque hésitation > 3 s = défaut
 4. Grille « manque réel ? » (oui×3 = important)

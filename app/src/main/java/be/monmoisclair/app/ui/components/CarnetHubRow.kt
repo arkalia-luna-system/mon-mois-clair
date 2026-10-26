@@ -29,7 +29,7 @@ fun CarnetHubRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     labelColor: Color = A11yTokens.Ink,
-    chevronColor: Color = A11yTokens.Link,
+    chevronColor: Color = A11yTokens.InkMuted,
     showDivider: Boolean = true
 ) {
     if (showDivider) {
@@ -53,7 +53,8 @@ fun CarnetHubRow(
         )
         Text(
             text = "›",
-            style = MaterialTheme.typography.headlineMedium,
+            // P1-H3 : › discret (titleLarge / InkMuted) vs label titleLarge Ink.
+            style = MaterialTheme.typography.titleLarge,
             color = chevronColor
         )
     }

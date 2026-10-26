@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.82** (polish premium post-crypto) |
+| Dernière étape terminée | **6.83** (backlog final livrable) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt 1ʳᵉ ouverture / code de copie / WhatsApp / restore · S26 · rescan Dependabot |
-| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · P0 widget **OK** · polish carnet **6.80–6.82** · **pas** « 9/10 dans la main » |
+| Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail — puis GO cadeau |
+| Audit premium | Code Top15 + B01–B08 **FAIT** · smoke S25 **partiel** · Ultra `0.1.0-6.83` installé · **S26 / restore doigt ouverts** · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,23 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-10-26 — 6.83 Backlog final (audits final-00…06)
+
+**Vague 0 :** badges README 332/332 · notice [`docs/NOTICE_FAMILLE_2MIN.md`](docs/NOTICE_FAMILLE_2MIN.md) + Aide Sauvegarde (code papier · jamais code+.mmc · ZIP) · QuietLink/code vérifiés en code · `assembleRelease` + aapt `0.1.0-6.83` · install SM-S938B OK · **S26 / restore doigt : à faire Athalia** (pas fake GO).
+
+**Vague 1 :** PNG smoke purgés · AppleDouble `._*` purgés · `.gitignore` déjà OK · APK rebuildé dans `dist/` (gitignoré).
+
+**Vague 2 :** nuit-01…08 + valorisation + évaluation + plan chiffrement pré-6.81 → `docs/archive/audits-2026-10-23/` + bandeau · prompts testeurs dé-pinnés · AUDIT_STATUS / BENCHMARK / PLAN bump.
+
+**Vague 3 :** quieting sticky (‹ mois ›, titleMedium) · cartes montant+FAIT dominants · socle `shadowElevation=0` · sheets rayon 28 + poignée · HubRow › discret · PageTitle shortSheet · fiche air · widget coins 16 / tracking.
+
+**Vague 4 :** 15 imports morts · `todoAmounts` retiré de `pacePhrase` · god-files **reportés** · filets ShareBackup/Upcoming **reportés**.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **332/332** (79 XML, 0 failure).  
+**Version :** `0.1.0-6.83` · `versionCode` 88.  
+**Device :** release install SM-S938B `0.1.0-6.83`.  
+**Pas un claim « 9/10 dans la main ».** Preuves : `docs/audits/2026-10-26-final-07-verification-execution.md`.
 
 ### 2026-10-26 — 6.82 Polish premium (copy code · carnet · widget)
 

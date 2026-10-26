@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetSheetHandle
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
@@ -66,7 +66,8 @@ fun HomeCoursesSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        shape = MaterialTheme.shapes.extraLarge,
+        dragHandle = { CarnetSheetHandle() },
         containerColor = A11yTokens.PaperCream,
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
     ) {
@@ -80,7 +81,7 @@ fun HomeCoursesSheet(
                 .padding(bottom = 8.dp),
             verticalArrangement = Arrangement.spacedBy(gap)
         ) {
-            CarnetPageTitle("Courses", withTopSpacer = false)
+            CarnetPageTitle("Courses", withTopSpacer = false, shortSheet = true)
             val statusLine = when {
                 diversSpentCents > 0L && afterDiversCents < 0L ->
                     "Noté ${MoneyFormat.formatCents(diversSpentCents)} · il reste " +

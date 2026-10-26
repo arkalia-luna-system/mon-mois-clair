@@ -22,6 +22,9 @@ Punch list visuelle : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (fi
 | 6.78 | ✅ code + smoke S25 **partiel** adb — [`audits/2026-10-23-smoke-device.md`](audits/2026-10-23-smoke-device.md). S26 / notif / widget doigt : ouverts |
 | 6.79 | ✅ P0 widget One UI — `View`→`ImageView` + serif système · validé SM-S938B (Reste visible) |
 | 6.80 | ✅ Dependabot force (netty/bc/jdom/jose4j/…) · widget polish · P1 H01/F01/D01 code |
+| 6.81 | ✅ Crypto local (SQLCipher · MMC1 · MRF1 · CryptoObject) — smoke doigt restore **ouvert** |
+| 6.82 | ✅ Polish copy code / carnet / widget |
+| 6.83 | ✅ Backlog final : quieting sticky · cartes · socle · sheets 28 · notice famille — **S26 / restore doigt ouverts** |
 
 ## Smoke SM-S938B — 2026-10-21
 

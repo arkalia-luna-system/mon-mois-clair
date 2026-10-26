@@ -1,3 +1,5 @@
+> **Index figé 10-23** — détails nuit-01…08 archivés dans `docs/archive/audits-2026-10-23/`. État code = journal **6.82** + `final-0*`. § imperfectibles Room/backups « en clair » = **obsolète** (crypto 6.81).
+
 # Synthèse priorités — audits nuit 2026-10-23
 
 | | |

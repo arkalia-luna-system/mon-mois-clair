@@ -11,9 +11,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/widget_carnet_bg"
     android:orientation="vertical"
-    android:paddingStart="18dp"
+    android:paddingStart="16dp"
     android:paddingTop="14dp"
-    android:paddingEnd="18dp"
+    android:paddingEnd="16dp"
     android:paddingBottom="14dp">
 
     <!-- WDG01 : libellé discret — le montant commande. -->
@@ -40,11 +40,12 @@
         android:ellipsize="end"
         android:fontFamily="serif"
         android:includeFontPadding="false"
+        android:letterSpacing="-0.02"
         android:lineSpacingMultiplier="0.92"
         android:maxLines="1"
         android:text="—"
         android:textColor="@color/widget_ink"
-        android:textSize="32sp" />
+        android:textSize="34sp" />
 
     <!-- Filet ImageView (séparateur nu refusé par le host). -->
     <ImageView

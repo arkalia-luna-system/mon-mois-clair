@@ -80,9 +80,6 @@ class ListDossiersUseCase @Inject constructor(
             val doneAmounts = instances
                 .filter { it.status == ExpenseStatus.DONE }
                 .map { it.amountCents }
-            val todoAmounts = instances
-                .filter { it.status == ExpenseStatus.TODO }
-                .map { it.amountCents }
             val pace = if (settled) {
                 null
             } else {
@@ -90,8 +87,7 @@ class ListDossiersUseCase @Inject constructor(
                     forfaitCents = tpl.amountCents,
                     remainingCents = remaining,
                     intervalMonths = tpl.intervalMonths,
-                    doneAmounts = doneAmounts,
-                    todoAmounts = todoAmounts
+                    doneAmounts = doneAmounts
                 )
             }
             val cadence = if (settled || tpl.amountCents <= 0L) {

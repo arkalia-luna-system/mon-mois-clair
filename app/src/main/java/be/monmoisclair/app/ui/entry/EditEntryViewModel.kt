@@ -206,8 +206,7 @@ class EditEntryViewModel @Inject constructor(
                 forfaitCents = tpl.amountCents,
                 remainingCents = remaining,
                 intervalMonths = tpl.intervalMonths,
-                doneAmounts = instances.filter { it.status == ExpenseStatus.DONE }.map { it.amountCents },
-                todoAmounts = instances.filter { it.status == ExpenseStatus.TODO }.map { it.amountCents }
+                doneAmounts = instances.filter { it.status == ExpenseStatus.DONE }.map { it.amountCents }
             )
         }
         val transferred = e.templateId

@@ -13,7 +13,7 @@ Tu es l’expert TESTEUR + CORRECTEUR de « Mon Mois Clair »
 
 Profil : [ Chiant | Null | Perf | Hostile-doux | Fidélité 60 j ]
 Persona : [ Senior | Accords | Installateur | Médiateur | Base vide | Multi-dossiers ]
-Device : OBLIGATOIRE. Version cible journal : 0.1.0-6.42 (schéma 8).
+Device : OBLIGATOIRE. Version cible : lire PROGRESS_LOG.md (versionName + tests). Schéma Room 8.
 
 RÈGLES DURES
 - Pas de « OK » sans geste sur le téléphone + preuve (uiautomator dump ou screenshot).
@@ -25,7 +25,7 @@ RÈGLES DURES
 
 ## Mission (ordre strict)
 
-1. adb devices + dumpsys package | grep versionName → doit être 0.1.0-6.42
+1. adb devices + dumpsys package | grep versionName → doit matcher PROGRESS_LOG (versionName)
    Sinon : assembleRelease + adb install -r dist/MonMoisClair-release.apk
 2. Lire PROGRESS_LOG + CAMPAGNE + CHARTE (dossiers, rythme 6.37, pending, E, F)
 3. Gradle : ./gradlew :app:testDebugUnitTest --rerun-tasks → noter N/N réel (XML)

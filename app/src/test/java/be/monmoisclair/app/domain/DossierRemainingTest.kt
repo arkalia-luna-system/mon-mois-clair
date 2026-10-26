@@ -44,7 +44,6 @@ class DossierRemainingTest {
             forfaitCents = 5_000L,
             remainingCents = 45_000L,
             doneAmounts = listOf(5_000L, 5_000L),
-            todoAmounts = listOf(5_000L),
             fromYearMonth = from
         )
         assertThat(steady).startsWith("Encore environ 9 mois si le versement reste de 50 €.")
@@ -74,7 +73,6 @@ class DossierRemainingTest {
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
                 remainingCents = 2_000L,
-                todoAmounts = listOf(2_000L),
                 fromYearMonth = from
             )
         ).startsWith("Encore environ 1 mois si le prochain versement est le reste, 20 €.")
@@ -90,7 +88,6 @@ class DossierRemainingTest {
                 forfaitCents = 5_000L,
                 remainingCents = 45_000L,
                 doneAmounts = listOf(5_000L),
-                todoAmounts = listOf(4_000L),
                 fromYearMonth = from
             )
         ).contains("9 mois")

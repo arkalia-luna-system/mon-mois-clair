@@ -6,11 +6,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.time.Clock
-import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
-import java.time.ZonedDateTime
 
 class ReminderTimingTest {
 

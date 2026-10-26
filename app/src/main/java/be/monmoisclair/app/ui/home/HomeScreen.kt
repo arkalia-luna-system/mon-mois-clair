@@ -6,8 +6,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -557,7 +554,7 @@ fun HomeScreen(
                         .padding(vertical = fit.stickyPaddingVertical),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
-                // ‹ mois › + calendrier — pas de logo / wordmark (charte sticky ledger).
+                // ‹ mois › — calendrier via le libellé (plus de 4ᵉ cible). Pas de logo.
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -570,8 +567,8 @@ fun HomeScreen(
                     )
                     Text(
                         text = state.monthLabel,
-                        // Quiet sticky : mois muted — le Reste serif commande.
-                        style = MaterialTheme.typography.titleLarge,
+                        // Quiet sticky : titleMedium muted — le Reste serif commande.
+                        style = MaterialTheme.typography.titleMedium,
                         color = A11yTokens.InkMuted,
                         textAlign = TextAlign.Center,
                         maxLines = 1,
@@ -584,12 +581,6 @@ fun HomeScreen(
                                 onClickLabel = "Choisir un mois"
                             ) { monthPickerOpen = true }
                             .padding(horizontal = 4.dp, vertical = 6.dp)
-                    )
-                    MonthStep(
-                        iconRes = R.drawable.ic_calendar_month,
-                        description = "Choisir un mois",
-                        enabled = true,
-                        onClick = { monthPickerOpen = true }
                     )
                     MonthStep(
                         iconRes = R.drawable.ic_chevron_right,
@@ -1095,10 +1086,11 @@ fun HomeScreen(
 
             if (!keyboardOpen) {
                 HorizontalDivider(color = A11yTokens.PaperBorder)
-                // H11 : socle ≥ 8 dp vertical + léger relief haut.
+                // H11 / P0-D1 : socle ≥ 8 dp ; filet seul (pas shadowElevation).
                 Surface(
                     color = A11yTokens.PaperWarm,
-                    shadowElevation = 2.dp,
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -1208,8 +1200,8 @@ private fun MonthStep(
         Icon(
             painter = painterResource(iconRes),
             contentDescription = null,
-            tint = if (enabled) A11yTokens.Ink else A11yTokens.InkMuted.copy(alpha = 0.4f),
-            modifier = Modifier.size(28.dp)
+            tint = if (enabled) A11yTokens.InkMuted else A11yTokens.InkMuted.copy(alpha = 0.4f),
+            modifier = Modifier.size(24.dp)
         )
     }
 }
@@ -1407,31 +1399,25 @@ private fun ExpenseRow(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    // Accord : « pour quoi » juste sous le nom (plan §B / audit),
-                    // puis le montant — plus lisible que montant puis cause.
-                    if (item.causeLabel.isNotBlank()) {
-                        Text(
-                            text = item.causeLabel,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    item.cadenceHint?.let { cadence ->
-                        Text(
-                            text = cadence,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    // P0-C1 : montant dominant juste sous le nom ; cause/cadence = 2ᵉ souffle.
                     Text(
                         text = item.amountLabel,
                         color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
                         style = MaterialTheme.typography.titleLarge
                     )
+                    val meta = buildList {
+                        if (item.causeLabel.isNotBlank()) add(item.causeLabel)
+                        item.cadenceHint?.let { add(it) }
+                    }.joinToString(" · ")
+                    if (meta.isNotBlank()) {
+                        Text(
+                            text = meta,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = A11yTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
                 if (!readOnlyPreview) {
                     val faitModifier = Modifier

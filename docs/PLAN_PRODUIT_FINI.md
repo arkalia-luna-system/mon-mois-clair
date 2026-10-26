@@ -21,11 +21,12 @@ Lots **A→F** et le détail de construction sont **clos** :
 ## Pas encore « objet fini dans la main »
 
 - S26 (cible principale) tenu en main.
-- Smoke doigt encore partiel (photo loyer3 après 6.73 ; snackbar / sticky Plus ; notif ; fondu FAIT).
-- Tests d’écran instrumentés · scission god-files Home/Entry.
+- Restore + code de copie prouvés au doigt (noter papier · `.mmc` · 2ᵉ device).
+- Smoke doigt encore partiel (notif ; widget nuit ; photo).
+- Tests d’écran instrumentés · scission god-files Home/Entry (**reporté** après cadeau).
 
 ## Prochain geste
 
-Smoke doigt S26 (sticky / fontScale / photo / notif / widget). S25 Ultra partiel documenté en 6.78.
+Smoke S26 D1–D7 + restore code (Athalia). Notice 2 min : [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md). Ultra partiel : 6.78–6.82.
 
 Constats dossiers (figé, historique) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.

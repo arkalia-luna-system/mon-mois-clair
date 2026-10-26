@@ -38,7 +38,9 @@ object CarnetTitleTokens {
 fun CarnetPageTitle(
     title: String,
     modifier: Modifier = Modifier,
-    withTopSpacer: Boolean = true
+    withTopSpacer: Boolean = true,
+    /** Sheets courtes (1 champ) : titleMedium — moins de poids que titleLarge. */
+    shortSheet: Boolean = false
 ) {
     val fit = rememberDisplayFit()
     if (withTopSpacer) {
@@ -46,7 +48,11 @@ fun CarnetPageTitle(
     }
     Text(
         text = title,
-        style = CarnetTitleTokens.pageTitleStyle(MaterialTheme.typography),
+        style = if (shortSheet) {
+            MaterialTheme.typography.titleMedium
+        } else {
+            CarnetTitleTokens.pageTitleStyle(MaterialTheme.typography)
+        },
         color = A11yTokens.InkMuted,
         modifier = modifier
     )

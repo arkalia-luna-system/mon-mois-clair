@@ -1,3 +1,5 @@
+> **ARCHIVÉ / FIGÉ** (2026-10-26) — ne plus lire pour l’état code. Vérité = `PROGRESS_LOG.md` + PRIVACY/SECURITY + audits `final-0*`.
+
 # Audit produit / vente — Mon Mois Clair
 
 | | |
