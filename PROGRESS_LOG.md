@@ -33,6 +33,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **367 exécutés** / 368 déclarés (1 skipped), 87 XML, 0 failure.  
 **Version :** `0.1.0-6.86` · `versionCode` 91.  
+**SHA :** `1d7ea21` (`develop` poussé).  
 **Preuve :** [`docs/audits/2026-10-26-final-10-perfection-code-v3.md`](docs/audits/2026-10-26-final-10-perfection-code-v3.md).  
 **Pas un claim « 9/10 dans la main ».**
 

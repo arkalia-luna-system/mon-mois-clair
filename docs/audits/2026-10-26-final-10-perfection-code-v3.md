@@ -4,7 +4,7 @@
 |--|--|
 | **Date** | 2026-10-26 · **final-10** |
 | **Produit** | `0.1.0-6.86` · `versionCode` 91 · **367 exécutés** / 368 déclarés (1 `@Ignore`) |
-| **Branche** | `develop` |
+| **Branche** | `develop` · SHA `1d7ea21` |
 | **Hors scope** | Smoke doigt S26 · redesign DA · Play Store · force-push `main` · claim GO cadeau / 9/10 |
 
 **Verdict :** cœur Add/Edit extrait ; PDF résumé éphémère + wipe ; 3 `androidTest` assemblés (connected host/device bloqués honnêtement) ; masking notif testable. **Pas** « parfait » ni « 9/10 dans la main ».
