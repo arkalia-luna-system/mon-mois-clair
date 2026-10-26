@@ -33,6 +33,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **346/346** (84 XML, 0 failure).  
 **Version :** `0.1.0-6.84` · `versionCode` 89.  
+**SHA :** `96abc37` (`develop` poussé).  
 **Preuve :** [`docs/audits/2026-10-26-final-08-perfection-code.md`](docs/audits/2026-10-26-final-08-perfection-code.md).  
 **Pas un claim « 9/10 dans la main ».** Reste : sticky Home / sections scaffold · S26 Athalia.
 
