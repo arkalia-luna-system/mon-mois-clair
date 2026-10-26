@@ -22,9 +22,9 @@
 | V0-3 Badges | Fait | `README.md` badges 332/332 · `0.1.0-6.83` ; table alignée |
 | V0-4 Notice 2 min | Fait | `docs/NOTICE_FAMILLE_2MIN.md` · `HowItWorksCopy` Sauvegarde (papier · jamais code+.mmc · ZIP) · QuietLink = Menu uniquement (test Aide) |
 | V0-5 APK release | Fait | aapt 6.83 · install Ultra Success |
-| V1-1 PNG smoke | Fait | `docs/audits/smoke/` : `.md` seul |
+| V1-1 PNG smoke | Fait | 0 PNG ; `docs/audits/smoke/README.md` (captures locales gitignorées ; synthèse = `2026-10-23-smoke-device.md`) — pas de fake PNG |
 | V1-2 APK clean+rebuild | Fait | rebuild post-purge → dist 6.83 |
-| V1-3 AppleDouble | Fait | `find … ._*=0` ; `.gitignore` `**/._*` |
+| V1-3 AppleDouble | Fait | purge 2026-10-26 : **18 → 0** (`find` hors `.git`, y compris `.gradle`) ; `.gitignore` `**/._*` |
 | V2-1 Archive nuit | Fait | `docs/archive/audits-2026-10-23/` (11 fichiers + bandeau) |
 | V2-2 Chiffrement pré-6.81 | Fait | archivé même dossier + bandeau |
 | V2-3 Prompts / bump | Fait | testeurs dé-pinnés · AUDIT_STATUS · BENCHMARK · PLAN |
