@@ -13,7 +13,7 @@ Workflow : [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 - `:app:lintDebug` soft (`continue-on-error`)
 - **pas** d’`assembleDebug` en CI (APK/dex/strip trop lent pour le signal quotidien ; à lancer en local / release)
 - accélération : `gradle/actions/setup-gradle` (cache) + `org.gradle.caching` / `parallel` **en env CI seulement**
-- wrapper **Gradle 8.11.1** (AGP 8.7.3) — évite l’avis « 8.9 obsolète » de `setup-gradle`
+- wrapper **Gradle 8.14.4** (AGP **8.7.3**, min AGP = 8.9) — avis « 8.11.1 obsolète » levé
 - runner **`ubuntu-24.04`** (pin, pas `ubuntu-latest`)
 - actions à jour (Node 24) : `setup-android@v4`, `upload-artifact@v7`
 - **Pas** de `concurrency` : chaque push termine son run. Sinon GitHub annule
@@ -61,8 +61,8 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
 `protobuf-java:3.25.9`, `commons-io:2.22.0`, `commons-compress:1.26.0`,
 `io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`, `bcpkix-jdk18on:1.86`,
 `jdom2:2.0.6.1`, `jose4j:0.9.7`.
-**Pas** de force `kotlin-gradle-plugin` 2.4.x : CVE Dependabot exige ≥2.4.20-Beta1,
-incompatible avec AGP **8.7.3** + KSP **2.0.21** pinés — bump coordonné plus tard.
+**Alerte #54 `kotlin-gradle-plugin` ≥2.4.20-Beta1 :** exige aussi KSP 2.3 + Room 2.8 +
+Hilt ≥2.59 → **AGP 9** — reporté (tentative 6.89 WIP annulée). Rester Kotlin **2.0.21**.
 Vérifier avec `./gradlew :app:dependencies`. Si Dependabot Security reste rouge malgré
 le force : dismiss UI (transitive) — la garde produit reste les tests. Alertes GitHub
 peuvent rester jusqu’au **rescan** Dependabot même si le classpath local est patché.
