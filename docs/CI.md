@@ -58,9 +58,13 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
 
 **Mitigation repo (6.80+) :** `build.gradle.kts` + `settings.gradle.kts` forcent via
 `resolutionStrategy` (transitifs UTP/AGP — **pas** dans l’APK runtime) :
-`protobuf-java:3.25.9`, `commons-io:2.22.0`, `commons-compress:1.26.0`,
-`commons-lang3:3.18.0` (**#60**), `io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`,
-`bcpkix-jdk18on:1.86`, `jdom2:2.0.6.1`, `jose4j:0.9.7`.
+`protobuf-java:3.25.9`, `guava:33.7.2-jre` (**#61**), `commons-io:2.22.0`,
+`commons-compress:1.26.0`, `commons-lang3:3.18.0` (**#60**),
+`io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`, `bcpkix-jdk18on:1.86`,
+`jdom2:2.0.6.1`, `jose4j:0.9.7`.
+
+**Config version updates :** `.github/dependabot.yml` cible **`develop`** (pas `main`),
+`allow` direct+indirect, ignore Kotlin/KSP ≥2.1 (aligné pin #54 / AGP 8.7.3).
 
 **Alerte #54 `kotlin-gradle-plugin` (CVE-2026-53914 / GHSA-r937-wjx7-w2jp) :**
 premier patch Dependabot = **`2.4.20-Beta1`** (désérialisation cache build Kotlin).

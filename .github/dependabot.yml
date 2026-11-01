@@ -1,9 +1,12 @@
 # Mises à jour automatiques (PRs) — ne bloque pas le push.
 # Phase 3 soft : Actions + Gradle (PRs hebdo, pas de garde CI).
+# Security Updates GitHub (jobs « gradle in /. for … ») ≠ ce fichier :
+# un ignore ici n’éteint pas ces runs (voir docs/CI.md).
 version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
+    target-branch: develop
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
@@ -13,9 +16,24 @@ updates:
 
   - package-ecosystem: gradle
     directory: /
+    target-branch: develop
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # Guava / jars AGP = transitifs : laisser Dependabot les voir en version updates.
+    allow:
+      - dependency-type: direct
+      - dependency-type: indirect
+    # #54 : Kotlin ≥2.4 exige AGP 9 — pin documenté 2.0.21 (docs/CI.md).
+    ignore:
+      - dependency-name: "org.jetbrains.kotlin.android"
+        versions: [">=2.1.0"]
+      - dependency-name: "org.jetbrains.kotlin.plugin.compose"
+        versions: [">=2.1.0"]
+      - dependency-name: "org.jetbrains.kotlin:kotlin-gradle-plugin"
+        versions: [">=2.1.0"]
+      - dependency-name: "com.google.devtools.ksp"
+        versions: [">=2.1.0"]
     labels:
       - dependencies
       - gradle

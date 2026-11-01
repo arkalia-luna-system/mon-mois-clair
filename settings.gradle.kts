@@ -27,6 +27,7 @@ gradle.beforeProject {
     val forceNetty = "4.1.139.Final"
     val patched = listOf(
         "com.google.protobuf:protobuf-java:3.25.9",
+        "com.google.guava:guava:33.7.2-jre",
         "commons-io:commons-io:2.22.0",
         "org.apache.commons:commons-compress:1.26.0",
         "org.apache.commons:commons-lang3:3.18.0",
@@ -48,6 +49,10 @@ gradle.beforeProject {
             if (requested.group == "io.netty") {
                 useVersion(forceNetty)
                 because("Dependabot — famille netty patchée")
+            }
+            if (requested.group == "com.google.guava" && requested.name == "guava") {
+                useVersion("33.7.2-jre")
+                because("Dependabot #61 — guava ≥ 33.7.2")
             }
         }
     }

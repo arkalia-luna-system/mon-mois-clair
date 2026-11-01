@@ -10,6 +10,7 @@ plugins {
 // Ne pas monter protobuf en 4.x (casse outil AGP).
 val patchedForces = arrayOf(
     "com.google.protobuf:protobuf-java:3.25.9",
+    "com.google.guava:guava:33.7.2-jre",
     "commons-io:commons-io:2.22.0",
     "org.apache.commons:commons-compress:1.26.0",
     "org.apache.commons:commons-lang3:3.18.0",
@@ -35,6 +36,11 @@ fun org.gradle.api.artifacts.ResolutionStrategy.applyPatchedForces() {
         if (requested.group == "io.netty") {
             useVersion("4.1.139.Final")
             because("Dependabot CVE — aligner toute la famille netty")
+        }
+        if (requested.group == "com.google.guava" && requested.name == "guava") {
+            // #61 — CVE CompactHash* ; garder le classifier -jre (classpath build AGP).
+            useVersion("33.7.2-jre")
+            because("Dependabot #61 — guava ≥ 33.7.2")
         }
     }
 }
