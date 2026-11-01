@@ -13,7 +13,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 - Toujours l’APK **release** signé (jamais debug).
 - **Même keystore** qu’avant = mise à jour sans perdre les données Room.
 - Vérifier la version dans le fichier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`
-  (ex. `versionName='0.1.0-6.93'` — lire le journal).
+  (ex. `versionName='0.1.0-6.94'` — lire le journal).
 
 ## 2. Envoyer (sans USB)
 

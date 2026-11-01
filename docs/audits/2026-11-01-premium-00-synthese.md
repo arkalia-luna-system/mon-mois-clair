@@ -187,3 +187,11 @@ Détail : [`2026-11-01-premium-fix-progress.md`](2026-11-01-premium-fix-progress
 | Sécurité | 7,5 → **8,2** (code/docs) | 376/377 | `0.1.0-6.93` |
 
 Restore doigt / Device Care toujours Athalia.
+
+### Vague premium-03 (6.94)
+
+| Catégorie | Avant → après | Tests | Version |
+|-----------|--------------:|------:|---------|
+| Architecture | 7 → **8,0** (Scaffold models) | 379/380 | `0.1.0-6.94` |
+
+Twin VM DraftController encore ouvert (prudent).

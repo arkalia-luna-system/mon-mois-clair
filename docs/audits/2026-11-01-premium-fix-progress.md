@@ -75,3 +75,32 @@ Règle : une catégorie à la fois · preuves grep/read + Gradle `--rerun-tasks`
 ### Auto-évaluation
 
 **8,2 / 10** confiance code/docs (objectif ≥ 8). Crypto inchangée. Ops + surfaces UX fermées en code.
+
+---
+
+## premium-03 · Architecture
+
+| | |
+|--|--|
+| **Avant → après (code)** | **7 → 8,0 / 10** |
+| **Version** | `0.1.0-6.94` · `versionCode` 99 |
+| **Tests** | **379 exécutés** / 380 (1 skipped), 90 XML, 0 failure |
+
+### Points traités
+
+| Id | Action | Preuve |
+|----|--------|--------|
+| **A-P0-1** | Scaffold **6** params modèles (`Identity`/`Recurrence`/`Payment`/`Dossier`/`Savings`/`Chrome`) | `EntryFormUiModels.kt` · `EntryFormScaffold` · `EntryFormScreen` |
+| **A-P1-2** (partiel) | Tests garde-fou modèles | `EntryFormUiModelsTest` |
+| **A-P2-5** | BENCHMARK scission god-files alignée | `BENCHMARK_QUALITE_2026.md` |
+
+### Reporté (prudent)
+
+| Id | Pourquoi |
+|----|----------|
+| **A-P0-2** DraftController twin VM | Risque régression fiche ; helpers déjà partagés (`EntryFormCore`/EPC) |
+| **A-P1-1** ObserveHomeMonth | Hors vague minimale |
+
+### Auto-évaluation
+
+**8,0 / 10** craft API formulaire (objectif ≥ 8). Glue Add/Edit VM = dette documentée, non fake-fermée.

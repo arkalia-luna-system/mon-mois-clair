@@ -116,92 +116,101 @@ internal fun DiscardChangesDialog(
 
 @Composable
 internal fun EntryFormScaffold(
-    title: String,
-    label: String,
-    amountText: String,
-    dayText: String,
-    isExpense: Boolean,
-    recurring: Boolean,
-    showRecurring: Boolean,
-    recurrence: RecurrenceChoice = RecurrenceChoice.Once,
-    onRecurrence: ((RecurrenceChoice) -> Unit)? = null,
-    showFrequencyEdit: Boolean = false,
-    recurrenceInfo: String? = null,
-    receiptPreview: Bitmap? = null,
-    nextDueMonth: Int = 1,
-    onNextDueMonth: (Int) -> Unit = {},
-    showNextDueMonth: Boolean = false,
-    isAutoDebit: Boolean = false,
-    onAutoDebit: (Boolean) -> Unit = {},
-    showAutoDebit: Boolean = false,
-    paymentNote: String = "",
-    onPaymentNote: (String) -> Unit = {},
-    showPaymentAssist: Boolean = false,
-    hasPendingPhoto: Boolean = false,
-    hasPendingPdf: Boolean = false,
-    hasReceiptPhoto: Boolean = false,
-    receiptIsPdf: Boolean = false,
-    onScanEpc: (() -> Unit)? = null,
-    onTakePhoto: (() -> Unit)? = null,
-    onPickPdf: (() -> Unit)? = null,
-    onClearPendingPdf: (() -> Unit)? = null,
-    onClearReceipt: (() -> Unit)? = null,
-    onViewReceipt: (() -> Unit)? = null,
-    /** Courriers en plus (dossier) — chemins relatifs déjà parsés. */
-    extraReceiptPaths: List<String> = emptyList(),
-    isPdfPath: (String) -> Boolean = { false },
-    onViewExtraReceipt: ((String) -> Unit)? = null,
-    onRemoveExtraReceipt: ((String) -> Unit)? = null,
-    onCopyPaymentNote: (() -> Unit)? = null,
-    /** OCR +++ sur la photo — jamais le montant. */
-    onReadCommFromPhoto: (() -> Unit)? = null,
-    ocrBusy: Boolean = false,
-    showApplyFollowing: Boolean,
-    applyFollowing: Boolean,
-    hasTemplate: Boolean,
-    showDossierSection: Boolean = false,
-    dossierExpanded: Boolean = false,
-    onDossierExpanded: (Boolean) -> Unit = {},
-    causeLabel: String = "",
-    onCauseLabel: (String) -> Unit = {},
-    openingRemainingText: String = "",
-    onOpeningRemainingText: (String) -> Unit = {},
-    isAgreement: Boolean = false,
-    remainingCents: Long? = null,
-    isSettled: Boolean = false,
-    pacePhrase: String? = null,
-    isSavingsLine: Boolean = false,
-    savingsTransferredCents: Long = 0L,
-    lockAmountAndDay: Boolean = false,
-    iban: String = "",
-    onIban: (String) -> Unit = {},
-    onCopyIban: (() -> Unit)? = null,
-    creditorEmail: String = "",
-    onCreditorEmail: (String) -> Unit = {},
-    onWriteMail: (() -> Unit)? = null,
-    /** Lot D — ajout seulement : ranger sans inventer de montant. */
-    onSaveAsPendingLetter: (() -> Unit)? = null,
-    feeAddText: String = "",
-    onFeeAddText: (String) -> Unit = {},
-    feeNoteText: String = "",
-    onFeeNoteText: (String) -> Unit = {},
-    addedFeesCents: Long = 0L,
-    feeEvents: List<FeeEventRow> = emptyList(),
-    infoMessage: String? = null,
-    error: String?,
-    primaryLabel: String,
-    primaryEnabled: Boolean,
-    deleteLabel: String = "Supprimer",
-    onLabel: (String) -> Unit,
-    onAmount: (String) -> Unit,
-    onDay: (String) -> Unit,
-    onExpense: (Boolean) -> Unit,
-    onRecurring: (Boolean) -> Unit,
-    onApplyFollowing: (Boolean) -> Unit,
-    onPrimary: () -> Unit,
-    onCancel: () -> Unit,
-    onDelete: (() -> Unit)?
+    identity: EntryFormIdentityUi,
+    recurrenceUi: EntryFormRecurrenceUi,
+    payment: EntryFormPaymentUi,
+    dossier: EntryFormDossierUi,
+    savings: EntryFormSavingsUi = EntryFormSavingsUi(),
+    chrome: EntryFormChromeUi
 ) {
+    val title = identity.title
+    val label = identity.label
+    val amountText = identity.amountText
+    val dayText = identity.dayText
+    val isExpense = identity.isExpense
+    val onLabel = identity.onLabel
+    val onAmount = identity.onAmount
+    val onDay = identity.onDay
+    val onExpense = identity.onExpense
+
+    val recurring = recurrenceUi.recurring
+    val showRecurring = recurrenceUi.showRecurring
+    val recurrence = recurrenceUi.recurrence
+    val onRecurrence = recurrenceUi.onRecurrence
+    val showFrequencyEdit = recurrenceUi.showFrequencyEdit
+    val recurrenceInfo = recurrenceUi.recurrenceInfo
+    val nextDueMonth = recurrenceUi.nextDueMonth
+    val onNextDueMonth = recurrenceUi.onNextDueMonth
+    val showNextDueMonth = recurrenceUi.showNextDueMonth
+    val onRecurring = recurrenceUi.onRecurring
+    val showApplyFollowing = recurrenceUi.showApplyFollowing
+    val applyFollowing = recurrenceUi.applyFollowing
+    val hasTemplate = recurrenceUi.hasTemplate
+    val onApplyFollowing = recurrenceUi.onApplyFollowing
+
+    val isAutoDebit = payment.isAutoDebit
+    val onAutoDebit = payment.onAutoDebit
+    val showAutoDebit = payment.showAutoDebit
+    val paymentNote = payment.paymentNote
+    val onPaymentNote = payment.onPaymentNote
+    val showPaymentAssist = payment.showPaymentAssist
+    val hasPendingPhoto = payment.hasPendingPhoto
+    val hasPendingPdf = payment.hasPendingPdf
+    val hasReceiptPhoto = payment.hasReceiptPhoto
+    val receiptIsPdf = payment.receiptIsPdf
+    val receiptPreview = payment.receiptPreview
+    val extraReceiptPaths = payment.extraReceiptPaths
+    val isPdfPath = payment.isPdfPath
+    val ocrBusy = payment.ocrBusy
+    val onScanEpc = payment.onScanEpc
+    val onTakePhoto = payment.onTakePhoto
+    val onPickPdf = payment.onPickPdf
+    val onClearPendingPdf = payment.onClearPendingPdf
+    val onClearReceipt = payment.onClearReceipt
+    val onViewReceipt = payment.onViewReceipt
+    val onViewExtraReceipt = payment.onViewExtraReceipt
+    val onRemoveExtraReceipt = payment.onRemoveExtraReceipt
+    val onCopyPaymentNote = payment.onCopyPaymentNote
+    val onReadCommFromPhoto = payment.onReadCommFromPhoto
+
+    val showDossierSection = dossier.showDossierSection
+    val dossierExpanded = dossier.dossierExpanded
+    val onDossierExpanded = dossier.onDossierExpanded
+    val causeLabel = dossier.causeLabel
+    val onCauseLabel = dossier.onCauseLabel
+    val openingRemainingText = dossier.openingRemainingText
+    val onOpeningRemainingText = dossier.onOpeningRemainingText
+    val isAgreement = dossier.isAgreement
+    val remainingCents = dossier.remainingCents
+    val isSettled = dossier.isSettled
+    val pacePhrase = dossier.pacePhrase
+    val iban = dossier.iban
+    val onIban = dossier.onIban
+    val onCopyIban = dossier.onCopyIban
+    val creditorEmail = dossier.creditorEmail
+    val onCreditorEmail = dossier.onCreditorEmail
+    val onWriteMail = dossier.onWriteMail
+    val onSaveAsPendingLetter = dossier.onSaveAsPendingLetter
+    val feeAddText = dossier.feeAddText
+    val onFeeAddText = dossier.onFeeAddText
+    val feeNoteText = dossier.feeNoteText
+    val onFeeNoteText = dossier.onFeeNoteText
+    val addedFeesCents = dossier.addedFeesCents
+    val feeEvents = dossier.feeEvents
+
+    val isSavingsLine = savings.isSavingsLine
+    val savingsTransferredCents = savings.savingsTransferredCents
+    val lockAmountAndDay = savings.lockAmountAndDay
+
+    val infoMessage = chrome.infoMessage
+    val error = chrome.error
+    val primaryLabel = chrome.primaryLabel
+    val primaryEnabled = chrome.primaryEnabled
+    val deleteLabel = chrome.deleteLabel
+    val onPrimary = chrome.onPrimary
+    val onCancel = chrome.onCancel
+    val onDelete = chrome.onDelete
+
     val focusManager = LocalFocusManager.current
     val keyboardOpen = imeOpen()
     val nameBring = rememberFocusKeepsVisible()

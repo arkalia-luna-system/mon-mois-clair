@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.93** (premium-02 sécu PDF/grace/migration/ops) |
-| Étape en cours | premium-03 architecture (fixes) |
-| Prochaine sous-étape | Audits premium 03→06 fixes · puis **Athalia** smoke S26 / restore / TalkBack / Device Care |
-| Audit premium | fix-progress 01 **8,7** · 02 **8,2** code · **pas** « 9/10 dans la main » |
+| Dernière étape terminée | **6.94** (premium-03 EntryFormUiModels Scaffold) |
+| Étape en cours | premium-04 UX parcours (fixes) |
+| Prochaine sous-étape | Audits premium 04→06 · puis **Athalia** smoke S26 / restore / TalkBack / Device Care |
+| Audit premium | 01 **8,7** · 02 **8,2** · 03 **8,0** code · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,16 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.94 premium-03 architecture Scaffold
+
+**Archi :** `EntryFormScaffold` 82 params → **6** modèles UI (`EntryFormUiModels`) ;
+Add/Edit branchés ; tests garde-fou ; BENCHMARK scission alignée. Twin VM glue =
+encore dette (DraftController reporté — prudent).
+
+**Tests :** **379 exécutés** / 380 (1 skipped), 90 XML, 0 failure.  
+**Version :** `0.1.0-6.94` · `versionCode` 99.  
+**Preuve :** [`docs/audits/2026-11-01-premium-fix-progress.md`](docs/audits/2026-11-01-premium-fix-progress.md).
 
 ### 2026-11-01 — 6.93 premium-02 sécu confiance
 

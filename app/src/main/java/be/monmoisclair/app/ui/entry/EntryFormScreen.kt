@@ -205,11 +205,18 @@ fun AddEntryScreen(
     }
 
     EntryFormScaffold(
+    identity = EntryFormIdentityUi(
         title = state.formTitle,
         label = state.label,
         amountText = state.amountText,
         dayText = state.dayText,
         isExpense = state.isExpense,
+        onLabel = viewModel::setLabel,
+        onAmount = viewModel::setAmount,
+        onDay = viewModel::setDay,
+        onExpense = viewModel::setExpense
+    ),
+    recurrenceUi = EntryFormRecurrenceUi(
         recurring = state.recurrence != RecurrenceChoice.Once,
         showRecurring = true,
         recurrence = state.recurrence,
@@ -217,6 +224,17 @@ fun AddEntryScreen(
         nextDueMonth = state.nextDueMonth,
         onNextDueMonth = viewModel::setNextDueMonth,
         showNextDueMonth = state.needsNextDueMonth,
+        onRecurring = { on ->
+            viewModel.setRecurrence(
+                if (on) RecurrenceChoice.Monthly else RecurrenceChoice.Once
+            )
+        },
+        showApplyFollowing = false,
+        applyFollowing = false,
+        hasTemplate = false,
+        onApplyFollowing = {}
+    ),
+    payment = EntryFormPaymentUi(
         isAutoDebit = state.isAutoDebit,
         onAutoDebit = viewModel::setAutoDebit,
         showAutoDebit = state.isExpense,
@@ -226,6 +244,7 @@ fun AddEntryScreen(
         hasPendingPhoto = state.hasPendingPhoto,
         hasPendingPdf = state.hasPendingPdf,
         receiptPreview = pendingPreview,
+        ocrBusy = state.ocrBusy,
         onScanEpc = onScanEpc,
         onTakePhoto = if (state.isExpense) takePhoto else null,
         onPickPdf = if (state.isExpense) pickPdf else null,
@@ -240,11 +259,9 @@ fun AddEntryScreen(
             viewModel::readCommunicationFromPhoto
         } else {
             null
-        },
-        ocrBusy = state.ocrBusy,
-        showApplyFollowing = false,
-        applyFollowing = false,
-        hasTemplate = false,
+        }
+    ),
+    dossier = EntryFormDossierUi(
         showDossierSection = state.isExpense,
         dossierExpanded = state.dossierExpanded,
         onDossierExpanded = viewModel::setDossierExpanded,
@@ -259,25 +276,19 @@ fun AddEntryScreen(
         onIban = viewModel::setIban,
         creditorEmail = state.creditorEmail,
         onCreditorEmail = viewModel::setCreditorEmail,
-        onSaveAsPendingLetter = viewModel::saveAsPendingLetter,
+        onSaveAsPendingLetter = viewModel::saveAsPendingLetter
+    ),
+    chrome = EntryFormChromeUi(
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
         primaryEnabled = !state.saving,
-        onLabel = viewModel::setLabel,
-        onAmount = viewModel::setAmount,
-        onDay = viewModel::setDay,
-        onExpense = viewModel::setExpense,
-        onRecurring = { on ->
-            viewModel.setRecurrence(
-                if (on) RecurrenceChoice.Monthly else RecurrenceChoice.Once
-            )
-        },
-        onApplyFollowing = {},
+        deleteLabel = "Supprimer",
         onPrimary = viewModel::save,
         onCancel = { requestLeave() },
         onDelete = null
     )
+)
 }
 
 @Composable
@@ -623,17 +634,31 @@ fun EditEntryScreen(
     }
 
     EntryFormScaffold(
+    identity = EntryFormIdentityUi(
         title = state.label.trim().ifBlank { "Modifier la facture" },
         label = state.label,
         amountText = state.amountText,
         dayText = state.dayText,
         isExpense = state.isExpense,
+        onLabel = viewModel::setLabel,
+        onAmount = viewModel::setAmount,
+        onDay = viewModel::setDay,
+        onExpense = {}
+    ),
+    recurrenceUi = EntryFormRecurrenceUi(
         recurring = state.recurrence != RecurrenceChoice.Once,
         showRecurring = false,
-        showFrequencyEdit = (state.hasTemplate || state.isExpense) && !state.isSavingsLine,
         recurrence = state.recurrence,
         onRecurrence = viewModel::setRecurrence,
+        showFrequencyEdit = (state.hasTemplate || state.isExpense) && !state.isSavingsLine,
         recurrenceInfo = state.recurrenceInfo,
+        onRecurring = {},
+        showApplyFollowing = state.hasTemplate && !state.isSavingsLine,
+        applyFollowing = state.applyToFollowing,
+        hasTemplate = state.hasTemplate,
+        onApplyFollowing = viewModel::setApplyToFollowing
+    ),
+    payment = EntryFormPaymentUi(
         isAutoDebit = state.isAutoDebit,
         onAutoDebit = viewModel::setAutoDebit,
         showAutoDebit = state.isExpense && !state.isSavingsLine,
@@ -646,6 +671,9 @@ fun EditEntryScreen(
         receiptIsPdf = state.receiptRelativePath.isNotBlank() &&
             viewModel.isPdfPath(state.receiptRelativePath),
         receiptPreview = pendingPreview ?: receiptBitmap,
+        extraReceiptPaths = ReceiptPathList.parse(state.extraReceiptPaths),
+        isPdfPath = viewModel::isPdfPath,
+        ocrBusy = state.ocrBusy,
         onScanEpc = onScanEpc,
         onTakePhoto = if (
             !state.futurePreviewReadOnly &&
@@ -691,8 +719,6 @@ fun EditEntryScreen(
         } else {
             null
         },
-        extraReceiptPaths = ReceiptPathList.parse(state.extraReceiptPaths),
-        isPdfPath = viewModel::isPdfPath,
         onViewExtraReceipt = { path ->
             if (viewModel.isPdfPath(path)) {
                 scope.launch { openExternalReceipt(path) }
@@ -718,11 +744,9 @@ fun EditEntryScreen(
             viewModel::readCommunicationFromPhoto
         } else {
             null
-        },
-        ocrBusy = state.ocrBusy,
-        showApplyFollowing = state.hasTemplate && !state.isSavingsLine,
-        applyFollowing = state.applyToFollowing,
-        hasTemplate = state.hasTemplate,
+        }
+    ),
+    dossier = EntryFormDossierUi(
         showDossierSection = state.isExpense && !state.isSavingsLine,
         dossierExpanded = state.dossierExpanded,
         onDossierExpanded = viewModel::setDossierExpanded,
@@ -734,9 +758,6 @@ fun EditEntryScreen(
         remainingCents = state.remainingCents,
         isSettled = state.isSettled,
         pacePhrase = state.pacePhrase,
-        isSavingsLine = state.isSavingsLine,
-        savingsTransferredCents = state.savingsTransferredCents,
-        lockAmountAndDay = state.isSavingsLine && state.savingsMonthDone,
         iban = state.iban,
         onIban = viewModel::setIban,
         onCopyIban = viewModel::copyIban,
@@ -748,23 +769,25 @@ fun EditEntryScreen(
         feeNoteText = state.feeNoteText,
         onFeeNoteText = viewModel::setFeeNoteText,
         addedFeesCents = state.addedFeesCents,
-        feeEvents = state.feeEvents,
+        feeEvents = state.feeEvents
+    ),
+    savings = EntryFormSavingsUi(
+        isSavingsLine = state.isSavingsLine,
+        savingsTransferredCents = state.savingsTransferredCents,
+        lockAmountAndDay = state.isSavingsLine && state.savingsMonthDone
+    ),
+    chrome = EntryFormChromeUi(
         infoMessage = state.copyMessage,
         error = state.error,
         primaryLabel = if (state.saving) "Enregistrement…" else "Enregistrer",
         primaryEnabled = !state.saving && !state.futurePreviewReadOnly,
         deleteLabel = if (state.isSavingsLine) "Retirer la ligne" else "Supprimer",
-        onLabel = viewModel::setLabel,
-        onAmount = viewModel::setAmount,
-        onDay = viewModel::setDay,
-        onExpense = {},
-        onRecurring = {},
-        onApplyFollowing = viewModel::setApplyToFollowing,
         onPrimary = viewModel::save,
         onCancel = { requestLeave() },
         onDelete = {
             if (!state.saving && !state.futurePreviewReadOnly) confirmDelete = true
         }
     )
+)
 }
 
