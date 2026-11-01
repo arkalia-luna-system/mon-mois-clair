@@ -180,3 +180,10 @@ Tant que **1–3** ouverts → **NO-GO** cadeau sans Athalia **et** **NO-GO** pr
 
 Détail : [`2026-11-01-premium-fix-progress.md`](2026-11-01-premium-fix-progress.md). Smoke doigt toujours Athalia.
 
+### Vague premium-02 (6.93)
+
+| Catégorie | Avant → après | Tests | Version |
+|-----------|--------------:|------:|---------|
+| Sécurité | 7,5 → **8,2** (code/docs) | 376/377 | `0.1.0-6.93` |
+
+Restore doigt / Device Care toujours Athalia.

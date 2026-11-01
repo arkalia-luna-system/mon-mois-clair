@@ -54,11 +54,18 @@ object DatabaseModule {
         vault.ensureProvisioned()
         val outcome = EncryptedDbMigrator.migrateIfNeeded(context, vault)
         when (outcome) {
-            EncryptedDbMigrator.MigrationOutcome.Failed ->
+            EncryptedDbMigrator.MigrationOutcome.Failed -> {
                 Log.e(TAG, "Migration SQLCipher échouée — ouverture claire temporaire")
-            EncryptedDbMigrator.MigrationOutcome.Migrated ->
+                // P1 : marqueur CE pour bannière Réglages (message utilisatrice claire).
+                runCatching { vault.markMigrationFailed() }
+            }
+            EncryptedDbMigrator.MigrationOutcome.Migrated -> {
                 Log.i(TAG, "DB migrée vers SQLCipher")
-            else -> Unit
+                runCatching { vault.clearMigrationFailed() }
+            }
+            EncryptedDbMigrator.MigrationOutcome.AlreadyEncrypted,
+            EncryptedDbMigrator.MigrationOutcome.NoPlaintextDb ->
+                runCatching { vault.clearMigrationFailed() }
         }
 
         runCatching {

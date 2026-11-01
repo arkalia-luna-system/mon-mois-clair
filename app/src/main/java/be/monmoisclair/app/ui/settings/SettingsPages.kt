@@ -439,7 +439,8 @@ fun SettingsSummaryScreen(
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.SUMMARY)
         Text(
-            text = "Texte ou PDF pour un créancier ou un conseiller — dans Dossiers.",
+            text = "Texte ou PDF pour un créancier ou un conseiller — dans Dossiers. " +
+                "PDF clair ≠ copie .mmc.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
@@ -467,6 +468,16 @@ fun SettingsBackupScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.BACKUP)
+        if (state.dbMigrationFailed) {
+            CarnetStateBanner(
+                text = "Protection du carnet incomplète sur cet appareil " +
+                    "(migration vers le format protégé échouée). " +
+                    "Vos données restent utilisables. Faites une copie .mmc maintenant, " +
+                    "notez le code à part, puis réinstallez ou contactez Arkalia Système.",
+                kind = CarnetBannerKind.Error,
+                pad = tipPad
+            )
+        }
         if (state.busy) {
             Text(
                 text = "Préparation de la copie…",
@@ -507,6 +518,7 @@ fun SettingsBackupScreen(
             Text(
                 text = "Notez-le une fois (agenda ou carnet papier), comme un code PIN. " +
                     "Sans ce code, une copie reçue ailleurs ne peut pas être rouverte. " +
+                    "Jamais le code et le fichier .mmc dans le même message. " +
                     "Code oublié et téléphone mort = données perdues.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,

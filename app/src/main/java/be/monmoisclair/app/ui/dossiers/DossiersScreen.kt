@@ -251,7 +251,8 @@ fun DossiersScreen(
         HorizontalDivider(color = A11yTokens.PaperBorder)
         DossierSectionHeader("Résumé à montrer")
         Text(
-            text = "Créancier ou conseiller — texte ou PDF, même contenu.",
+            text = "Créancier ou conseiller — texte ou PDF, même contenu. " +
+                "Le PDF est lisible tout de suite (clair) : ce n’est pas une copie .mmc.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
         )

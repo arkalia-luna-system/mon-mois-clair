@@ -112,7 +112,11 @@ class DossiersViewModel @Inject constructor(
                     "${appContext.packageName}.fileprovider",
                     file
                 )
-                val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
+                val intent = ShareFileIntents.pdf(
+                    uri,
+                    "Résumé — Mon Mois Clair",
+                    text = ShareFileIntents.PDF_SUMMARY_SHARE_NOTE
+                )
                 _shareIntents.emit(
                     Intent.createChooser(intent, "Envoyer le PDF")
                 )

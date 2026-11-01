@@ -14,10 +14,16 @@ object ReminderNotifCopy {
     fun amountLabel(amountCents: Long, hideAmounts: Boolean): String =
         if (hideAmounts) MASKED_AMOUNT else EuroFormat.formatCents(amountCents)
 
-    fun title(kind: ReminderKind, label: String): String = when (kind) {
-        ReminderKind.J3 -> "Dans 3 jours : $label"
-        ReminderKind.JD -> "Aujourd’hui : $label"
-        ReminderKind.OVERDUE -> "En retard : $label"
+    const val MASKED_LABEL = "Paiement"
+
+    fun title(kind: ReminderKind, label: String, hideAmounts: Boolean = false): String {
+        // P2 : bio ON → masquer aussi le libellé (trade-off utilité / shade).
+        val shown = if (hideAmounts) MASKED_LABEL else label
+        return when (kind) {
+            ReminderKind.J3 -> "Dans 3 jours : $shown"
+            ReminderKind.JD -> "Aujourd’hui : $shown"
+            ReminderKind.OVERDUE -> "En retard : $shown"
+        }
     }
 
     fun body(

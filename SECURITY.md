@@ -11,12 +11,13 @@ Ne publie pas de preuves d’exploitation dans une issue publique.
 Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familial sideloadé :
 
 - Pas de serveur, pas d’analytics, pas d’API tierce.
-- **Room** : SQLCipher ; passphrase aléatoire enveloppée Android Keystore (`mmc_db_wrap_v1`). Migration one-shot des DB claires pré-6.81.
-- **Backups SAF / copie WhatsApp** : enveloppe AES-GCM (`MMC1`) dérivée du **code de copie** (8 chiffres, Keystore local). Sans ce code, un fichier partagé est **illisible**. Anciennes copies ZIP/JSON claires : **refusées par défaut** ; opt-in explicite « Ancien format » à la restore (+ warning fort si acceptées).
+- **Room** : SQLCipher ; passphrase aléatoire enveloppée Android Keystore (`mmc_db_wrap_v1`). Migration one-shot des DB claires pré-6.81. Si migration **Failed** → ouverture claire temporaire + marqueur + bannière Réglages (pas silencieux).
+- **Wrap sans bio** (`mmc_db_wrap_v1`) : **volontaire** — widget et alarmes doivent ouvrir Room hors porte UI ; le verrou bio (`mmc_unlock_v1`) ne wrappe pas la passphrase SQLCipher.
+- **Backups SAF / copie WhatsApp** : enveloppe AES-GCM (`MMC1`) dérivée du **code de copie** (8 chiffres, Keystore local). Sans ce code, un fichier partagé est **illisible**. Texte d’envoi rappelle de **ne pas** coller le code dans le même message. Anciennes copies ZIP/JSON claires : **refusées par défaut** ; opt-in « Ancien format » = filet rare post-6.81 (+ warning fort) — à remplacer tout de suite par `.mmc`.
 - **Photos / PDF reçus** : fichiers `receipts/` et copies SAF enveloppés (`MRF1`) avec la même clé wrap Keystore. Cache `view/` TTL 15 min + purge au verrou biométrique.
-- **PDF résumé mois** : **clair** volontairement (partage/impression) ; uniquement `cache/share/` éphémère (TTL 15 min + wipe au verrou) ; watermark « données sensibles » — pas une copie `.mmc`.
+- **PDF résumé mois** : **clair** volontairement (partage/impression) ; uniquement `cache/share/` éphémère (TTL 15 min + wipe au verrou) ; watermark + note d’envoi « pas une copie `.mmc` ».
 - Biométrie optionnelle = porte UI + **CryptoObject** (clé `mmc_unlock_v1`, AUTH_BIOMETRIC_STRONG \| DEVICE_CREDENTIAL) quand disponible ; sinon fallback porte UI (DB déjà chiffrée).
-- Widget / notifs : montants masqués si biométrie ON.
+- Widget / notifs : montants **et** libellés masqués si biométrie ON.
 - Keystore de signature release : **jamais** dans git (`*.jks`, `keystore.properties`).
 - Pas de permission `INTERNET`. `android:allowBackup="false"`. Release minifiée.
 - `FLAG_SECURE` seulement quand le verrouillage est activé. Sans verrou, l’aperçu des tâches peut montrer le mois.

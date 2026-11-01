@@ -196,7 +196,8 @@ fun RestoreBackupScreen(
                 enabled = !state.busy
             )
             Text(
-                text = "Ancien format (ZIP/JSON clair)",
+                text = "Ancien format (ZIP/JSON clair) — filet rare, " +
+                    "puis nouvelle copie .mmc tout de suite",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.weight(1f)

@@ -9,6 +9,7 @@ import be.monmoisclair.app.data.backup.BackupHealthStore
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.data.crypto.DbPassphraseVault
 import be.monmoisclair.app.data.crypto.ShareSecretVault
 import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
@@ -71,7 +72,9 @@ data class SettingsUiState(
     val showSummaryButton: Boolean = false,
     val summaryBusy: Boolean = false,
     /** Code de copie (8 chiffres) pour rouvrir une copie WhatsApp / autre téléphone. */
-    val shareCopyCode: String? = null
+    val shareCopyCode: String? = null,
+    /** Migration SQLCipher Failed → DB claire temporaire (bannière confiance). */
+    val dbMigrationFailed: Boolean = false
 )
 
 @HiltViewModel
@@ -87,7 +90,8 @@ class SettingsViewModel @Inject constructor(
     private val prepareMonthSummary: PrepareMonthSummaryUseCase,
     private val listDossiers: ListDossiersUseCase,
     private val summaryPdfWriter: MonthSummaryPdfWriter,
-    private val shareSecretVault: ShareSecretVault
+    private val shareSecretVault: ShareSecretVault,
+    private val dbPassphraseVault: DbPassphraseVault
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -113,8 +117,11 @@ class SettingsViewModel @Inject constructor(
             val savings = configureSavings.read()
             val summary = prepareMonthSummary()
             val dossierCount = listDossiers().count
-            val shareCode = withContext(Dispatchers.IO) {
-                runCatching { shareSecretVault.peekDisplayCode() }.getOrNull()
+            val (shareCode, migrationFailed) = withContext(Dispatchers.IO) {
+                val code = runCatching { shareSecretVault.peekDisplayCode() }.getOrNull()
+                val failed = runCatching { dbPassphraseVault.isMigrationFailedPresent() }
+                    .getOrDefault(false)
+                code to failed
             }
             _uiState.update { cur ->
                 val dirtyNow = savingsDraftDirty
@@ -143,7 +150,8 @@ class SettingsViewModel @Inject constructor(
                     savingsDeficit = if (keepDraft) cur.savingsDeficit else null,
                     savingsNextMonthNote = if (keepDraft) cur.savingsNextMonthNote else null,
                     showSummaryButton = summary.isDeficit || dossierCount > 0,
-                    shareCopyCode = shareCode
+                    shareCopyCode = shareCode,
+                    dbMigrationFailed = migrationFailed
                 )
             }
         }
@@ -370,7 +378,11 @@ class SettingsViewModel @Inject constructor(
                     "${appContext.packageName}.fileprovider",
                     file
                 )
-                val intent = ShareFileIntents.pdf(uri, "Résumé — Mon Mois Clair")
+                val intent = ShareFileIntents.pdf(
+                    uri,
+                    "Résumé — Mon Mois Clair",
+                    text = ShareFileIntents.PDF_SUMMARY_SHARE_NOTE
+                )
                 _shareIntents.emit(
                     Intent.createChooser(intent, "Envoyer le PDF")
                 )
@@ -401,7 +413,8 @@ class SettingsViewModel @Inject constructor(
                         it.copy(
                             busy = false,
                             backupMessage = "Choisissez l’app d’envoi. " +
-                                "Gardez le code ci-dessus : sans lui, la copie ne se rouvre pas.",
+                                "Gardez le code ci-dessus sur papier — " +
+                                "ne l’envoyez pas dans le même message que le fichier .mmc.",
                             backupMessageError = false
                         )
                     }

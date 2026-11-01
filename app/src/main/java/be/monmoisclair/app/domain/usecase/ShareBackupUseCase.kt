@@ -77,9 +77,11 @@ class ShareBackupUseCase @Inject constructor(
             val send = ShareFileIntents.encryptedCopy(
                 uri = uri,
                 subject = "Copie Mon Mois Clair",
+                // P0 ops : rappeler le code SANS l’inclure ; jamais dans ce même message.
                 text = "Copie Mon Mois Clair — $photoLine " +
                     "Sans le code de copie (Réglages → Sauvegarde sur le téléphone " +
                     "qui a créé la copie), ce fichier ne peut pas être rouvert. " +
+                    "N’envoyez pas le code dans ce message — gardez-le sur papier. " +
                     "À restaurer via Réglages → Restaurer une sauvegarde."
             )
             ShareBackupResult.Ready(

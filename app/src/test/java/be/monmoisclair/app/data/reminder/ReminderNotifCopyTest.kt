@@ -37,4 +37,14 @@ class ReminderNotifCopyTest {
         assertThat(ReminderNotifCopy.title(ReminderKind.OVERDUE, "Gaz"))
             .isEqualTo("En retard : Gaz")
     }
+
+    @Test
+    fun title_masksLabelWhenBiometricOn() {
+        assertThat(
+            ReminderNotifCopy.title(ReminderKind.JD, "Loyer", hideAmounts = true)
+        ).isEqualTo("Aujourd’hui : ${ReminderNotifCopy.MASKED_LABEL}")
+        assertThat(
+            ReminderNotifCopy.title(ReminderKind.J3, "Gaz", hideAmounts = true)
+        ).doesNotContain("Gaz")
+    }
 }

@@ -32,7 +32,22 @@ class DbPassphraseVault @Inject constructor(
 
     fun markDbEncrypted() {
         markerFile.writeText("1")
+        clearMigrationFailed()
     }
+
+    /** Migration SQLCipher Failed → Room claire temporaire (P1 confiance). */
+    fun isMigrationFailedPresent(): Boolean = migrationFailedFile.isFile
+
+    fun markMigrationFailed() {
+        migrationFailedFile.writeText("1")
+    }
+
+    fun clearMigrationFailed() {
+        if (migrationFailedFile.isFile) migrationFailedFile.delete()
+    }
+
+    private val migrationFailedFile: File
+        get() = File(ensureCryptoDir(), MIGRATION_FAILED_NAME)
 
     /** Crée la passphrase si absente ; retourne les octets (à [AesGcmBox.clear] après usage). */
     fun unwrapPassphraseBytes(): ByteArray {
@@ -91,6 +106,7 @@ class DbPassphraseVault @Inject constructor(
         const val DIR = "crypto"
         const val WRAPPED_NAME = "db_passphrase.wrapped"
         const val MARKER_NAME = "db_encrypted.flag"
+        const val MIGRATION_FAILED_NAME = "db_migration_failed.flag"
         const val DB_NAME = "mon_mois_clair.db"
     }
 }

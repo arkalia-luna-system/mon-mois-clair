@@ -41,3 +41,37 @@ Règle : une catégorie à la fois · preuves grep/read + Gradle `--rerun-tasks`
 ### Auto-évaluation
 
 **8,7 / 10** craft code (objectif ≥ 8,5 confirmé). Respiration sticky/cartes/socle fermée en code. Preuve Gradle VÉRIFIÉE ; sensation pouce **NON VÉRIFIÉE**.
+
+---
+
+## premium-02 · Sécurité
+
+| | |
+|--|--|
+| **Avant → après (code)** | **7,5 → 8,2 / 10** |
+| **Smoke restore / Device Care** | Athalia — **NON VÉRIFIÉ** ici |
+| **Version** | `0.1.0-6.93` · `versionCode` 98 |
+| **Tests** | **376 exécutés** / 377 (1 skipped), 89 XML, 0 failure |
+
+### Points traités
+
+| Id | Action | Preuve |
+|----|--------|--------|
+| **P0 ops** | Copy UI + EXTRA_TEXT « pas le code dans ce message » | `SettingsPages` · `ShareBackupUseCase` · `SettingsViewModel` |
+| **P1 grace** | Messages butoir post-6.81 + checkbox restore | `RestoreMessages` · `RestoreBackupScreen` |
+| **P1 migration** | Flag CE + bannière Réglages Sauvegarde | `DbPassphraseVault` · `DatabaseModule` · `SettingsViewModel` |
+| **P1 PDF** | Note partage + copy Dossiers/Réglages ≠ `.mmc` | `ShareFileIntents` · VM · screens |
+| **P2 notif** | Libellé masqué si bio ON | `ReminderNotifCopy` · scheduler |
+| **P2 doc** | Wrap sans bio + PDF/grace | `SECURITY.md` |
+
+### Non touché (volontaire)
+
+| Item | Pourquoi |
+|------|----------|
+| Entropie code 8 chiffres | Ne pas casser restore des copies existantes |
+| Smoke restore 2ᵉ device | Athalia |
+| Retrait hard de l’opt-in grace | Filet rare conservé + copy butoir |
+
+### Auto-évaluation
+
+**8,2 / 10** confiance code/docs (objectif ≥ 8). Crypto inchangée. Ops + surfaces UX fermées en code.

@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.92** (premium-01 DA respiration sticky/cartes/socle) |
-| Étape en cours | premium-02 sécurité (fixes) |
-| Prochaine sous-étape | Audits premium 02→06 fixes · puis **Athalia** smoke S26 / restore / TalkBack / Device Care |
-| Audit premium | fix-progress 01 **8,7** code · **pas** « 9/10 dans la main » · S26 / restore ouverts |
+| Dernière étape terminée | **6.93** (premium-02 sécu PDF/grace/migration/ops) |
+| Étape en cours | premium-03 architecture (fixes) |
+| Prochaine sous-étape | Audits premium 03→06 fixes · puis **Athalia** smoke S26 / restore / TalkBack / Device Care |
+| Audit premium | fix-progress 01 **8,7** · 02 **8,2** code · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,16 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.93 premium-02 sécu confiance
+
+**Sécu :** ops copy (jamais code + `.mmc` même message) dans UI + EXTRA_TEXT ;
+grace cleartext butoir post-6.81 ; bannière migration Failed ; PDF résumé ≠ `.mmc` ;
+libellé notif masqué si bio ON ; SECURITY wrap sans bio documenté. Restore E2E = Athalia.
+
+**Tests :** **376 exécutés** / 377 (1 skipped), 89 XML, 0 failure.  
+**Version :** `0.1.0-6.93` · `versionCode` 98.  
+**Preuve :** [`docs/audits/2026-11-01-premium-fix-progress.md`](docs/audits/2026-11-01-premium-fix-progress.md).
 
 ### 2026-11-01 — 6.92 premium-01 DA respiration
 

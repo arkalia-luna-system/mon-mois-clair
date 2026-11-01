@@ -91,7 +91,7 @@ class ReminderSchedulerImpl @Inject constructor(
         val payload = ReminderPayload(
             expenseInstanceId = expense.id,
             kind = kind,
-            title = ReminderNotifCopy.title(kind, expense.label),
+            title = ReminderNotifCopy.title(kind, expense.label, hideAmounts = hideAmounts),
             body = ReminderNotifCopy.body(
                 kind = kind,
                 amountCents = expense.amountCents,

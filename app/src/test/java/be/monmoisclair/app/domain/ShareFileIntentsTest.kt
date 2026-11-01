@@ -23,6 +23,21 @@ class ShareFileIntentsTest {
         assertThat(intent.clipData!!.itemCount).isEqualTo(1)
         assertThat(intent.clipData!!.getItemAt(0).uri).isEqualTo(uri)
         assertThat(intent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION).isNotEqualTo(0)
+        assertThat(intent.getStringExtra(Intent.EXTRA_TEXT)).isNull()
+    }
+
+    @Test
+    fun pdf_withNote_explainsNotMmcBackup() {
+        val uri = Uri.parse("content://be.monmoisclair.app.fileprovider/share/resume.pdf")
+        val intent = ShareFileIntents.pdf(
+            uri,
+            "Résumé — Mon Mois Clair",
+            text = ShareFileIntents.PDF_SUMMARY_SHARE_NOTE
+        )
+        val note = intent.getStringExtra(Intent.EXTRA_TEXT)
+        assertThat(note).contains("clair")
+        assertThat(note!!.lowercase()).contains(".mmc")
+        assertThat(note.lowercase()).contains("pas une copie")
     }
 
     @Test
