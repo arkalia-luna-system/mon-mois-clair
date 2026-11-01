@@ -167,3 +167,10 @@ Règle : une catégorie à la fois · preuves grep/read + Gradle `--rerun-tasks`
 |-----|-----:|
 | Packaging/support/docs | **8** |
 | Smoke S26 / restore doigt | **Athalia** (ouvert) |
+
+---
+
+## Vérif Gradle (re-run vérificateur)
+
+**2026-11-01 15:05** · `./gradlew :app:testDebugUnitTest --rerun-tasks` · HEAD `9b1fb58` · `0.1.0-6.96`  
+**Résultat :** **381/381** exécutés · 0 failure · 1 skipped · 90 `TEST-*.xml` · claim README aligné.
