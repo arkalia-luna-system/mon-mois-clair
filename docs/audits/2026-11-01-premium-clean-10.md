@@ -1,41 +1,43 @@
-# Premium clean-10 — propreté + notes craft (6.97)
+# Premium clean — notes craft **honnêtes** (6.98)
 
 | | |
 |--|--|
 | **Date** | 2026-11-01 |
-| **Version** | `0.1.0-6.97` · `versionCode` 102 |
-| **Mode** | Inventaire propreté + auto-notes craft **honnêtes** |
-| **Doigt / main** | **Athalia** — pas de claim « 10/10 dans la main » |
+| **Version** | `0.1.0-6.98` · `versionCode` 103 |
+| **Mode** | Inventaire propreté + auto-notes craft **sans gonflage** |
+| **Doigt / main** | **Athalia** — **pas** de claim « 10/10 dans la main » |
 
 ---
 
-## Notes craft /10 (code · docs · rangement)
+## Notes craft /10 (après 6.98)
 
-| Catégorie | Avant (6.96 fix-progress) | Après **6.97 craft** | Lecture |
-|-----------|--------------------------:|---------------------:|---------|
-| **DA** affichage | 8,7 | **9,5** | Air sticky ↑ · cartes compact liens seuls · pastille Prélèvement filet · formGap ↑ · widget crème déjà aligné |
-| **Sécu** confiance | 8,2 | **9,5** | TTL **5 min** · wipe caches **ON_STOP** · clipboard **30 s** · grace checkbox/deadline · PRIVACY/SECURITY alignés · crypto **inchangée** |
-| **Archi** | 8,0 | **9,5** | Scaffold models (6.94) + **`EntryFormDraftController`** EPC/OCR Add↔Edit + tests · twin VM load/save volontairement séparés |
-| **UX** parcours | 8,1 | **9,5** | « Factures ouvertes » ≠ Reste · Aide alignée · restore checkbox deadline · hub sauvegarde déjà 6.95 |
-| **A11y** / One UI | 8,3 | **9,5** | Widget 14/16 sp · grille jours fontScale · QuietLink 96 · notif action icon · CD Détails déjà 6.96 |
-| **Produit** packaging | 8 | **9,5** | NOTICE/DISTRIBUTION/README/journal bump · claims smoke = Athalia · QuietLink code VÉRIFIÉ |
-| **Propreté** / rangement | ~7 | **10** | Finals 10-26 → archive · AppleDouble 0 · APK dist purgé · index docs vivant |
+Références : audits premium-01…06 (notes brutes ~7–8,7) · fix-progress 6.92–6.97 · vérificateur **PARTIEL** sur 6.97 (notes 9,5 uniformes injustifiées).
 
-**Moyenne craft indicative :** **~9,6 / 10**.  
-**« Dans la main » / cadeau GO :** **ouvert** — checklist Athalia ci-dessous.
+| Catégorie | 6.97 (claim gonflé) | **6.98 honnête** | Lecture |
+|-----------|--------------------:|-----------------:|---------|
+| **DA** affichage | 9,5 | **9,0** | Air sticky / cartes compact / pastille / formGap réels ; pas « premium magasin » sans S26 doigt |
+| **Sécu** confiance | 9,5 | **8,7** | TTL **5 min** · wipe ON_STOP · clipboard **30 s** · grace UI — **crypto inchangée** (SQLCipher / MMC1 / wrap) |
+| **Archi** | 9,5 | **8,6** | Scaffold models + DraftController **approfondi** (OCR/EPC/collapse) + **SettingsPages découpé** (Chrome / Comfort / Account). Twin Add/Edit **load/save encore séparés** (~587 + ~767 L) |
+| **UX** parcours | 9,5 | **8,8** | « Factures ouvertes » · Aide · restore deadline · hub sauvegarde — parcours dense, pas 9,5 boutique |
+| **A11y** / One UI | 9,5 | **9,0** | Widget sp · grille fontScale · QuietLink 96 · notif icon — TalkBack / Device Care = Athalia |
+| **Produit** packaging | 9,5 | **8,8** | NOTICE / DISTRIBUTION / claims smoke = Athalia · QuietLink code OK — brief oral + Drive ouverts |
+| **Propreté** / rangement | 10 (faux `._*`) | **9,5** | Finals 10-26 archivés · smoke-device + samsung → archive · `._*` **0** (find hors `.git`) · `git-safe` purge working tree · APK dist gitignoré. Pas 10 absolu (caches `.gradle` / dist locaux possibles) |
+
+**Moyenne craft indicative :** **~8,9 / 10** (pas ~9,6).  
+**« Dans la main » / cadeau GO :** **ouvert** — checklist Athalia.
 
 ---
 
-## Inventaire propreté — avant → après
+## Inventaire propreté — 6.98
 
-| Zone | Avant | Après |
-|------|-------|-------|
-| `docs/audits/2026-10-26-final-*` (12) + crash-open | Vivants en double vs premium | **`docs/archive/audits-2026-10-26/`** + bandeau ARCHIVÉ |
-| AppleDouble `._*` (hors build) | ~170 | **0** |
-| `dist/*.apk` | Présent (~42 Mo) | **purgé** (gitignoré ; regeneré `assembleRelease`) |
-| Audits premium 00–06 + fix-progress | Conservés | Conservés |
-| Charte · PRIVACY · SECURITY · NOTICE · journal | Conservés | Mis à jour 6.97 |
-| Smoke PNG | Absents / gitignorés | OK |
+| Zone | État |
+|------|------|
+| `docs/archive/audits-2026-10-26/` | Finals 10-26 + crash-open (bandeau) |
+| `docs/archive/audits-2026-10-23/2026-10-23-smoke-device.md` | Smoke S25 historique (bandeau ARCHIVÉ) |
+| `docs/archive/audits-2026-11-01/2026-11-01-samsung-defaillances-notif-icon.md` | Direct Boot / notif 6.91 clos (bandeau) |
+| AppleDouble `._*` hors `.git` | **0** (purge + `scripts/git-safe.sh` étendu) |
+| Audits premium 00–06 + fix-progress + clean | Vivants sous `docs/audits/` |
+| `SettingsPages.kt` monolithique | **Supprimé** → `SettingsPageChrome` + `SettingsComfortPages` + `SettingsAccountPages` |
 
 ---
 
@@ -54,16 +56,16 @@ Tant que **1–3** ouverts → **pas** de claim 10/10 main ni GO cadeau fake.
 
 ---
 
-## Preuves code (échantillon)
+## Preuves code (échantillon 6.98)
 
 | Axe | Preuve |
 |-----|--------|
-| TTL 5 min | `ReceiptPhotoStore.VIEW_CACHE_TTL_MS` · `MonthSummaryPdfShare.SHARE_TTL_MS` |
-| Wipe background | `MainViewModel.onAppBackgrounded` |
-| DraftController | `EntryFormDraftController` + `EntryFormDraftControllerTest` |
-| DA compact | `HomeTimelineRows` Copier sans texte note |
-| UX | `stickyStillToPayLabel` → « Factures ouvertes » |
+| DraftController + | `resolveOcr` · `paymentPatch` · `collapseConversionDossier` + tests |
+| Settings découpe | `SettingsPageChrome.kt` · `SettingsComfortPages.kt` · `SettingsAccountPages.kt` |
+| Twin VM | Add/Edit load/save **non** fusionnés (volontaire / risque régression) |
+| TTL / wipe | inchangés vs 6.97 (crypto inchangée) |
+| AppleDouble | `find … -name '._*' -not -path '*/.git/*'` → **0** |
 
-**Preuve tests (vérif 2026-11-01) :** `~/.cache/mon-mois-clair/gradle-build/app/test-results` → **384/385** (91 XML · 0 failure · 1 skipped) — pas sous `app/build` T7.
+**Preuve tests (2026-11-01) :** `~/.cache/mon-mois-clair/gradle-build/app/test-results` → **388/389** (91 XML · 0 failure · 1 skipped).
 
-*Fin clean-10 · craft plafond raisonnable · main = Athalia.*
+*Fin clean-10 · notes plafonnées au réel · main = Athalia.*

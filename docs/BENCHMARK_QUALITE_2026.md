@@ -8,7 +8,7 @@ Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/
 |--------|---------|
 | **Fait** | … · **6.81** crypto · **6.82** polish copy · **6.83** quieting sticky/cartes/sheets + notice famille |
 | **Pas fait** | S26 en main · restore doigt code de copie · biométrie / notif au doigt · claim premium terminé · rescan Dependabot GitHub |
-| **Fait (craft)** | Scission god-screens Home/Entry (6.82–6.91) · `EntryFormUiModel`s groupés Scaffold (6.94) — twin VM glue encore ouverte |
+| **Fait (craft)** | Scission god-screens Home/Entry (6.82–6.91) · `EntryFormUiModel`s (6.94) · DraftController OCR/EPC (6.97–6.98) · SettingsPages découpé (6.98) — twin Add/Edit load/save encore séparés |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 

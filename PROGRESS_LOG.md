@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.97** (premium craft ≥9,5 + propreté 10) |
+| Dernière étape terminée | **6.98** (notes craft honnêtes + archi Settings/Draft + propreté `._*`) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · TalkBack · Device Care · Drive |
-| Audit premium | craft DA/sécu/archi/UX/a11y/produit **9,5** · propreté **10** · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
+| Audit premium | notes **honnêtes** ~8,6–9,0 · propreté **9,5** · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.98 notes craft honnêtes + archi / propreté
+
+**Contexte :** vérificateur **PARTIEL** sur 6.97 (notes 9,5 gonflées · claim AppleDouble 0 faux · audits smoke/samsung non archivés).
+
+**Archi :** `EntryFormDraftController` + `resolveOcr` / `paymentPatch` / `collapseConversionDossier` + tests ; `SettingsPages` → `SettingsPageChrome` + `SettingsComfortPages` + `SettingsAccountPages`. Twin Add/Edit load/save **non** fusionnés.
+
+**Propreté :** purge `._*` (find hors `.git` = **0**) · `git-safe.sh` étendu working tree · smoke-device → `archive/audits-2026-10-23/` · samsung → `archive/audits-2026-11-01/` · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) notes honnêtes.
+
+**Sécu / UX :** pas de changement crypto ; notes sécu **8,7** (TTL/clipboard déjà 6.97).
+
+**Tests :** **388 exécutés** / 389 (1 skipped), 91 XML, 0 failure.  
+**Version :** `0.1.0-6.98` · `versionCode` 103.  
+**Smoke doigt :** Athalia — **pas** claim 10/10 main.
 
 ### 2026-11-01 — 6.97 premium craft ≥9,5 + propreté 10
 

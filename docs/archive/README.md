@@ -12,8 +12,9 @@ Décisions vivantes : `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `docs/PLAN
 | `RECHERCHE_OUTILS_2026-10-21.md` | Sources matin |
 | `CHECKLIST_S25_2026-10-19.md` | Passage device 5.4.1 (19 oct) |
 | `campagnes-2026-10-20/` | Rapports testeurs 6.26 |
-| `audits-2026-10-23/` | Nuit-00…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 (bandeau figé) |
+| `audits-2026-10-23/` | Nuit-00…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 · **smoke-device** S25 (bandeau figé) |
+| `audits-2026-10-26/` | Finals 10-26 + crash-open (bandeau ARCHIVÉ) |
+| `audits-2026-11-01/` | Samsung défaillances / Direct Boot / notif 6.91 (bandeau ARCHIVÉ) |
 
 Ne pas rouvrir pour décider d’un correctif. Reporter dans le journal ou la charte.  
-Audits vivants : `docs/audits/2026-11-01-premium-*` (+ smoke-device + samsung-defaillances).  
-Finals 10-26 : [`audits-2026-10-26/`](audits-2026-10-26/) (bandeau ARCHIVÉ).
+Audits vivants : `docs/audits/2026-11-01-premium-*` (+ clean-10).

@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 — défaillances Samsung / Direct Boot / notif 6.91 **clos**. Vivant = `PROGRESS_LOG` + `SECURITY.md` + audits premium-02. Ne plus lire pour l’état code.
+
 # Audit — Samsung Device Care « défaillances » + icône notif + #54 → 6.91
 
 | Champ | Valeur |

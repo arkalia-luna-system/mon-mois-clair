@@ -10,7 +10,7 @@
 | SHA | `189a32c` (contrôle Git de cet appel) |
 | Version | `0.1.0-6.91` · `versionCode` 96 (`app/build.gradle.kts`) |
 | Méthode | Relecture code + calculs WCAG locaux + croisement docs/tests ; **pas** de TalkBack device ; **pas** de `./gradlew` dans cet appel |
-| Réfs croisées | `docs/audits/2026-11-01-samsung-defaillances-notif-icon.md` · archive `2026-10-23-nuit-06-a11y-oneui.md` |
+| Réfs croisées | `docs/archive/audits-2026-11-01/2026-11-01-samsung-defaillances-notif-icon.md` · archive `2026-10-23-nuit-06-a11y-oneui.md` |
 
 **Note /10 (code a11y–One UI) : 8,0 / 10**  
 Socle tenu (48 dp, AAA testés, plafond fontScale hero, contrats widget, largeIcon notif, sortie Direct Boot). Pas 9+ : smoke S26 + TalkBack réel + rescan Device Care encore **NON VÉRIFIÉS** ; typo widget &lt; 18 sp ; épargne compacte derrière « Détails ».
@@ -246,7 +246,7 @@ Commentaire `values-night/colors.xml` : widget « fixes dans values/ » ; la nui
 | **VÉRIFIÉ** | inspection | `PaymentNotificationHelper.kt` L110–127 ; `ic_notification.xml` ; présence `ic_notification_large.png` |
 | **VÉRIFIÉ** | inspection | `PaymentNotificationIconsTest.kt` (existence / decode / builder) |
 | **NON VÉRIFIÉ** | smoke | lisibilité barre d’état / bannière collapsed Samsung — non exécuté |
-| **DÉCLARÉ** | inspection | `2026-11-01-samsung-defaillances-notif-icon.md` §B (historique session ship) |
+| **DÉCLARÉ** | inspection | archive `2026-11-01-samsung-defaillances-notif-icon.md` §B (historique session ship) |
 
 ### Constat — action FAIT sans icône drawable
 

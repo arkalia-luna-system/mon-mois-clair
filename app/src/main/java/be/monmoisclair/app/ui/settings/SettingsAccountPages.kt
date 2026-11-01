@@ -1,9 +1,6 @@
 package be.monmoisclair.app.ui.settings
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -14,13 +11,8 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,83 +30,20 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.domain.model.BackupHealth
-import be.monmoisclair.app.domain.model.ThemePreference
 import be.monmoisclair.app.ui.components.CarnetBannerKind
-import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
-import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
-import kotlinx.coroutines.flow.collectLatest
-
-@Composable
-internal fun SettingsShareEffect(viewModel: SettingsViewModel) {
-    val context = LocalContext.current
-    LaunchedEffect(viewModel) {
-        viewModel.shareIntents.collectLatest { intent ->
-            try {
-                context.startActivity(intent)
-            } catch (_: Exception) {
-                viewModel.reportExternalIntentFailed()
-            }
-        }
-    }
-}
-
-@Composable
-internal fun SettingsResumeRefresh(viewModel: SettingsViewModel) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner, viewModel) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) viewModel.refresh()
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-}
-
-@Composable
-fun SettingsAppearanceScreen(
-    onBack: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    SettingsResumeRefresh(viewModel)
-    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        SettingsPageTitle(SettingsHubCopy.APPEARANCE)
-        ThemeOptionRow(
-            label = "Comme le téléphone",
-            selected = state.themePreference == ThemePreference.System,
-            enabled = !state.busy,
-            onSelect = { viewModel.setThemePreference(ThemePreference.System) }
-        )
-        ThemeOptionRow(
-            label = "Clair",
-            selected = state.themePreference == ThemePreference.Light,
-            enabled = !state.busy,
-            onSelect = { viewModel.setThemePreference(ThemePreference.Light) }
-        )
-        ThemeOptionRow(
-            label = "Sombre",
-            selected = state.themePreference == ThemePreference.Dark,
-            enabled = !state.busy,
-            onSelect = { viewModel.setThemePreference(ThemePreference.Dark) }
-        )
-    }
-}
 
 @Composable
 fun SettingsSavingsScreen(
@@ -364,95 +293,6 @@ fun SettingsPrivacyScreen(
 }
 
 @Composable
-fun SettingsDeadlinesScreen(
-    onBack: () -> Unit,
-    onEditTemplate: (String) -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val fit = rememberDisplayFit()
-    val tipPadLg = fit.tipPadLg
-
-    SettingsResumeRefresh(viewModel)
-
-    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        SettingsPageTitle(SettingsHubCopy.DEADLINES)
-        if (state.offMonthPeriodics.isEmpty()) {
-            Text(
-                text = "Aucune pour l’instant.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
-        } else {
-            Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
-                state.offMonthPeriodics.forEach { item ->
-                    Surface(
-                        color = A11yTokens.PaperWarm,
-                        shape = MaterialTheme.shapes.medium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
-                            .clickable(
-                                role = Role.Button,
-                                onClickLabel = "Modifier ${item.label}"
-                            ) { onEditTemplate(item.templateId) }
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(tipPadLg),
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            Text(
-                                text = item.label,
-                                style = MaterialTheme.typography.titleLarge,
-                                color = A11yTokens.Ink
-                            )
-                            Text(
-                                text = viewModel.formatPeriodicAmountLine(item),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.Ink
-                            )
-                            Text(
-                                text = "Prochaine : ${item.nextDueLabel}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.AccentWarn
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun SettingsSummaryScreen(
-    onBack: () -> Unit,
-    onOpenDossiers: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    SettingsResumeRefresh(viewModel)
-
-    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        SettingsPageTitle(SettingsHubCopy.SUMMARY)
-        Text(
-            text = "Texte ou PDF pour un créancier ou un conseiller — dans Dossiers. " +
-                "PDF clair ≠ copie .mmc.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
-        )
-        QuietLinkA11y(
-            text = "Ouvrir Dossiers",
-            onClick = onOpenDossiers
-        )
-    }
-}
-
-@Composable
 fun SettingsBackupScreen(
     onBack: () -> Unit,
     onOpenSaf: () -> Unit,
@@ -564,90 +404,5 @@ fun SettingsBackupScreen(
                 pad = tipPad
             )
         }
-    }
-}
-
-@Composable
-fun SettingsHelpScreen(
-    onBack: () -> Unit,
-    onOpenHowItWorks: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val fit = rememberDisplayFit()
-    val tipPad = fit.tipPad
-
-    SettingsResumeRefresh(viewModel)
-    SettingsShareEffect(viewModel)
-
-    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        SettingsPageTitle(SettingsHubCopy.HELP)
-        SecondaryA11yButton(
-            text = "Comment ça marche",
-            onClick = onOpenHowItWorks,
-            enabled = !state.busy
-        )
-        // Contact = Menu Accueil uniquement (pas de doublon Aide / HowItWorks).
-        state.flashMessage?.let { msg ->
-            CarnetStateBanner(
-                text = msg,
-                kind = if (state.flashMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
-                pad = tipPad
-            )
-        }
-    }
-}
-
-@Composable
-internal fun SettingsPageTitle(title: String) {
-    // PageTitle ≠ HubRow : titleLarge + InkMuted (modèle Menu).
-    CarnetPageTitle(title)
-}
-
-private fun savingsActionLabel(busy: Boolean, active: Boolean): String = when {
-    busy -> "Enregistrement…"
-    active -> "Mettre à jour"
-    else -> "Activer"
-}
-
-@Composable
-internal fun ThemeOptionRow(
-    label: String,
-    selected: Boolean,
-    enabled: Boolean,
-    onSelect: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = A11yTokens.minTouchHeight)
-            .clickable(
-                enabled = enabled,
-                role = Role.RadioButton,
-                onClick = onSelect
-            )
-            .semantics {
-                contentDescription = if (selected) {
-                    "$label, sélectionné"
-                } else {
-                    label
-                }
-            },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(
-            selected = selected,
-            onClick = onSelect,
-            enabled = enabled,
-            colors = RadioButtonDefaults.colors(
-                selectedColor = A11yTokens.ButtonFill,
-                unselectedColor = A11yTokens.FieldLine
-            )
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.Ink
-        )
     }
 }

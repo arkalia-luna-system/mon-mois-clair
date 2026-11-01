@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 — smoke S25 historique (6.77–6.79). Vivant = `PROGRESS_LOG` + `docs/AUDIT_STATUS.md` + checklist Athalia (NOTICE). Ne plus lire pour l’état craft.
+
 # Smoke device — 2026-10-23 (soir) + suivi P0 widget 6.79
 
 | | |

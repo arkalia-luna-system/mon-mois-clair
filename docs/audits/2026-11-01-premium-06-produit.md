@@ -7,7 +7,7 @@
 | **Rôle** | Product owner — écart *livrable famille* vs *vraiment premium* |
 | **État code** | `0.1.0-6.91` · `versionCode` 96 · journal Samsung Direct Boot / notif |
 | **Portée** | **AUDIT ONLY** · un domaine (produit) · zéro fix app |
-| **Précédent** | [`2026-10-26-final-06-livrable-famille.md`](2026-10-26-final-06-livrable-famille.md) · [`2026-11-01-samsung-defaillances-notif-icon.md`](2026-11-01-samsung-defaillances-notif-icon.md) · [`2026-11-01-premium-01-da-affichage.md`](2026-11-01-premium-01-da-affichage.md) |
+| **Précédent** | [`../archive/audits-2026-10-26/2026-10-26-final-06-livrable-famille.md`](../archive/audits-2026-10-26/2026-10-26-final-06-livrable-famille.md) · [`../archive/audits-2026-11-01/2026-11-01-samsung-defaillances-notif-icon.md`](../archive/audits-2026-11-01/2026-11-01-samsung-defaillances-notif-icon.md) · [`2026-11-01-premium-01-da-affichage.md`](2026-11-01-premium-01-da-affichage.md) |
 | **Sources** | `README` · `PROGRESS_LOG` · `NOTICE_FAMILLE_2MIN` · `DISTRIBUTION_FAMILLE` · `CHARTE_ET_ARCHITECTURE` · audits récents · `dist/` |
 
 ---
@@ -49,7 +49,7 @@ Tout le livrable famille **plus** : preuves smoke à jour sur version courante �
 |---------|--------|--------|--------|
 | Version Gradle `0.1.0-6.91` / vc **96** | **VÉRIFIÉ** | inspection | `app/build.gradle.kts` · badge README |
 | README / journal alignés 6.91 · 374 tests · S26 / restore ouverts | **DÉCLARÉ** | inspection | `README.md` · `PROGRESS_LOG.md` état global |
-| Smoke Ultra 6.91 : install OK, 0 FATAL post-install | **DÉCLARÉ** | inspection (historique) | `docs/audits/2026-11-01-samsung-defaillances-notif-icon.md` §D |
+| Smoke Ultra 6.91 : install OK, 0 FATAL post-install | **DÉCLARÉ** | inspection (historique) | archive `2026-11-01-samsung-defaillances-notif-icon.md` §D |
 | Smoke **S26** D1–D7 | **NON VÉRIFIÉ** (ouvert) | inspection docs | journal « prochaine sous-étape Athalia » · CHARTE usage principal S26 · NOTICE L23–26 |
 | Restore + code papier bout-en-bout | **NON VÉRIFIÉ** (ouvert) | inspection docs | final-06 · NOTICE « À faire encore » · PROGRESS |
 | Captures smoke PNG versionnées | **VÉRIFIÉ** absentes (gitignorées) | inspection | `docs/audits/smoke/` |
@@ -74,7 +74,7 @@ Tout le livrable famille **plus** : preuves smoke à jour sur version courante �
 | Constat | Statut | Nature | Preuve |
 |---------|--------|--------|--------|
 | Lots quieting / copy 6.82–6.87 **déclarés** faits côté code | **DÉCLARÉ** | inspection | journal 6.82–6.87 · premium-01 DA craft ~8,5 |
-| P1 H01/F01 fix code 6.80 — reval doigt ouverte | **DÉCLARÉ** | inspection | `2026-10-23-smoke-device.md` H01/F01 |
+| P1 H01/F01 fix code 6.80 — reval doigt ouverte | **DÉCLARÉ** | inspection | archive `2026-10-23-smoke-device.md` H01/F01 |
 | Notif `largeIcon` 6.91 | **DÉCLARÉ** | inspection | audit samsung 2026-11-01 §B — smoke bannière doigt **non** relancé ici |
 | Noms démo `loyer3` / etc. encore documentés | **DÉCLARÉ** | inspection | smoke-device — risque device cadeau |
 

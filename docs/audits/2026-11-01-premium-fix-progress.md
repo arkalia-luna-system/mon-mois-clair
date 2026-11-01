@@ -174,17 +174,35 @@ Règle : une catégorie à la fois · preuves grep/read + Gradle `--rerun-tasks`
 
 | Axe | Avant → après (craft) | Actions |
 |-----|----------------------:|---------|
-| DA | 8,7 → **9,5** | sticky pad/gap/spacer ↑ · carte compact liens seuls · Prélèvement outlined · formGap 14/18 |
-| Sécu | 8,2 → **9,5** | TTL **5 min** · wipe ON_STOP · clipboard 30 s · grace checkbox · docs |
-| Archi | 8,0 → **9,5** | `EntryFormDraftController` + tests EPC/OCR |
-| UX | 8,1 → **9,5** | « Factures ouvertes » · Aide · restore deadline copy |
-| A11y | 8,3 → **9,5** | widget 16 sp · grille fontScale · notif action icon |
-| Produit | 8 → **9,5** | NOTICE/DISTRIBUTION/README/journal 6.97 · claims honnêtes |
-| Propreté | ~7 → **10** | archive finals 10-26 · AppleDouble 0 · clean-10.md |
+| DA | 8,7 → **9,5** *(claim)* | sticky pad/gap/spacer ↑ · carte compact liens seuls · Prélèvement outlined · formGap 14/18 |
+| Sécu | 8,2 → **9,5** *(claim)* | TTL **5 min** · wipe ON_STOP · clipboard 30 s · grace checkbox · docs |
+| Archi | 8,0 → **9,5** *(claim)* | `EntryFormDraftController` + tests EPC/OCR |
+| UX | 8,1 → **9,5** *(claim)* | « Factures ouvertes » · Aide · restore deadline copy |
+| A11y | 8,3 → **9,5** *(claim)* | widget 16 sp · grille fontScale · notif action icon |
+| Produit | 8 → **9,5** *(claim)* | NOTICE/DISTRIBUTION/README/journal 6.97 · claims honnêtes |
+| Propreté | ~7 → **10** *(claim faux `._*`)* | archive finals 10-26 · clean-10.md |
 
 **Tests :** **384** exécutés / 385 (1 skipped), 91 XML, 0 failure.  
 **Version :** `0.1.0-6.97` · vc 102.  
-**Main / doigt :** Athalia — voir [`2026-11-01-premium-clean-10.md`](2026-11-01-premium-clean-10.md).
+**Main / doigt :** Athalia — voir [`2026-11-01-premium-clean-10.md`](2026-11-01-premium-clean-10.md).  
+**Vérificateur :** **PARTIEL** — notes gonflées · AppleDouble ≠ 0 · audits non archivés.
+
+---
+
+## Vague 6.98 — correction PARTIEL (notes honnêtes + archi/propreté)
+
+| Axe | Note **honnête** | Actions |
+|-----|-----------------:|---------|
+| DA | **9,0** | inchangé code vs 6.97 ; re-note |
+| Sécu | **8,7** | crypto inchangée ; TTL/clipboard déjà 6.97 |
+| Archi | **8,6** | DraftController + · SettingsPages découpé · twin load/save reste |
+| UX | **8,8** | re-note |
+| A11y | **9,0** | re-note |
+| Produit | **8,8** | re-note |
+| Propreté | **9,5** | `._*` = 0 · smoke + samsung archivés · git-safe étendu |
+
+**Version :** `0.1.0-6.98` · vc 103.  
+**Détail :** [`2026-11-01-premium-clean-10.md`](2026-11-01-premium-clean-10.md).
 
 ---
 
@@ -192,3 +210,6 @@ Règle : une catégorie à la fois · preuves grep/read + Gradle `--rerun-tasks`
 
 **2026-11-01** · `./gradlew :app:testDebugUnitTest --rerun-tasks` · `0.1.0-6.97`  
 **Résultat :** **384/384** exécutés · 0 failure · 1 skipped · 91 `TEST-*.xml`.
+
+**2026-11-01 (6.98)** · `./gradlew :app:testDebugUnitTest --rerun-tasks` · `0.1.0-6.98`  
+**Résultat :** **388** exécutés / 389 · 0 failure · 1 skipped · 91 `TEST-*.xml`.

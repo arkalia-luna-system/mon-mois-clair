@@ -7,7 +7,7 @@
 | **Périmètre** | Crypto réelle vs claims `PRIVACY.md` / `SECURITY.md` ; trous Direct Boot, ZIP/MMC, PDF, cache, widget, notifs, Keystore ; confiance premium famille offline |
 | **Hors périmètre** | Pentest root/malware, rewrite, CVE Dependabot jar-par-jar, Play Store, smoke doigt restore 2ᵉ device (non rejoué ici) |
 | **Code livré dans cette passe** | **Aucun** — audit only |
-| **Prédécesseur** | [`2026-10-26-final-02-securite.md`](2026-10-26-final-02-securite.md) (post-6.82) · fix Direct Boot [`2026-11-01-samsung-defaillances-notif-icon.md`](2026-11-01-samsung-defaillances-notif-icon.md) |
+| **Prédécesseur** | [`2026-10-26-final-02-securite.md`](../archive/audits-2026-10-26/2026-10-26-final-02-securite.md) (post-6.82) · fix Direct Boot [`../archive/audits-2026-11-01/2026-11-01-samsung-defaillances-notif-icon.md`](../archive/audits-2026-11-01/2026-11-01-samsung-defaillances-notif-icon.md) |
 
 **Verdict court :** à **6.91**, le socle crypto (SQLCipher + wrap Keystore, `MMC1` / code 8 chiffres, `MRF1`, refuse cleartext par défaut, TTL 15 min `view/`+`share/`, Direct Boot retiré) est **aligné** avec les claims PRIVACY/SECURITY et **plus mature** qu’en 6.82. Ce n’est **pas** un coffre bancaire. Les résidus de confiance premium sont surtout **surfaces hors process** (widget/notifs, PDF résumé clair, cache aperçu), **grace opt-in**, **entropie code**, et **discipline humaine** (code ≠ même message que `.mmc`). **Note indicative : 7,5 / 10** pour sideload famille discipliné.
 

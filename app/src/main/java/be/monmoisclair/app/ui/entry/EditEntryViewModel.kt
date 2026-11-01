@@ -269,14 +269,20 @@ class EditEntryViewModel @Inject constructor(
      * Sur un accord existant : on replie seulement (pas d’effacement → pas de sauvegarde vide).
      */
     fun setDossierExpanded(v: Boolean) = _state.update {
-        when {
-            !v && !it.isAgreement -> it.copy(
-                dossierExpanded = false,
-                causeLabel = "",
-                openingRemainingText = "",
+        if (!v && !it.isAgreement) {
+            val (expanded, cause, opening) = EntryFormDraftController.collapseConversionDossier(
+                expanded = false,
+                causeLabel = it.causeLabel,
+                openingRemainingText = it.openingRemainingText
+            )
+            it.copy(
+                dossierExpanded = expanded,
+                causeLabel = cause,
+                openingRemainingText = opening,
                 error = null
             )
-            else -> it.copy(dossierExpanded = v, error = null)
+        } else {
+            it.copy(dossierExpanded = v, error = null)
         }
     }
     fun setCauseLabel(v: String) = _state.update { it.copy(causeLabel = v, error = null) }
@@ -368,34 +374,36 @@ class EditEntryViewModel @Inject constructor(
         receiptPhotos.decodeBitmap(relativePath)
 
     fun applyEpcRaw(raw: String) {
-        val current = _state.value.toPaymentFields()
-        val result = EntryFormDraftController.applyEpcRawOrNull(current, raw)
+        val result = EntryFormDraftController.applyEpcRawOrNull(_state.value.toPaymentFields(), raw)
         if (result == null) {
             _state.update { it.copy(error = EntryFormMessages.INVALID_EPC_QR) }
             return
         }
+        val patch = EntryFormDraftController.paymentPatch(result)
         _state.update {
             it.copy(
-                label = result.fields.label,
-                amountText = result.fields.amountText,
-                paymentNote = result.fields.paymentNote,
-                iban = result.fields.iban,
+                label = patch.label,
+                amountText = patch.amountText,
+                paymentNote = patch.paymentNote,
+                iban = patch.iban,
                 error = null,
-                copyMessage = result.fields.copyMessage
+                copyMessage = patch.copyMessage
             )
         }
     }
 
     fun applyEpc(payment: EpcPayment) {
         _state.update {
-            val result = EntryFormDraftController.applyEpc(it.toPaymentFields(), payment)
+            val patch = EntryFormDraftController.paymentPatch(
+                EntryFormDraftController.applyEpc(it.toPaymentFields(), payment)
+            )
             it.copy(
-                label = result.fields.label,
-                amountText = result.fields.amountText,
-                paymentNote = result.fields.paymentNote,
-                iban = result.fields.iban,
+                label = patch.label,
+                amountText = patch.amountText,
+                paymentNote = patch.paymentNote,
+                iban = patch.iban,
                 error = null,
-                copyMessage = result.fields.copyMessage
+                copyMessage = patch.copyMessage
             )
         }
     }
@@ -509,26 +517,29 @@ class EditEntryViewModel @Inject constructor(
                 }
                 return@launch
             }
-            val found = runCatching { receiptOcr.findStructuredCommunication(bmp) }.getOrNull()
-            if (found.isNullOrBlank()) {
-                _state.update {
-                    val cleared = EntryFormDraftController.ocrNotFound(it.toPaymentFields())
-                    it.copy(
-                        ocrBusy = false,
-                        copyMessage = cleared.copyMessage,
-                        error = BelgianStructuredCommunication.OCR_NOT_FOUND
-                    )
-                }
-            } else {
-                _state.update {
-                    val patched = EntryFormDraftController.ocrFound(it.toPaymentFields(), found)
-                    it.copy(
-                        ocrBusy = false,
-                        paymentNote = patched.paymentNote,
-                        copyMessage = patched.copyMessage,
-                        error = null
-                    )
-                }
+            when (
+                val outcome = EntryFormDraftController.resolveOcr(
+                    _state.value.toPaymentFields(),
+                    runCatching { receiptOcr.findStructuredCommunication(bmp) }.getOrNull()
+                )
+            ) {
+                is EntryFormDraftController.OcrOutcome.NotFound ->
+                    _state.update {
+                        it.copy(
+                            ocrBusy = false,
+                            copyMessage = outcome.fields.copyMessage,
+                            error = BelgianStructuredCommunication.OCR_NOT_FOUND
+                        )
+                    }
+                is EntryFormDraftController.OcrOutcome.Applied ->
+                    _state.update {
+                        it.copy(
+                            ocrBusy = false,
+                            paymentNote = outcome.fields.paymentNote,
+                            copyMessage = outcome.fields.copyMessage,
+                            error = null
+                        )
+                    }
             }
         }
     }

@@ -14,9 +14,7 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`CI.md`](CI.md) | CI + Dependabot Security (force protobuf/netty) |
 | [`audits/2026-11-01-premium-00-synthese.md`](audits/2026-11-01-premium-00-synthese.md) | Synthèse audits premium |
 | [`audits/2026-11-01-premium-fix-progress.md`](audits/2026-11-01-premium-fix-progress.md) | Suivi fixes craft |
-| [`audits/2026-11-01-premium-clean-10.md`](audits/2026-11-01-premium-clean-10.md) | Propreté / notes craft 9,5–10 |
-| [`audits/2026-10-23-smoke-device.md`](audits/2026-10-23-smoke-device.md) | Smoke S25 Ultra (vivant) |
-| [`audits/2026-11-01-samsung-defaillances-notif-icon.md`](audits/2026-11-01-samsung-defaillances-notif-icon.md) | Direct Boot / notif 6.91 |
+| [`audits/2026-11-01-premium-clean-10.md`](audits/2026-11-01-premium-clean-10.md) | Notes craft **honnêtes** + propreté (6.98) |
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 
