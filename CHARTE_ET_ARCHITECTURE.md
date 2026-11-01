@@ -26,7 +26,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 
 | Zone lecture (courte) | Zone liste (centre) | Zone pouce (bas) |
 |------------------------|---------------------|------------------|
-| ‹ **mois** › + icône **calendrier** (tap → « Choisir un mois ») puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
+| ‹ **mois** › (tap sur le **libellé** → « Choisir un mois ») puis **un** gros Reste | Cartes échéances espacées ≥12 dp | **Menu** · **+ Ajouter** |
 | Lignes sous le chiffre (ci-dessous) | FAIT / Remettre à droite (pas sur aperçu futur) | Menu = **Réglages** · **À venir** · **Dossiers** (si N>0) · **Choisir un mois ›** · QuietLink contact bas (« Un souci ? Écrire à Arkalia Système »). Titre « Menu » = PageTitle InkMuted. **Pas** Aide/Restore dans Menu |
 | Alerte en 2 lignes maximum | Liste d’abord, courses ensuite | Futur = bouton **Mois en cours** à la place de + Ajouter |
 

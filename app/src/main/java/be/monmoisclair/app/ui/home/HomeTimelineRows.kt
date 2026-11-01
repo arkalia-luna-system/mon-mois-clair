@@ -228,24 +228,27 @@ internal fun ExpenseRow(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    // P0-C1 : montant dominant juste sous le nom ; cause/cadence = 2ᵉ souffle.
+                    // P0-C1 : premier regard = jour · nom · montant · FAIT.
                     Text(
                         text = item.amountLabel,
                         color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
                         style = MaterialTheme.typography.titleLarge
                     )
-                    val meta = buildList {
-                        if (item.causeLabel.isNotBlank()) add(item.causeLabel)
-                        item.cadenceHint?.let { add(it) }
-                    }.joinToString(" · ")
-                    if (meta.isNotBlank()) {
-                        Text(
-                            text = meta,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                    // Cause/cadence : confort seulement (compact = carte allégée).
+                    if (!compact) {
+                        val meta = buildList {
+                            if (item.causeLabel.isNotBlank()) add(item.causeLabel)
+                            item.cadenceHint?.let { add(it) }
+                        }.joinToString(" · ")
+                        if (meta.isNotBlank()) {
+                            Text(
+                                text = meta,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
                 if (!readOnlyPreview) {
@@ -327,7 +330,7 @@ internal fun ExpenseStatusLine(
 ) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
-    // H06 : ordre critique → Auto → Accord ; max 2 pastilles (photo = lien 2ᵉ rangée).
+    // H06 / P0-C1 : max 2 pastilles. Compact = critique seulement (retard / FAIT).
     data class Chip(val text: String, val bg: Color, val fg: Color, val outlined: Boolean = false)
     val chips = buildList {
         when {
@@ -342,11 +345,13 @@ internal fun ExpenseStatusLine(
                     )
                 )
         }
-        if (item.isAutoDebit) {
-            add(Chip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.OnGold))
-        }
-        if (item.isAgreement && !hideAgreementChip && size < 2) {
-            add(Chip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true))
+        if (!compact) {
+            if (item.isAutoDebit) {
+                add(Chip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.OnGold))
+            }
+            if (item.isAgreement && !hideAgreementChip && size < 2) {
+                add(Chip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true))
+            }
         }
     }.take(2)
     if (chips.isEmpty()) return

@@ -31,9 +31,9 @@ internal fun HomeBottomBar(
     onGoCurrentMonth: () -> Unit
 ) {
     HorizontalDivider(color = A11yTokens.PaperBorder)
-    // H11 / P0-D1 : socle ≥ 8 dp ; filet seul (pas shadowElevation).
+    // P0-D1 : même feuille crème que la liste (plus de sandwich crème/warm).
     Surface(
-        color = A11yTokens.PaperWarm,
+        color = A11yTokens.PaperCream,
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
         modifier = Modifier.fillMaxWidth()

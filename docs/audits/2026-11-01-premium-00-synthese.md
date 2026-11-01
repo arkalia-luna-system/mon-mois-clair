@@ -167,3 +167,16 @@ Tant que **1–3** ouverts → **NO-GO** cadeau sans Athalia **et** **NO-GO** pr
 | 06 | [`2026-11-01-premium-06-produit.md`](2026-11-01-premium-06-produit.md) | 6 · NO-GO |
 
 *Synthèse premium-00 · `0.1.0-6.91` · NO-GO « vraiment premium » 6/10.*
+
+---
+
+## Suivi fixes (append)
+
+### Vague premium-01 (6.92)
+
+| Catégorie | Avant → après | Tests | Version |
+|-----------|--------------:|------:|---------|
+| DA affichage | 8,5 → **8,7** (code) | 374/375 | `0.1.0-6.92` |
+
+Détail : [`2026-11-01-premium-fix-progress.md`](2026-11-01-premium-fix-progress.md). Smoke doigt toujours Athalia.
+

@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.91** (Samsung Direct Boot ENOENT · largeIcon notif · #54 pin doc) |
-| Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : rescan Device Care · smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · connected androidTest — puis GO cadeau |
-| Audit premium | final-11 UI/MD/CI ship · **pas** « 9/10 dans la main » · S26 / restore doigt / connected ouverts |
+| Dernière étape terminée | **6.92** (premium-01 DA respiration sticky/cartes/socle) |
+| Étape en cours | premium-02 sécurité (fixes) |
+| Prochaine sous-étape | Audits premium 02→06 fixes · puis **Athalia** smoke S26 / restore / TalkBack / Device Care |
+| Audit premium | fix-progress 01 **8,7** code · **pas** « 9/10 dans la main » · S26 / restore ouverts |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,17 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.92 premium-01 DA respiration
+
+**DA Accueil :** air sticky (sectionGap + Spacer hero) ; cartes compact allégées
+(meta/pastilles Auto hors 1er regard) ; socle bas `PaperCream` ; Courses Primary +
+QuietLink ; tip fiche muted ; widget crème aligné `#F6F3E8` ; lien nuit teal ;
+CHARTE calendrier = tap libellé.
+
+**Tests :** **374 exécutés** / 375 (1 skipped), 89 XML, 0 failure.  
+**Version :** `0.1.0-6.92` · `versionCode` 97.  
+**Preuve :** [`docs/audits/2026-11-01-premium-fix-progress.md`](docs/audits/2026-11-01-premium-fix-progress.md).
 
 ### 2026-11-01 — 6.91 Samsung défaillances + icône notif + #54
 

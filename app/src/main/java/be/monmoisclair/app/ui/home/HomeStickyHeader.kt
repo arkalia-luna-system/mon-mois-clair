@@ -6,8 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -59,7 +61,8 @@ internal fun HomeStickyHeader(
                     .background(A11yTokens.PaperCream)
                     .padding(horizontal = fit.stickyPaddingHorizontal)
                     .padding(vertical = fit.stickyPaddingVertical),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+                // P0-S1 : air entre lignes — le serif respire avant À payer / Courses.
+                verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
             ) {
             // ‹ mois › — calendrier via le libellé (plus de 4ᵉ cible). Pas de logo.
             Row(
@@ -124,6 +127,8 @@ internal fun HomeStickyHeader(
                     contentDescription = "$remainingTitle : $remainingAmount"
                 }
             )
+            // Air dédié sous le hero avant toute 2ᵉ ligne outil.
+            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
             // H01 : 1 chiffre + 1 ligne statut ; Courses = entrée sticky (sheet unique).
             stickyStillToPayLabel(
                 stillToPayCents = state.summary.stillToPayCents,
@@ -149,11 +154,9 @@ internal fun HomeStickyHeader(
             )?.let { coursesLabel ->
                 StickyLinkRow(
                     label = coursesLabel,
-                    labelColor = when {
-                        state.diversSpentCents > 0L && state.afterDiversCents < 0L ->
-                            A11yTokens.DangerInk
-                        else -> A11yTokens.InkMuted
-                    },
+                    // P1-S3 : InkMuted sticky — la brique ne rivalise pas avec le Reste
+                    // (Danger reste dans la sheet Courses).
+                    labelColor = A11yTokens.InkMuted,
                     compact = fit.compactHomeChrome,
                     onClickLabel = "Modifier les courses",
                     contentDescription = if (state.diversSpentCents > 0L) {
@@ -237,9 +240,10 @@ internal fun HomeStickyHeader(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
+                    // P1-S2 : disclosure légère (bodySmall + chevron 16).
                     Text(
                         text = detailsLabel,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodySmall,
                         color = A11yTokens.InkMuted,
                         maxLines = 1
                     )
@@ -250,7 +254,7 @@ internal fun HomeStickyHeader(
                         ),
                         contentDescription = null,
                         tint = A11yTokens.InkMuted,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }

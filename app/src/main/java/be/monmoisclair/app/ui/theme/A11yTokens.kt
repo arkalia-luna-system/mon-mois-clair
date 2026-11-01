@@ -105,7 +105,8 @@ object A11yTokens {
         onGold = Color(0xFF1E1B18),
         buttonFill = Color(0xFF1B4D4E),
         buttonText = Color(0xFFFFFDF9),
-        link = Color(0xFF9AD8D8)
+        // P1-N1 : teal soft (pas cyan) — ≥ 7:1 sur PaperWarm nuit.
+        link = Color(0xFF93D2CB)
     )
 
     private val palette: CarnetPalette

@@ -56,11 +56,11 @@ data class DisplayFit(
                 screenWidthDp = screenWidthDp,
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
-                // Sticky : un peu d’air (mois / calendrier), Reste reste le hero — pas de logo.
-                stickyPaddingVertical = if (compact) 8.dp else 12.dp,
+                // P0-S1 / P0-D1 : air sticky (hero respire) sans gonfler le chrome.
+                stickyPaddingVertical = if (compact) 10.dp else 14.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
                 bannerPadding = if (compact) 8.dp else 12.dp,
-                sectionGap = if (compact) 4.dp else 6.dp,
+                sectionGap = if (compact) 6.dp else 8.dp,
                 remainingAmountSp = if (compact) 34f else 40f
             )
         }

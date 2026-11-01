@@ -215,7 +215,8 @@ internal fun EntryFormScaffold(
         "Nom (ex. Loyer)"
     }
     val fit = rememberDisplayFit()
-    val formGap = if (fit.compactHomeChrome) 10.dp else 14.dp
+    // P1-F1 : plus d’air entre sections fiche.
+    val formGap = if (fit.compactHomeChrome) 12.dp else 16.dp
     val tipPad = fit.tipPad
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
@@ -459,28 +460,41 @@ internal fun EntryFormScaffold(
             infoMessage?.let {
                 val infoShape = MaterialTheme.shapes.medium
                 val warn = it == BelgianStructuredCommunication.VERIFY_ON_MAIL
-                Text(
-                    text = it,
-                    color = if (warn) A11yTokens.AccentWarn else A11yTokens.AccentOkInk,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            1.dp,
-                            if (warn) A11yTokens.AccentWarn.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOkInk.copy(alpha = 0.35f),
-                            infoShape
-                        )
-                        .background(
-                            if (warn) A11yTokens.PaperWarm else A11yTokens.AccentOkSoft,
-                            infoShape
-                        )
-                        .padding(tipPad)
-                        .semantics {
-                            liveRegion = LiveRegionMode.Polite
-                            contentDescription = it
-                        }
-                )
+                // P1-F1 : warn = boîte ; ok/tip courant = texte muted + filet (pas tip-box).
+                if (warn) {
+                    Text(
+                        text = it,
+                        color = A11yTokens.AccentWarn,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(
+                                1.dp,
+                                A11yTokens.AccentWarn.copy(alpha = 0.4f),
+                                infoShape
+                            )
+                            .background(A11yTokens.PaperWarm, infoShape)
+                            .padding(tipPad)
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = it
+                            }
+                    )
+                } else {
+                    Text(
+                        text = it,
+                        color = A11yTokens.AccentOkInk,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(1.dp, A11yTokens.PaperBorder, infoShape)
+                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                            .semantics {
+                                liveRegion = LiveRegionMode.Polite
+                                contentDescription = it
+                            }
+                    )
+                }
             }
             // Marge basse : Primary + Annuler (+ Delete) + clearance — dernier QuietLink hors sticky.
             Spacer(

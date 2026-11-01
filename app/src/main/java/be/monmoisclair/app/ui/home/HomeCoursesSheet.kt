@@ -32,7 +32,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSheetHandle
-import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.components.PrimaryA11yButton
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -119,23 +120,21 @@ fun HomeCoursesSheet(
                     .then(fieldBring),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
-            Row(
+            // P1-H4 : 1 Primary carnet + QuietLink corriger (pas 2 Secondary outils).
+            PrimaryA11yButton(
+                text = "J’ai dépensé",
+                onClick = onAdd,
+                enabled = !busy,
+                modifier = Modifier.fillMaxWidth()
+            )
+            QuietLinkA11y(
+                text = "Corriger",
+                onClick = onRemove,
+                enabled = !busy,
+                fillMaxWidth = false,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                SecondaryA11yButton(
-                    text = "J’ai dépensé",
-                    onClick = onAdd,
-                    enabled = !busy,
-                    modifier = Modifier.weight(1f)
-                )
-                SecondaryA11yButton(
-                    text = "Corriger",
-                    onClick = onRemove,
-                    enabled = !busy,
-                    modifier = Modifier.weight(1f)
-                )
-            }
+                onClickLabel = "Corriger le montant des courses"
+            )
             error?.let { err ->
                 val errShape = MaterialTheme.shapes.medium
                 Text(
