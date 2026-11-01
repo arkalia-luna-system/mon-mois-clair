@@ -236,7 +236,14 @@ internal fun HomeStickyHeader(
                             }
                         ) { onStickyDetailsOpenChange(!stickyDetailsOpen) }
                         .padding(vertical = 4.dp)
-                        .semantics { contentDescription = detailsLabel },
+                        .semantics {
+                            // P1-2 : TalkBack annonce l’épargne cachée en compact.
+                            contentDescription = if (savingsBehindPlus && !stickyDetailsOpen) {
+                                "$detailsLabel. Mettre de côté est ici."
+                            } else {
+                                detailsLabel
+                            }
+                        },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {

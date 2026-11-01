@@ -67,6 +67,25 @@ data class DisplayFit(
     }
 }
 
+/**
+ * Pré-compensation hero quand la police système est agrandie (P1-3 / a11y).
+ * Testable hors Compose.
+ */
+fun DisplayFit.withFontScale(fontScale: Float): DisplayFit {
+    if (fontScale < 1.25f) return this
+    val visualCap = when {
+        fontScale >= 1.8f -> 28f
+        fontScale >= 1.5f -> 30f
+        else -> min(remainingAmountSp, 34f)
+    }
+    return copy(
+        stickyPaddingVertical = minDp(stickyPaddingVertical, 8.dp),
+        bannerPadding = minDp(bannerPadding, 8.dp),
+        sectionGap = minDp(sectionGap, 4.dp),
+        remainingAmountSp = visualCap / fontScale
+    )
+}
+
 @Composable
 fun rememberDisplayFit(): DisplayFit {
     val cfg = LocalConfiguration.current
@@ -75,21 +94,7 @@ fun rememberDisplayFit(): DisplayFit {
         screenWidthDp = cfg.screenWidthDp,
         screenHeightDp = cfg.screenHeightDp
     )
-    // Police système agrandie : resserrer le sticky sans règle « si Ultra ».
-    // P0 a11y : le hero est en `sp` → Compose le re-scale. On pré-compense pour
-    // plafonner la taille **visuelle** (sinon sticky mange la liste à 1,5–2×).
-    if (fontScale < 1.25f) return base
-    val visualCap = when {
-        fontScale >= 1.8f -> 28f
-        fontScale >= 1.5f -> 30f
-        else -> min(base.remainingAmountSp, 34f)
-    }
-    return base.copy(
-        stickyPaddingVertical = minDp(base.stickyPaddingVertical, 8.dp),
-        bannerPadding = minDp(base.bannerPadding, 8.dp),
-        sectionGap = minDp(base.sectionGap, 4.dp),
-        remainingAmountSp = visualCap / fontScale
-    )
+    return base.withFontScale(fontScale)
 }
 
 private fun minDp(a: Dp, b: Dp): Dp = if (a < b) a else b

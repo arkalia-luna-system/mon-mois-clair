@@ -130,3 +130,40 @@ Règle : une catégorie à la fois · preuves grep/read + Gradle `--rerun-tasks`
 ### Auto-évaluation
 
 **8,1 / 10** parcours code (objectif ≥ 8). Smoke S26 / restore doigt = Athalia.
+
+---
+
+## premium-05 · a11y / One UI
+
+| | |
+|--|--|
+| **Avant → après (code)** | **8,0 → 8,3 / 10** |
+| **TalkBack / S26 / Device Care** | Athalia — **NON VÉRIFIÉ** |
+| **Version** | `0.1.0-6.96` · vc 101 |
+| **Tests** | **381** / 382 |
+
+| Id | Action |
+|----|--------|
+| **P1-1** | Widget title 14 sp / line 15 sp |
+| **P1-2** | Détails CD « Mettre de côté est ici » |
+| **P1-3** | `DisplayFit.withFontScale` + test |
+| **P1-5** | QuietLink `widthIn(min=96)` |
+| **P1-6** | Menu + `!` merge TalkBack |
+
+---
+
+## premium-06 · Produit (code/docs)
+
+| | |
+|--|--|
+| **Packaging / support / code** | **6 → ~8 / 10** (NOTICE + DISTRIBUTION + QL code) |
+| **Smoke « dans la main »** | **reste Athalia** — **pas** claim 8 main |
+| **QuietLink** | `SupportMailComposer` + Menu QuietLink **VÉRIFIÉ** code ; Compose Gmail = Athalia |
+| **Demo** | Pas de seed démo main ; notice « pas loyer3 » |
+
+### Auto-évaluation honnête
+
+| Axe | Note |
+|-----|-----:|
+| Packaging/support/docs | **8** |
+| Smoke S26 / restore doigt | **Athalia** (ouvert) |

@@ -139,8 +139,14 @@ fun QuietLinkA11y(
         modifier = modifier
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
-            // Largeur min = cible pouce même si le libellé est court (Copier / Photo).
-            .then(if (!fillMaxWidth) Modifier.widthIn(min = A11yTokens.minTouchHeight) else Modifier)
+            // P1-5 : largeur min ≥ FAIT (96) si lien court — évite faux clics vs Photo.
+            .then(
+                if (!fillMaxWidth) {
+                    Modifier.widthIn(min = 96.dp)
+                } else {
+                    Modifier
+                }
+            )
             .clickable(
                 enabled = enabled,
                 role = Role.Button,

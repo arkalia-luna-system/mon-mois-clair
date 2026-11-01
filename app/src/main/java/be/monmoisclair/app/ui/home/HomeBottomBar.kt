@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+// mergeDescendants via semantics(mergeDescendants = true)
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -48,7 +49,18 @@ internal fun HomeBottomBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier.weight(1f)) {
+            // P1-6 : un seul nœud TalkBack (Menu + pastille !).
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = if (remindersBlocked) {
+                            "Menu. Alertes à régler"
+                        } else {
+                            "Menu"
+                        }
+                    }
+            ) {
                 SecondaryA11yButton(
                     text = "Menu",
                     onClick = onMenu,
@@ -64,9 +76,7 @@ internal fun HomeBottomBar(
                             .padding(top = 2.dp, end = 2.dp)
                             .background(A11yTokens.AccentWarn, StampShape)
                             .padding(horizontal = 8.dp, vertical = 2.dp)
-                            .semantics {
-                                contentDescription = "Alertes à régler — ouvrir le Menu"
-                            }
+                            .semantics { contentDescription = "" }
                     )
                 }
             }

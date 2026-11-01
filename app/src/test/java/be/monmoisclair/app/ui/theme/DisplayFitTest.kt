@@ -32,4 +32,18 @@ class DisplayFitTest {
         assertThat(compact.bannerPadding.value)
             .isLessThan(tall.bannerPadding.value)
     }
+
+    @Test
+    fun withFontScale_capsVisualHero() {
+        val base = DisplayFit.from(360, 780)
+        val at125 = base.withFontScale(1.25f)
+        // Taille visuelle ≈ remainingAmountSp * fontScale ≤ 34.
+        assertThat(at125.remainingAmountSp * 1.25f).isAtMost(34.01f)
+        val at15 = base.withFontScale(1.5f)
+        assertThat(at15.remainingAmountSp * 1.5f).isAtMost(30.01f)
+        val at18 = base.withFontScale(1.8f)
+        assertThat(at18.remainingAmountSp * 1.8f).isAtMost(28.01f)
+        assertThat(base.withFontScale(1.0f).remainingAmountSp)
+            .isEqualTo(base.remainingAmountSp)
+    }
 }

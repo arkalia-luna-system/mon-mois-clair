@@ -201,3 +201,10 @@ Twin VM DraftController encore ouvert (prudent).
 | Catégorie | Avant → après | Tests | Version |
 |-----------|--------------:|------:|---------|
 | UX parcours | 7,4 → **8,1** (code) | 379/380 | `0.1.0-6.95` |
+
+### Vague premium-05 + 06 (6.96)
+
+| Catégorie | Avant → après | Tests | Version |
+|-----------|--------------:|------:|---------|
+| a11y One UI | 8,0 → **8,3** (code) | 381/382 | `0.1.0-6.96` |
+| Produit packaging/docs | 6 → **8** (docs/code) ; smoke **Athalia** | idem | `0.1.0-6.96` |

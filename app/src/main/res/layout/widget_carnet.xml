@@ -29,7 +29,7 @@
         android:text="Reste"
         android:textAllCaps="false"
         android:textColor="@color/widget_muted"
-        android:textSize="11sp" />
+        android:textSize="14sp" />
 
     <!-- WDG02 : serif système uniquement. -->
     <TextView
@@ -71,5 +71,5 @@
         android:maxLines="2"
         android:text="Ouvrir le carnet"
         android:textColor="@color/widget_muted"
-        android:textSize="13sp" />
+        android:textSize="15sp" />
 </LinearLayout>

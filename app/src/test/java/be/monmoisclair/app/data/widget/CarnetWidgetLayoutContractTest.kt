@@ -36,6 +36,16 @@ class CarnetWidgetLayoutContractTest {
         assertThat(xml).contains("targetCellWidth")
     }
 
+    @Test
+    fun widget_muted_text_atLeast14sp() {
+        // P1-1 a11y : titre / ligne muted lisibles senior.
+        val xml = readRes("layout/widget_carnet.xml")
+        assertThat(xml).contains("android:textSize=\"14sp\"")
+        assertThat(xml).contains("android:textSize=\"15sp\"")
+        assertThat(xml).doesNotContain("android:textSize=\"11sp\"")
+        assertThat(xml).doesNotContain("android:textSize=\"13sp\"")
+    }
+
     private fun readRes(underRes: String): String {
         val candidates = listOf(
             File("src/main/res/$underRes"),
