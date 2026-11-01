@@ -64,4 +64,6 @@ Tant que **1–3** ouverts → **pas** de claim 10/10 main ni GO cadeau fake.
 | DA compact | `HomeTimelineRows` Copier sans texte note |
 | UX | `stickyStillToPayLabel` → « Factures ouvertes » |
 
+**Preuve tests (vérif 2026-11-01) :** `~/.cache/mon-mois-clair/gradle-build/app/test-results` → **384/385** (91 XML · 0 failure · 1 skipped) — pas sous `app/build` T7.
+
 *Fin clean-10 · craft plafond raisonnable · main = Athalia.*
