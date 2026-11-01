@@ -7,13 +7,13 @@ Les destinataires de l’APK **n’ont pas besoin** de brancher le téléphone s
 
 ```bash
 COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
-# APK : dist/MonMoisClair-release.apk  (~14 Mo, ARM)
+# APK : dist/MonMoisClair-release.apk  (~42 Mo, multi-ABI + ML Kit / SQLCipher)
 ```
 
 - Toujours l’APK **release** signé (jamais debug).
 - **Même keystore** qu’avant = mise à jour sans perdre les données Room.
 - Vérifier la version dans le fichier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`
-  (ex. `versionName='0.1.0-6.83'` — lire le journal).
+  (ex. `versionName='0.1.0-6.91'` — lire le journal).
 
 ## 2. Envoyer (sans USB)
 
@@ -30,7 +30,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 3. **Ouvrir** `MonMoisClair-release.apk`.
 4. Si demandé : autoriser l’installation d’apps de cette source (une seule fois).
 5. Toucher **Installer** ou **Mettre à jour**.
-6. Ouvrir Mon Mois Clair → Menu → **Réglages** → vérifier que la version affichée est la nouvelle (ex. **6.77**).
+6. Ouvrir Mon Mois Clair → Menu → **Réglages** → vérifier que la version affichée est la nouvelle (ex. **6.91**).
 7. Vérifier le mois en cours (Reste, factures).
 
 ## Pièges
@@ -39,7 +39,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 |-------|--------|
 | APK **debug** | Signature différente → « application non installée » ou données à part |
 | Ancien APK (schéma Room plus bas) | Peut refuser d’ouvrir une base déjà migrée |
-| Mail qui refuse la pièce (~14 Mo) | Utiliser Drive / WhatsApp |
+| Mail qui refuse la pièce (~42 Mo) | Utiliser Drive / WhatsApp |
 | WhatsApp qui bloque `.apk` | Envoyer via Drive |
 | Keystore différent | Mise à jour impossible sans désinstaller (perte données) |
 
