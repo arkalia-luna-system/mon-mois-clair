@@ -38,24 +38,26 @@ object RestoreMessages {
         }
     }
 
-    /** Refus par défaut — cocher « Ancien format » pour forcer (P0-U2 : sans jargon crypto). */
+    /**
+     * Refus des copies non protégées (grâce close depuis 6.99).
+     * Demander une copie `.mmc` avec code noté à part.
+     */
     const val CLEARTEXT_REJECTED =
         "Cette copie est une ancienne copie non protégée. " +
-            "Cochez « Ancien format » pour l’accepter une fois, " +
-            "puis faites tout de suite une nouvelle copie (Réglages → Votre code / copie). " +
-            "Le mois en cours n’a pas été modifié."
+            "Elle n’est plus acceptée. Sur l’ancien téléphone (≥ 6.81), " +
+            "faites une nouvelle copie (Réglages → Sauvegarde), notez le code à part, " +
+            "puis restaurez cette copie ici. Le mois en cours n’a pas été modifié."
 
     /**
-     * Warning fort — grace pré-6.81 acceptée via opt-in.
-     * Butoir produit : une fois toute la famille ≥ 6.81, jeter les anciennes copies claires.
+     * Warning résiduel si une restauration claire passait encore (tests / chemin interne).
+     * Produit : grâce close — ce texte ne doit plus apparaître en usage normal.
      */
     const val CLEARTEXT_GRACE_WARNING =
         "Attention : cette copie était une ancienne copie non protégée. " +
-            "Faites tout de suite une nouvelle copie (Réglages → Votre code / copie), " +
-            "notez le code à part, et jetez l’ancienne sur Drive ou WhatsApp. " +
-            "Butoir : dès que toute la famille est ≥ 6.81, ne plus accepter « Ancien format »."
+            "Faites tout de suite une nouvelle copie (Réglages → Sauvegarde), " +
+            "notez le code à part, et jetez l’ancienne sur Drive ou WhatsApp."
 
-    /** Libellé checkbox restore — deadline grace explicite (60+). */
+    /** Libellé checkbox — masqué si [be.monmoisclair.app.data.backup.CleartextLegacyGrace.OPT_IN_AVAILABLE] = false. */
     const val CLEARTEXT_GRACE_CHECKBOX =
-        "Ancien format (rare) — à jeter après une nouvelle copie protégée"
+        "Vieille copie non protégée — à ouvrir une seule fois, puis à refaire"
 }

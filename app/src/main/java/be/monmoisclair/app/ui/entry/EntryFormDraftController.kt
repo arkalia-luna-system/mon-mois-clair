@@ -39,6 +39,30 @@ object EntryFormDraftController {
         data class NotFound(val fields: PaymentFields) : OcrOutcome()
     }
 
+    /** Résultat EPC prêt à coller dans l’état VM (Add forceExpense ; Edit ignore). */
+    sealed class EpcOutcome {
+        data class Ok(val patch: PaymentPatch, val forceExpense: Boolean) : EpcOutcome()
+        data object Invalid : EpcOutcome()
+    }
+
+    fun paymentFields(
+        label: String,
+        amountText: String,
+        paymentNote: String,
+        iban: String,
+        copyMessage: String?,
+        openingRemainingText: String,
+        dossierExpanded: Boolean
+    ): PaymentFields = PaymentFields(
+        label = label,
+        amountText = amountText,
+        paymentNote = paymentNote,
+        iban = iban,
+        copyMessage = copyMessage,
+        openingRemainingText = openingRemainingText,
+        dossierExpanded = dossierExpanded
+    )
+
     fun applyEpc(current: PaymentFields, payment: EpcPayment): EpcResult {
         val patch = EntryFormEpcApply.patch(
             payment = payment,
@@ -74,6 +98,16 @@ object EntryFormDraftController {
         iban = result.fields.iban,
         copyMessage = result.fields.copyMessage
     )
+
+    fun epcOutcomeFromRaw(current: PaymentFields, raw: String): EpcOutcome {
+        val result = applyEpcRawOrNull(current, raw) ?: return EpcOutcome.Invalid
+        return EpcOutcome.Ok(paymentPatch(result), forceExpense = result.forceExpense)
+    }
+
+    fun epcOutcomeFromPayment(current: PaymentFields, payment: EpcPayment): EpcOutcome {
+        val result = applyEpc(current, payment)
+        return EpcOutcome.Ok(paymentPatch(result), forceExpense = result.forceExpense)
+    }
 
     fun ocrBusyMessage(): String = BelgianStructuredCommunication.OCR_BUSY
 

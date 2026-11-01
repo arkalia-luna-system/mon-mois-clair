@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
-import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
@@ -286,121 +285,6 @@ fun SettingsPrivacyScreen(
             CarnetStateBanner(
                 text = msg,
                 kind = if (state.isError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
-                pad = tipPad
-            )
-        }
-    }
-}
-
-@Composable
-fun SettingsBackupScreen(
-    onBack: () -> Unit,
-    onOpenSaf: () -> Unit,
-    onOpenRestore: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val fit = rememberDisplayFit()
-    val tipPad = fit.tipPad
-
-    SettingsResumeRefresh(viewModel)
-    SettingsShareEffect(viewModel)
-
-    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
-        SettingsPageTitle(SettingsHubCopy.BACKUP)
-        if (state.dbMigrationFailed) {
-            CarnetStateBanner(
-                text = "Protection du carnet incomplète sur cet appareil " +
-                    "(migration vers le format protégé échouée). " +
-                    "Vos données restent utilisables. Faites une copie .mmc maintenant, " +
-                    "notez le code à part, puis réinstallez ou contactez Arkalia Système.",
-                kind = CarnetBannerKind.Error,
-                pad = tipPad
-            )
-        }
-        if (state.busy) {
-            Text(
-                text = "Préparation de la copie…",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics {
-                        liveRegion = LiveRegionMode.Polite
-                        contentDescription = "Préparation de la copie"
-                    }
-            )
-        }
-        if (state.backupHealth != BackupHealth.NOT_CONFIGURED) {
-            Text(
-                text = "3 copies protégées dans Documents. « Envoyer une copie » (WhatsApp / Mail) " +
-                    "ne se rouvre qu’avec le code ci-dessous.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        state.shareCopyCode?.let { code ->
-            Text(
-                text = "Votre code de copie",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = code,
-                style = MaterialTheme.typography.headlineMedium,
-                color = A11yTokens.Ink,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics { contentDescription = "Code de copie $code" }
-            )
-            Text(
-                text = "Notez-le une fois (agenda ou carnet papier), comme un code PIN. " +
-                    "Sans ce code, une copie reçue ailleurs ne peut pas être rouverte. " +
-                    "Jamais le code et le fichier .mmc dans le même message. " +
-                    "Code oublié et téléphone mort = données perdues.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        run {
-            val healthLine = BackupHealthCopy.statusLine(state.backupHealth)
-            val healthOk = BackupHealthCopy.isOk(state.backupHealth)
-            CarnetStateBanner(
-                text = healthLine,
-                kind = if (healthOk) CarnetBannerKind.Ok else CarnetBannerKind.Error,
-                pad = tipPad
-            )
-        }
-        SecondaryA11yButton(
-            text = "Dossier de sauvegarde",
-            onClick = onOpenSaf,
-            enabled = !state.busy
-        )
-        SecondaryA11yButton(
-            text = "Envoyer une copie",
-            onClick = viewModel::shareSecurityCopy,
-            enabled = !state.busy
-        )
-        // SET04 : restaurer = Danger (destructif).
-        DangerA11yButton(
-            text = "Restaurer une sauvegarde",
-            onClick = onOpenRestore,
-            enabled = !state.busy
-        )
-        state.backupMessage?.let { msg ->
-            CarnetStateBanner(
-                text = msg,
-                kind = if (state.backupMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
-                pad = tipPad
-            )
-        }
-        state.flashMessage?.let { msg ->
-            CarnetStateBanner(
-                text = msg,
-                kind = if (state.flashMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
                 pad = tipPad
             )
         }

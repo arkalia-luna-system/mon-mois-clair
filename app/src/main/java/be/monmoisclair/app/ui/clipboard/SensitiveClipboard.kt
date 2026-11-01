@@ -11,7 +11,7 @@ import android.os.PersistableBundle
 
 /**
  * Presse-papiers pour IBAN / communication : marque le contenu comme sensible
- * (Android 13+) et l’efface après un court délai.
+ * (Android 13+) et l’efface après un court délai (ou dès l’arrière-plan).
  */
 object SensitiveClipboard {
 
@@ -32,14 +32,27 @@ object SensitiveClipboard {
         scheduleClear(cm)
     }
 
+    /** Wipe immédiat (ON_STOP) — annule aussi le timer planifié. */
+    fun clearNow(context: Context) {
+        val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clearRunnable?.let { mainHandler.removeCallbacks(it) }
+        clearRunnable = null
+        clearPrimary(cm)
+    }
+
     private fun scheduleClear(cm: ClipboardManager) {
         clearRunnable?.let { mainHandler.removeCallbacks(it) }
-        val runnable = Runnable {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                runCatching { cm.clearPrimaryClip() }
-            }
-        }
+        val runnable = Runnable { clearPrimary(cm) }
         clearRunnable = runnable
         mainHandler.postDelayed(runnable, CLEAR_AFTER_MS)
+    }
+
+    /** API 28+ : clearPrimaryClip ; API 26–27 : clip vide (minSdk 26). */
+    private fun clearPrimary(cm: ClipboardManager) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            runCatching { cm.clearPrimaryClip() }
+        } else {
+            runCatching { cm.setPrimaryClip(ClipData.newPlainText("", "")) }
+        }
     }
 }

@@ -341,11 +341,11 @@ class BackupRestorerTest {
         assertThat(db.monthLedgerDao().getById("2026-11")).isNull()
         assertThat(db.monthLedgerDao().getById("2026-01")).isNotNull()
 
-        // Opt-in « ancien format » : accepté + drapeau cleartextGrace.
-        val result = restorer.restoreFromUri(uri, allowCleartextLegacy = true)
-        assertThat(result).isInstanceOf(RestoreResult.Success::class.java)
-        assertThat((result as RestoreResult.Success).cleartextGrace).isTrue()
-        assertThat(db.monthLedgerDao().getById("2026-11")).isNotNull()
+        // 6.99 : grâce close — même avec allowCleartextLegacy, toujours rejeté.
+        assertThat(CleartextLegacyGrace.OPT_IN_AVAILABLE).isFalse()
+        val stillRejected = restorer.restoreFromUri(uri, allowCleartextLegacy = true)
+        assertThat(stillRejected).isEqualTo(RestoreResult.CleartextRejected)
+        assertThat(db.monthLedgerDao().getById("2026-11")).isNull()
         assertThat(db.appMetaDao().get(AppMetaKeys.SAF_TREE_URI)?.value)
             .isEqualTo("content://tree/keep")
     }

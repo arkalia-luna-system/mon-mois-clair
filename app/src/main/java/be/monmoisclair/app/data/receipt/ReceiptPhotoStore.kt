@@ -207,9 +207,9 @@ class ReceiptPhotoStore @Inject constructor(
         /** Plafond PDF (mail énergie / huissier) — hors ZIP 45 Mo. */
         const val MAX_PDF_BYTES = 12 * 1024 * 1024
 
-        /** Cache aperçu clair pour lecteur système — TTL agressif (5 min). */
+        /** Cache aperçu clair pour lecteur système — TTL agressif (2 min). */
         const val VIEW_CACHE_DIR = "view"
-        const val VIEW_CACHE_TTL_MS = 5L * 60L * 1000L
+        const val VIEW_CACHE_TTL_MS = 2L * 60L * 1000L
 
         fun looksLikePdf(bytes: ByteArray): Boolean =
             bytes.size >= 5 &&

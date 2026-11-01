@@ -68,4 +68,25 @@ Tant que **1–3** ouverts → **pas** de claim 10/10 main ni GO cadeau fake.
 
 **Preuve tests (2026-11-01) :** `~/.cache/mon-mois-clair/gradle-build/app/test-results` → **388/389** (91 XML · 0 failure · 1 skipped).
 
-*Fin clean-10 · notes plafonnées au réel · main = Athalia.*
+---
+
+## Append — 6.99 (avant → après, honnête)
+
+| Catégorie | 6.98 | **6.99** | Preuves / lecture |
+|-----------|-----:|---------:|-------------------|
+| **DA** affichage | 9,0 | **9,0** | Pas de geste DA ce tour — plafond sans S26 doigt Athalia |
+| **Sécu** confiance | 8,7 | **9,4** | Grâce cleartext **fermée en code** · wipe `.mmc`+PDF · TTL **2 min** · clipboard ON_STOP/API26 — **pas** bank-grade (crypto inchangée) |
+| **Archi** | 8,6 | **9,3** | `prepareSharedSave` + `epcOutcome*` + `SettingsBackupPage` — twin **load**/attachements encore séparés (volontaire) |
+| **UX** parcours | 8,8 | **9,3** | Sauvegarde 3 étapes · restore/Aide allégés — **9,5 boutique** bloque sans doigt restore/S26 |
+| **A11y** / One UI | 9,0 | **9,0** | Inchangé — TalkBack / Device Care = Athalia |
+| **Produit** packaging | 8,8 | **8,9** | NOTICE/version 6.99 · claims smoke toujours Athalia |
+| **Propreté** | 9,5 | **9,5** | `._*` **0** après purge T7 |
+
+**Moyenne indicative 6.99 :** **~9,2 / 10** (pas 9,5 uniforme).  
+**Ce qui bloque encore un vrai ≥9,5 partout :** twin load/receipts (archi) · doigt S26/restore/TalkBack (DA/a11y/UX/produit) · crypto/RAM/widget hors process (sécu ≠ 10).
+
+**Preuves code 6.99 :** `CleartextLegacyGrace` · `MonthSummaryPdfShare.wipeShareCache` · `EntryFormCore.prepareSharedSave` · `SettingsBackupPage.kt`.
+
+**Preuve tests 6.99 :** `~/.cache/mon-mois-clair/gradle-build/app/test-results` → **396/397** (92 XML · 0 failure · 1 skipped).
+
+*Append 6.99 · pas de fake 10 main · notes plafonnées au réel.*

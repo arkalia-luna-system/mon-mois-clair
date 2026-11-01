@@ -138,4 +138,50 @@ class EntryFormCoreTest {
             EntryFormCore.pendingLetterCheck(true, true, "", "Créancier")
         ).isEqualTo(EntryFormCore.PendingLetterCheck.Proceed)
     }
+
+    @Test
+    fun prepareSharedSave_okAndCreditorGuard() {
+        val ok = EntryFormCore.prepareSharedSave(
+            amountText = "12,50",
+            dayText = "15",
+            wantOpening = false,
+            openingRemainingText = "",
+            recurrence = RecurrenceChoice.Once
+        )
+        assertThat(ok).isEqualTo(
+            EntryFormCore.SharedSavePrep.Ok(
+                EntryFormCore.SharedValidated(1250L, 15, null)
+            )
+        )
+        val guarded = EntryFormCore.prepareSharedSave(
+            amountText = "10",
+            dayText = "1",
+            wantOpening = true,
+            openingRemainingText = "",
+            recurrence = RecurrenceChoice.Monthly,
+            creditorGuard = EntryFormCore.CreditorGuard(
+                isExpense = true,
+                dossierExpanded = true,
+                iban = "BE68",
+                creditorEmail = ""
+            )
+        )
+        assertThat(guarded).isEqualTo(
+            EntryFormCore.SharedSavePrep.Err(EntryFormCore.CREDITOR_WITHOUT_OPENING_HINT)
+        )
+    }
+
+    @Test
+    fun prepareSharedSave_rejectsAgreementOnce() {
+        val r = EntryFormCore.prepareSharedSave(
+            amountText = "100",
+            dayText = "1",
+            wantOpening = true,
+            openingRemainingText = "50",
+            recurrence = RecurrenceChoice.Once
+        )
+        assertThat(r).isEqualTo(
+            EntryFormCore.SharedSavePrep.Err(EntryFormCore.AGREEMENT_ONCE_HINT)
+        )
+    }
 }

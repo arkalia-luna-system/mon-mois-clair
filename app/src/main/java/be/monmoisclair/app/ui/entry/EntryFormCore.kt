@@ -157,6 +157,57 @@ object EntryFormCore {
         return PendingLetterCheck.Proceed
     }
 
+    /**
+     * Prévalidation commune Add/Edit avant I/O :
+     * montant+jour → reste dû → récurrence accord → (optionnel) garde créancier Add.
+     */
+    data class SharedValidated(
+        val cents: Long,
+        val day: Int,
+        val openingCents: Long?
+    )
+
+    data class CreditorGuard(
+        val isExpense: Boolean,
+        val dossierExpanded: Boolean,
+        val iban: String,
+        val creditorEmail: String
+    )
+
+    sealed class SharedSavePrep {
+        data class Ok(val validated: SharedValidated) : SharedSavePrep()
+        data class Err(val message: String) : SharedSavePrep()
+    }
+
+    fun prepareSharedSave(
+        amountText: String,
+        dayText: String,
+        wantOpening: Boolean,
+        openingRemainingText: String,
+        recurrence: RecurrenceChoice,
+        creditorGuard: CreditorGuard? = null
+    ): SharedSavePrep {
+        val moneyDay = parseMoneyAndDay(amountText, dayText)
+        if (moneyDay is MoneyDay.Err) return SharedSavePrep.Err(moneyDay.message)
+        val (cents, day) = moneyDay as MoneyDay.Ok
+        val openingParsed = parseOpeningRemaining(wantOpening, openingRemainingText)
+        if (openingParsed is Opening.Err) return SharedSavePrep.Err(openingParsed.message)
+        val openingCents = (openingParsed as? Opening.Ok)?.cents
+        agreementRecurrenceError(openingCents, recurrence)?.let {
+            return SharedSavePrep.Err(it)
+        }
+        if (creditorGuard != null) {
+            creditorBitsWithoutOpeningError(
+                isExpense = creditorGuard.isExpense,
+                dossierExpanded = creditorGuard.dossierExpanded,
+                openingCents = openingCents,
+                iban = creditorGuard.iban,
+                creditorEmail = creditorGuard.creditorEmail
+            )?.let { return SharedSavePrep.Err(it) }
+        }
+        return SharedSavePrep.Ok(SharedValidated(cents, day, openingCents))
+    }
+
     const val AMOUNT_DAY_HINT = "Vérifiez le montant et le jour (1 à 31)."
     const val OPENING_HINT = "Vérifiez le reste dû (montant)."
     const val AGREEMENT_ONCE_HINT =

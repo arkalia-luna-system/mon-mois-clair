@@ -22,6 +22,11 @@ class ReceiptPhotoStoreTest {
     }
 
     @Test
+    fun viewCacheTtl_isTwoMinutes() {
+        assertThat(ReceiptPhotoStore.VIEW_CACHE_TTL_MS).isEqualTo(2L * 60L * 1000L)
+    }
+
+    @Test
     fun webp_roundTrip_decodesFromBytes() {
         val src = Bitmap.createBitmap(80, 40, Bitmap.Config.ARGB_8888)
         src.eraseColor(Color.rgb(0x1E, 0x1B, 0x18))

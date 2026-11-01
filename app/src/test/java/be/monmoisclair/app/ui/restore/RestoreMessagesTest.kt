@@ -89,12 +89,14 @@ class RestoreMessagesTest {
     }
 
     @Test
-    fun cleartextRejected_pointsToOptIn() {
+    fun cleartextRejected_pointsToNewProtectedCopy() {
         val msg = RestoreMessages.from(RestoreResult.CleartextRejected)
         assertThat(msg).isEqualTo(RestoreMessages.CLEARTEXT_REJECTED)
         assertThat(msg.lowercase()).contains("non protégée")
-        assertThat(msg.lowercase()).contains("ancien format")
+        assertThat(msg.lowercase()).contains("n’est plus acceptée")
+        assertThat(msg.lowercase()).contains("sauvegarde")
         assertThat(msg).contains("n’a pas été modifié")
         assertThat(msg.lowercase()).doesNotContain("chiffr")
+        assertThat(msg.lowercase()).doesNotContain("ancien format")
     }
 }

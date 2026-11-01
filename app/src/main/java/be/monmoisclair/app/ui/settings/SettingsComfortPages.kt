@@ -133,7 +133,7 @@ fun SettingsSummaryScreen(
         SettingsPageTitle(SettingsHubCopy.SUMMARY)
         Text(
             text = "Texte ou PDF pour un créancier ou un conseiller — dans Dossiers. " +
-                "PDF clair ≠ copie .mmc.",
+                "Ce PDF n’est pas une copie de sauvegarde.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()

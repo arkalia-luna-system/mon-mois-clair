@@ -8,6 +8,7 @@ import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.domain.model.ThemePreference
+import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
 import be.monmoisclair.app.domain.usecase.ObserveOnboardingStateUseCase
 import be.monmoisclair.app.domain.usecase.StartDestination
@@ -134,11 +135,12 @@ class MainViewModel @Inject constructor(
             val enabled = biometricPreference.isEnabled()
             val availability = biometricAuth.availability()
             val mustLock = enabled && availability == BiometricAvailability.Ready
-            // Caches clairs (aperçu pièces + PDF résumé) : wipe dès arrière-plan
-            // (pas seulement au lock bio) — fenêtre claire minimale.
+            // Caches clairs (aperçu + PDF résumé + .mmc temporaire) + clipboard :
+            // wipe dès arrière-plan (pas seulement au lock bio).
+            SensitiveClipboard.clearNow(appContext)
             withContext(Dispatchers.IO) {
                 receiptPhotos.purgeViewCache()
-                MonthSummaryPdfShare.wipeSharePdfs(appContext.cacheDir)
+                MonthSummaryPdfShare.wipeShareCache(appContext.cacheDir)
             }
             _uiState.update {
                 it.copy(

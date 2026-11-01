@@ -1,5 +1,6 @@
 package be.monmoisclair.app.data.summary
 
+import be.monmoisclair.app.data.crypto.BackupEnvelope
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -27,34 +28,51 @@ class MonthSummaryPdfShareTest {
     }
 
     @Test
-    fun wipeSharePdfs_removesOnlyPdfs() {
+    fun wipeShareCache_removesPdfsAndMmc() {
         val cache = tmp.newFolder("cache")
         val dir = MonthSummaryPdfShare.shareDir(cache).also { it.mkdirs() }
         File(dir, "mon-mois-clair-resume.pdf").writeText("pdf")
-        File(dir, "backup.mmc").writeText("mmc")
+        File(dir, BackupEnvelope.SHARE_MMC_NAME).writeText("mmc")
         File(dir, "note.txt").writeText("txt")
 
-        val wiped = MonthSummaryPdfShare.wipeSharePdfs(cache)
-        assertThat(wiped).isEqualTo(1)
+        val wiped = MonthSummaryPdfShare.wipeShareCache(cache)
+        assertThat(wiped).isEqualTo(2)
         assertThat(File(dir, "mon-mois-clair-resume.pdf").exists()).isFalse()
-        assertThat(File(dir, "backup.mmc").exists()).isTrue()
+        assertThat(File(dir, BackupEnvelope.SHARE_MMC_NAME).exists()).isFalse()
         assertThat(File(dir, "note.txt").exists()).isTrue()
     }
 
     @Test
-    fun purgeStale_keepsFreshPdf() {
+    fun wipeSharePdfs_aliasesWipeShareCache() {
+        val cache = tmp.newFolder("cache")
+        val dir = MonthSummaryPdfShare.shareDir(cache).also { it.mkdirs() }
+        File(dir, "x.pdf").writeText("pdf")
+        File(dir, "y.mmc").writeText("mmc")
+        assertThat(MonthSummaryPdfShare.wipeSharePdfs(cache)).isEqualTo(2)
+    }
+
+    @Test
+    fun purgeStale_keepsFreshPdf_andPurgesStaleMmc() {
         val cache = tmp.newFolder("cache")
         val dir = MonthSummaryPdfShare.shareDir(cache).also { it.mkdirs() }
         val fresh = File(dir, "fresh.pdf").also { it.writeText("x") }
         val stale = File(dir, "stale.pdf").also { it.writeText("y") }
+        val staleMmc = File(dir, "old.mmc").also { it.writeText("z") }
         val now = 1_700_000_000_000L
         fresh.setLastModified(now)
         stale.setLastModified(now - MonthSummaryPdfShare.SHARE_TTL_MS - 1)
+        staleMmc.setLastModified(now - MonthSummaryPdfShare.SHARE_TTL_MS - 1)
 
         val n = MonthSummaryPdfShare.purgeStale(dir, nowEpochMs = now)
-        assertThat(n).isEqualTo(1)
+        assertThat(n).isEqualTo(2)
         assertThat(fresh.exists()).isTrue()
         assertThat(stale.exists()).isFalse()
+        assertThat(staleMmc.exists()).isFalse()
+    }
+
+    @Test
+    fun ttl_isTwoMinutes() {
+        assertThat(MonthSummaryPdfShare.SHARE_TTL_MS).isEqualTo(2L * 60L * 1000L)
     }
 
     @Test

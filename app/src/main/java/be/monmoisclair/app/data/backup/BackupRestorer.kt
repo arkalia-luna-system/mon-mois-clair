@@ -69,8 +69,11 @@ class BackupRestorer @Inject constructor(
     ): RestoreResult {
         return try {
             val bytes = readUriBytes(fileUri)
-            val opened = openIncomingBytes(bytes, shareCode, allowCleartextLegacy)
-                ?: return RestoreResult.BadShareCode()
+            val opened = openIncomingBytes(
+                bytes,
+                shareCode,
+                CleartextLegacyGrace.effectiveAllow(allowCleartextLegacy)
+            ) ?: return RestoreResult.BadShareCode()
             if (opened is OpenedIncoming.RejectedCleartext) {
                 return RestoreResult.CleartextRejected
             }

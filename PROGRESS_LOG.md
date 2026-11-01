@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.98** (notes craft honnêtes + archi Settings/Draft + propreté `._*`) |
+| Dernière étape terminée | **6.99** (archi save/EPC partagés · sécu grâce close · UX Sauvegarde 3 étapes) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · TalkBack · Device Care · Drive |
-| Audit premium | notes **honnêtes** ~8,6–9,0 · propreté **9,5** · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
+| Audit premium | notes **honnêtes** append 6.99 · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.99 archi / sécu / UX craft (sans notes gonflées)
+
+**Archi :** `EntryFormCore.prepareSharedSave` + `EntryFormDraftController.epcOutcome*` branchés Add/Edit ; `SettingsBackupPage` extrait (Account allégé). Twin **load** + attachements photo/PDF **volontairement** séparés.
+
+**Sécu :** `CleartextLegacyGrace.OPT_IN_AVAILABLE = false` (butoir code) ; wipe `cache/share/` PDF **+** `.mmc` ; TTL view/share **2 min** ; clipboard wipe ON_STOP + clear API 26–27 ; PRIVACY/SECURITY alignés. Crypto SQLCipher/MMC1 **inchangée**.
+
+**UX :** Sauvegarde en 3 étapes numérotées ; restore + Aide sans jargon « format » / `.mmc` partout.
+
+**Propreté :** `._*` = **0** (purge post-édition T7).
+
+**Tests :** **396 exécutés** / 397 (1 skipped), 92 XML, 0 failure.  
+**Version :** `0.1.0-6.99` · `versionCode` 104.  
+**Smoke doigt :** Athalia — **pas** claim 10/10 main.
 
 ### 2026-11-01 — 6.98 notes craft honnêtes + archi / propreté
 

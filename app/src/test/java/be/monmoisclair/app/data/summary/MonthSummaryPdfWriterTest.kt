@@ -80,6 +80,6 @@ class MonthSummaryPdfWriterTest {
     @Test
     fun sharePath_isEphemeralCacheOnly() {
         assertThat(MonthSummaryPdfShare.SHARE_SUBDIR).isEqualTo("share")
-        assertThat(MonthSummaryPdfShare.SHARE_TTL_MS).isEqualTo(5L * 60L * 1000L)
+        assertThat(MonthSummaryPdfShare.SHARE_TTL_MS).isEqualTo(2L * 60L * 1000L)
     }
 }

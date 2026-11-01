@@ -85,4 +85,25 @@ class EntryFormDraftControllerTest {
         assertThat(patch.label).isEqualTo("Gaz")
         assertThat(patch.iban).isEqualTo("BE68539007547034")
     }
+
+    @Test
+    fun epcOutcomeFromRaw_invalid() {
+        assertThat(EntryFormDraftController.epcOutcomeFromRaw(blank(), "not-a-qr"))
+            .isEqualTo(EntryFormDraftController.EpcOutcome.Invalid)
+    }
+
+    @Test
+    fun epcOutcomeFromPayment_ok() {
+        val payment = EpcPayment(
+            beneficiaryName = "Eau",
+            amountCents = 10_000L,
+            remittance = "+++111/2222/33333+++",
+            iban = "BE68539007547034"
+        )
+        val outcome = EntryFormDraftController.epcOutcomeFromPayment(blank(), payment)
+        assertThat(outcome).isInstanceOf(EntryFormDraftController.EpcOutcome.Ok::class.java)
+        val ok = outcome as EntryFormDraftController.EpcOutcome.Ok
+        assertThat(ok.forceExpense).isTrue()
+        assertThat(ok.patch.label).isEqualTo("Eau")
+    }
 }

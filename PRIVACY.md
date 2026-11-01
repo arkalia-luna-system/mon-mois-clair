@@ -14,15 +14,15 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 |----|------|
 | **Room** (SQLite `mon_mois_clair.db`) | Mois, factures, libellés, montants, notes / `+++`, IBAN, chemins photos — **chiffré au repos** (SQLCipher ; clé enveloppée Android Keystore) |
 | Dossier Documents (SAF) | Backups JSON enveloppe AES-GCM (code de copie) + photos/PDF locaux enveloppés — **pas en clair** depuis 6.81 |
-| Photos / PDF reçus | `files/receipts/` chiffrés (MRF1) ; aperçu = déchiffrement temporaire dans `cache/view/` (TTL **5 min** ; **wipe dès arrière-plan**) |
-| PDF résumé mois | **Clair** (lisible hors app — MMC1 le rendrait inutile) mais **éphémère** : `cache/share/` seulement, TTL **5 min**, **wipe dès arrière-plan** ; filigrane « données sensibles » ; pas une copie `.mmc` |
-| Presse-papiers | Communication / IBAN copiés : marqués sensibles (Android 13+) et **vidés après ~30 s** |
+| Photos / PDF reçus | `files/receipts/` chiffrés (MRF1) ; aperçu = déchiffrement temporaire dans `cache/view/` (TTL **2 min** ; **wipe dès arrière-plan**) |
+| PDF résumé mois | **Clair** (lisible hors app — MMC1 le rendrait inutile) mais **éphémère** : `cache/share/` seulement, TTL **2 min**, **wipe dès arrière-plan** (PDF **et** `.mmc` temporaire) ; filigrane « données sensibles » ; pas une copie `.mmc` |
+| Presse-papiers | Communication / IBAN copiés : marqués sensibles (Android 13+) et **vidés après ~30 s** (aussi wipe immédiat à l’arrière-plan ; API 26–27 = clip vide) |
 
 `android:allowBackup="false"` : pas de sauvegarde cloud Android automatique de l’app.
 
 **Honnêteté :** ce n’est **pas** un coffre parfait. Après déverrouillage, les données sont en RAM / à l’écran. Appareil root / malware puissant peut encore contourner. Code de copie oublié + téléphone mort **sans** autre copie = données perdues (pas de serveur de recovery).
 
-Anciennes copies ZIP/JSON **en clair** (pré-6.81) sont **refusées par défaut** à la restore ; opt-in explicite « Ancien format » + avertissement fort si acceptées — à remplacer par une copie `.mmc` puis à jeter.
+Anciennes copies ZIP/JSON **en clair** (pré-6.81) sont **refusées** à la restore (**grâce close depuis 6.99** — plus d’opt-in UI). Il faut une copie `.mmc` protégée avec code noté à part.
 
 ## Widget
 

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.data.backup.CleartextLegacyGrace
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
@@ -162,10 +163,9 @@ fun RestoreBackupScreen(
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         CarnetPageTitle("Restaurer une sauvegarde")
         Text(
-            text = "Après réinstallation ou nouveau téléphone. " +
-                "Remplace tout le carnet — confirmation demandée. " +
-                "Copie reçue (WhatsApp, mail…) : tapez le code noté à part " +
-                "(pas dans le même message que le fichier).",
+            text = "À utiliser après une réinstallation ou sur un nouveau téléphone. " +
+                "Cette action remplace tout le carnet. " +
+                "Si la copie vient d’un mail ou de WhatsApp, entrez le code noté à part.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier
@@ -179,29 +179,31 @@ fun RestoreBackupScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.busy,
             singleLine = true,
-            label = { Text("Code de copie") },
+            label = { Text("Code noté sur papier") },
             placeholder = { Text("8 chiffres du téléphone d’origine") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Checkbox(
-                checked = state.allowCleartextLegacy,
-                onCheckedChange = viewModel::onAllowCleartextLegacyChange,
-                enabled = !state.busy
-            )
-            Text(
-                text = RestoreMessages.CLEARTEXT_GRACE_CHECKBOX,
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.weight(1f)
-            )
+        if (CleartextLegacyGrace.OPT_IN_AVAILABLE) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Checkbox(
+                    checked = state.allowCleartextLegacy,
+                    onCheckedChange = viewModel::onAllowCleartextLegacyChange,
+                    enabled = !state.busy
+                )
+                Text(
+                    text = RestoreMessages.CLEARTEXT_GRACE_CHECKBOX,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
 
         state.message?.let { msg ->

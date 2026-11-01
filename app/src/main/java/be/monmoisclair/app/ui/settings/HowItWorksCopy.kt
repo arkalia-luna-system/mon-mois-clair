@@ -20,9 +20,10 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Sauvegarde",
-            body = "Notez le code (Réglages → Votre code / copie) une fois sur papier. " +
-                "Jamais le code et le fichier .mmc dans le même message. " +
-                "Nouveau téléphone : Restaurer + ce code. Anciennes copies claires : à jeter."
+            body = "Réglages → Sauvegarde : écrivez le code une fois sur papier. " +
+                "N’envoyez jamais le code avec la copie. " +
+                "Nouveau téléphone : Restaurer, puis ce code. " +
+                "Les vieilles copies non protégées ne s’ouvrent plus — à jeter."
         ),
         Section(
             title = "Le chiffre en haut",

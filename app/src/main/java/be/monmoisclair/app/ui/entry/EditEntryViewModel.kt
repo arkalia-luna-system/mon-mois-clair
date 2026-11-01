@@ -374,41 +374,53 @@ class EditEntryViewModel @Inject constructor(
         receiptPhotos.decodeBitmap(relativePath)
 
     fun applyEpcRaw(raw: String) {
-        val result = EntryFormDraftController.applyEpcRawOrNull(_state.value.toPaymentFields(), raw)
-        if (result == null) {
-            _state.update { it.copy(error = EntryFormMessages.INVALID_EPC_QR) }
-            return
-        }
-        val patch = EntryFormDraftController.paymentPatch(result)
-        _state.update {
-            it.copy(
-                label = patch.label,
-                amountText = patch.amountText,
-                paymentNote = patch.paymentNote,
-                iban = patch.iban,
-                error = null,
-                copyMessage = patch.copyMessage
-            )
+        when (
+            val outcome = EntryFormDraftController.epcOutcomeFromRaw(_state.value.toPaymentFields(), raw)
+        ) {
+            EntryFormDraftController.EpcOutcome.Invalid ->
+                _state.update { it.copy(error = EntryFormMessages.INVALID_EPC_QR) }
+            is EntryFormDraftController.EpcOutcome.Ok -> {
+                val patch = outcome.patch
+                _state.update {
+                    it.copy(
+                        label = patch.label,
+                        amountText = patch.amountText,
+                        paymentNote = patch.paymentNote,
+                        iban = patch.iban,
+                        error = null,
+                        copyMessage = patch.copyMessage
+                    )
+                }
+            }
         }
     }
 
     fun applyEpc(payment: EpcPayment) {
         _state.update {
-            val patch = EntryFormDraftController.paymentPatch(
-                EntryFormDraftController.applyEpc(it.toPaymentFields(), payment)
-            )
-            it.copy(
-                label = patch.label,
-                amountText = patch.amountText,
-                paymentNote = patch.paymentNote,
-                iban = patch.iban,
-                error = null,
-                copyMessage = patch.copyMessage
-            )
+            when (
+                val outcome = EntryFormDraftController.epcOutcomeFromPayment(
+                    it.toPaymentFields(),
+                    payment
+                )
+            ) {
+                EntryFormDraftController.EpcOutcome.Invalid ->
+                    it.copy(error = EntryFormMessages.INVALID_EPC_QR)
+                is EntryFormDraftController.EpcOutcome.Ok -> {
+                    val patch = outcome.patch
+                    it.copy(
+                        label = patch.label,
+                        amountText = patch.amountText,
+                        paymentNote = patch.paymentNote,
+                        iban = patch.iban,
+                        error = null,
+                        copyMessage = patch.copyMessage
+                    )
+                }
+            }
         }
     }
 
-    private fun EditEntryState.toPaymentFields() = EntryFormDraftController.PaymentFields(
+    private fun EditEntryState.toPaymentFields() = EntryFormDraftController.paymentFields(
         label = label,
         amountText = amountText,
         paymentNote = paymentNote,
@@ -557,12 +569,6 @@ class EditEntryViewModel @Inject constructor(
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
-            val moneyDay = EntryFormCore.parseMoneyAndDay(s.amountText, s.dayText)
-            if (moneyDay is EntryFormCore.MoneyDay.Err) {
-                _state.update { it.copy(saving = false, error = moneyDay.message) }
-                return@launch
-            }
-            val (cents, day) = moneyDay as EntryFormCore.MoneyDay.Ok
             var path = s.receiptRelativePath
             var extraAppend = ""
             var documentsHint: String? = null
@@ -574,17 +580,21 @@ class EditEntryViewModel @Inject constructor(
                 hasTemplate = s.hasTemplate
             )
             val wantOpening = s.isExpense && s.dossierExpanded && !s.isAgreement
-            val openingParsed =
-                EntryFormCore.parseOpeningRemaining(wantOpening, s.openingRemainingText)
-            if (openingParsed is EntryFormCore.Opening.Err) {
-                _state.update { it.copy(saving = false, error = openingParsed.message) }
+            val prep = EntryFormCore.prepareSharedSave(
+                amountText = s.amountText,
+                dayText = s.dayText,
+                wantOpening = wantOpening,
+                openingRemainingText = s.openingRemainingText,
+                recurrence = s.recurrence
+            )
+            if (prep is EntryFormCore.SharedSavePrep.Err) {
+                _state.update { it.copy(saving = false, error = prep.message) }
                 return@launch
             }
-            val openingCents = (openingParsed as? EntryFormCore.Opening.Ok)?.cents
-            EntryFormCore.agreementRecurrenceError(openingCents, s.recurrence)?.let { msg ->
-                _state.update { it.copy(saving = false, error = msg) }
-                return@launch
-            }
+            val validated = (prep as EntryFormCore.SharedSavePrep.Ok).validated
+            val cents = validated.cents
+            val day = validated.day
+            val openingCents = validated.openingCents
             val feeParsed = EntryFormCore.parseFeeAdd(s.isAgreement, s.feeAddText, s.feeNoteText)
             if (feeParsed is EntryFormCore.FeeAdd.Err) {
                 _state.update { it.copy(saving = false, error = feeParsed.message) }
