@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 — historique figé. Vivant = `docs/audits/2026-11-01-premium-*` + journal.
+
 # Audit — crash ouverture post-6.89 → fix 6.90
 
 **Date :** 2026-10-26  

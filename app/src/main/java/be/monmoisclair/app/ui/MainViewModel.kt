@@ -134,12 +134,11 @@ class MainViewModel @Inject constructor(
             val enabled = biometricPreference.isEnabled()
             val availability = biometricAuth.availability()
             val mustLock = enabled && availability == BiometricAvailability.Ready
-            if (mustLock) {
-                // Caches clairs (aperçu pièces + PDF résumé share) — wipe au lock.
-                withContext(Dispatchers.IO) {
-                    receiptPhotos.purgeViewCache()
-                    MonthSummaryPdfShare.wipeSharePdfs(appContext.cacheDir)
-                }
+            // Caches clairs (aperçu pièces + PDF résumé) : wipe dès arrière-plan
+            // (pas seulement au lock bio) — fenêtre claire minimale.
+            withContext(Dispatchers.IO) {
+                receiptPhotos.purgeViewCache()
+                MonthSummaryPdfShare.wipeSharePdfs(appContext.cacheDir)
             }
             _uiState.update {
                 it.copy(

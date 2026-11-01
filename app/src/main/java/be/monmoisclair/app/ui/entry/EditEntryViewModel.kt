@@ -368,36 +368,47 @@ class EditEntryViewModel @Inject constructor(
         receiptPhotos.decodeBitmap(relativePath)
 
     fun applyEpcRaw(raw: String) {
-        val p = EntryFormEpcApply.parseOrNull(raw)
-        if (p == null) {
+        val current = _state.value.toPaymentFields()
+        val result = EntryFormDraftController.applyEpcRawOrNull(current, raw)
+        if (result == null) {
             _state.update { it.copy(error = EntryFormMessages.INVALID_EPC_QR) }
             return
         }
-        applyEpc(p)
+        _state.update {
+            it.copy(
+                label = result.fields.label,
+                amountText = result.fields.amountText,
+                paymentNote = result.fields.paymentNote,
+                iban = result.fields.iban,
+                error = null,
+                copyMessage = result.fields.copyMessage
+            )
+        }
     }
 
     fun applyEpc(payment: EpcPayment) {
         _state.update {
-            val patch = EntryFormEpcApply.patch(
-                payment = payment,
-                currentLabel = it.label,
-                currentAmountText = it.amountText,
-                currentPaymentNote = it.paymentNote,
-                currentIban = it.iban,
-                currentCopyMessage = it.copyMessage,
-                openingRemainingText = it.openingRemainingText,
-                dossierExpanded = it.dossierExpanded
-            )
+            val result = EntryFormDraftController.applyEpc(it.toPaymentFields(), payment)
             it.copy(
-                label = patch.label,
-                amountText = patch.amountText,
-                paymentNote = patch.paymentNote,
-                iban = patch.iban,
+                label = result.fields.label,
+                amountText = result.fields.amountText,
+                paymentNote = result.fields.paymentNote,
+                iban = result.fields.iban,
                 error = null,
-                copyMessage = patch.copyMessage
+                copyMessage = result.fields.copyMessage
             )
         }
     }
+
+    private fun EditEntryState.toPaymentFields() = EntryFormDraftController.PaymentFields(
+        label = label,
+        amountText = amountText,
+        paymentNote = paymentNote,
+        iban = iban,
+        copyMessage = copyMessage,
+        openingRemainingText = openingRemainingText,
+        dossierExpanded = dossierExpanded
+    )
 
     fun setIban(v: String) = _state.update { it.copy(iban = v, error = null) }
     fun setCreditorEmail(v: String) = _state.update { it.copy(creditorEmail = v, error = null) }
@@ -474,7 +485,11 @@ class EditEntryViewModel @Inject constructor(
         if (!_state.value.isExpense || _state.value.isSavingsLine) return
         viewModelScope.launch {
             _state.update {
-                it.copy(ocrBusy = true, error = null, copyMessage = BelgianStructuredCommunication.OCR_BUSY)
+                it.copy(
+                    ocrBusy = true,
+                    error = null,
+                    copyMessage = EntryFormDraftController.ocrBusyMessage()
+                )
             }
             val fromPending = receiptDraft.peekBitmap()
             val path = _state.value.receiptRelativePath
@@ -497,18 +512,20 @@ class EditEntryViewModel @Inject constructor(
             val found = runCatching { receiptOcr.findStructuredCommunication(bmp) }.getOrNull()
             if (found.isNullOrBlank()) {
                 _state.update {
+                    val cleared = EntryFormDraftController.ocrNotFound(it.toPaymentFields())
                     it.copy(
                         ocrBusy = false,
-                        copyMessage = null,
+                        copyMessage = cleared.copyMessage,
                         error = BelgianStructuredCommunication.OCR_NOT_FOUND
                     )
                 }
             } else {
                 _state.update {
+                    val patched = EntryFormDraftController.ocrFound(it.toPaymentFields(), found)
                     it.copy(
                         ocrBusy = false,
-                        paymentNote = found,
-                        copyMessage = BelgianStructuredCommunication.OCR_FOUND,
+                        paymentNote = patched.paymentNote,
+                        copyMessage = patched.copyMessage,
                         error = null
                     )
                 }

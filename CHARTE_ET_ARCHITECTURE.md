@@ -37,7 +37,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Ligne | Sens | Quand |
 |-------|------|--------|
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
-| **À payer** | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
+| **Factures ouvertes** (ex-« À payer ») | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
 | **Courses** (tap ≥48) | Montant divers du mois ; ouvre la sheet d’édition | Toujours hors aperçu futur (`Courses` ou `Courses X € · après Y €`) |
 | **Mettre de côté** (tap ≥48) | Forfait mensuel ; sheet montant (jour/retrait = Réglages) | Hors aperçu futur — **pas** 2ᵉ hero ; chrome compact (≤800 dp) : derrière **Détails** (accessible) |
 | **Après les FAIT** · alertes / courriers | Détail | Derrière **Détails / Masquer** (pas de mini-dashboard) |

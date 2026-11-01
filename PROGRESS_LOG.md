@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.96** (premium-05 a11y + premium-06 packaging docs) |
+| Dernière étape terminée | **6.97** (premium craft ≥9,5 + propreté 10) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · TalkBack · Device Care · Drive |
-| Audit premium | 01 **8,7** · 02 **8,2** · 03 **8,0** · 04 **8,1** · 05 **8,3** code · 06 packaging **8** / smoke Athalia · **pas** « 9/10 dans la main » |
+| Audit premium | craft DA/sécu/archi/UX/a11y/produit **9,5** · propreté **10** · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.97 premium craft ≥9,5 + propreté 10
+
+**DA :** sticky air ↑ · cartes compact = Copier/Photo sans texte note · Prélèvement filet muted · formGap 14/18.  
+**Sécu :** TTL view/share **5 min** · wipe caches ON_STOP · clipboard **30 s** · grace checkbox/deadline · PRIVACY/SECURITY.  
+**Archi :** `EntryFormDraftController` EPC/OCR Add↔Edit + tests (load/save twin VM volontaire).  
+**UX :** « Factures ouvertes » · Aide alignée · restore copy deadline.  
+**A11y :** widget ligne 16 sp · grille jours fontScale · notif action icon.  
+**Propreté :** finals 10-26 → `docs/archive/audits-2026-10-26/` · AppleDouble 0 · index docs · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md).
+
+**Tests :** **384 exécutés** / 385 (1 skipped), 91 XML, 0 failure.  
+**Version :** `0.1.0-6.97` · `versionCode` 102.  
+**Install :** SM-S938B release OK (sans wipe), MainActivity, versionName 6.97.  
+**Smoke doigt :** Athalia — **pas** claim 10/10 main.
 
 ### 2026-11-01 — 6.96 premium-05 a11y + premium-06 packaging
 

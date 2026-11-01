@@ -197,7 +197,7 @@ fun RestoreBackupScreen(
                 enabled = !state.busy
             )
             Text(
-                text = "Ancien format — filet rare, puis nouvelle copie tout de suite",
+                text = RestoreMessages.CLEARTEXT_GRACE_CHECKBOX,
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.weight(1f)

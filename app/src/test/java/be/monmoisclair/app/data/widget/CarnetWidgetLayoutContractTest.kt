@@ -41,9 +41,10 @@ class CarnetWidgetLayoutContractTest {
         // P1-1 a11y : titre / ligne muted lisibles senior.
         val xml = readRes("layout/widget_carnet.xml")
         assertThat(xml).contains("android:textSize=\"14sp\"")
-        assertThat(xml).contains("android:textSize=\"15sp\"")
+        assertThat(xml).contains("android:textSize=\"16sp\"")
         assertThat(xml).doesNotContain("android:textSize=\"11sp\"")
         assertThat(xml).doesNotContain("android:textSize=\"13sp\"")
+        assertThat(xml).doesNotContain("android:textSize=\"15sp\"")
     }
 
     private fun readRes(underRes: String): String {

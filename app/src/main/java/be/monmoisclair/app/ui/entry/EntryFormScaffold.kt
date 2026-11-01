@@ -225,7 +225,7 @@ internal fun EntryFormScaffold(
     }
     val fit = rememberDisplayFit()
     // P1-F1 : plus d’air entre sections fiche.
-    val formGap = if (fit.compactHomeChrome) 12.dp else 16.dp
+    val formGap = if (fit.compactHomeChrome) 14.dp else 18.dp
     val tipPad = fit.tipPad
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(

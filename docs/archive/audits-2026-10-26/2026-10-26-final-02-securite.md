@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 — historique figé. Vivant = `docs/audits/2026-11-01-premium-*` + journal.
+
 # Audit final sécurité — Mon Mois Clair (post-crypto 6.81 / polish 6.82)
 
 | | |

@@ -73,7 +73,7 @@ class PaymentNotificationHelper @Inject constructor(
             .setAutoCancel(true)
             .setContentIntent(openApp)
             .addAction(
-                0,
+                R.drawable.ic_notification,
                 context.getString(R.string.notification_action_done),
                 markDone
             )
@@ -102,7 +102,11 @@ class PaymentNotificationHelper @Inject constructor(
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .setTimeoutAfter(10_000)
-            .addAction(0, context.getString(R.string.notification_action_undo), undo)
+            .addAction(
+                R.drawable.ic_notification,
+                context.getString(R.string.notification_action_undo),
+                undo
+            )
             .build()
         notifyIfAllowed(notificationId, notification)
     }

@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 — historique figé. Vivant = `docs/audits/2026-11-01-premium-*` + journal.
+
 # Audit hygiène code — Mon Mois Clair (final-03)
 
 | | |

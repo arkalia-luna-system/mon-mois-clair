@@ -15,7 +15,8 @@ import android.os.PersistableBundle
  */
 object SensitiveClipboard {
 
-    private const val CLEAR_AFTER_MS = 60_000L
+    /** Fenêtre courte : IBAN / +++ ne restent pas longtemps hors app. */
+    internal const val CLEAR_AFTER_MS = 30_000L
     private val mainHandler = Handler(Looper.getMainLooper())
     private var clearRunnable: Runnable? = null
 

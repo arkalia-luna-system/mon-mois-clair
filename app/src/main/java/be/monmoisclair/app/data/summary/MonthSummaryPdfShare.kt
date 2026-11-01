@@ -14,8 +14,8 @@ object MonthSummaryPdfShare {
     const val SHARE_SUBDIR = "share"
     const val FILE_NAME = MonthSummaryPdfWriter.FILE_NAME
 
-    /** TTL cache clair (aligné aperçus `view/` : 15 min). */
-    const val SHARE_TTL_MS = 15L * 60L * 1000L
+    /** TTL cache clair (aligné aperçus `view/` : 5 min). */
+    const val SHARE_TTL_MS = 5L * 60L * 1000L
 
     fun shareDir(cacheDir: File): File = File(cacheDir, SHARE_SUBDIR)
 

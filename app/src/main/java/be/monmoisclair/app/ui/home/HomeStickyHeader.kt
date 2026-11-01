@@ -128,7 +128,7 @@ internal fun HomeStickyHeader(
                 }
             )
             // Air dédié sous le hero avant toute 2ᵉ ligne outil.
-            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 6.dp else 8.dp))
+            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
             // H01 : 1 chiffre + 1 ligne statut ; Courses = entrée sticky (sheet unique).
             stickyStillToPayLabel(
                 stillToPayCents = state.summary.stillToPayCents,

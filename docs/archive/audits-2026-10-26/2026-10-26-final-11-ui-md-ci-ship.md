@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 — historique figé. Vivant = `docs/audits/2026-11-01-premium-*` + journal.
+
 # final-11 — UI quiet · MD · CI · ship develop=main · install
 
 | | |

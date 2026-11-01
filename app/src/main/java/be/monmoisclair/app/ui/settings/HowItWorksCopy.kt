@@ -27,7 +27,7 @@ object HowItWorksCopy {
         Section(
             title = "Le chiffre en haut",
             body = "« Reste après factures » = revenus − factures du mois — pas le solde bancaire. " +
-                "« À payer » = encore dû. « Après les FAIT » (brun, dans Détails) = seulement les cochées. " +
+                "« Factures ouvertes » = encore dû. « Après les FAIT » (brun, dans Détails) = seulement les cochées. " +
                 "Pas de report auto : un revenu « Reste du mois passé », une fois."
         ),
         Section(

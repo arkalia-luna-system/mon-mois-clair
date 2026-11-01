@@ -19,7 +19,7 @@ class StickyStillToPayLabelTest {
     fun unpaid_shows_a_payer() {
         assertThat(
             stickyStillToPayLabel(30_000L, hasExpenses = true) { "300 €" }
-        ).isEqualTo("À payer 300 €")
+        ).isEqualTo("Factures ouvertes 300 €")
     }
 
     @Test

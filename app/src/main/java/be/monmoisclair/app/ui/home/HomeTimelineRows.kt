@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -283,30 +284,38 @@ internal fun ExpenseRow(
                 item = item,
                 hideAgreementChip = compact && item.isAgreement
             )
-            // H05 : Copier / Photo en 2ᵉ rangée légère (liens), pas au niveau FAIT.
+            // H05 : Copier / Photo en 2ᵉ rangée légère — compact = liens seuls (carte allégée).
             val showNote = item.paymentNote.isNotBlank()
             val showPhoto = item.hasReceipt
             if (showNote || showPhoto) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = A11yTokens.minTouchHeight)
                 ) {
                     if (showNote) {
-                        Text(
-                            text = item.paymentNote,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f, fill = false)
-                        )
+                        if (!compact) {
+                            Text(
+                                text = item.paymentNote,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = A11yTokens.InkMuted,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
                         QuietLinkA11y(
                             text = "Copier",
                             onClick = onCopyNote,
                             fillMaxWidth = false,
                             onClickLabel = "Copier la communication"
                         )
+                    } else if (showPhoto) {
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                     if (showPhoto) {
                         QuietLinkA11y(
@@ -346,8 +355,16 @@ internal fun ExpenseStatusLine(
                 )
         }
         if (!compact) {
+            // P2-3 : Prélèvement en filet muted (pas or + forêt + brique = 4 chromas).
             if (item.isAutoDebit) {
-                add(Chip("Prélèvement", A11yTokens.AccentAuto, A11yTokens.OnGold))
+                add(
+                    Chip(
+                        "Prélèvement",
+                        A11yTokens.PaperWarm,
+                        A11yTokens.InkMuted,
+                        outlined = true
+                    )
+                )
             }
             if (item.isAgreement && !hideAgreementChip && size < 2) {
                 add(Chip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true))

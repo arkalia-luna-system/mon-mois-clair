@@ -208,3 +208,13 @@ Twin VM DraftController encore ouvert (prudent).
 |-----------|--------------:|------:|---------|
 | a11y One UI | 8,0 → **8,3** (code) | 381/382 | `0.1.0-6.96` |
 | Produit packaging/docs | 6 → **8** (docs/code) ; smoke **Athalia** | idem | `0.1.0-6.96` |
+
+### Vague plafond craft + clean (6.97)
+
+| Catégorie | Craft | Tests | Version |
+|-----------|------:|------:|---------|
+| DA / sécu / archi / UX / a11y / produit | **9,5** chacun | 384/385 | `0.1.0-6.97` |
+| Propreté | **10** | idem | + archive finals |
+| Dans la main | **Athalia** | — | pas claim 10 main |
+
+Détail : [`2026-11-01-premium-clean-10.md`](2026-11-01-premium-clean-10.md) · [`2026-11-01-premium-fix-progress.md`](2026-11-01-premium-fix-progress.md).

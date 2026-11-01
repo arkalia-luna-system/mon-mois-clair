@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
@@ -44,8 +45,15 @@ fun DayOfMonthGrid(
     enabled: Boolean = true
 ) {
     val fit = rememberDisplayFit()
+    val fontScale = LocalDensity.current.fontScale
     // Écart serré : 31 cases doivent pouvoir défiler sans masquer Enregistrer.
     val dayGap = if (fit.compactHomeChrome) 4.dp else 6.dp
+    // P1-4 : gros texte système — glyphe plus petit pour éviter clip dans 48 dp.
+    val dayTextStyle = if (fontScale >= 1.3f) {
+        MaterialTheme.typography.labelMedium
+    } else {
+        MaterialTheme.typography.labelLarge
+    }
     Column(modifier = modifier) {
         // SectionTitle = titleMedium + InkMuted (comme Fréquence / Dossiers).
         Text(
@@ -97,7 +105,8 @@ fun DayOfMonthGrid(
                     Text(
                         text = day.toString(),
                         color = fg,
-                        style = MaterialTheme.typography.labelLarge
+                        style = dayTextStyle,
+                        maxLines = 1
                     )
                 }
             }

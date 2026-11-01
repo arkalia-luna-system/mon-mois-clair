@@ -24,7 +24,8 @@ fun stickyStillToPayLabel(
     return if (stillToPayCents == 0L) {
         "Tout est payé"
     } else {
-        "À payer ${formatCents(stillToPayCents)}"
+        // UX 60+ : distinguer Reste (vivre) vs factures encore ouvertes.
+        "Factures ouvertes ${formatCents(stillToPayCents)}"
     }
 }
 

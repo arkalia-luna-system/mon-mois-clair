@@ -53,5 +53,9 @@ object RestoreMessages {
         "Attention : cette copie était une ancienne copie non protégée. " +
             "Faites tout de suite une nouvelle copie (Réglages → Votre code / copie), " +
             "notez le code à part, et jetez l’ancienne sur Drive ou WhatsApp. " +
-            "Après 6.81, les copies claires ne sont plus le format normal."
+            "Butoir : dès que toute la famille est ≥ 6.81, ne plus accepter « Ancien format »."
+
+    /** Libellé checkbox restore — deadline grace explicite (60+). */
+    const val CLEARTEXT_GRACE_CHECKBOX =
+        "Ancien format (rare) — à jeter après une nouvelle copie protégée"
 }

@@ -71,5 +71,5 @@
         android:maxLines="2"
         android:text="Ouvrir le carnet"
         android:textColor="@color/widget_muted"
-        android:textSize="15sp" />
+        android:textSize="16sp" />
 </LinearLayout>
