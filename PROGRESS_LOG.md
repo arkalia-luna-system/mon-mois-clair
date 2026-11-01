@@ -32,6 +32,8 @@ Smoke doigt = **Athalia** — pas fake 8 « dans la main ».
 
 **Tests :** **381 exécutés** / 382 (1 skipped), 90 XML, 0 failure.  
 **Version :** `0.1.0-6.96` · `versionCode` 101.  
+**Install :** SM-S938B release OK (sans wipe), MainActivity started, 0 FATAL.  
+**SHA :** `cff9a4c` (`develop`).  
 **Preuve :** [`docs/audits/2026-11-01-premium-fix-progress.md`](docs/audits/2026-11-01-premium-fix-progress.md).
 
 ### 2026-11-01 — 6.95 premium-04 UX parcours
