@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.00** (archi twin load + attachements DraftController/Core) |
+| Dernière étape terminée | **7.01** (Dependabot Guava #61 + propreté audits + ship fin de journée) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · TalkBack · Device Care · Drive — **STOP craft** code (plafond doigt) |
-| Audit premium | notes **honnêtes** append 7.00 · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
+| Audit premium | notes **honnêtes** · premium-00 + clean-10 vivants · 01–06 archivés · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,18 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 7.01 Dependabot Guava + propreté (fin de journée)
+
+**Sécu / Dependabot :**
+- **#61 HIGH** `com.google.guava:guava` (CVE-2026-102554 CompactHashMap OOM) → force `33.7.2-jre` via `resolutionStrategy` dans `settings.gradle.kts` (comme compress/lang3/bcpkix). Buildscript : `32.0.1-jre → 33.7.2-jre` **VÉRIFIÉ**. Pas d’`implementation` Guava runtime APK.
+- **#54** `kotlin-gradle-plugin` : rescan — patch min toujours `2.4.20-Beta1` → **AGP 9** requis ; **pin 2.0.21 documenté** dans `docs/CI.md` (pas de bump unsafe). Pas claim dismissé côté code.
+
+**Propreté :** `._*` = **0**. Audits premium-01…06 + fix-progress → `docs/archive/audits-2026-11-01/` (bandeau). Vivants : premium-00 + clean-10. Index `docs/README` / archive README alignés.
+
+**Tests :** **406 exécutés** / 407 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.01` · `versionCode` 106.  
+**Smoke doigt :** Athalia demain — **pas** claim GO / 10/10 main.
 
 ### 2026-11-01 — 7.00 archi twin load + attachements (plafond craft)
 

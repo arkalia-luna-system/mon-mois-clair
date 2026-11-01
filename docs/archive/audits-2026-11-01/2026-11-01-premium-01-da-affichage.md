@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 (7.01) — brut premium craft. Vivant = `docs/audits/2026-11-01-premium-00-synthese.md` + `premium-clean-10.md`. Ne plus lire pour l’état code.
+
 # Audit DA premium — affichage (sticky · cartes · sheets · fiche · widget · titres · densités)
 
 | | |

@@ -11,7 +11,7 @@
 
 ## Notes craft /10 (après 6.98)
 
-Références : audits premium-01…06 (notes brutes ~7–8,7) · fix-progress 6.92–6.97 · vérificateur **PARTIEL** sur 6.97 (notes 9,5 uniformes injustifiées).
+Références : audits premium-01…06 archivés (notes brutes ~7–8,7) · fix-progress archivé 6.92–6.97 · vérificateur **PARTIEL** sur 6.97 (notes 9,5 uniformes injustifiées).
 
 | Catégorie | 6.97 (claim gonflé) | **6.98 honnête** | Lecture |
 |-----------|--------------------:|-----------------:|---------|
@@ -36,7 +36,8 @@ Références : audits premium-01…06 (notes brutes ~7–8,7) · fix-progress 6.
 | `docs/archive/audits-2026-10-23/2026-10-23-smoke-device.md` | Smoke S25 historique (bandeau ARCHIVÉ) |
 | `docs/archive/audits-2026-11-01/2026-11-01-samsung-defaillances-notif-icon.md` | Direct Boot / notif 6.91 clos (bandeau) |
 | AppleDouble `._*` hors `.git` | **0** (purge + `scripts/git-safe.sh` étendu) |
-| Audits premium 00–06 + fix-progress + clean | Vivants sous `docs/audits/` |
+| Audits premium-00 + clean-10 | Vivants sous `docs/audits/` · 01–06 + fix-progress → `docs/archive/audits-2026-11-01/` (**7.01**) |
+| Dependabot Guava #61 | Force `33.7.2-jre` classpath build (**7.01**) · Kotlin #54 pin 2.0.21 (AGP 9) |
 | `SettingsPages.kt` monolithique | **Supprimé** → `SettingsPageChrome` + `SettingsComfortPages` + `SettingsAccountPages` |
 
 ---

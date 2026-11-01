@@ -13,8 +13,7 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Envoi / MAJ APK sans USB |
 | [`CI.md`](CI.md) | CI + Dependabot Security (force protobuf/netty) |
 | [`audits/2026-11-01-premium-00-synthese.md`](audits/2026-11-01-premium-00-synthese.md) | Synthèse audits premium |
-| [`audits/2026-11-01-premium-fix-progress.md`](audits/2026-11-01-premium-fix-progress.md) | Suivi fixes craft |
-| [`audits/2026-11-01-premium-clean-10.md`](audits/2026-11-01-premium-clean-10.md) | Notes craft **honnêtes** + propreté (6.98) |
+| [`audits/2026-11-01-premium-clean-10.md`](audits/2026-11-01-premium-clean-10.md) | Notes craft **honnêtes** + propreté |
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 
@@ -28,7 +27,7 @@ Racine : `README.md` · `PROGRESS_LOG.md` · `CHARTE_ET_ARCHITECTURE.md` · `PRI
 | Ce qui a été codé aujourd’hui | **Journal** |
 | Smoke téléphone | **AUDIT_STATUS** + checklist Athalia (NOTICE) |
 | Comparaison apps 2026 | **Benchmark** |
-| Audits premium craft | **premium-00…06** + **fix-progress** + **clean-10** |
+| Audits premium craft | **premium-00** + **clean-10** (01–06 / fix-progress = archive) |
 | Lots A→F détaillés / finals 10-26 | **archive/** |
 
 ## Local (hors git utile)

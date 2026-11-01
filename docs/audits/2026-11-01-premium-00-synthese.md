@@ -159,12 +159,12 @@ Tant que **1–3** ouverts → **NO-GO** cadeau sans Athalia **et** **NO-GO** pr
 
 | # | Fichier | Note |
 |---|---------|-----:|
-| 01 | [`2026-11-01-premium-01-da-affichage.md`](2026-11-01-premium-01-da-affichage.md) | 8,5 |
-| 02 | [`2026-11-01-premium-02-securite.md`](2026-11-01-premium-02-securite.md) | 7,5 |
-| 03 | [`2026-11-01-premium-03-architecture.md`](2026-11-01-premium-03-architecture.md) | 7 |
-| 04 | [`2026-11-01-premium-04-ux-parcours.md`](2026-11-01-premium-04-ux-parcours.md) | 7,4 |
-| 05 | [`2026-11-01-premium-05-a11y-oneui.md`](2026-11-01-premium-05-a11y-oneui.md) | 8,0 |
-| 06 | [`2026-11-01-premium-06-produit.md`](2026-11-01-premium-06-produit.md) | 6 · NO-GO |
+| 01 | [`2026-11-01-premium-01-da-affichage.md`](../archive/audits-2026-11-01/2026-11-01-premium-01-da-affichage.md) | 8,5 |
+| 02 | [`2026-11-01-premium-02-securite.md`](../archive/audits-2026-11-01/2026-11-01-premium-02-securite.md) | 7,5 |
+| 03 | [`2026-11-01-premium-03-architecture.md`](../archive/audits-2026-11-01/2026-11-01-premium-03-architecture.md) | 7 |
+| 04 | [`2026-11-01-premium-04-ux-parcours.md`](../archive/audits-2026-11-01/2026-11-01-premium-04-ux-parcours.md) | 7,4 |
+| 05 | [`2026-11-01-premium-05-a11y-oneui.md`](../archive/audits-2026-11-01/2026-11-01-premium-05-a11y-oneui.md) | 8,0 |
+| 06 | [`2026-11-01-premium-06-produit.md`](../archive/audits-2026-11-01/2026-11-01-premium-06-produit.md) | 6 · NO-GO |
 
 *Synthèse premium-00 · `0.1.0-6.91` · NO-GO « vraiment premium » 6/10.*
 
@@ -178,7 +178,7 @@ Tant que **1–3** ouverts → **NO-GO** cadeau sans Athalia **et** **NO-GO** pr
 |-----------|--------------:|------:|---------|
 | DA affichage | 8,5 → **8,7** (code) | 374/375 | `0.1.0-6.92` |
 
-Détail : [`2026-11-01-premium-fix-progress.md`](2026-11-01-premium-fix-progress.md). Smoke doigt toujours Athalia.
+Détail : [`2026-11-01-premium-fix-progress.md`](../archive/audits-2026-11-01/2026-11-01-premium-fix-progress.md). Smoke doigt toujours Athalia.
 
 ### Vague premium-02 (6.93)
 
@@ -229,4 +229,4 @@ Twin VM DraftController encore ouvert (prudent).
 | Moyenne ~ | **~8,9** | — |
 | Dans la main | **Athalia** | pas claim 10 main |
 
-Détail : [`2026-11-01-premium-clean-10.md`](2026-11-01-premium-clean-10.md) · [`2026-11-01-premium-fix-progress.md`](2026-11-01-premium-fix-progress.md).
+Détail : [`2026-11-01-premium-clean-10.md`](2026-11-01-premium-clean-10.md) · [`2026-11-01-premium-fix-progress.md`](../archive/audits-2026-11-01/2026-11-01-premium-fix-progress.md).

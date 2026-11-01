@@ -11,7 +11,7 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-406%2F407-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.00-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.01-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,9 +48,9 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.00` |
-| Dernière étape | **7.00** archi twin load + attachements DraftController/Core — **STOP craft** (checklist Athalia) |
-| Device | Install SM-S938B 6.97 OK (pré-7.00). **S26 / restore / TalkBack / Device Care / QuietLink doigt : Athalia** — pas claim « 10/10 dans la main » |
+| Version | `0.1.0-7.01` |
+| Dernière étape | **7.01** Guava #61 pin + audits premium archivés — **STOP craft** (smoke Athalia) |
+| Device | Install SM-S938B 7.01 (sans wipe). **S26 / restore / TalkBack / Device Care / QuietLink doigt : Athalia** — pas claim « 10/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **406 exécutés** OK (`--rerun-tasks`, 92 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |

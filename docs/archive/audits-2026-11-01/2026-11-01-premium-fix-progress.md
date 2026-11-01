@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-01 (7.01) — brut premium craft. Vivant = `docs/audits/2026-11-01-premium-00-synthese.md` + `premium-clean-10.md`. Ne plus lire pour l’état code.
+
 # Progress fixes audits premium — 2026-11-01
 
 Baseline départ : `0.1.0-6.91` · `versionCode` 96 · notes audits 01–06.

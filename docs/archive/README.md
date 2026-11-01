@@ -14,7 +14,7 @@ Décisions vivantes : `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `docs/PLAN
 | `campagnes-2026-10-20/` | Rapports testeurs 6.26 |
 | `audits-2026-10-23/` | Nuit-00…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 · **smoke-device** S25 (bandeau figé) |
 | `audits-2026-10-26/` | Finals 10-26 + crash-open (bandeau ARCHIVÉ) |
-| `audits-2026-11-01/` | Samsung défaillances / Direct Boot / notif 6.91 (bandeau ARCHIVÉ) |
+| `audits-2026-11-01/` | Samsung défaillances 6.91 + **premium-01…06** + **fix-progress** (bandeau ARCHIVÉ 7.01) |
 
 Ne pas rouvrir pour décider d’un correctif. Reporter dans le journal ou la charte.  
-Audits vivants : `docs/audits/2026-11-01-premium-*` (+ clean-10).
+Audits vivants : `docs/audits/2026-11-01-premium-00-synthese.md` + `premium-clean-10.md`.

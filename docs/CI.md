@@ -59,21 +59,28 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
 **Mitigation repo (6.80+) :** `build.gradle.kts` + `settings.gradle.kts` forcent via
 `resolutionStrategy` (transitifs UTP/AGP — **pas** dans l’APK runtime) :
 `protobuf-java:3.25.9`, `commons-io:2.22.0`, `commons-compress:1.26.0`,
-`commons-lang3:3.18.0` (**#60**), `io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`,
-`bcpkix-jdk18on:1.86`, `jdom2:2.0.6.1`, `jose4j:0.9.7`.
+`commons-lang3:3.18.0` (**#60**), `guava:33.7.2-jre` (**#61** CVE-2026-102554),
+`io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`, `bcpkix-jdk18on:1.86`,
+`jdom2:2.0.6.1`, `jose4j:0.9.7`.
 
 **Alerte #54 `kotlin-gradle-plugin` (CVE-2026-53914 / GHSA-r937-wjx7-w2jp) :**
 premier patch Dependabot = **`2.4.20-Beta1`** (désérialisation cache build Kotlin).
-**Rescan 2026-11-01 :** advisory GitHub / OSV listent **toutes** les versions
+**Rescan 2026-11-01 (7.01) :** advisory GitHub / OSV listent **toutes** les versions
 `&lt; 2.4.20-Beta1` (dont **2.0.21** et **2.1.x**) — **aucun backport** 2.0.x / 2.1.x.
 Politique JetBrains « security support » = stdlib **2.4+** seulement, pas le
 gradle-plugin des lignes antérieures. Bump Kotlin 2.4.x exige KSP 2.3 + Room 2.8 +
 Hilt ≥2.59 → **AGP 9** — **incompatible** stack actuelle (AGP **8.7.3**, Kotlin /
-KSP / Compose plugin **2.0.21**, Hilt **2.52**). Tentative AGP 9+Kotlin reportée
-(risque build/tests ; hors ship 6.91). **Pin documenté :** rester **2.0.21**
-jusqu’à migration AGP 9 coordonnée. Risque limité au **classpath build** (pas APK
+KSP / Compose plugin **2.0.21**, Hilt **2.52**). Tentative bump **non safe**
+aujourd’hui (casserait le build). **Pin documenté :** rester **2.0.21** jusqu’à
+migration AGP 9 coordonnée. Risque limité au **classpath build** (pas APK
 runtime ; CVSS local + privilèges élevés). Dismiss UI possible (raison : tooling
 pin + hors runtime) après rescan.
+
+**Alerte #61 `com.google.guava:guava` (CVE-2026-102554 / GHSA-xxph-c9ww-hj94) :**
+HIGH — CompactHashMap/CompactHashSet/MapMakerInternalMap deserialization OOM.
+Vulnérable `≥4.0` / `≤33.7.1` ; premier patch **`33.7.2`** (`33.7.2-jre` /
+`33.7.2-android`). Force classpath build via `settings.gradle.kts` →
+`33.7.2-jre` (7.01). Pas d’`implementation` directe Guava dans l’APK.
 
 Vérifier avec `./gradlew :app:dependencies`. Alertes GitHub peuvent rester rouges
 jusqu’au **rescan** Dependabot même si le force local est OK.
