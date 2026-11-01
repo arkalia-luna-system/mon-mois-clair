@@ -1,10 +1,14 @@
 package be.monmoisclair.app.ui.entry
 
+import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.ReceiptPathList
+import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
+import java.time.YearMonth
 
 /**
- * Cœur métier partagé Add / Edit : validation save, récurrence, garde anti-double-tap.
- * Les ViewModels gardent I/O (DAO, photos) et l’état UI spécifique.
+ * Cœur métier partagé Add / Edit : validation save, récurrence, load chemins reçus,
+ * garde anti-double-tap. Les ViewModels gardent I/O (DAO, photos) et l’état UI spécifique.
  */
 object EntryFormCore {
 
@@ -116,6 +120,14 @@ object EntryFormCore {
         RecurrenceChoice.Yearly -> 12
     }
 
+    /** Edit load : intervalle template → choix UI (null = une fois). */
+    fun recurrenceChoiceFromInterval(intervalMonths: Int?): RecurrenceChoice = when (intervalMonths) {
+        null -> RecurrenceChoice.Once
+        3 -> RecurrenceChoice.Every3Months
+        12 -> RecurrenceChoice.Yearly
+        else -> RecurrenceChoice.Monthly
+    }
+
     /**
      * Edit : null = inchangé ; -1 = repasser en une fois ; 1/3/12 = intervalle.
      */
@@ -131,6 +143,110 @@ object EntryFormCore {
             RecurrenceChoice.Every3Months -> 3
             RecurrenceChoice.Yearly -> 12
         }
+    }
+
+    /**
+     * Chemins reçus au load Edit :
+     * modèle → photo instance + extras template ; une fois → photo (+ PDF) dans le même champ.
+     */
+    data class LoadedReceiptPaths(
+        val primaryPath: String,
+        val extrasRaw: String
+    )
+
+    fun resolveLoadedReceiptPaths(
+        hasTemplate: Boolean,
+        instanceReceiptPath: String,
+        templateExtraPaths: String,
+        isPdf: (String) -> Boolean
+    ): LoadedReceiptPaths {
+        if (hasTemplate) {
+            return LoadedReceiptPaths(
+                primaryPath = instanceReceiptPath,
+                extrasRaw = templateExtraPaths
+            )
+        }
+        return LoadedReceiptPaths(
+            primaryPath = ReceiptPathList.primaryPhotoOrFirst(instanceReceiptPath, isPdf),
+            extrasRaw = ReceiptPathList.encode(
+                ReceiptPathList.extrasBesidesPrimary(instanceReceiptPath, isPdf)
+            )
+        )
+    }
+
+    /**
+     * Facture une fois : recomposer photo (+ extras déjà là) (+ PDF neuf optionnel).
+     * @param cleared true = l’utilisateur a enlevé la photo (ne pas réinjecter primary).
+     */
+    fun encodeOneOffReceiptPaths(
+        primaryPath: String,
+        existingExtras: String,
+        cleared: Boolean,
+        newPdfRelativePath: String? = null
+    ): String = ReceiptPathList.encode(
+        buildList {
+            if (primaryPath.isNotBlank() && !cleared) add(primaryPath)
+            addAll(ReceiptPathList.parse(existingExtras))
+            val pdf = newPdfRelativePath?.trim().orEmpty()
+            if (pdf.isNotEmpty()) add(pdf)
+        }
+    )
+
+    /** Add — clamp mois cible + titre / message (équivalent « load » initial). */
+    data class AddFormTarget(
+        val yearMonth: YearMonth,
+        val clampedFromFuture: Boolean,
+        val formTitle: String,
+        val initialError: String?,
+        val nextDueMonth: Int
+    )
+
+    fun resolveAddFormTarget(
+        rawYm: String?,
+        current: YearMonth = AppClock.currentYearMonth()
+    ): AddFormTarget {
+        val parsed = runCatching { YearMonth.parse(rawYm) }.getOrNull()
+        val (ym, clamped) = when {
+            parsed == null -> current to false
+            parsed.isAfter(current) -> current to true
+            else -> parsed to false
+        }
+        val title = if (ym == current) {
+            "Nouvelle facture ou revenu"
+        } else {
+            "Nouvelle facture ou revenu · ${DayLabelFormat.monthTitle(ym)}"
+        }
+        return AddFormTarget(
+            yearMonth = ym,
+            clampedFromFuture = clamped,
+            formTitle = title,
+            initialError = if (clamped) {
+                "On ajoute sur le mois en cours — pas sur un mois à venir."
+            } else {
+                null
+            },
+            nextDueMonth = ym.monthValue
+        )
+    }
+
+    const val FUTURE_PREVIEW_EDIT_HINT =
+        "Aperçu seulement — ouvrez le mois en cours pour modifier."
+    const val FUTURE_PREVIEW_DELETE_HINT =
+        "Aperçu seulement — on ne supprime pas sur un mois à venir."
+    const val ATTACH_RETRY_NEED =
+        "Reprenez une photo ou un PDF, puis Enregistrer."
+    const val ATTACH_RETRY_BOTH_FAIL =
+        "Photo et PDF n’ont pas pu être enregistrés. Réessayez."
+    const val ATTACH_RETRY_PHOTO_FAIL =
+        "La photo n’a pas pu être enregistrée. Réessayez."
+    const val ATTACH_RETRY_PDF_FAIL =
+        "Le PDF n’a pas pu être enregistré. Réessayez."
+
+    fun attachRetryError(photoOk: Boolean, pdfOk: Boolean): String? = when {
+        photoOk && pdfOk -> null
+        !photoOk && !pdfOk -> ATTACH_RETRY_BOTH_FAIL
+        !photoOk -> ATTACH_RETRY_PHOTO_FAIL
+        else -> ATTACH_RETRY_PDF_FAIL
     }
 
     sealed class PendingLetterCheck {

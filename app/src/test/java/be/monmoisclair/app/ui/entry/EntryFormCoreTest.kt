@@ -184,4 +184,73 @@ class EntryFormCoreTest {
             EntryFormCore.SharedSavePrep.Err(EntryFormCore.AGREEMENT_ONCE_HINT)
         )
     }
+
+    @Test
+    fun recurrenceChoiceFromInterval_mapsKnownValues() {
+        assertThat(EntryFormCore.recurrenceChoiceFromInterval(null))
+            .isEqualTo(RecurrenceChoice.Once)
+        assertThat(EntryFormCore.recurrenceChoiceFromInterval(3))
+            .isEqualTo(RecurrenceChoice.Every3Months)
+        assertThat(EntryFormCore.recurrenceChoiceFromInterval(12))
+            .isEqualTo(RecurrenceChoice.Yearly)
+        assertThat(EntryFormCore.recurrenceChoiceFromInterval(1))
+            .isEqualTo(RecurrenceChoice.Monthly)
+    }
+
+    @Test
+    fun resolveLoadedReceiptPaths_templateKeepsInstanceAndExtras() {
+        val loaded = EntryFormCore.resolveLoadedReceiptPaths(
+            hasTemplate = true,
+            instanceReceiptPath = "receipts/a.webp",
+            templateExtraPaths = "receipts/b.pdf",
+            isPdf = { it.endsWith(".pdf") }
+        )
+        assertThat(loaded.primaryPath).isEqualTo("receipts/a.webp")
+        assertThat(loaded.extrasRaw).isEqualTo("receipts/b.pdf")
+    }
+
+    @Test
+    fun resolveLoadedReceiptPaths_oneOffSplitsPhotoAndPdf() {
+        val raw = "receipts/photo.webp\nreceipts/mail.pdf"
+        val loaded = EntryFormCore.resolveLoadedReceiptPaths(
+            hasTemplate = false,
+            instanceReceiptPath = raw,
+            templateExtraPaths = "",
+            isPdf = { it.endsWith(".pdf") }
+        )
+        assertThat(loaded.primaryPath).isEqualTo("receipts/photo.webp")
+        assertThat(loaded.extrasRaw).isEqualTo("receipts/mail.pdf")
+    }
+
+    @Test
+    fun encodeOneOffReceiptPaths_clearedOmitsPrimary() {
+        val encoded = EntryFormCore.encodeOneOffReceiptPaths(
+            primaryPath = "receipts/old.webp",
+            existingExtras = "receipts/mail.pdf",
+            cleared = true,
+            newPdfRelativePath = "receipts/new.pdf"
+        )
+        assertThat(encoded).isEqualTo("receipts/mail.pdf\nreceipts/new.pdf")
+    }
+
+    @Test
+    fun resolveAddFormTarget_clampsFuture() {
+        val current = java.time.YearMonth.of(2026, 11)
+        val target = EntryFormCore.resolveAddFormTarget("2027-01", current)
+        assertThat(target.yearMonth).isEqualTo(current)
+        assertThat(target.clampedFromFuture).isTrue()
+        assertThat(target.initialError).isNotNull()
+        assertThat(target.nextDueMonth).isEqualTo(11)
+    }
+
+    @Test
+    fun attachRetryError_partialFailures() {
+        assertThat(EntryFormCore.attachRetryError(true, true)).isNull()
+        assertThat(EntryFormCore.attachRetryError(false, true))
+            .isEqualTo(EntryFormCore.ATTACH_RETRY_PHOTO_FAIL)
+        assertThat(EntryFormCore.attachRetryError(true, false))
+            .isEqualTo(EntryFormCore.ATTACH_RETRY_PDF_FAIL)
+        assertThat(EntryFormCore.attachRetryError(false, false))
+            .isEqualTo(EntryFormCore.ATTACH_RETRY_BOTH_FAIL)
+    }
 }

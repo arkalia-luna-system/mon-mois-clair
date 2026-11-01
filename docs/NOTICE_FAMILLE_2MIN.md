@@ -1,6 +1,6 @@
 # Notice famille — 2 minutes (à voix haute)
 
-Pour remettre Mon Mois Clair à maman. Version attendue : **Réglages → `0.1.0-6.99`**.
+Pour remettre Mon Mois Clair à maman. Version attendue : **Réglages → `0.1.0-7.00`**.
 
 ## Ce qu’elle doit retenir
 

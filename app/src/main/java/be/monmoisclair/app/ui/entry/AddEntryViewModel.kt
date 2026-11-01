@@ -20,7 +20,6 @@ import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterResult
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterUseCase
-import be.monmoisclair.app.ui.format.DayLabelFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,41 +72,14 @@ class AddEntryViewModel @Inject constructor(
     private val templateDao: TemplateDao,
     private val mutatingRepository: MutatingRepository
 ) : ViewModel() {
-    private val targetYm: YearMonth
-    private val clampedFromFuture: Boolean
-    init {
-        val raw = savedStateHandle.get<String>("ym")
-        val parsed = runCatching { YearMonth.parse(raw) }.getOrNull()
-        val current = AppClock.currentYearMonth()
-        when {
-            parsed == null -> {
-                targetYm = current
-                clampedFromFuture = false
-            }
-            parsed.isAfter(current) -> {
-                targetYm = current
-                clampedFromFuture = true
-            }
-            else -> {
-                targetYm = parsed
-                clampedFromFuture = false
-            }
-        }
-    }
+    private val addTarget = EntryFormCore.resolveAddFormTarget(savedStateHandle.get<String>("ym"))
+    private val targetYm: YearMonth = addTarget.yearMonth
     private val _state = MutableStateFlow(
         EntryFormState(
             targetYearMonth = targetYm,
-            formTitle = if (targetYm == AppClock.currentYearMonth()) {
-                "Nouvelle facture ou revenu"
-            } else {
-                "Nouvelle facture ou revenu · ${DayLabelFormat.monthTitle(targetYm)}"
-            },
-            nextDueMonth = targetYm.monthValue,
-            error = if (clampedFromFuture) {
-                "On ajoute sur le mois en cours — pas sur un mois à venir."
-            } else {
-                null
-            }
+            formTitle = addTarget.formTitle,
+            nextDueMonth = addTarget.nextDueMonth,
+            error = addTarget.initialError
         )
     )
     val state: StateFlow<EntryFormState> = _state.asStateFlow()
@@ -119,13 +91,13 @@ class AddEntryViewModel @Inject constructor(
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
     fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null) }
     fun setExpense(v: Boolean) {
-        if (!v) receiptDraft.clearAll()
+        val flags = EntryFormDraftController.applyExpenseType(receiptDraft, v)
         _state.update {
             it.copy(
                 isExpense = v,
                 isAutoDebit = if (v) it.isAutoDebit else false,
-                hasPendingPdf = if (v) it.hasPendingPdf else false,
-                hasPendingPhoto = if (v) it.hasPendingPhoto else false,
+                hasPendingPdf = flags.hasPendingPdf,
+                hasPendingPhoto = flags.hasPendingPhoto,
                 error = null
             )
         }
@@ -155,26 +127,44 @@ class AddEntryViewModel @Inject constructor(
         it.copy(openingRemainingText = v, error = null)
     }
     fun attachPreviewBitmap(b: Bitmap) {
-        receiptDraft.attachBitmap(b)
-        _state.update { it.copy(hasPendingPhoto = true, error = null) }
+        val flags = EntryFormDraftController.attachBitmap(receiptDraft, b)
+        _state.update {
+            it.copy(
+                hasPendingPhoto = flags.hasPendingPhoto,
+                hasPendingPdf = flags.hasPendingPdf,
+                error = null
+            )
+        }
     }
 
     fun attachPendingPdf(bytes: ByteArray) {
-        receiptDraft.attachPdf(bytes)
-        _state.update { it.copy(hasPendingPdf = true, error = null) }
+        val flags = EntryFormDraftController.attachPdf(receiptDraft, bytes)
+        _state.update {
+            it.copy(
+                hasPendingPhoto = flags.hasPendingPhoto,
+                hasPendingPdf = flags.hasPendingPdf,
+                error = null
+            )
+        }
     }
 
     fun clearPendingPdf() {
-        receiptDraft.clearPdf()
-        _state.update { it.copy(hasPendingPdf = false, error = null) }
+        val flags = EntryFormDraftController.clearPdf(receiptDraft)
+        _state.update {
+            it.copy(
+                hasPendingPhoto = flags.hasPendingPhoto,
+                hasPendingPdf = flags.hasPendingPdf,
+                error = null
+            )
+        }
     }
 
     fun setPhotoDecodeError() = _state.update {
-        it.copy(error = EntryFormMessages.PHOTO_DECODE_ERROR)
+        it.copy(error = EntryFormDraftController.photoDecodeError())
     }
 
     fun setPdfReadError(message: String = EntryFormMessages.PDF_READ_ERROR_DEFAULT) =
-        _state.update { it.copy(error = message) }
+        _state.update { it.copy(error = EntryFormDraftController.pdfReadError(message)) }
 
     fun copyPaymentNote() {
         val result = EntryFormPaymentNoteCopy.copy(appContext, _state.value.paymentNote)
@@ -452,7 +442,7 @@ class AddEntryViewModel @Inject constructor(
         if (!hasPhoto && !hasPdf) {
             _state.update {
                 it.copy(
-                    error = "Reprenez une photo ou un PDF, puis Enregistrer.",
+                    error = EntryFormCore.ATTACH_RETRY_NEED,
                     saving = false
                 )
             }
@@ -466,20 +456,15 @@ class AddEntryViewModel @Inject constructor(
         val pdfOk = if (hasPdf) attachPendingPdf(instanceId, recurring = recurring) else true
         if (photoOk) receiptDraft.clearBitmap()
         if (pdfOk) receiptDraft.clearPdf()
+        val flags = EntryFormDraftController.peekFlags(receiptDraft)
         val ok = photoOk && pdfOk
         _state.update {
             it.copy(
                 saving = false,
                 saved = ok,
-                hasPendingPhoto = receiptDraft.hasPhoto,
-                hasPendingPdf = receiptDraft.hasPdf,
-                error = when {
-                    ok -> null
-                    !photoOk && !pdfOk ->
-                        "Photo et PDF n’ont pas pu être enregistrés. Réessayez."
-                    !photoOk -> "La photo n’a pas pu être enregistrée. Réessayez."
-                    else -> "Le PDF n’a pas pu être enregistré. Réessayez."
-                }
+                hasPendingPhoto = flags.hasPendingPhoto,
+                hasPendingPdf = flags.hasPendingPdf,
+                error = EntryFormCore.attachRetryError(photoOk, pdfOk)
             )
         }
     }
@@ -561,11 +546,9 @@ class AddEntryViewModel @Inject constructor(
                         linked = true
                     }
                 } else if (expense != null) {
-                    val merged = ReceiptPathList.encode(
-                        buildList {
-                            addAll(ReceiptPathList.parse(expense.receiptRelativePath))
-                            add(saved.relativePath)
-                        }
+                    val merged = ReceiptPathList.append(
+                        expense.receiptRelativePath,
+                        saved.relativePath
                     )
                     instanceDao.updateExpense(expense.copy(receiptRelativePath = merged))
                     linked = true

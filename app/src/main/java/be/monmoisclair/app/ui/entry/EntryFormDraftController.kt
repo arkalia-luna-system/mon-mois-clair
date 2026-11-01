@@ -1,11 +1,13 @@
 package be.monmoisclair.app.ui.entry
 
+import android.graphics.Bitmap
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.EpcPayment
 
 /**
- * Glue brouillon partagée Add/Edit — mutations pures, sans Hilt.
- * Les VM gardent load/save/delete ; ce controller évite le drift EPC / OCR / dossier.
+ * Glue brouillon partagée Add/Edit — mutations pures (+ draft mémoire), sans Hilt.
+ * Les VM gardent I/O load/save/delete ; ce controller évite le drift EPC / OCR / dossier /
+ * drapeaux photo-PDF.
  */
 object EntryFormDraftController {
 
@@ -140,5 +142,75 @@ object EntryFormDraftController {
             Triple(false, "", "")
         } else {
             Triple(true, causeLabel, openingRemainingText)
+        }
+
+    /** Drapeaux UI pièces jointes (Add/Edit). */
+    data class PendingFlags(
+        val hasPendingPhoto: Boolean,
+        val hasPendingPdf: Boolean
+    )
+
+    /** Edit : enlever la photo déjà liée + brouillon. */
+    data class EditPhotoClear(
+        val flags: PendingFlags,
+        val receiptRelativePath: String,
+        val receiptCleared: Boolean
+    )
+
+    fun peekFlags(draft: EntryFormReceiptDraft): PendingFlags =
+        PendingFlags(hasPendingPhoto = draft.hasPhoto, hasPendingPdf = draft.hasPdf)
+
+    fun attachBitmap(draft: EntryFormReceiptDraft, bitmap: Bitmap): PendingFlags {
+        draft.attachBitmap(bitmap)
+        return PendingFlags(hasPendingPhoto = true, hasPendingPdf = draft.hasPdf)
+    }
+
+    fun attachPdf(draft: EntryFormReceiptDraft, bytes: ByteArray): PendingFlags {
+        draft.attachPdf(bytes)
+        return PendingFlags(hasPendingPhoto = draft.hasPhoto, hasPendingPdf = true)
+    }
+
+    fun clearPdf(draft: EntryFormReceiptDraft): PendingFlags {
+        draft.clearPdf()
+        return PendingFlags(hasPendingPhoto = draft.hasPhoto, hasPendingPdf = false)
+    }
+
+    fun clearBitmap(draft: EntryFormReceiptDraft): PendingFlags {
+        draft.clearBitmap()
+        return PendingFlags(hasPendingPhoto = false, hasPendingPdf = draft.hasPdf)
+    }
+
+    fun clearAllAttachments(draft: EntryFormReceiptDraft): PendingFlags {
+        draft.clearAll()
+        return PendingFlags(hasPendingPhoto = false, hasPendingPdf = false)
+    }
+
+    /** Edit — « Enlever la photo » (chemin + flag cleared). */
+    fun clearEditReceiptPhoto(draft: EntryFormReceiptDraft): EditPhotoClear {
+        val flags = clearBitmap(draft)
+        return EditPhotoClear(
+            flags = flags,
+            receiptRelativePath = "",
+            receiptCleared = true
+        )
+    }
+
+    fun photoDecodeError(): String = EntryFormMessages.PHOTO_DECODE_ERROR
+
+    fun pdfReadError(message: String = EntryFormMessages.PDF_READ_ERROR_DEFAULT): String =
+        message
+
+    /**
+     * Add : bascule revenu → wipe pièces ; facture → conserve.
+     * @return Pair(isExpense, flags)
+     */
+    fun applyExpenseType(
+        draft: EntryFormReceiptDraft,
+        isExpense: Boolean
+    ): PendingFlags =
+        if (isExpense) {
+            peekFlags(draft)
+        } else {
+            clearAllAttachments(draft)
         }
 }

@@ -106,4 +106,41 @@ class EntryFormDraftControllerTest {
         assertThat(ok.forceExpense).isTrue()
         assertThat(ok.patch.label).isEqualTo("Eau")
     }
+
+    @Test
+    fun attachPdf_andClear_updatesFlags() {
+        val draft = EntryFormReceiptDraft()
+        val attached = EntryFormDraftController.attachPdf(draft, byteArrayOf(1, 2, 3))
+        assertThat(attached.hasPendingPdf).isTrue()
+        assertThat(attached.hasPendingPhoto).isFalse()
+        assertThat(draft.hasPdf).isTrue()
+        val cleared = EntryFormDraftController.clearPdf(draft)
+        assertThat(cleared.hasPendingPdf).isFalse()
+        assertThat(draft.hasPdf).isFalse()
+    }
+
+    @Test
+    fun applyExpenseType_income_wipesAttachments() {
+        val draft = EntryFormReceiptDraft()
+        EntryFormDraftController.attachPdf(draft, byteArrayOf(9))
+        val flags = EntryFormDraftController.applyExpenseType(draft, isExpense = false)
+        assertThat(flags.hasPendingPdf).isFalse()
+        assertThat(flags.hasPendingPhoto).isFalse()
+        assertThat(draft.hasPdf).isFalse()
+    }
+
+    @Test
+    fun clearEditReceiptPhoto_setsClearedPath() {
+        val draft = EntryFormReceiptDraft()
+        val cleared = EntryFormDraftController.clearEditReceiptPhoto(draft)
+        assertThat(cleared.receiptCleared).isTrue()
+        assertThat(cleared.receiptRelativePath).isEmpty()
+        assertThat(cleared.flags.hasPendingPhoto).isFalse()
+    }
+
+    @Test
+    fun photoDecodeError_matchesMessages() {
+        assertThat(EntryFormDraftController.photoDecodeError())
+            .isEqualTo(EntryFormMessages.PHOTO_DECODE_ERROR)
+    }
 }

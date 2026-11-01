@@ -90,3 +90,26 @@ Tant que **1–3** ouverts → **pas** de claim 10/10 main ni GO cadeau fake.
 **Preuve tests 6.99 :** `~/.cache/mon-mois-clair/gradle-build/app/test-results` → **396/397** (92 XML · 0 failure · 1 skipped).
 
 *Append 6.99 · pas de fake 10 main · notes plafonnées au réel.*
+
+---
+
+## Append — 7.00 (avant → après, honnête)
+
+| Catégorie | 6.99 | **7.00** | Preuves / lecture |
+|-----------|-----:|---------:|-------------------|
+| **DA** affichage | 9,0 | **9,0** | Aucun gap code-only évident sans redesign — plafond **doigt S26** |
+| **Sécu** confiance | 9,4 | **9,4** | Inchangé (crypto / TTL / wipe déjà 6.99) |
+| **Archi** | 9,3 | **9,5** | Twin **load** (Add target + Edit receipt paths / récurrence) + **attachements** DraftController — save I/O DAO encore VM (OK) |
+| **UX** parcours | 9,3 | **9,3** | Comportement UI inchangé — 9,5 boutique = restore/S26 doigt |
+| **A11y** / One UI | 9,0 | **9,0** | Inchangé — TalkBack / Device Care = Athalia |
+| **Produit** packaging | 8,9 | **8,9** | NOTICE/version 7.00 · claims smoke toujours Athalia |
+| **Propreté** | 9,5 | **9,5** | `._*` **0** |
+
+**Moyenne indicative 7.00 :** **~9,2 / 10** (archi craft **9,5** ; DA/a11y/produit **9,0** faute doigt).  
+**STOP craft :** plus de levier code crédible pour « partout y compris main » → checklist Athalia seule.
+
+**Preuves code 7.00 :** `EntryFormCore.resolveAddFormTarget` · `resolveLoadedReceiptPaths` · `encodeOneOffReceiptPaths` · `EntryFormDraftController.attach*` / `clearEditReceiptPhoto` / `applyExpenseType`.
+
+**Preuve tests 7.00 :** `~/.cache/mon-mois-clair/gradle-build/app/test-results` → **406/407** (92 XML · 0 failure · 1 skipped).
+
+*Append 7.00 · archi 9,5 craft · pas de fake 10 main.*

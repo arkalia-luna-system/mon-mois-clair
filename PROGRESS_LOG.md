@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.99** (archi save/EPC partagés · sécu grâce close · UX Sauvegarde 3 étapes) |
+| Dernière étape terminée | **7.00** (archi twin load + attachements DraftController/Core) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · TalkBack · Device Care · Drive |
-| Audit premium | notes **honnêtes** append 6.99 · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
+| Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · TalkBack · Device Care · Drive — **STOP craft** code (plafond doigt) |
+| Audit premium | notes **honnêtes** append 7.00 · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,18 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 7.00 archi twin load + attachements (plafond craft)
+
+**Archi :** `EntryFormCore.resolveAddFormTarget` / `resolveLoadedReceiptPaths` / `encodeOneOffReceiptPaths` / `recurrenceChoiceFromInterval` + `EntryFormDraftController` attachements (`attachBitmap`/`attachPdf`/`clear*`/`applyExpenseType`/`clearEditReceiptPhoto`) branchés Add↔Edit. UI inchangée. Save I/O DAO reste dans les VM (volontaire).
+
+**DA / UX / a11y / produit :** pas de micro-pass redesign — aucun gap code-only évident ; notes **restent 9,0** faute doigt Athalia.
+
+**Propreté :** `._*` = **0**.
+
+**Tests :** **406 exécutés** / 407 (1 skipped), 92 XML, 0 failure.  
+**Version :** `0.1.0-7.00` · `versionCode` 105.  
+**Smoke doigt :** Athalia — **STOP craft** pour 9,5–10 « partout y compris main ».
 
 ### 2026-11-01 — 6.99 archi / sécu / UX craft (sans notes gonflées)
 

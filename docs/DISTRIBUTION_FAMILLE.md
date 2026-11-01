@@ -13,7 +13,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 - Toujours l’APK **release** signé (jamais debug).
 - **Même keystore** qu’avant = mise à jour sans perdre les données Room.
 - Vérifier la version dans le fichier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`
-  (ex. `versionName='0.1.0-6.99'` — lire le journal).
+  (ex. `versionName='0.1.0-7.00'` — lire le journal).
 
 ## 2. Envoyer (sans USB)
 
@@ -30,7 +30,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 3. **Ouvrir** `MonMoisClair-release.apk`.
 4. Si demandé : autoriser l’installation d’apps de cette source (une seule fois).
 5. Toucher **Installer** ou **Mettre à jour**.
-6. Ouvrir Mon Mois Clair → Menu → **Réglages** → vérifier que la version affichée est la nouvelle (ex. **6.99** — lire le journal).
+6. Ouvrir Mon Mois Clair → Menu → **Réglages** → vérifier que la version affichée est la nouvelle (ex. **7.00** — lire le journal).
 7. Vérifier le mois en cours (Reste, factures).
 
 ## Pièges
