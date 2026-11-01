@@ -41,6 +41,7 @@ debounce widget `CONFIGURATION_CHANGED` 15 s.
 **Tests :** **374 exécutés** / 375 (1 skipped), 89 XML, 0 failure.  
 **Version :** `0.1.0-6.91` · `versionCode` 96.  
 **Install :** SM-S938B release OK (sans wipe), MainActivity resumed, 0 FATAL.  
+**SHA :** `e91f4a5` (`develop` = `main`, ff-only).  
 **Preuve :** [`docs/audits/2026-11-01-samsung-defaillances-notif-icon.md`](docs/audits/2026-11-01-samsung-defaillances-notif-icon.md).
 
 ### 2026-10-26 — 6.90 crash ouverture + Dependabot #60

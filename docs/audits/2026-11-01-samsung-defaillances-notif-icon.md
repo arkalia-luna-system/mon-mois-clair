@@ -5,6 +5,7 @@
 | Date | 2026-11-01 |
 | Branche | `develop` (= `main` ff-only après ship) |
 | Version | `0.1.0-6.91` · `versionCode` 96 |
+| SHA | `e91f4a5` (`develop` = `main`, ff-only) |
 | Device | SM-S938B (sans wipe) |
 | Tests | **374 exécutés** / 375 (1 skipped), 89 XML, 0 failure |
 
@@ -72,3 +73,4 @@ Fichiers : `PaymentNotificationHelper` (`setLargeIcon`),
 - `./gradlew :app:testDebugUnitTest --rerun-tasks` → **374/375** (1 `@Ignore`), 89 XML.
 - `assembleRelease` OK · `adb install -r` OK · `MainActivity` resumed · 0 FATAL post-install.
 - Preuve version device : `versionName=0.1.0-6.91` · `versionCode=96`.
+- SHA ship : **`e91f4a5`** — `develop` = `main` (ff-only, pas de force-push).
