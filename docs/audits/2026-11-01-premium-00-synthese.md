@@ -195,3 +195,9 @@ Restore doigt / Device Care toujours Athalia.
 | Architecture | 7 → **8,0** (Scaffold models) | 379/380 | `0.1.0-6.94` |
 
 Twin VM DraftController encore ouvert (prudent).
+
+### Vague premium-04 (6.95)
+
+| Catégorie | Avant → après | Tests | Version |
+|-----------|--------------:|------:|---------|
+| UX parcours | 7,4 → **8,1** (code) | 379/380 | `0.1.0-6.95` |

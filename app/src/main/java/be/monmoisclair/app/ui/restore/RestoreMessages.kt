@@ -38,21 +38,20 @@ object RestoreMessages {
         }
     }
 
-    /** Refus par défaut — cocher « Ancien format (ZIP/JSON clair) » pour forcer. */
+    /** Refus par défaut — cocher « Ancien format » pour forcer (P0-U2 : sans jargon crypto). */
     const val CLEARTEXT_REJECTED =
-        "Cette copie est en clair (ancienne version, avant 6.81). " +
-            "Cochez « Ancien format (ZIP/JSON clair) » pour l’accepter une fois, " +
-            "puis faites tout de suite une nouvelle copie .mmc (Réglages → Envoyer une copie). " +
+        "Cette copie est une ancienne copie non protégée. " +
+            "Cochez « Ancien format » pour l’accepter une fois, " +
+            "puis faites tout de suite une nouvelle copie (Réglages → Votre code / copie). " +
             "Le mois en cours n’a pas été modifié."
 
     /**
      * Warning fort — grace pré-6.81 acceptée via opt-in.
-     * Butoir produit : une fois toute la famille ≥ 6.81, jeter les ZIP/JSON ;
-     * l’opt-in restera un filet rare, pas le chemin normal.
+     * Butoir produit : une fois toute la famille ≥ 6.81, jeter les anciennes copies claires.
      */
     const val CLEARTEXT_GRACE_WARNING =
-        "Attention : cette copie était en clair (ancienne version). " +
-            "Faites tout de suite une nouvelle copie .mmc (Réglages → Envoyer une copie), " +
-            "notez le code à part, et jetez les vieux ZIP/JSON sur Drive ou WhatsApp. " +
+        "Attention : cette copie était une ancienne copie non protégée. " +
+            "Faites tout de suite une nouvelle copie (Réglages → Votre code / copie), " +
+            "notez le code à part, et jetez l’ancienne sur Drive ou WhatsApp. " +
             "Après 6.81, les copies claires ne sont plus le format normal."
 }

@@ -104,3 +104,29 @@ Règle : une catégorie à la fois · preuves grep/read + Gradle `--rerun-tasks`
 ### Auto-évaluation
 
 **8,0 / 10** craft API formulaire (objectif ≥ 8). Glue Add/Edit VM = dette documentée, non fake-fermée.
+
+---
+
+## premium-04 · UX parcours
+
+| | |
+|--|--|
+| **Avant → après (code)** | **7,4 → 8,1 / 10** |
+| **Version** | `0.1.0-6.95` · `versionCode` 100 |
+| **Tests** | **379 exécutés** / 380 (1 skipped), 90 XML, 0 failure |
+
+### Points traités
+
+| Id | Action |
+|----|--------|
+| **P0-U1** | Hub « Votre code / copie » → Sauvegarde ; BACKUP 1er dans groupe Données |
+| **P0-U2** | RestoreMessages / checkbox sans jargon chiffrée/ZIP |
+| **P0-U3** | Cartes déjà allégées en 6.92 ; tip prélèvement (P1-U2) |
+| **P1-U3** | COPIED_OK « collez à la banque, puis FAIT ici » |
+| **P1-U4** | Aide : FAIT + Sauvegarde en tête, corps court |
+| **P1-U5** | Libellé Aide hub explicite |
+| **P1-U6** | VERIFY_ON_MAIL + Scanner le QR |
+
+### Auto-évaluation
+
+**8,1 / 10** parcours code (objectif ≥ 8). Smoke S26 / restore doigt = Athalia.

@@ -21,9 +21,12 @@ object BelgianStructuredCommunication {
         val userMessage: String
     )
 
-    const val COPIED_OK = "Copié — collez dans votre application bancaire."
-    const val IBAN_COPIED_OK = "IBAN copié — collez dans votre application bancaire."
-    const val VERIFY_ON_MAIL = "Vérifiez sur le courrier."
+    const val COPIED_OK =
+        "Copié — collez à la banque, puis FAIT ici."
+    const val IBAN_COPIED_OK =
+        "IBAN copié — collez dans votre application bancaire."
+    const val VERIFY_ON_MAIL =
+        "Vérifiez sur le courrier, ou Scanner le QR."
 
     fun prepareCopy(raw: String): CopyResult {
         val trimmed = raw.trim()

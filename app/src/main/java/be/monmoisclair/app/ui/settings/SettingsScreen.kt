@@ -32,6 +32,7 @@ fun SettingsScreen(
     onOpenAccountGroup: () -> Unit,
     onOpenComfortGroup: () -> Unit,
     onOpenHelp: () -> Unit,
+    onOpenBackup: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -43,6 +44,11 @@ fun SettingsScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         CarnetPageTitle(SettingsHubCopy.TITLE)
+        // P0-U1 : code / copie en 1ʳᵉ ligne hub (pas Restore dans Menu Accueil).
+        CarnetHubRow(
+            label = SettingsHubCopy.BACKUP_SHORTCUT,
+            onClick = onOpenBackup
+        )
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_ACCOUNT,
             onClick = onOpenAccountGroup
@@ -110,12 +116,12 @@ fun SettingsAccountGroupScreen(
     SettingsResumeRefresh(viewModel)
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.GROUP_ACCOUNT)
+        CarnetHubRow(label = SettingsHubCopy.BACKUP, onClick = onOpenBackup)
         CarnetHubRow(label = SettingsHubCopy.SAVINGS, onClick = onOpenSavings)
         CarnetHubRow(label = SettingsHubCopy.PRIVACY, onClick = onOpenPrivacy)
         if (state.showSummaryButton) {
             CarnetHubRow(label = SettingsHubCopy.SUMMARY, onClick = onOpenSummary)
         }
-        CarnetHubRow(label = SettingsHubCopy.BACKUP, onClick = onOpenBackup)
     }
 }
 

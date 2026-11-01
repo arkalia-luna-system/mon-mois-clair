@@ -11,7 +11,7 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-379%2F380-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--6.94-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--6.95-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,8 +48,8 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-6.94` |
-| Dernière étape | **6.94** premium-03 EntryFormUiModels Scaffold |
+| Version | `0.1.0-6.95` |
+| Dernière étape | **6.95** premium-04 UX sauvegarde/jargon/FAIT |
 | Device | Smoke S25 Ultra partiel. **Rescan Device Care + S26 / restore doigt / connected : Athalia** — pas claim « 9/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **379 exécutés** OK (`--rerun-tasks`, 90 XML · 1 `@Ignore` migration 1→N) |

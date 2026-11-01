@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.94** (premium-03 EntryFormUiModels Scaffold) |
-| Étape en cours | premium-04 UX parcours (fixes) |
-| Prochaine sous-étape | Audits premium 04→06 · puis **Athalia** smoke S26 / restore / TalkBack / Device Care |
-| Audit premium | 01 **8,7** · 02 **8,2** · 03 **8,0** code · **pas** « 9/10 dans la main » |
+| Dernière étape terminée | **6.95** (premium-04 UX sauvegarde/jargon/parcours) |
+| Étape en cours | premium-05 a11y (fixes) |
+| Prochaine sous-étape | Audits premium 05→06 · puis **Athalia** smoke S26 / restore / TalkBack / Device Care |
+| Audit premium | 01 **8,7** · 02 **8,2** · 03 **8,0** · 04 **8,1** code · **pas** « 9/10 dans la main » |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,16 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.95 premium-04 UX parcours
+
+**UX :** raccourci hub « Votre code / copie » ; restore sans jargon crypto ;
+Aide FAIT+Sauvegarde en tête ; Copier→« puis FAIT » ; tip prélèvement carte ;
+Aide hub explicite.
+
+**Tests :** **379 exécutés** / 380 (1 skipped), 90 XML, 0 failure.  
+**Version :** `0.1.0-6.95` · `versionCode` 100.  
+**Preuve :** [`docs/audits/2026-11-01-premium-fix-progress.md`](docs/audits/2026-11-01-premium-fix-progress.md).
 
 ### 2026-11-01 — 6.94 premium-03 architecture Scaffold
 

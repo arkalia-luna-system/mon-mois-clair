@@ -3,6 +3,7 @@ package be.monmoisclair.app.ui.settings
 /**
  * Aide « Comment ça marche » — textes figés, testables, ton familial.
  * Affiché depuis Réglages (contact = Menu Accueil uniquement).
+ * P1-U4 : FAIT + Sauvegarde en tête (1ʳᵉ panique / geste fort).
  */
 object HowItWorksCopy {
     const val TITLE = "Comment ça marche"
@@ -11,22 +12,28 @@ object HowItWorksCopy {
 
     val sections: List<Section> = listOf(
         Section(
+            title = "Marquer FAIT",
+            body = "Payé : « FAIT ✓ », puis « FAIT le … ». « Remettre » si erreur. " +
+                "Prélèvement : cochez quand vous voyez le débit, pas le jour prévu. " +
+                "Autre montant ce mois : ouvrez la ligne — seul ce mois change, " +
+                "sauf « Aussi les mois suivants »."
+        ),
+        Section(
+            title = "Sauvegarde",
+            body = "Notez le code (Réglages → Votre code / copie) une fois sur papier. " +
+                "Jamais le code et le fichier .mmc dans le même message. " +
+                "Nouveau téléphone : Restaurer + ce code. Anciennes copies claires : à jeter."
+        ),
+        Section(
             title = "Le chiffre en haut",
             body = "« Reste après factures » = revenus − factures du mois — pas le solde bancaire. " +
-                "« À payer » = encore dû. « Après les FAIT » (brun) = seulement les cochées. " +
+                "« À payer » = encore dû. « Après les FAIT » (brun, dans Détails) = seulement les cochées. " +
                 "Pas de report auto : un revenu « Reste du mois passé », une fois."
         ),
         Section(
             title = "Courses",
             body = "Ligne sous le Reste (›) : courses / pharmacie. " +
                 "Le gros Reste ne bouge pas ; « Après courses » montre le solde."
-        ),
-        Section(
-            title = "Marquer FAIT",
-            body = "Payé : « FAIT ✓ », puis « FAIT le … ». « Remettre » si erreur. " +
-                "Prélèvement : cochez quand vous voyez le débit, pas le jour prévu. " +
-                "Autre montant ce mois : ouvrez la ligne — seul ce mois change, " +
-                "sauf « Aussi les mois suivants »."
         ),
         Section(
             title = "En retard",
@@ -61,13 +68,6 @@ object HowItWorksCopy {
             body = "« 1× par an » / « tous les 3 mois » : réapparaissent le bon mois. " +
                 "Aperçu : calendrier Accueil ou Menu → À venir. " +
                 "Hors ce mois : Réglages → Échéances hors ce mois."
-        ),
-        Section(
-            title = "Sauvegarde",
-            body = "Documents garde 3 copies protégées. Notez le code (Réglages → Sauvegarde) " +
-                "une fois sur papier. « Envoyer une copie » : jamais le code et le .mmc " +
-                "dans le même message. Nouveau téléphone : Restaurer + ce code. " +
-                "Anciennes ZIP claires : à jeter quand une bonne copie est notée."
         ),
         Section(
             title = "Empreinte",

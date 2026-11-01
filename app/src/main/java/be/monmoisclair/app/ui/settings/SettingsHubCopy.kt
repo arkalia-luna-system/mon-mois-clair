@@ -12,7 +12,7 @@ object SettingsHubCopy {
     /** Pas « Compte » : l’app n’a pas de login / banque. */
     const val GROUP_ACCOUNT = "Données & sauvegarde"
     const val GROUP_COMFORT = "Confort"
-    const val GROUP_HELP = "Aide"
+    const val GROUP_HELP = "Aide — Comment ça marche"
 
     const val APPEARANCE = "Apparence"
     const val SAVINGS = "Mettre de côté"
@@ -21,7 +21,9 @@ object SettingsHubCopy {
     const val DEADLINES = "Échéances hors ce mois"
     const val SUMMARY = "Préparer un résumé"
     const val BACKUP = "Sauvegarde"
-    const val HELP = "Aide"
+    /** P0-U1 : raccourci hub — code vital sans passer par le groupe. */
+    const val BACKUP_SHORTCUT = "Votre code / copie"
+    const val HELP = "Aide — Comment ça marche"
 
     /** Trois portes du hub (ordre fixe). */
     val hubGroups: List<String> = listOf(
@@ -34,10 +36,10 @@ object SettingsHubCopy {
 
     fun accountRows(showSummary: Boolean): List<String> =
         buildList {
+            add(BACKUP)
             add(SAVINGS)
             add(PRIVACY)
             if (showSummary) add(SUMMARY)
-            add(BACKUP)
         }
 
     /** Tous les sujets accessibles (charte) — hors groupes. */

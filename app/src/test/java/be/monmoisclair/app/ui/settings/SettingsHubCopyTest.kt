@@ -22,17 +22,19 @@ class SettingsHubCopyTest {
             SettingsHubCopy.DEADLINES
         ).inOrder()
         assertThat(SettingsHubCopy.accountRows(showSummary = false)).containsExactly(
+            SettingsHubCopy.BACKUP,
             SettingsHubCopy.SAVINGS,
-            SettingsHubCopy.PRIVACY,
-            SettingsHubCopy.BACKUP
+            SettingsHubCopy.PRIVACY
         ).inOrder()
         assertThat(SettingsHubCopy.accountRows(showSummary = true))
             .containsExactly(
+                SettingsHubCopy.BACKUP,
                 SettingsHubCopy.SAVINGS,
                 SettingsHubCopy.PRIVACY,
-                SettingsHubCopy.SUMMARY,
-                SettingsHubCopy.BACKUP
+                SettingsHubCopy.SUMMARY
             ).inOrder()
+        assertThat(SettingsHubCopy.BACKUP_SHORTCUT).contains("code")
+        assertThat(SettingsHubCopy.HELP).contains("Comment ça marche")
     }
 
     @Test

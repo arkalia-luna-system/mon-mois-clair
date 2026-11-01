@@ -164,7 +164,8 @@ fun RestoreBackupScreen(
         Text(
             text = "Après réinstallation ou nouveau téléphone. " +
                 "Remplace tout le carnet — confirmation demandée. " +
-                "Copie reçue (WhatsApp, mail…) : tapez le code noté sur le téléphone d’origine.",
+                "Copie reçue (WhatsApp, mail…) : tapez le code noté à part " +
+                "(pas dans le même message que le fichier).",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
             modifier = Modifier
@@ -196,8 +197,7 @@ fun RestoreBackupScreen(
                 enabled = !state.busy
             )
             Text(
-                text = "Ancien format (ZIP/JSON clair) — filet rare, " +
-                    "puis nouvelle copie .mmc tout de suite",
+                text = "Ancien format — filet rare, puis nouvelle copie tout de suite",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.weight(1f)

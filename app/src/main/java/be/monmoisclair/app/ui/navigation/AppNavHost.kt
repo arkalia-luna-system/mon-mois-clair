@@ -145,7 +145,8 @@ fun AppNavHost(
                 onOpenAccountGroup = { navController.navigate(AppRoute.SettingsAccountGroup) },
                 onOpenComfortGroup = { navController.navigate(AppRoute.SettingsComfortGroup) },
                 // Aide → Comment ça marche (contact support = Menu Accueil seul).
-                onOpenHelp = { navController.navigate(AppRoute.HowItWorks) }
+                onOpenHelp = { navController.navigate(AppRoute.HowItWorks) },
+                onOpenBackup = { navController.navigate(AppRoute.SettingsBackup) }
             )
         }
         composable(AppRoute.SettingsAccountGroup) { entry ->

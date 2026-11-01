@@ -354,18 +354,33 @@ internal fun ExpenseStatusLine(
             }
         }
     }.take(2)
-    if (chips.isEmpty()) return
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
-        verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)
-    ) {
-        chips.forEach { chip ->
-            StatusChip(
-                chip.text,
-                chip.bg,
-                chip.fg,
-                outlined = chip.outlined,
-                compact = compact
+    val showDebitTip = item.isAutoDebit && !item.isDone
+    if (chips.isEmpty() && !showDebitTip) return
+    Column(verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)) {
+        if (chips.isNotEmpty()) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp),
+                verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)
+            ) {
+                chips.forEach { chip ->
+                    StatusChip(
+                        chip.text,
+                        chip.bg,
+                        chip.fg,
+                        outlined = chip.outlined,
+                        compact = compact
+                    )
+                }
+            }
+        }
+        // P1-U2 : tip prélèvement visible (pas seulement dans Aide).
+        if (showDebitTip) {
+            Text(
+                text = "Cochez FAIT quand le débit apparaît.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = A11yTokens.InkMuted,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
