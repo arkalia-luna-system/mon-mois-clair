@@ -42,4 +42,15 @@ class DbPassphraseVaultTest {
         vault.markDbEncrypted()
         assertThat(vault.isDbEncryptedMarkerPresent()).isTrue()
     }
+
+    @Test
+    fun ensureProvisioned_createsCryptoDirAndWrappedFile() {
+        val crypto = File(context.filesDir, DbPassphraseVault.DIR)
+        assertThat(crypto.exists()).isFalse()
+        vault.ensureProvisioned()
+        assertThat(crypto.isDirectory).isTrue()
+        val wrapped = File(crypto, DbPassphraseVault.WRAPPED_NAME)
+        assertThat(wrapped.isFile).isTrue()
+        assertThat(wrapped.length()).isGreaterThan(0L)
+    }
 }

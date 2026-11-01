@@ -62,13 +62,18 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
 `commons-lang3:3.18.0` (**#60**), `io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`,
 `bcpkix-jdk18on:1.86`, `jdom2:2.0.6.1`, `jose4j:0.9.7`.
 
-**Alerte #54 `kotlin-gradle-plugin` :** premier patch Dependabot = **`2.4.20-Beta1`**
-(désérialisation cache Kotlin). Aucun backport stable &lt; 2.4.20. Bump Kotlin 2.4.x
-exige aussi KSP 2.3 + Room 2.8 + Hilt ≥2.59 → **AGP 9** — **incompatible** stack
-actuelle (AGP **8.7.3**, Kotlin / KSP / Compose plugin **2.0.21**, Hilt **2.52**).
-**Pin documenté :** rester **2.0.21** jusqu’à migration AGP 9 coordonnée. Risque
-limité au **classpath build** (pas APK runtime). Dismiss UI possible (raison :
-fixing pin + hors runtime) après rescan.
+**Alerte #54 `kotlin-gradle-plugin` (CVE-2026-53914 / GHSA-r937-wjx7-w2jp) :**
+premier patch Dependabot = **`2.4.20-Beta1`** (désérialisation cache build Kotlin).
+**Rescan 2026-11-01 :** advisory GitHub / OSV listent **toutes** les versions
+`&lt; 2.4.20-Beta1` (dont **2.0.21** et **2.1.x**) — **aucun backport** 2.0.x / 2.1.x.
+Politique JetBrains « security support » = stdlib **2.4+** seulement, pas le
+gradle-plugin des lignes antérieures. Bump Kotlin 2.4.x exige KSP 2.3 + Room 2.8 +
+Hilt ≥2.59 → **AGP 9** — **incompatible** stack actuelle (AGP **8.7.3**, Kotlin /
+KSP / Compose plugin **2.0.21**, Hilt **2.52**). Tentative AGP 9+Kotlin reportée
+(risque build/tests ; hors ship 6.91). **Pin documenté :** rester **2.0.21**
+jusqu’à migration AGP 9 coordonnée. Risque limité au **classpath build** (pas APK
+runtime ; CVSS local + privilèges élevés). Dismiss UI possible (raison : tooling
+pin + hors runtime) après rescan.
 
 Vérifier avec `./gradlew :app:dependencies`. Alertes GitHub peuvent rester rouges
 jusqu’au **rescan** Dependabot même si le force local est OK.

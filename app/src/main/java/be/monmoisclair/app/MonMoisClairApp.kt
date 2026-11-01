@@ -32,9 +32,17 @@ class MonMoisClairApp : Application(), Configuration.Provider {
 
     private val widgetScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    @Volatile
+    private var lastWidgetConfigRefreshMs = 0L
+
     private val configReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (!::widgetRefresher.isInitialized) return
+            // Samsung envoie CONFIGURATION_CHANGED en rafale (thème, fold, AOD) —
+            // debounce pour éviter wake DB / batterie Device Care.
+            val now = System.currentTimeMillis()
+            if (now - lastWidgetConfigRefreshMs < WIDGET_CONFIG_DEBOUNCE_MS) return
+            lastWidgetConfigRefreshMs = now
             widgetScope.launch { runCatching { widgetRefresher.refresh() } }
         }
     }
@@ -77,4 +85,8 @@ class MonMoisClairApp : Application(), Configuration.Provider {
         get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
+
+    companion object {
+        private const val WIDGET_CONFIG_DEBOUNCE_MS = 15_000L
+    }
 }

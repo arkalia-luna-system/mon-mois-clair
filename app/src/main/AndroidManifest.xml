@@ -49,13 +49,13 @@
                 android:resource="@xml/carnet_widget_info" />
         </receiver>
 
+        <!-- Pas de directBootAware : DB + passphrase sont en stockage CE.
+             LOCKED_BOOT_COMPLETED + Hilt→Room→vault provoquait ENOENT (Device Care). -->
         <receiver
             android:name=".data.reminder.BootReceiver"
-            android:exported="true"
-            android:directBootAware="true">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.TIME_SET" />

@@ -1,6 +1,7 @@
 package be.monmoisclair.app.data.crypto
 
 import android.content.Context
+import android.os.UserManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.Base64
@@ -10,6 +11,8 @@ import javax.inject.Singleton
 /**
  * Passphrase SQLCipher (32 octets aléatoires) enveloppée par [KeystoreAesKey.WRAP_ALIAS].
  * Jamais loguée. Hex UTF-8 pour `PRAGMA key` / SupportFactory.
+ *
+ * Stockage CE (`filesDir`) : exige utilisateur déverrouillé (pas Direct Boot).
  */
 @Singleton
 class DbPassphraseVault @Inject constructor(
@@ -17,13 +20,13 @@ class DbPassphraseVault @Inject constructor(
 ) {
 
     private val dir: File
-        get() = File(context.filesDir, DIR).also { it.mkdirs() }
+        get() = File(context.filesDir, DIR)
 
     private val wrappedFile: File
-        get() = File(dir, WRAPPED_NAME)
+        get() = File(ensureCryptoDir(), WRAPPED_NAME)
 
     private val markerFile: File
-        get() = File(dir, MARKER_NAME)
+        get() = File(ensureCryptoDir(), MARKER_NAME)
 
     fun isDbEncryptedMarkerPresent(): Boolean = markerFile.isFile
 
@@ -51,14 +54,36 @@ class DbPassphraseVault @Inject constructor(
     }
 
     fun ensureProvisioned() {
+        requireCredentialStorage()
         if (wrappedFile.isFile && wrappedFile.length() > 0L) return
         val raw = AesGcmBox.randomBytes(32)
         try {
             val key = KeystoreAesKey.getOrCreateWrapKey()
             val wrapped = AesGcmBox.encrypt(key, raw)
-            wrappedFile.writeText(Base64.getEncoder().encodeToString(wrapped))
+            val target = wrappedFile
+            val tmp = File(target.parentFile, "$WRAPPED_NAME.tmp")
+            tmp.writeText(Base64.getEncoder().encodeToString(wrapped))
+            if (!tmp.renameTo(target)) {
+                target.writeText(tmp.readText(Charsets.UTF_8))
+                tmp.delete()
+            }
         } finally {
             AesGcmBox.clear(raw)
+        }
+    }
+
+    private fun ensureCryptoDir(): File {
+        val d = dir
+        if (!d.isDirectory && !d.mkdirs() && !d.isDirectory) {
+            error("Impossible de créer ${d.absolutePath} (CE / Direct Boot ?)")
+        }
+        return d
+    }
+
+    private fun requireCredentialStorage() {
+        val um = context.getSystemService(UserManager::class.java) ?: return
+        if (!um.isUserUnlocked) {
+            error("Stockage CE indisponible (utilisateur verrouillé) — pas de vault Direct Boot")
         }
     }
 

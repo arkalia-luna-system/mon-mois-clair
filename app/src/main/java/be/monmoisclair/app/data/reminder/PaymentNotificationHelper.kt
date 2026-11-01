@@ -8,6 +8,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -65,11 +67,7 @@ class PaymentNotificationHelper @Inject constructor(
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setColor(CONTEXT_TEAL)
-            .setContentTitle(title)
-            .setContentText(body)
+        val notification = baseBuilder(title, body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
@@ -97,17 +95,36 @@ class PaymentNotificationHelper @Inject constructor(
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setColor(CONTEXT_TEAL)
-            .setContentTitle("$label — noté FAIT")
-            .setContentText("Touchez Remettre si c’était une erreur.")
+        val notification = baseBuilder(
+            title = "$label — noté FAIT",
+            body = "Touchez Remettre si c’était une erreur."
+        )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .setTimeoutAfter(10_000)
             .addAction(0, context.getString(R.string.notification_action_undo), undo)
             .build()
         notifyIfAllowed(notificationId, notification)
+    }
+
+    /**
+     * smallIcon = silhouette blanche (barre d’état) ;
+     * largeIcon = bitmap coloré livre+coche (bannière Samsung collapsed).
+     */
+    private fun baseBuilder(title: String, body: String): NotificationCompat.Builder {
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(CONTEXT_TEAL)
+            .setContentTitle(title)
+            .setContentText(body)
+        decodeAppLargeIcon()?.let { builder.setLargeIcon(it) }
+        return builder
+    }
+
+    private fun decodeAppLargeIcon(): Bitmap? {
+        return runCatching {
+            BitmapFactory.decodeResource(context.resources, R.drawable.ic_notification_large)
+        }.getOrNull()
     }
 
     private fun notifyIfAllowed(notificationId: Int, notification: Notification) {

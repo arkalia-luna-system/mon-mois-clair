@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **6.90** (crash open Keystore IV + SQLCipher onCreate · force lang3 #60) |
+| Dernière étape terminée | **6.91** (Samsung Direct Boot ENOENT · largeIcon notif · #54 pin doc) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · code papier · restore `.mmc` · QuietLink mail · connected androidTest (debug) — puis GO cadeau |
+| Prochaine sous-étape | **Athalia** : rescan Device Care · smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · connected androidTest — puis GO cadeau |
 | Audit premium | final-11 UI/MD/CI ship · **pas** « 9/10 dans la main » · S26 / restore doigt / connected ouverts |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,28 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-01 — 6.91 Samsung défaillances + icône notif + #54
+
+**Samsung Device Care :** « 1 application avec défaillances » = crash résiduel
+post-6.90 (`ENOENT` `db_passphrase.wrapped` le 2026-10-29) via
+`BootReceiver` `directBootAware` + `LOCKED_BOOT` → Hilt/Room/vault CE avant unlock.
+Batterie Device Care intermittente (pas de Job agressif ; wakeups crash + exact
+alarms rappels).
+
+**Fix :** retire Direct Boot ; garde `isUserUnlocked` ; vault mkdirs/atomique ;
+debounce widget `CONFIGURATION_CHANGED` 15 s.
+
+**Notif :** `largeIcon` coloré `ic_notification_large.png` (livre+coche) +
+`smallIcon` silhouette blanche renforcée.
+
+**Dependabot #54 :** CVE-2026-53914 — pas de backport 2.0/2.1 ; pin **2.0.21**
+(AGP 9 requis pour 2.4.20-Beta1) — `docs/CI.md`.
+
+**Tests :** **374 exécutés** / 375 (1 skipped), 89 XML, 0 failure.  
+**Version :** `0.1.0-6.91` · `versionCode` 96.  
+**Install :** SM-S938B release OK (sans wipe), MainActivity resumed, 0 FATAL.  
+**Preuve :** [`docs/audits/2026-11-01-samsung-defaillances-notif-icon.md`](docs/audits/2026-11-01-samsung-defaillances-notif-icon.md).
 
 ### 2026-10-26 — 6.90 crash ouverture + Dependabot #60
 
