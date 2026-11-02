@@ -23,4 +23,15 @@ class StickyCoursesLabelTest {
             stickyCoursesLabel(4_500L, 40_500L) { cents -> "${cents / 100} €" }
         ).isEqualTo("Courses 45 € · il reste 405 €")
     }
+
+    @Test
+    fun compact_omits_after_balance() {
+        assertThat(
+            stickyCoursesCompactLabel(4_500L) { cents -> "${cents / 100} €" }
+        ).isEqualTo("Courses 45 €")
+        assertThat(stickyCoursesCompactLabel(0L)).isEqualTo("Courses")
+        assertThat(
+            stickyCoursesCompactLabel(1L, futurePreview = true)
+        ).isNull()
+    }
 }

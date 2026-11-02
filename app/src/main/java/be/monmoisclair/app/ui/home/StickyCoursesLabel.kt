@@ -20,3 +20,20 @@ fun stickyCoursesLabel(
         "Courses"
     }
 }
+
+/**
+ * Libellé court pour la rangée outil sticky (demi-largeur).
+ * Le solde « il reste » reste dans la sheet + TalkBack.
+ */
+fun stickyCoursesCompactLabel(
+    diversSpentCents: Long,
+    futurePreview: Boolean = false,
+    formatCents: (Long) -> String = MoneyFormat::formatCents
+): String? {
+    if (futurePreview) return null
+    return if (diversSpentCents > 0L) {
+        "Courses ${formatCents(diversSpentCents)}"
+    } else {
+        "Courses"
+    }
+}

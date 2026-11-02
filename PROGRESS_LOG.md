@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.05** (Dependabot #54 pin + truth/material · Aide Résumé) |
+| Dernière étape terminée | **7.06** (Accueil sticky basse — liste factures visible) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke **Aide** · Réglages hub · Retard/Accord · résumé · S26 · restore |
+| Prochaine sous-étape | **Athalia** : re-smoke **Accueil** (sticky + liste) · Aide · Réglages hub · Retard/Accord · résumé · S26 · restore |
 | Audit premium | notes **honnêtes** · premium-00 + clean-10 vivants · 01–06 archivés · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,24 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.06 Accueil sticky (espace liste)
+
+**Contexte :** smoke Athalia — sticky trop haute, cache presque toutes les factures.  
+**Audit :** [`docs/audits/2026-11-02-accueil-sticky.md`](docs/audits/2026-11-02-accueil-sticky.md).
+
+**P0 :**
+- Sticky resserrée (`DisplayFit` pad/gap) ; Spacer hero retiré.
+- Courses + Mettre de côté en **une rangée** (2 cellules ≥48) — plus d’empilement 2×48.
+- Libellé Courses court en sticky ; solde « il reste » = sheet / TalkBack.
+
+**P1 / gain :**
+- Détails = Après FAIT, tips, courriers ; QuietLink **Mois en cours** si mois passé.
+- Aide HowItWorks alignée ; cartes liste inchangées (quiet).
+
+**Tests :** **411 exécutés** / 412 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.06` · `versionCode` 111.  
+**Smoke doigt :** Athalia — re-smoke Accueil (sticky basse + liste visible + Courses/épargne/Menu).
 
 ### 2026-11-02 — 7.05 Dependabot + Aide
 

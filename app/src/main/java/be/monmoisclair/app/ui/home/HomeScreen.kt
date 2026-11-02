@@ -108,7 +108,7 @@ fun HomeScreen(
     /** Unique UI Courses : sheet depuis le sticky (pas de formulaire en bas de liste). */
     var coursesSheetOpen by remember { mutableStateOf(false) }
     var savingsSheetOpen by remember { mutableStateOf(false) }
-    /** Sticky : Reste + Courses + épargne ; le reste derrière « Plus ». */
+    /** Sticky : Détails secondaires (Après FAIT, alertes) ; Courses|épargne en rangée. */
     var stickyDetailsOpen by remember { mutableStateOf(false) }
     LaunchedEffect(state.isFuturePreview) {
         if (state.isFuturePreview) {
@@ -360,7 +360,8 @@ fun HomeScreen(
                 onOpenCourses = { coursesSheetOpen = true },
                 onOpenSavings = { savingsSheetOpen = true },
                 onOpenDeadlines = onOpenDeadlines,
-                onOpenDossiers = onOpenDossiers
+                onOpenDossiers = onOpenDossiers,
+                onGoToCurrentMonth = viewModel::goToCurrentMonth
             )
             // FAIT : bandeau papier compact sous le sticky (pas barre pleine largeur).
             SnackbarHost(

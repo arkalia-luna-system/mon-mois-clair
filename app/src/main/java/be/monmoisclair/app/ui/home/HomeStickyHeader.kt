@@ -6,10 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,8 +35,8 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.DisplayFit
 
 /**
- * Sticky Accueil : mois · Reste · Courses · épargne · détails « Plus ».
- * Zéro redesign — extrait mécanique de HomeScreen.
+ * Sticky Accueil (7.06) : mois · Reste hero · statut · rangée Courses|épargne · Détails.
+ * Priorité : liste factures visible dès l’ouverture — sticky beaucoup moins haute.
  */
 @Composable
 internal fun HomeStickyHeader(
@@ -52,19 +50,19 @@ internal fun HomeStickyHeader(
     onOpenCourses: () -> Unit,
     onOpenSavings: () -> Unit,
     onOpenDeadlines: () -> Unit,
-    onOpenDossiers: () -> Unit
+    onOpenDossiers: () -> Unit,
+    onGoToCurrentMonth: () -> Unit = {}
 ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(A11yTokens.PaperCream)
-                    .padding(horizontal = fit.stickyPaddingHorizontal)
-                    .padding(vertical = fit.stickyPaddingVertical),
-                // P0-S1 : air entre lignes — le serif respire avant À payer / Courses.
-                verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
-            ) {
-            // ‹ mois › — calendrier via le libellé (plus de 4ᵉ cible). Pas de logo.
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(A11yTokens.PaperCream)
+                .padding(horizontal = fit.stickyPaddingHorizontal)
+                .padding(vertical = fit.stickyPaddingVertical),
+            verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
+        ) {
+            // ‹ mois › — calendrier via le libellé. Pas de logo.
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -77,7 +75,6 @@ internal fun HomeStickyHeader(
                 )
                 Text(
                     text = state.monthLabel,
-                    // Quiet sticky : titleMedium muted — le Reste serif commande.
                     style = MaterialTheme.typography.titleMedium,
                     color = A11yTokens.InkMuted,
                     textAlign = TextAlign.Center,
@@ -90,7 +87,7 @@ internal fun HomeStickyHeader(
                             role = Role.Button,
                             onClickLabel = "Choisir un mois"
                         ) { onOpenMonthPicker() }
-                        .padding(horizontal = 4.dp, vertical = 6.dp)
+                        .padding(horizontal = 4.dp, vertical = 4.dp)
                 )
                 MonthStep(
                     iconRes = R.drawable.ic_chevron_right,
@@ -107,29 +104,29 @@ internal fun HomeStickyHeader(
                 else -> "Reste après factures"
             }
             val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
-            Text(
-                text = remainingTitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted
-            )
-            Text(
-                text = remainingAmount,
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = fit.remainingAmountSp.sp,
-                    lineHeight = (fit.remainingAmountSp + 4f).sp,
-                    letterSpacing = (-0.02).em
-                ),
-                color = when {
-                    state.summary.remainingCents < 0L -> A11yTokens.DangerInk
-                    else -> A11yTokens.Ink
-                },
-                modifier = Modifier.semantics {
-                    contentDescription = "$remainingTitle : $remainingAmount"
-                }
-            )
-            // Air dédié sous le hero avant toute 2ᵉ ligne outil.
-            Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
-            // H01 : 1 chiffre + 1 ligne statut ; Courses = entrée sticky (sheet unique).
+            // Hero groupé : titre + chiffre sans Spacer séparateur.
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(
+                    text = remainingTitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted
+                )
+                Text(
+                    text = remainingAmount,
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontSize = fit.remainingAmountSp.sp,
+                        lineHeight = (fit.remainingAmountSp + 4f).sp,
+                        letterSpacing = (-0.02).em
+                    ),
+                    color = when {
+                        state.summary.remainingCents < 0L -> A11yTokens.DangerInk
+                        else -> A11yTokens.Ink
+                    },
+                    modifier = Modifier.semantics {
+                        contentDescription = "$remainingTitle : $remainingAmount"
+                    }
+                )
+            }
             stickyStillToPayLabel(
                 stillToPayCents = state.summary.stillToPayCents,
                 hasExpenses = state.timeline.any { it is TimelineItem.Expense },
@@ -147,50 +144,37 @@ internal fun HomeStickyHeader(
                     modifier = Modifier.semantics { contentDescription = label }
                 )
             }
-            stickyCoursesLabel(
+            // Rangée secondaire compacte : Courses | Mettre de côté (1×48, pas 2×48).
+            val coursesCompact = stickyCoursesCompactLabel(
+                diversSpentCents = state.diversSpentCents,
+                futurePreview = state.isFuturePreview
+            )
+            val coursesFull = stickyCoursesLabel(
                 diversSpentCents = state.diversSpentCents,
                 afterDiversCents = state.afterDiversCents,
                 futurePreview = state.isFuturePreview
-            )?.let { coursesLabel ->
-                StickyLinkRow(
-                    label = coursesLabel,
-                    // P1-S3 : InkMuted sticky — la brique ne rivalise pas avec le Reste
-                    // (Danger reste dans la sheet Courses).
-                    labelColor = A11yTokens.InkMuted,
-                    compact = fit.compactHomeChrome,
-                    onClickLabel = "Modifier les courses",
-                    contentDescription = if (state.diversSpentCents > 0L) {
-                        "$coursesLabel. Modifier les courses"
-                    } else {
-                        "Courses. Noter un montant"
-                    },
-                    onClick = { onOpenCourses() }
-                )
-            }
-            // S26 / hauteur courte : épargne derrière Plus (toujours accessible).
-            val savingsLabelSticky = stickySavingsLabel(
+            )
+            val savingsLabel = stickySavingsLabel(
                 savingsMonthlyCents = state.savingsMonthlyCents,
                 futurePreview = state.isFuturePreview
             )
-            val savingsBehindPlus =
-                fit.compactHomeChrome && savingsLabelSticky != null
-            if (!savingsBehindPlus) {
-                savingsLabelSticky?.let { savingsLabel ->
-                    StickyLinkRow(
-                        label = savingsLabel,
-                        labelColor = A11yTokens.InkMuted,
-                        compact = fit.compactHomeChrome,
-                        onClickLabel = "Modifier mettre de côté",
-                        contentDescription = if (state.savingsMonthlyCents > 0L) {
-                            "$savingsLabel. Modifier"
-                        } else {
-                            "Mettre de côté. Choisir un montant"
-                        },
-                        onClick = { onOpenSavings() }
-                    )
-                }
-            }
-            // Mode aperçu = contexte, toujours visible (pas derrière « Plus »).
+            StickyToolsRow(
+                coursesLabel = coursesCompact,
+                coursesDescription = when {
+                    coursesFull == null -> null
+                    state.diversSpentCents > 0L -> "$coursesFull. Modifier les courses"
+                    else -> "Courses. Noter un montant"
+                },
+                onOpenCourses = onOpenCourses,
+                savingsLabel = savingsLabel,
+                savingsDescription = when {
+                    savingsLabel == null -> null
+                    state.savingsMonthlyCents > 0L -> "$savingsLabel. Modifier"
+                    else -> "Mettre de côté. Choisir un montant"
+                },
+                onOpenSavings = onOpenSavings
+            )
+            // Mode aperçu = contexte, toujours visible (pas derrière « Détails »).
             if (state.isFuturePreview) {
                 val previewLabel =
                     "Aperçu — montants d’après la dernière saisie ; pas de FAIT ni d’ajout."
@@ -214,13 +198,13 @@ internal fun HomeStickyHeader(
             val needIncomeTip = !state.isFuturePreview &&
                 state.summary.remainingCents < 0L &&
                 state.timeline.none { it is TimelineItem.Income }
+            val showGoCurrent = state.isPastMonth && !state.isFuturePreview
             val hasStickyExtras = afterFaitLabel != null ||
                 needIncomeTip ||
                 state.nextMonthWarning != null ||
                 state.pendingLetterCount > 0 ||
-                savingsBehindPlus
+                showGoCurrent
             if (hasStickyExtras) {
-                // P1-S2 : libellé carnet (« Détails ») — moins chrome UI que « Autres infos ».
                 val detailsLabel =
                     if (stickyDetailsOpen) "Masquer" else "Détails"
                 Row(
@@ -230,24 +214,16 @@ internal fun HomeStickyHeader(
                         .clickable(
                             role = Role.Button,
                             onClickLabel = if (stickyDetailsOpen) {
-                                "Masquer épargne et détails"
+                                "Masquer les détails"
                             } else {
-                                "Voir épargne et détails"
+                                "Voir les détails"
                             }
                         ) { onStickyDetailsOpenChange(!stickyDetailsOpen) }
-                        .padding(vertical = 4.dp)
-                        .semantics {
-                            // P1-2 : TalkBack annonce l’épargne cachée en compact.
-                            contentDescription = if (savingsBehindPlus && !stickyDetailsOpen) {
-                                "$detailsLabel. Mettre de côté est ici."
-                            } else {
-                                detailsLabel
-                            }
-                        },
+                        .padding(vertical = 2.dp)
+                        .semantics { contentDescription = detailsLabel },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    // P1-S2 : disclosure légère (bodySmall + chevron 16).
                     Text(
                         text = detailsLabel,
                         style = MaterialTheme.typography.bodySmall,
@@ -269,22 +245,6 @@ internal fun HomeStickyHeader(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
                 ) {
-                    if (savingsBehindPlus) {
-                        savingsLabelSticky?.let { savingsLabel ->
-                            StickyLinkRow(
-                                label = savingsLabel,
-                                labelColor = A11yTokens.InkMuted,
-                                compact = true,
-                                onClickLabel = "Modifier mettre de côté",
-                                contentDescription = if (state.savingsMonthlyCents > 0L) {
-                                    "$savingsLabel. Modifier"
-                                } else {
-                                    "Mettre de côté. Choisir un montant"
-                                },
-                                onClick = { onOpenSavings() }
-                            )
-                        }
-                    }
                     afterFaitLabel?.let { label ->
                         Text(
                             text = label,
@@ -353,10 +313,29 @@ internal fun HomeStickyHeader(
                                 }
                         )
                     }
+                    // Gain 60+ : revenir au mois courant sans ouvrir Menu (mois passé).
+                    if (showGoCurrent) {
+                        Text(
+                            text = "Mois en cours",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = A11yTokens.Link,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .clickable(
+                                    role = Role.Button,
+                                    onClickLabel = "Revenir au mois en cours"
+                                ) { onGoToCurrentMonth() }
+                                .semantics {
+                                    contentDescription = "Revenir au mois en cours"
+                                }
+                        )
+                    }
                 }
             }
         }
-        }
-        // Un seul filet sous le sticky (plus de double séparateur dégradé + divider).
         HorizontalDivider(color = A11yTokens.PaperBorder)
+    }
 }

@@ -18,6 +18,7 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`audits/2026-11-02-retard-accord.md`](audits/2026-11-02-retard-accord.md) | Smoke retard / accord (épargne hors pastille + copy) |
 | [`audits/2026-11-02-reglages-hub.md`](audits/2026-11-02-reglages-hub.md) | Smoke hub Réglages (échéances / doublon épargne / copy) |
 | [`audits/2026-11-02-aide.md`](audits/2026-11-02-aide.md) | Aide Comment ça marche (couverture + Résumé) |
+| [`audits/2026-11-02-accueil-sticky.md`](audits/2026-11-02-accueil-sticky.md) | Smoke Accueil sticky (hauteur / liste visible) |
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 

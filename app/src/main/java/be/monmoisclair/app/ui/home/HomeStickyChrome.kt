@@ -24,7 +24,84 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 
-/** Ligne sticky Courses / épargne — padding serré, ellipsis, › discret. */
+/**
+ * Cellule outil sticky (Courses / épargne) — demi-largeur, ≥48 dp, › discret.
+ * Remplace deux StickyLinkRow empilées pour libérer la liste.
+ */
+@Composable
+internal fun StickyToolCell(
+    label: String,
+    labelColor: Color,
+    onClickLabel: String,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .heightIn(min = A11yTokens.minTouchHeight)
+            .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
+            .padding(vertical = 2.dp, horizontal = 2.dp)
+            .semantics { this.contentDescription = contentDescription },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = labelColor,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = "›",
+            style = MaterialTheme.typography.titleMedium,
+            color = A11yTokens.InkMuted
+        )
+    }
+}
+
+/** Rangée secondaire : Courses | Mettre de côté (une seule ligne de hauteur). */
+@Composable
+internal fun StickyToolsRow(
+    coursesLabel: String?,
+    coursesDescription: String?,
+    onOpenCourses: () -> Unit,
+    savingsLabel: String?,
+    savingsDescription: String?,
+    onOpenSavings: () -> Unit
+) {
+    if (coursesLabel == null && savingsLabel == null) return
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (coursesLabel != null) {
+            StickyToolCell(
+                label = coursesLabel,
+                labelColor = A11yTokens.InkMuted,
+                onClickLabel = "Modifier les courses",
+                contentDescription = coursesDescription ?: coursesLabel,
+                onClick = onOpenCourses,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        if (savingsLabel != null) {
+            StickyToolCell(
+                label = savingsLabel,
+                labelColor = A11yTokens.InkMuted,
+                onClickLabel = "Modifier mettre de côté",
+                contentDescription = savingsDescription ?: savingsLabel,
+                onClick = onOpenSavings,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+/** Ligne sticky pleine largeur (legacy / disclosure) — padding serré, ellipsis, › discret. */
 @Composable
 internal fun StickyLinkRow(
     label: String,
@@ -52,7 +129,6 @@ internal fun StickyLinkRow(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
-        // P1-S3 : › discret (InkMuted) — ne rivalise pas avec le Reste / Danger courses.
         Text(
             text = "›",
             style = MaterialTheme.typography.titleMedium,
@@ -83,4 +159,3 @@ internal fun MonthStep(
         )
     }
 }
-

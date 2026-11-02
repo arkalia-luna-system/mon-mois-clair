@@ -32,7 +32,7 @@ data class DisplayFit(
     val sectionGap: Dp,
     /**
      * Un seul chiffre. Charte étude ~36–42 confort / ≥ 34 compact —
-     * sans gonfler le sticky (Plus plié par défaut).
+     * sans gonfler le sticky (Détails plié par défaut).
      */
     val remainingAmountSp: Float
 ) {
@@ -56,11 +56,11 @@ data class DisplayFit(
                 screenWidthDp = screenWidthDp,
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
-                // Premium carnet : air sticky (hero respire) sans pile outil.
-                stickyPaddingVertical = if (compact) 12.dp else 16.dp,
+                // 7.06 : sticky basse — hero Reste + rangée outil ; liste d’abord.
+                stickyPaddingVertical = if (compact) 8.dp else 10.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
                 bannerPadding = if (compact) 8.dp else 12.dp,
-                sectionGap = if (compact) 8.dp else 10.dp,
+                sectionGap = if (compact) 4.dp else 6.dp,
                 remainingAmountSp = if (compact) 34f else 40f
             )
         }

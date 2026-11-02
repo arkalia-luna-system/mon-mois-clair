@@ -33,12 +33,12 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Courses",
-            body = "Ligne sous le Reste (›) : courses / pharmacie. " +
-                "Le gros Reste ne bouge pas ; « Après courses » montre le solde."
+            body = "À côté de « Mettre de côté » sous le Reste (›) : courses / pharmacie. " +
+                "Le gros Reste ne bouge pas ; le détail « il reste » est dans la feuille."
         ),
         Section(
             title = "Mettre de côté",
-            body = "Ligne sous le Reste (comme Courses ; sinon derrière « Détails »). " +
+            body = "À côté de Courses sous le Reste (›). " +
                 "Jour et retrait : Réglages → Données → Jour du Mettre de côté. " +
                 "FAIT = virement fait. Pas d’argent dans l’app."
         ),

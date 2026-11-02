@@ -24,7 +24,7 @@ class HowItWorksCopyTest {
         val all = HowItWorksCopy.sections.joinToString("\n") { "${it.title}\n${it.body}" }
         assertThat(all).contains("Reste du mois passé")
         assertThat(all).contains("Aussi les mois suivants")
-        assertThat(all).contains("Après courses")
+        assertThat(all).contains("il reste")
         assertThat(all).contains("Après les FAIT")
         assertThat(all).contains("Lire la communication sur la photo")
         assertThat(all).contains("jamais le montant")
