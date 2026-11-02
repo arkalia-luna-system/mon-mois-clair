@@ -96,13 +96,13 @@ internal fun IncomeRow(
     val compact = fit.compactHomeChrome
     val rowPad = if (compact) 12.dp else 16.dp
     val shape = HomeTokens.cardRadius
-    // 7.09 : carte premium Accueil (ombre soft, pas carnet filet seul).
+    // 7.10 : carte Accueil (ombre soft + filet léger).
     Surface(
         color = HomeTokens.Card,
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(2.dp, shape, clip = false)
+            .shadow(HomeTokens.cardElevation, shape, clip = false)
             .border(1.dp, HomeTokens.CardBorder, shape)
     ) {
         Row(
@@ -174,7 +174,7 @@ internal fun ExpenseRow(
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(2.dp, shape, clip = false)
+            .shadow(HomeTokens.cardElevation, shape, clip = false)
             .then(borderMod)
     ) {
         // H01 : pastille FAIT dans sa bande sous la rangée titre/montant/bouton

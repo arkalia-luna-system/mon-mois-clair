@@ -34,8 +34,7 @@ import be.monmoisclair.app.ui.theme.DisplayFit
 import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Sticky Accueil (7.09) : look premium cool mist · hero Reste fort ·
- * Courses (chariot) + Mettre de côté (tirelire) à côté · Détails QuietLink.
+ * Sticky Accueil (7.10) : hero 2027 · chips chariot/tirelire · mist cool global.
  * Statut « Encore à payer » = tête de liste. Logique métier inchangée.
  */
 @Composable
@@ -118,16 +117,16 @@ internal fun HomeStickyHeader(
             }
             val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
             val hasHeroTools = coursesLabel != null || savingsLabel != null
-            // Hero carte : montant fort + Reste ; outils icône à droite.
+            // Hero 7.10 : carte blanche + ombre soft ; outils icône à droite.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(2.dp, HomeTokens.heroRadius, clip = false)
+                    .shadow(HomeTokens.heroElevation, HomeTokens.heroRadius, clip = false)
                     .clip(HomeTokens.heroRadius)
                     .background(HomeTokens.HeroSurface)
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Column(
                     modifier = Modifier

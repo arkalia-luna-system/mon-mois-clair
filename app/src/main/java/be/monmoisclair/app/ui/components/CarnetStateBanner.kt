@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -16,14 +17,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 
-/** Bannières d’état carnet (ok / erreur / warn) — hors tip courant InkMuted. */
+/** Bannières d’état 7.10 (ok / erreur / warn) — cartes soft, hors tip muted. */
 enum class CarnetBannerKind { Ok, Error, Warn }
 
 @Composable
 fun CarnetStateBanner(
     text: String,
     kind: CarnetBannerKind,
-    pad: Dp = 12.dp,
+    pad: Dp = 14.dp,
     modifier: Modifier = Modifier
 ) {
     val shape = MaterialTheme.shapes.medium
@@ -33,13 +34,14 @@ fun CarnetStateBanner(
         CarnetBannerKind.Warn -> A11yTokens.AccentWarn
     }
     val border = when (kind) {
-        CarnetBannerKind.Ok -> A11yTokens.AccentOkInk.copy(alpha = 0.35f)
-        CarnetBannerKind.Error -> A11yTokens.DangerInk.copy(alpha = 0.4f)
-        CarnetBannerKind.Warn -> A11yTokens.AccentWarn.copy(alpha = 0.45f)
+        CarnetBannerKind.Ok -> A11yTokens.AccentOkInk.copy(alpha = 0.28f)
+        CarnetBannerKind.Error -> A11yTokens.DangerInk.copy(alpha = 0.35f)
+        CarnetBannerKind.Warn -> A11yTokens.AccentWarn.copy(alpha = 0.35f)
     }
     val bg = when (kind) {
         CarnetBannerKind.Ok -> A11yTokens.AccentOkSoft
-        CarnetBannerKind.Error, CarnetBannerKind.Warn -> A11yTokens.PaperWarm
+        CarnetBannerKind.Error -> A11yTokens.PaperCard
+        CarnetBannerKind.Warn -> A11yTokens.PaperWarm
     }
     val assertive = kind == CarnetBannerKind.Error
     Text(
@@ -48,6 +50,7 @@ fun CarnetStateBanner(
         style = MaterialTheme.typography.bodyLarge,
         modifier = modifier
             .fillMaxWidth()
+            .shadow(1.dp, shape, clip = false)
             .border(1.dp, border, shape)
             .background(bg, shape)
             .padding(pad)

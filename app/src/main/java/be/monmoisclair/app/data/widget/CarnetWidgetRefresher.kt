@@ -74,13 +74,11 @@ class CarnetWidgetRefresher @Inject constructor(
         private const val TAG = "CarnetWidget"
 
         fun render(context: Context, text: CarnetWidgetText, night: Boolean): RemoteViews {
-            // Alignés A11yTokens Day/Night (ink / inkMuted / rule papier).
-            // Tokens exacts A11yTokens Day/Night (inkMuted #4A453C, paperBorder #E2DDD2, danger #7A2C14).
-            val ink = if (night) 0xFFF6F3E8.toInt() else 0xFF1E1B18.toInt()
-            val muted = if (night) 0xFFD1C1B1.toInt() else 0xFF4A453C.toInt()
-            val danger = if (night) 0xFFF4C4B6.toInt() else 0xFF7A2C14.toInt()
-            // Alignés widget_rule / stroke drawables (jour #D8D2C6, nuit #5C5348).
-            val rule = if (night) 0xFF5C5348.toInt() else 0xFFD8D2C6.toInt()
+            // Alignés A11yTokens Day/Night 7.10 (mist cool).
+            val ink = if (night) 0xFFF0F4F7.toInt() else 0xFF121A24.toInt()
+            val muted = if (night) 0xFFB7C4CE.toInt() else 0xFF3D4F5C.toInt()
+            val danger = if (night) 0xFFF4C4B6.toInt() else 0xFF8B2E18.toInt()
+            val rule = if (night) 0xFF3A4A56.toInt() else 0xFFC9D5DE.toInt()
             val views = RemoteViews(context.packageName, R.layout.widget_carnet)
             views.setInt(
                 R.id.widget_root,

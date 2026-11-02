@@ -31,7 +31,7 @@ import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Chip outil Accueil 7.09 — icône + libellé court, ≥48 dp.
+ * Chip outil Accueil 7.10 — icône filled + libellé court, ≥48 dp.
  */
 @Composable
 internal fun StickyIconTool(
@@ -45,12 +45,12 @@ internal fun StickyIconTool(
 ) {
     Column(
         modifier = modifier
-            .widthIn(min = HomeTokens.minTouch, max = 104.dp)
+            .widthIn(min = HomeTokens.minTouch, max = 108.dp)
             .heightIn(min = HomeTokens.minTouch)
             .clip(HomeTokens.chipRadius)
             .background(chipColor)
             .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
-            .padding(horizontal = 6.dp, vertical = 4.dp)
+            .padding(horizontal = 8.dp, vertical = 6.dp)
             .semantics { this.contentDescription = contentDescription },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -59,7 +59,7 @@ internal fun StickyIconTool(
             painter = painterResource(iconRes),
             contentDescription = null,
             tint = HomeTokens.Ink,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(24.dp)
         )
         Text(
             text = label,

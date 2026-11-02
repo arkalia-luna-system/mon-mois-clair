@@ -8,9 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Design system **Accueil seulement** (7.09) — look 2026 premium utilisable 60+.
- * Athalia autorise de ne plus coller au carnet papier belge sur cet écran.
- * Palette claire non-purple, non cream-terracotta cliché IA.
+ * Design system Accueil + référence visuelle 7.10 — mist cool 2027.
+ * Palette alignée [A11yTokens] (thème global). Touch ≥ 48 · contrastes ≥ 7:1.
  */
 @Immutable
 data class HomePalette(
@@ -40,11 +39,14 @@ data class HomePalette(
 
 object HomeTokens {
     val minTouch = 48.dp
-    val heroRadius = RoundedCornerShape(20.dp)
-    val cardRadius = RoundedCornerShape(18.dp)
-    val chipRadius = RoundedCornerShape(14.dp)
+    val heroRadius = RoundedCornerShape(24.dp)
+    val cardRadius = RoundedCornerShape(20.dp)
+    val chipRadius = RoundedCornerShape(16.dp)
     val cardGap = 14.dp
     val screenPad = 20.dp
+    val heroElevation = 4.dp
+    val cardElevation = 2.dp
+    val barElevation = 6.dp
 
     /**
      * Jour — mist cool + cartes blanches + teal profond (pas violet).
@@ -58,14 +60,14 @@ object HomeTokens {
         chip = Color(0xFFE4EEF2),
         coursesChip = Color(0xFFD9EAF2),
         savingsChip = Color(0xFFDCEDE3),
-        ink = Color(0xFF15202B),
+        ink = Color(0xFF121A24),
         inkMuted = Color(0xFF3D4F5C),
         link = Color(0xFF0A5254),
         dangerInk = Color(0xFF8B2E18),
         dangerFill = Color(0xFF8B2E18),
-        okInk = Color(0xFF1B5E34),
-        okFill = Color(0xFF1B5E34),
-        okSoft = Color(0xFFE0F0E6),
+        okInk = Color(0xFF1E5631),
+        okFill = Color(0xFF1E5631),
+        okSoft = Color(0xFFE3EFE6),
         warn = Color(0xFF5C3D12),
         barSurface = Color(0xFFFFFFFF),
         divider = Color(0xFFC9D5DE)

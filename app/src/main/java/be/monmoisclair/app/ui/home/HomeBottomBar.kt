@@ -3,26 +3,36 @@ package be.monmoisclair.app.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import be.monmoisclair.app.ui.components.PrimaryA11yButton
-import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.StampShape
 
-/** Socle Menu / + Ajouter (7.09 — surface Accueil premium). */
+/** Socle Menu / + Ajouter (7.10 — icônes filled + surface Accueil). */
 @Composable
 internal fun HomeBottomBar(
     isFuturePreview: Boolean,
@@ -34,7 +44,7 @@ internal fun HomeBottomBar(
     HorizontalDivider(color = HomeTokens.Divider)
     Surface(
         color = HomeTokens.BarSurface,
-        shadowElevation = 4.dp,
+        shadowElevation = HomeTokens.barElevation,
         tonalElevation = 0.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -59,8 +69,9 @@ internal fun HomeBottomBar(
                         }
                     }
             ) {
-                SecondaryA11yButton(
+                BottomBarOutlined(
                     text = "Menu",
+                    iconRes = R.drawable.ic_menu,
                     onClick = onMenu,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -80,19 +91,97 @@ internal fun HomeBottomBar(
             }
             Box(modifier = Modifier.weight(1.2f)) {
                 if (isFuturePreview) {
-                    SecondaryA11yButton(
+                    BottomBarOutlined(
                         text = "Mois en cours",
+                        iconRes = R.drawable.ic_calendar_month,
                         onClick = onGoCurrentMonth,
                         modifier = Modifier.fillMaxWidth()
                     )
                 } else {
-                    PrimaryA11yButton(
-                        text = "+ Ajouter",
+                    BottomBarFilled(
+                        text = "Ajouter",
+                        iconRes = R.drawable.ic_add,
                         onClick = onAdd,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun BottomBarFilled(
+    text: String,
+    iconRes: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val haptics = LocalHapticFeedback.current
+    Button(
+        onClick = {
+            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            onClick()
+        },
+        modifier = modifier
+            .heightIn(min = HomeTokens.minTouch)
+            .semantics { contentDescription = "+ $text" },
+        shape = MaterialTheme.shapes.small,
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = A11yTokens.ButtonFill,
+            contentColor = A11yTokens.ButtonText
+        )
+    ) {
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = null,
+            tint = A11yTokens.ButtonText,
+            modifier = Modifier
+                .padding(end = 6.dp)
+                .size(20.dp)
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
+private fun BottomBarOutlined(
+    text: String,
+    iconRes: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val haptics = LocalHapticFeedback.current
+    OutlinedButton(
+        onClick = {
+            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+            onClick()
+        },
+        modifier = modifier.heightIn(min = HomeTokens.minTouch),
+        shape = MaterialTheme.shapes.small,
+        border = androidx.compose.foundation.BorderStroke(1.dp, HomeTokens.CardBorder),
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = HomeTokens.Ink
+        )
+    ) {
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = null,
+            tint = HomeTokens.Ink,
+            modifier = Modifier
+                .padding(end = 6.dp)
+                .size(20.dp)
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+            maxLines = 1
+        )
     }
 }

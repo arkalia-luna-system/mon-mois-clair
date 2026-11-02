@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <!-- Nuit : encre profonde + filet plus doux (forcé via Refresher, pas values-night). -->
-    <solid android:color="#1A1714" />
+    <!-- 7.10 nuit : card ardoise + filet. -->
+    <solid android:color="#1C242C" />
     <stroke
         android:width="1dp"
-        android:color="#5C5348" />
-    <corners android:radius="16dp" />
+        android:color="#3A4A56" />
+    <corners android:radius="20dp" />
 </shape>

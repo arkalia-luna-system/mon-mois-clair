@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.09** (Accueil redesign premium 2026 — HomeTokens · Encore à payer · chips) |
+| Dernière étape terminée | **7.10** (design system 2027 global — mist cool · Accueil/Menu/Réglages/fiche/Dossiers/widget) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke Accueil (hero Reste + chariot/tirelire + liste + FAIT) |
-| Audit | [`verif-audits-accueil.md`](docs/audits/2026-11-02-verif-audits-accueil.md) · expert-00 · détails → `docs/audits/archive/` |
+| Prochaine sous-étape | **Athalia** : re-smoke visuel global (Accueil + Réglages + fiche + Menu) |
+| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) · verif Accueil → `docs/audits/` |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.10 Design system 2027 global
+
+**Contexte :** OUI COMPLET Athalia — pousser le visuel **beaucoup plus loin** (toute l’app), quitter le look carnet crème CHARTE.
+
+**Direction :** [`docs/audits/2026-11-02-visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) — M3 Expressive dial-down finance · mist cool · pas purple / cream-terracotta.
+
+**Tokens :** `A11yTokens` Day/Night = palette globale mist (canvas `#F0F4F7`) ; `HomeTokens` prolongé (radius 24/20/16, elevations) ; shapes thème 14/20/28 ; widget + launcher bg + system bars alignés.
+
+**Surfaces :** Accueil hero/chips/liste/barre (icônes Menu/+), Menu sheet, hub Réglages (cartes soft), Dossiers, bannières, sheets handle, notif teal. Icônes filled chariot/tirelire/menu/settings/add. Métier FAIT / offline / crypto **inchangé**.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.10` · `versionCode` 115.  
+**Screenshots adb :** Accueil / Réglages / fiche → `docs/audits/screenshots/2026-11-02-*-7.10.png`.  
+**Smoke doigt :** Athalia — re-smoke visuel global.
 
 ### 2026-11-02 — 7.09 Accueil redesign premium 2026
 

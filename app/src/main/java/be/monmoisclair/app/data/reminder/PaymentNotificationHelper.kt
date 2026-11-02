@@ -150,7 +150,7 @@ class PaymentNotificationHelper @Inject constructor(
     companion object {
         const val CHANNEL_ID = "paiements"
         /** Teal charte — teinte shade / icône (silhouette claire sur fond). */
-        private const val CONTEXT_TEAL = 0xFF1B4D4E.toInt()
+        private const val CONTEXT_TEAL = 0xFF0A5254.toInt()
         private const val MARK_DONE_REQUEST_OFFSET = 100_000
         private const val UNDO_REQUEST_OFFSET = 200_000
     }

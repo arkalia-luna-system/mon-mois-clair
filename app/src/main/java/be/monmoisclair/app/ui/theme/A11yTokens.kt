@@ -9,10 +9,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Couleurs du carnet. Le jour est le papier. La nuit est la même encre,
- * pas la couleur du fond d’écran et pas un thème fluo.
- * Les champs se lisent dans un composable : ils suivent [LocalCarnetPalette].
- * Les tests lisent [A11yTokens.Day] et [A11yTokens.Night].
+ * Palette app-wide 7.10 — mist cool 2027 (plus de crème carnet).
+ * Alignée [HomeTokens] ; contrastes ≥ 7:1 (tests WCAG).
+ * Les getters Compose suivent [LocalCarnetPalette].
  */
 @Immutable
 data class CarnetPalette(
@@ -38,7 +37,7 @@ data class CarnetPalette(
     val onGold: Color,
     val buttonFill: Color,
     val buttonText: Color,
-    /** Lien et indicateur. Le jour = le teal du bouton. La nuit, un teal lisible sur l’encre. */
+    /** Lien et indicateur. Jour = teal primary. Nuit = teal soft lisible. */
     val link: Color
 )
 
@@ -58,43 +57,40 @@ object A11yTokens {
      */
     val bottomSystemClearance = 28.dp
 
-    /** Papier du jour. Brique sur le fond ≥ 7:1. */
+    /** Jour — mist cool + cartes blanches + teal profond (pas violet, pas crème). */
     val Day = CarnetPalette(
-        paperCream = Color(0xFFF6F3E8),
-        paperCard = Color(0xFFFFFDF9),
-        paperWarm = Color(0xFFEDE8DC),
-        paperBorder = Color(0xFFE2DDD2),
-        fieldLine = Color(0xFF8A8278),
-        ink = Color(0xFF1E1B18),
-        inkMuted = Color(0xFF4A453C),
+        paperCream = Color(0xFFF0F4F7),
+        paperCard = Color(0xFFFFFFFF),
+        paperWarm = Color(0xFFE4EEF2),
+        paperBorder = Color(0xFFC9D5DE),
+        fieldLine = Color(0xFF3D4F5C),
+        ink = Color(0xFF121A24),
+        inkMuted = Color(0xFF3D4F5C),
         accentOkSoft = Color(0xFFE3EFE6),
         accentOk = Color(0xFF1E5631),
         accentOkInk = Color(0xFF1E5631),
-        // Brun warn / déficit ≥ 7:1 sur crème **et** PaperWarm sticky (#EDE8DC).
-        accentWarn = Color(0xFF5A3A12),
-        accentDanger = Color(0xFF7A2C14),
-        dangerInk = Color(0xFF7A2C14),
+        accentWarn = Color(0xFF5C3D12),
+        accentDanger = Color(0xFF8B2E18),
+        dangerInk = Color(0xFF8B2E18),
         accentAuto = Color(0xFFD99B26),
-        onGold = Color(0xFF1E1B18),
-        buttonFill = Color(0xFF1B4D4E),
-        buttonText = Color(0xFFFFFDF9),
-        link = Color(0xFF1B4D4E)
+        onGold = Color(0xFF121A24),
+        buttonFill = Color(0xFF0A5254),
+        buttonText = Color(0xFFFFFFFF),
+        link = Color(0xFF0A5254)
     )
 
     /**
-     * Encre de nuit. Le bouton reste le teal `#1B4D4E`.
-     * Le texte « retard » et le lien sont éclaircis : la brique du jour
-     * disparaîtrait sur ce fond.
+     * Nuit — surfaces ardoise ; fills FAIT/retard inchangés.
+     * Lien soft ≥ 7:1 sur mid surface.
      */
     val Night = CarnetPalette(
-        paperCream = Color(0xFF1E1B18),
-        paperCard = Color(0xFF2C2824),
-        paperWarm = Color(0xFF3A342E),
-        paperBorder = Color(0xFF6E6458),
-        fieldLine = Color(0xFFC4B8A8),
-        ink = Color(0xFFF6F3E8),
-        // Un cran plus mat que l’encre (écart PageTitle / corps) ; warm reste ≥ 7:1.
-        inkMuted = Color(0xFFD1C1B1),
+        paperCream = Color(0xFF12181E),
+        paperCard = Color(0xFF1C242C),
+        paperWarm = Color(0xFF2A343C),
+        paperBorder = Color(0xFF3A4A56),
+        fieldLine = Color(0xFFB7C4CE),
+        ink = Color(0xFFF0F4F7),
+        inkMuted = Color(0xFFB7C4CE),
         accentOkSoft = Color(0xFF1C3326),
         accentOk = Color(0xFF1E5631),
         accentOkInk = Color(0xFF9AD9B6),
@@ -102,11 +98,10 @@ object A11yTokens {
         accentDanger = Color(0xFF8E3418),
         dangerInk = Color(0xFFF4C4B6),
         accentAuto = Color(0xFFD99B26),
-        onGold = Color(0xFF1E1B18),
-        buttonFill = Color(0xFF1B4D4E),
-        buttonText = Color(0xFFFFFDF9),
-        // P1-N1 : teal soft (pas cyan) — ≥ 7:1 sur PaperWarm nuit.
-        link = Color(0xFF93D2CB)
+        onGold = Color(0xFF121A24),
+        buttonFill = Color(0xFF0A5254),
+        buttonText = Color(0xFFFFFFFF),
+        link = Color(0xFF8FD4D0)
     )
 
     private val palette: CarnetPalette

@@ -24,9 +24,9 @@ fun CarnetSheetHandle() {
     ) {
         Box(
             modifier = Modifier
-                .width(36.dp)
-                .height(3.dp)
-                .background(A11yTokens.PaperBorder, RoundedCornerShape(2.dp))
+                .width(40.dp)
+                .height(4.dp)
+                .background(A11yTokens.PaperBorder, RoundedCornerShape(50))
         )
     }
 }

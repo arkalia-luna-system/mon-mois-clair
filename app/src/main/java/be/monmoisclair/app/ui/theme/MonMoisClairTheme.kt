@@ -66,15 +66,15 @@ private fun colorScheme(palette: CarnetPalette, night: Boolean) = run {
 }
 
 /**
- * Trois rayons, pas un seul.
- * Boutons = [Shapes.small] 12 dp. Cartes = [Shapes.medium] 16 dp.
+ * Formes 7.10 (M3 Expressive dial-down finance).
+ * Boutons = [Shapes.small] 14 dp. Cartes = [Shapes.medium] 20 dp.
  * Pastilles = [StampShape] (capsule). Feuilles = [Shapes.extraLarge].
  */
 private val AppShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(16.dp),
+    extraSmall = RoundedCornerShape(10.dp),
+    small = RoundedCornerShape(14.dp),
+    medium = RoundedCornerShape(20.dp),
+    large = RoundedCornerShape(20.dp),
     extraLarge = RoundedCornerShape(28.dp)
 )
 

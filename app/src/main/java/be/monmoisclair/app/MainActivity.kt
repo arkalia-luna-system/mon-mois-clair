@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         val nightBoot = be.monmoisclair.app.domain.ThemePreferenceCache
             .peek(this)
             .resolveNight(systemDarkBoot)
-        val barBoot = if (nightBoot) 0xFF1E1B18.toInt() else 0xFFF6F3E8.toInt()
+        val barBoot = if (nightBoot) 0xFF12181E.toInt() else 0xFFF0F4F7.toInt()
         // 1er frame = Apparence choisie, pas la nuit du thème XML.
         window.setBackgroundDrawable(ColorDrawable(barBoot))
         if (BiometricFlagCache.peek(this)) {
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             val systemDark = isSystemInDarkTheme()
             val night = state.themePreference.resolveNight(systemDark)
             MonMoisClairTheme(darkTheme = night) {
-                val bar = if (night) 0xFF1E1B18.toInt() else 0xFFF6F3E8.toInt()
+                val bar = if (night) 0xFF12181E.toInt() else 0xFFF0F4F7.toInt()
                 DisposableEffect(night) {
                     enableEdgeToEdge(
                         statusBarStyle = if (night) {

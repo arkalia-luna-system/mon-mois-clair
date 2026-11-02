@@ -15,12 +15,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.CarnetHubRow
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSheetHandle
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
@@ -71,7 +73,7 @@ fun HomeMenuSheet(
         sheetState = sheetState,
         shape = MaterialTheme.shapes.extraLarge,
         dragHandle = { CarnetSheetHandle() },
-        containerColor = A11yTokens.PaperCream,
+        containerColor = HomeTokens.Canvas,
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
     ) {
         Column(
@@ -105,7 +107,8 @@ fun HomeMenuSheet(
                     onDismiss()
                     onOpenSettings()
                 },
-                showDivider = !remindersBlocked
+                showDivider = !remindersBlocked,
+                leadingIconRes = R.drawable.ic_settings
             )
             if (showDossiers) {
                 CarnetHubRow(

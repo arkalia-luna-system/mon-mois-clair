@@ -11,7 +11,7 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-414%2F415-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.09-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.10-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -27,7 +27,7 @@ Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
 
 | | |
 |--|--|
-| **Reste sticky** | Hero premium · chariot Courses + tirelire épargne **à côté** · Détails QuietLink |
+| **Reste sticky** | Design 2027 mist cool · hero + chariot/tirelire · FAIT · Menu/+ icônes |
 | **Factures** | Récurrence · FAIT le JJ/MM · En retard · Prélèvement · grille jour 1–31 |
 | **Papier belge** | QR EPC · communication mod 97 · photo WebP · PDF courrier · OCR `+++` |
 | **Accords** | Pastille · reste dû · IBAN · Écrire · frais datés · Mes dossiers |
@@ -48,9 +48,9 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.09` |
-| Dernière étape | **7.09** Accueil redesign premium 2026 (`HomeTokens`) · Encore à payer · chips chariot/tirelire |
-| Device | Install SM-S938B 7.09 (sans wipe). **Re-smoke Accueil Athalia** — pas claim « 10/10 dans la main » |
+| Version | `0.1.0-7.10` |
+| Dernière étape | **7.10** Design system 2027 global (mist cool · Accueil/Menu/Réglages/fiche/Dossiers/widget) |
+| Device | Install SM-S938B 7.10 (sans wipe). **Re-smoke visuel Athalia** — pas claim « 10/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **414 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |

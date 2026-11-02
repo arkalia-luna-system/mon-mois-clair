@@ -48,7 +48,8 @@ fun SettingsScreen(
         // P0-U1 : code / copie en 1ʳᵉ ligne hub (pas Restore dans Menu Accueil).
         CarnetHubRow(
             label = SettingsHubCopy.BACKUP_SHORTCUT,
-            onClick = onOpenBackup
+            onClick = onOpenBackup,
+            showDivider = false
         )
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_ACCOUNT,
