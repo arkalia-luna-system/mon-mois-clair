@@ -141,7 +141,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
 
     implementation("androidx.documentfile:documentfile:1.1.0")
     implementation("androidx.exifinterface:exifinterface:1.3.7")
@@ -159,7 +159,7 @@ dependencies {
     implementation("androidx.camera:camera-view:$cameraVersion")
 
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
     testImplementation("androidx.room:room-testing:$roomVersion")
     testImplementation("org.robolectric:robolectric:4.17")
     testImplementation("androidx.test:core:1.6.1")
@@ -172,7 +172,7 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test:core:1.6.1")
     androidTestImplementation("com.google.truth:truth:1.4.4")
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
     androidTestImplementation("androidx.room:room-runtime:$roomVersion")
     androidTestImplementation("androidx.room:room-ktx:$roomVersion")
 }
