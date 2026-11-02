@@ -9,7 +9,7 @@ plugins {
 // Dependabot : jars transitifs AGP / lint / UTP (classpath build — pas APK runtime).
 // Ne pas monter protobuf en 4.x (casse outil AGP).
 val patchedForces = arrayOf(
-    "com.google.protobuf:protobuf-java:3.25.9",
+    "com.google.protobuf:protobuf-java:4.36.2",
     "commons-io:commons-io:2.22.0",
     "org.apache.commons:commons-compress:1.26.0",
     "org.apache.commons:commons-lang3:3.18.0",
