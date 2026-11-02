@@ -96,7 +96,10 @@ class RestoreMessagesTest {
         assertThat(msg.lowercase()).contains("n’est plus acceptée")
         assertThat(msg.lowercase()).contains("sauvegarde")
         assertThat(msg).contains("n’a pas été modifié")
+        assertThat(msg.lowercase()).contains("ancien téléphone")
         assertThat(msg.lowercase()).doesNotContain("chiffr")
         assertThat(msg.lowercase()).doesNotContain("ancien format")
+        assertThat(msg).doesNotContain("6.81")
+        assertThat(msg.lowercase()).doesNotContain(".mmc")
     }
 }

@@ -255,7 +255,7 @@ fun DossiersScreen(
         DossierSectionHeader("Résumé à montrer")
         Text(
             text = "Créancier ou conseiller — texte ou PDF, même contenu. " +
-                "Le PDF est lisible tout de suite (clair) : ce n’est pas une copie .mmc.",
+                "Le PDF est lisible tout de suite (clair) : ce n’est pas une copie de sauvegarde.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
         )

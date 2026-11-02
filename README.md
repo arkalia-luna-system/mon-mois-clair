@@ -11,7 +11,7 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-414%2F415-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.15-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.15.1-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,8 +48,8 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.15` |
-| Dernière étape | **7.15** Craft visuel kit PNG · mist+or/teal · mini-icônes · splash/launcher/notif unisson |
+| Version | `0.1.0-7.15.1` |
+| Dernière étape | **7.15.1** Copy FR hors-brand · Aide Résumé · QuietLink Dossiers · restore sans jargon (après craft 7.15) |
 | Device | Install SM-S938B 7.15 (sans wipe). **Re-smoke Athalia** — craft grille kit ≠ « 10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **414 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |

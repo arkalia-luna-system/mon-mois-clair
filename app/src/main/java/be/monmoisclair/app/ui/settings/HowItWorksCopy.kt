@@ -71,8 +71,9 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Résumé du mois",
-            body = "Réglages → Données → Préparer un résumé, ou Menu → Dossiers " +
-                "(si un accord / courrier est là). Texte ou PDF : Reste, À payer, FAIT. " +
+            body = "Réglages → Données → Préparer un résumé. " +
+                "Si un accord ou un courrier existe : aussi Menu → Dossiers. " +
+                "Texte ou PDF : Reste, À payer, FAIT. " +
                 "Rien ne quitte le téléphone tant que vous ne partagez pas."
         ),
         Section(

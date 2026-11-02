@@ -17,10 +17,10 @@ object ShareFileIntents {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 
-    /** Texte d’accompagnement PDF résumé — clair ≠ copie .mmc (P1 UX sécu). */
+    /** Texte d’accompagnement PDF résumé — clair ≠ copie de sauvegarde (P1 UX sécu). */
     const val PDF_SUMMARY_SHARE_NOTE =
         "Résumé Mon Mois Clair (PDF clair, lecture immédiate). " +
-            "Ce n’est pas une copie de sauvegarde .mmc — ne remplace pas votre code de copie."
+            "Ce n’est pas une copie de sauvegarde — ne remplace pas votre code de copie."
 
     fun zip(uri: Uri, subject: String, text: String): Intent =
         file(uri, subject, text, mime = "application/zip")

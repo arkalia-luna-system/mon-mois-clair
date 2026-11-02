@@ -166,10 +166,14 @@ fun SettingsSummaryScreen(
             onClick = viewModel::shareMonthSummaryPdf,
             enabled = !state.busy && !state.summaryBusy
         )
-        QuietLinkA11y(
-            text = "Aussi dans Dossiers",
-            onClick = onOpenDossiers
-        )
+        // Aligné Menu : pas de QuietLink vers Dossiers s’il n’y a aucun dossier
+        // (ex. résumé ouvert seulement pour déficit).
+        if (state.showDossiersSummaryLink) {
+            QuietLinkA11y(
+                text = "Aussi dans Dossiers",
+                onClick = onOpenDossiers
+            )
+        }
     }
 }
 

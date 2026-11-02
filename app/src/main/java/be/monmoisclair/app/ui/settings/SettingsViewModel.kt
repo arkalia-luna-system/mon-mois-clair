@@ -71,6 +71,8 @@ data class SettingsUiState(
     val savingsMessageError: Boolean = false,
     /** Lot F — visible si déficit ou au moins un dossier. */
     val showSummaryButton: Boolean = false,
+    /** QuietLink « Aussi dans Dossiers » seulement si un dossier existe (aligné Menu). */
+    val showDossiersSummaryLink: Boolean = false,
     val summaryBusy: Boolean = false,
     /** Code de copie (8 chiffres) pour rouvrir une copie WhatsApp / autre téléphone. */
     val shareCopyCode: String? = null,
@@ -153,6 +155,7 @@ class SettingsViewModel @Inject constructor(
                     savingsDeficit = if (keepDraft) cur.savingsDeficit else null,
                     savingsNextMonthNote = if (keepDraft) cur.savingsNextMonthNote else null,
                     showSummaryButton = loaded.summary.isDeficit || loaded.dossierCount > 0,
+                    showDossiersSummaryLink = loaded.dossierCount > 0,
                     shareCopyCode = loaded.shareCode,
                     dbMigrationFailed = loaded.migrationFailed
                 )
@@ -417,7 +420,7 @@ class SettingsViewModel @Inject constructor(
                             busy = false,
                             backupMessage = "Choisissez l’app d’envoi. " +
                                 "Gardez le code ci-dessus sur papier — " +
-                                "ne l’envoyez pas dans le même message que le fichier .mmc.",
+                                "ne l’envoyez pas dans le même message que la copie.",
                             backupMessageError = false
                         )
                     }

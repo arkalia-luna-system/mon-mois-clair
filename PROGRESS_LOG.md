@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.15** (craft kit PNG · mist+or/teal · mini-icônes · splash fix · Clair `#D4B06A`) |
+| Dernière étape terminée | **7.15.1** (copy FR hors-brand · Aide Résumé · QuietLink Dossiers · restore sans jargon) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) |
-| Audit | [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · brand §7.15 |
+| Prochaine sous-étape | **Athalia** : re-smoke One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) + copy restore/résumé |
+| Audit | [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · brand §7.15 · patch copy 7.15.1 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.15.1 Copy FR + alignements fonctionnels (hors-brand)
+
+**Contexte :** agent parallèle post-7.15 — périmètre disjoint du craft PNG/theme/HomeTokens.
+
+**Copy :** retirer jargon `.mmc` / `≥ 6.81` des messages UI (Dossiers PDF, note partage résumé, backup share, restore cleartext refusée).
+
+**Aide :** « Résumé du mois » — chemin Réglages d’abord ; Menu → Dossiers seulement si accord/courrier.
+
+**Fonctionnel :** QuietLink Réglages « Aussi dans Dossiers » masqué si `dossierCount == 0` (plus de cul-de-sac quand résumé ouvert pour déficit seul). Import mort `QuietLinkA11y` Accueil.
+
+**Évité (autre agent) :** HomeTokens / Theme / Color / Type / Shape / mipmap / launcher / notif / brand / drawable logo / sticky style couleurs.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.15.1` · `versionCode` 121.
 
 ### 2026-11-02 — 7.15 Craft visuel expert 10/10 vs kit
 

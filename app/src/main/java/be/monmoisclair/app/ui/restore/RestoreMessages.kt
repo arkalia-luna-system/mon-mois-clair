@@ -40,11 +40,11 @@ object RestoreMessages {
 
     /**
      * Refus des copies non protégées (grâce close depuis 6.99).
-     * Demander une copie `.mmc` avec code noté à part.
+     * Demander une nouvelle copie protégée avec code noté à part.
      */
     const val CLEARTEXT_REJECTED =
         "Cette copie est une ancienne copie non protégée. " +
-            "Elle n’est plus acceptée. Sur l’ancien téléphone (≥ 6.81), " +
+            "Elle n’est plus acceptée. Sur l’ancien téléphone, " +
             "faites une nouvelle copie (Réglages → Sauvegarde), notez le code à part, " +
             "puis restaurez cette copie ici. Le mois en cours n’a pas été modifié."
 

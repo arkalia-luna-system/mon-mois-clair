@@ -78,5 +78,8 @@ class HowItWorksCopyTest {
         val resume = HowItWorksCopy.sections.first { it.title == "Résumé du mois" }.body
         assertThat(resume).contains("PDF")
         assertThat(resume).contains("Dossiers")
+        assertThat(resume).contains("Réglages → Données → Préparer un résumé")
+        assertThat(resume).contains("Si un accord ou un courrier existe")
+        assertThat(all.lowercase()).doesNotContain(".mmc")
     }
 }

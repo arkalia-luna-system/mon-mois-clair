@@ -36,8 +36,9 @@ class ShareFileIntentsTest {
         )
         val note = intent.getStringExtra(Intent.EXTRA_TEXT)
         assertThat(note).contains("clair")
-        assertThat(note!!.lowercase()).contains(".mmc")
-        assertThat(note.lowercase()).contains("pas une copie")
+        assertThat(note!!.lowercase()).contains("pas une copie de sauvegarde")
+        assertThat(note.lowercase()).doesNotContain(".mmc")
+        assertThat(note.lowercase()).doesNotContain("chiffr")
     }
 
     @Test

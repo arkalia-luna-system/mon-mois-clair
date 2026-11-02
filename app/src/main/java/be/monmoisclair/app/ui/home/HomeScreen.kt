@@ -61,7 +61,6 @@ import be.monmoisclair.app.MainActivity
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import be.monmoisclair.app.ui.components.BrandMark
-import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
