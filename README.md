@@ -9,7 +9,7 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-414%2F415-success)](#statut-technique)
+[![Tests](https://img.shields.io/badge/tests-413%2F414-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
 [![Version](https://img.shields.io/badge/version-0.1.0--7.15.1-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -49,10 +49,10 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 | Élément | État |
 |---------|------|
 | Version | `0.1.0-7.15.1` |
-| Dernière étape | **7.15.1** Copy FR hors-brand · Aide Résumé · QuietLink Dossiers · restore sans jargon (après craft 7.15) |
+| Dernière étape | **7.15.1** + hygiène code mort Kotlin (imports EntryForm/Accueil · sticky legacy) |
 | Device | Install SM-S938B **7.15.1** (sans wipe). **Re-smoke Athalia** FAIT / share / restore |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **414 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |
+| Tests unitaires | **413 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |
 
 Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)

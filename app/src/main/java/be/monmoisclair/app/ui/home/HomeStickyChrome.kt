@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -122,65 +121,6 @@ internal fun StickyHeroTools(
                 modifier = Modifier.weight(1f)
             )
         }
-    }
-}
-
-/** Rangée secondaire legacy : Courses | Mettre de côté. */
-@Composable
-internal fun StickyToolsRow(
-    coursesLabel: String?,
-    coursesDescription: String?,
-    onOpenCourses: () -> Unit,
-    savingsLabel: String?,
-    savingsDescription: String?,
-    onOpenSavings: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier) {
-        StickyHeroTools(
-            coursesLabel = coursesLabel,
-            coursesDescription = coursesDescription,
-            onOpenCourses = onOpenCourses,
-            savingsLabel = savingsLabel,
-            savingsDescription = savingsDescription,
-            onOpenSavings = onOpenSavings
-        )
-    }
-}
-
-/** Ligne sticky pleine largeur (disclosure) — QuietLink Accueil. */
-@Composable
-internal fun StickyLinkRow(
-    label: String,
-    labelColor: Color,
-    compact: Boolean,
-    onClickLabel: String,
-    contentDescription: String,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = HomeTokens.minTouch)
-            .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
-            .padding(vertical = if (compact) 2.dp else 4.dp)
-            .semantics { this.contentDescription = contentDescription },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = labelColor,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = "›",
-            style = MaterialTheme.typography.titleMedium,
-            color = HomeTokens.InkMuted
-        )
     }
 }
 

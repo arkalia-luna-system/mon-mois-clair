@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.15.1** (copy FR hors-brand · Aide Résumé · QuietLink Dossiers · restore sans jargon) |
+| Dernière étape terminée | **7.15.1** + hygiène code mort (imports EntryForm/Accueil · sticky legacy) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : re-smoke One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) + copy restore/résumé |
 | Audit | [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · [`brand-logo-unisson.md`](docs/audits/2026-11-02-brand-logo-unisson.md) · 7.15.1 |
@@ -20,6 +20,13 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — Fin de journée code mort (Kotlin unused)
+
+**Périmètre :** imports morts EntryForm (Screen/Scaffold) · HomeScreen/CoursesSheet/StickyChrome · suppression `StickyToolsRow` / `StickyLinkRow` (0 call site) · `stickyCoursesCompactLabel` + test associé.  
+**Évité :** theme / HomeTokens / mipmap / brand · Aide strings (déjà 7.15.1).  
+**Version :** inchangée `0.1.0-7.15.1` · `versionCode` 121.  
+**Tests :** **413 exécutés** / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).
 
 ### 2026-11-02 — Fin de journée docs (hygiène audits)
 
