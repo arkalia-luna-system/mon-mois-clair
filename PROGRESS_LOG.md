@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.08** (Accueil Courses\|épargne à côté du Reste · vérif audits · archive MD) |
+| Dernière étape terminée | **7.09** (Accueil redesign premium 2026 — HomeTokens · Encore à payer · chips) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : smoke Accueil (Reste + Courses\|épargne 1 tap, sans Menu) · liste · Fiche · Aide · S26 · restore |
+| Prochaine sous-étape | **Athalia** : re-smoke Accueil (hero Reste + chariot/tirelire + liste + FAIT) |
 | Audit | [`verif-audits-accueil.md`](docs/audits/2026-11-02-verif-audits-accueil.md) · expert-00 · détails → `docs/audits/archive/` |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,25 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.09 Accueil redesign premium 2026
+
+**Contexte :** Athalia n’aime pas l’écran principal ; autorise explicitement de **ne plus coller** au carnet papier belge pour Accueil. Look 2026 premium 60+.
+
+**Inspirations :** [`docs/audits/2026-11-02-accueil-inspiration-2026.md`](docs/audits/2026-11-02-accueil-inspiration-2026.md) (YNAB / PocketGuard / Goodbudget / Emma / One UI — patterns, pas copie).
+
+**Design system Accueil :** `HomeTokens` (mist cool, hero blanc, chips ciel/sauge) — contraste ≥ 7:1 (tests). Typo existante Source Serif 4 + Source Sans 3.
+
+**UI :**
+- Hero Reste en carte ; Courses = **icône chariot** ; Mettre de côté = **icône tirelire** (chips ≥48).
+- Libellé **« Encore à payer »** (remplace « Factures ouvertes ») ; Aide alignée.
+- Cartes liste premium (ombre soft) ; barre Menu/+ sur surface Accueil.
+- Logique métier / crypto / FAIT / offline **inchangés**.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.09` · `versionCode` 114.  
+**Screenshot adb :** [`docs/audits/screenshots/2026-11-02-accueil-7.09.png`](docs/audits/screenshots/2026-11-02-accueil-7.09.png) (install `-r` SM-S938B).  
+**Smoke doigt :** Athalia — Accueil style nouveau + fonctions 1 tap.
 
 ### 2026-11-02 — 7.08 Accueil outils à côté du Reste
 

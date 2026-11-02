@@ -28,18 +28,18 @@ object HowItWorksCopy {
         Section(
             title = "Le chiffre en haut",
             body = "« Reste » = revenus − factures du mois — pas le solde bancaire. " +
-                "Sous la liste : « Factures ouvertes » = encore dû. " +
+                "Sous la liste : « Encore à payer » = encore dû. " +
                 "Dans Détails, « Après les FAIT » = seulement les cochées. " +
                 "Pas de report auto : un revenu « Reste du mois passé », une fois."
         ),
         Section(
             title = "Courses",
-            body = "Accueil, à côté du Reste : Courses (›) — courses / pharmacie. " +
+            body = "Accueil, à côté du Reste : icône chariot Courses — courses / pharmacie. " +
                 "Le gros Reste ne bouge pas ; le détail « il reste » est dans la feuille."
         ),
         Section(
             title = "Mettre de côté",
-            body = "Accueil, à côté du Reste (sous Courses) : Mettre de côté (›). " +
+            body = "Accueil, à côté du Reste (sous Courses) : icône tirelire Mettre de côté. " +
                 "Jour et retrait : Réglages → Données → Jour du Mettre de côté. " +
                 "FAIT = virement fait. Pas d’argent dans l’app."
         ),

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -33,6 +34,7 @@ import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
@@ -42,12 +44,12 @@ internal fun DayBadge(label: String, compact: Boolean = false) {
     Text(
         text = label,
         style = MaterialTheme.typography.bodyMedium,
-        color = A11yTokens.InkMuted,
+        color = HomeTokens.InkMuted,
         textAlign = TextAlign.Center,
         modifier = Modifier
             .widthIn(min = if (compact) 48.dp else 56.dp)
-            .background(A11yTokens.PaperWarm, shape)
-            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .background(HomeTokens.Chip, shape)
+            .border(1.dp, HomeTokens.CardBorder, shape)
             .padding(
                 horizontal = if (compact) 4.dp else 6.dp,
                 vertical = if (compact) 4.dp else 4.dp
@@ -76,7 +78,7 @@ internal fun StatusChip(
             .semantics { contentDescription = "Statut : $text" }
             .border(
                 1.dp,
-                if (outlined) A11yTokens.FieldLine else A11yTokens.PaperBorder,
+                if (outlined) HomeTokens.InkMuted else HomeTokens.CardBorder,
                 shape
             )
             .background(container, shape)
@@ -92,21 +94,21 @@ internal fun IncomeRow(
 ) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
-    // H04 : compact moins écrasé (10/14) — laisser respirer le papier.
-    val rowPad = if (compact) 10.dp else 14.dp
-    val shape = MaterialTheme.shapes.medium
-    // Charte carnet : filet seul (pas ombre Material) — relief « imprimé ».
+    val rowPad = if (compact) 12.dp else 16.dp
+    val shape = HomeTokens.cardRadius
+    // 7.09 : carte premium Accueil (ombre soft, pas carnet filet seul).
     Surface(
-        color = A11yTokens.PaperCard,
+        color = HomeTokens.Card,
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .shadow(2.dp, shape, clip = false)
+            .border(1.dp, HomeTokens.CardBorder, shape)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = A11yTokens.minTouchHeight)
+                .heightIn(min = HomeTokens.minTouch)
                 .clickable(
                     role = Role.Button,
                     onClickLabel = if (readOnlyPreview) "aperçu" else "modifier",
@@ -124,12 +126,13 @@ internal fun IncomeRow(
                 Text(
                     text = item.label,
                     style = MaterialTheme.typography.bodyLarge,
+                    color = HomeTokens.Ink,
                     maxLines = if (compact) 1 else 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = item.amountLabel,
-                    color = A11yTokens.Ink,
+                    color = HomeTokens.Ink,
                     style = MaterialTheme.typography.titleLarge
                 )
             }
@@ -149,24 +152,21 @@ internal fun ExpenseRow(
 ) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
-    val rowPad = if (compact) 10.dp else 14.dp
-    val shape = MaterialTheme.shapes.medium
+    val rowPad = if (compact) 12.dp else 16.dp
+    val shape = HomeTokens.cardRadius
     val targetBg = when {
-        item.isDone -> A11yTokens.AccentOkSoft
-        // Lavis discret : le contour 2 dp porte déjà l’alerte (pas un fond « criard »).
-        item.isOverdue -> A11yTokens.DangerInk.copy(alpha = 0.10f)
-        else -> A11yTokens.PaperCard
+        item.isDone -> HomeTokens.OkSoft
+        item.isOverdue -> HomeTokens.DangerFill.copy(alpha = 0.12f)
+        else -> HomeTokens.Card
     }
     val bg by animateColorAsState(
         targetValue = targetBg,
         animationSpec = tween(150),
         label = "expenseRowBg"
     )
-    // H10 : highlight notif = 2 dp doux. Retard = pastille + lavis (pas contour brique 2 dp).
-    // Charte carnet : filet seul (pas ombre + bordure Material).
     val borderMod = when {
-        highlighted -> Modifier.border(2.dp, A11yTokens.Link.copy(alpha = 0.55f), shape)
-        else -> Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+        highlighted -> Modifier.border(2.dp, HomeTokens.Link.copy(alpha = 0.55f), shape)
+        else -> Modifier.border(1.dp, HomeTokens.CardBorder, shape)
     }
     val lineGap = if (compact) 4.dp else 6.dp
     Surface(
@@ -174,6 +174,7 @@ internal fun ExpenseRow(
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(2.dp, shape, clip = false)
             .then(borderMod)
     ) {
         // H01 : pastille FAIT dans sa bande sous la rangée titre/montant/bouton
@@ -215,8 +216,8 @@ internal fun ExpenseRow(
                             )
                             StatusChip(
                                 "Accord",
-                                A11yTokens.PaperWarm,
-                                A11yTokens.Ink,
+                                HomeTokens.Chip,
+                                HomeTokens.Ink,
                                 outlined = true,
                                 compact = true
                             )
@@ -232,7 +233,7 @@ internal fun ExpenseRow(
                     // P0-C1 : premier regard = jour · nom · montant · FAIT.
                     Text(
                         text = item.amountLabel,
-                        color = if (item.isDone) A11yTokens.InkMuted else A11yTokens.Ink,
+                        color = if (item.isDone) HomeTokens.InkMuted else HomeTokens.Ink,
                         style = MaterialTheme.typography.titleLarge
                     )
                     // Cause/cadence : confort seulement (compact = carte allégée).
@@ -245,7 +246,7 @@ internal fun ExpenseRow(
                             Text(
                                 text = meta,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
+                                color = HomeTokens.InkMuted,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -274,7 +275,7 @@ internal fun ExpenseRow(
                             text = "FAIT ✓",
                             onClick = onToggle,
                             fillMaxWidth = false,
-                            containerColor = A11yTokens.AccentOk,
+                            containerColor = HomeTokens.OkFill,
                             modifier = faitModifier
                         )
                     }
@@ -293,14 +294,14 @@ internal fun ExpenseRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .heightIn(min = HomeTokens.minTouch)
                 ) {
                     if (showNote) {
                         if (!compact) {
                             Text(
                                 text = item.paymentNote,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted,
+                                color = HomeTokens.InkMuted,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f, fill = false)
@@ -344,30 +345,29 @@ internal fun ExpenseStatusLine(
     val chips = buildList {
         when {
             item.isOverdue && !item.isDone ->
-                add(Chip("En retard", A11yTokens.AccentDanger, A11yTokens.ButtonText))
+                add(Chip("En retard", HomeTokens.DangerFill, A11yTokens.ButtonText))
             item.isDone ->
                 add(
                     Chip(
                         item.doneLabel ?: "FAIT ✓",
-                        A11yTokens.AccentOk,
+                        HomeTokens.OkFill,
                         A11yTokens.ButtonText
                     )
                 )
         }
         if (!compact) {
-            // P2-3 : Prélèvement en filet muted (pas or + forêt + brique = 4 chromas).
             if (item.isAutoDebit) {
                 add(
                     Chip(
                         "Prélèvement",
-                        A11yTokens.PaperWarm,
-                        A11yTokens.InkMuted,
+                        HomeTokens.Chip,
+                        HomeTokens.InkMuted,
                         outlined = true
                     )
                 )
             }
             if (item.isAgreement && !hideAgreementChip && size < 2) {
-                add(Chip("Accord", A11yTokens.PaperWarm, A11yTokens.Ink, outlined = true))
+                add(Chip("Accord", HomeTokens.Chip, HomeTokens.Ink, outlined = true))
             }
         }
     }.take(2)
@@ -395,7 +395,7 @@ internal fun ExpenseStatusLine(
             Text(
                 text = "Cochez FAIT quand le débit apparaît.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted,
+                color = HomeTokens.InkMuted,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

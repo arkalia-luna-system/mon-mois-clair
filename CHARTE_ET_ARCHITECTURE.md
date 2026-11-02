@@ -37,14 +37,16 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 | Ligne | Sens | Quand |
 |-------|------|--------|
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
-| **Factures ouvertes** (ex-« À payer ») | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
-| **Courses** + **Mettre de côté** (tap ≥48) | Divers + forfait mensuel ; sheets d’édition | Hors aperçu futur — **Accueil 1 tap** (à côté du Reste, pas Menu) ; libellé Courses court (`Courses` / `Courses X €`) |
+| **Encore à payer** (ex-« Factures ouvertes ») | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible (tête de liste) |
+| **Courses** + **Mettre de côté** (tap ≥48) | Divers + forfait mensuel ; sheets d’édition | Hors aperçu futur — **Accueil 1 tap** chips icône (chariot / tirelire) à côté du Reste, pas Menu |
 | **Après les FAIT** · alertes / courriers · Mois en cours (si passé) | Secondaire | Derrière **Détails / Masquer** (pas de mini-dashboard) |
 
-Courses / épargne : sheets depuis le sticky (›). Sticky volontairement **basse** (liste d’abord). Pas de 2ᵉ formulaire en bas de liste ; pas de logo / wordmark sur le sticky.
+Courses / épargne : sheets depuis le sticky (chips). Sticky volontairement **basse** (liste d’abord). Pas de 2ᵉ formulaire en bas de liste ; pas de logo / wordmark sur le sticky.
 
-Couleurs : Reste = encre (ou brique si déficit) ; À payer / Tout est payé = muted ou vert ; Après les FAIT = brun warn `#6B4515` (≥ 7:1 sur crème) ; Après courses = muted, **brique** si négatif.  
-Pas de plaque colorée, pas de nom d’app dans l’en-tête. Tips courants = texte `InkMuted` (boîtes = erreur / ok / warn seulement).
+**Accueil 7.09 (autorisé Athalia) :** look premium `HomeTokens` (canvas mist cool, hero carte, chips icône) — **ne plus coller** au carnet papier belge **sur Accueil seulement**. Autres écrans = `A11yTokens` carnet.
+
+Couleurs Accueil : Reste = ink ardoise (ou dangerInk si déficit) ; Encore à payer / Tout est payé = muted ou okInk ; Après les FAIT = warn ≥ 7:1.  
+Pas de nom d’app dans l’en-tête. Tips courants = texte muted (boîtes = erreur / ok / warn seulement).
 
 **Interdit** : empiler Alertes / aide / restore dans le Menu (ils vivent dans **Réglages**) ; boutons critiques collés tout en haut.  
 **Marque** : absente de l’accueil. Légende discrète au verrouillage et à l’installation.  

@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,56 +18,62 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.R
+import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Cellule outil Accueil (Courses / épargne) — ≥48 dp, › discret.
+ * Chip outil Accueil 7.09 — icône + libellé court, ≥48 dp.
  */
 @Composable
-internal fun StickyToolCell(
+internal fun StickyIconTool(
+    iconRes: Int,
     label: String,
-    labelColor: Color,
+    chipColor: Color,
     onClickLabel: String,
     contentDescription: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    fillLabel: Boolean = true
+    modifier: Modifier = Modifier
 ) {
-    Row(
+    Column(
         modifier = modifier
-            .heightIn(min = A11yTokens.minTouchHeight)
+            .widthIn(min = HomeTokens.minTouch, max = 104.dp)
+            .heightIn(min = HomeTokens.minTouch)
+            .clip(HomeTokens.chipRadius)
+            .background(chipColor)
             .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
-            .padding(vertical = 2.dp, horizontal = 2.dp)
+            .padding(horizontal = 6.dp, vertical = 4.dp)
             .semantics { this.contentDescription = contentDescription },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = labelColor,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = if (fillLabel) Modifier.weight(1f) else Modifier
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = null,
+            tint = HomeTokens.Ink,
+            modifier = Modifier.size(22.dp)
         )
         Text(
-            text = "›",
-            style = MaterialTheme.typography.titleMedium,
-            color = A11yTokens.InkMuted
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = HomeTokens.InkMuted,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 /**
- * 7.08 : Courses | épargne **à côté** du Reste (colonne droite, taps ≥48).
- * Pas Menu ; pas bandeau sous sticky — liste d’abord.
+ * 7.09 : Courses (chariot) | Mettre de côté (tirelire) à côté du Reste.
  */
 @Composable
 internal fun StickyHeroTools(
@@ -78,33 +85,34 @@ internal fun StickyHeroTools(
     onOpenSavings: () -> Unit
 ) {
     if (coursesLabel == null && savingsLabel == null) return
-    Column(horizontalAlignment = Alignment.End) {
+    Column(
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
         if (coursesLabel != null) {
-            StickyToolCell(
+            StickyIconTool(
+                iconRes = R.drawable.ic_cart,
                 label = coursesLabel,
-                labelColor = A11yTokens.InkMuted,
+                chipColor = HomeTokens.CoursesChip,
                 onClickLabel = "Modifier les courses",
                 contentDescription = coursesDescription ?: coursesLabel,
-                onClick = onOpenCourses,
-                modifier = Modifier.widthIn(min = 48.dp, max = 152.dp),
-                fillLabel = false
+                onClick = onOpenCourses
             )
         }
         if (savingsLabel != null) {
-            StickyToolCell(
+            StickyIconTool(
+                iconRes = R.drawable.ic_piggy,
                 label = savingsLabel,
-                labelColor = A11yTokens.InkMuted,
+                chipColor = HomeTokens.SavingsChip,
                 onClickLabel = "Modifier mettre de côté",
                 contentDescription = savingsDescription ?: savingsLabel,
-                onClick = onOpenSavings,
-                modifier = Modifier.widthIn(min = 48.dp, max = 152.dp),
-                fillLabel = false
+                onClick = onOpenSavings
             )
         }
     }
 }
 
-/** Rangée secondaire : Courses | Mettre de côté (une seule ligne de hauteur). */
+/** Rangée secondaire legacy : Courses | Mettre de côté. */
 @Composable
 internal fun StickyToolsRow(
     coursesLabel: String?,
@@ -122,9 +130,10 @@ internal fun StickyToolsRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (coursesLabel != null) {
-            StickyToolCell(
+            StickyIconTool(
+                iconRes = R.drawable.ic_cart,
                 label = coursesLabel,
-                labelColor = A11yTokens.InkMuted,
+                chipColor = HomeTokens.CoursesChip,
                 onClickLabel = "Modifier les courses",
                 contentDescription = coursesDescription ?: coursesLabel,
                 onClick = onOpenCourses,
@@ -132,9 +141,10 @@ internal fun StickyToolsRow(
             )
         }
         if (savingsLabel != null) {
-            StickyToolCell(
+            StickyIconTool(
+                iconRes = R.drawable.ic_piggy,
                 label = savingsLabel,
-                labelColor = A11yTokens.InkMuted,
+                chipColor = HomeTokens.SavingsChip,
                 onClickLabel = "Modifier mettre de côté",
                 contentDescription = savingsDescription ?: savingsLabel,
                 onClick = onOpenSavings,
@@ -144,7 +154,7 @@ internal fun StickyToolsRow(
     }
 }
 
-/** Ligne sticky pleine largeur (legacy / disclosure) — padding serré, ellipsis, › discret. */
+/** Ligne sticky pleine largeur (disclosure) — QuietLink Accueil. */
 @Composable
 internal fun StickyLinkRow(
     label: String,
@@ -157,7 +167,7 @@ internal fun StickyLinkRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = A11yTokens.minTouchHeight)
+            .heightIn(min = HomeTokens.minTouch)
             .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
             .padding(vertical = if (compact) 2.dp else 4.dp)
             .semantics { this.contentDescription = contentDescription },
@@ -175,7 +185,7 @@ internal fun StickyLinkRow(
         Text(
             text = "›",
             style = MaterialTheme.typography.titleMedium,
-            color = A11yTokens.InkMuted
+            color = HomeTokens.InkMuted
         )
     }
 }
@@ -191,13 +201,15 @@ internal fun MonthStep(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+            .clip(HomeTokens.chipRadius)
+            .background(HomeTokens.Chip)
             .semantics(mergeDescendants = true) { contentDescription = description }
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
     ) {
         Icon(
             painter = painterResource(iconRes),
             contentDescription = null,
-            tint = if (enabled) A11yTokens.InkMuted else A11yTokens.InkMuted.copy(alpha = 0.4f),
+            tint = if (enabled) HomeTokens.InkMuted else HomeTokens.InkMuted.copy(alpha = 0.4f),
             modifier = Modifier.size(24.dp)
         )
     }

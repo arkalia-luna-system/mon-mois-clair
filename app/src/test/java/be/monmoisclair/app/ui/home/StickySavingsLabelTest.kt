@@ -20,4 +20,11 @@ class StickySavingsLabelTest {
     fun futurePreview_hides() {
         assertThat(stickySavingsLabel(50_00L, futurePreview = true)).isNull()
     }
+
+    @Test
+    fun chip_shows_amount_or_cote() {
+        assertThat(stickySavingsChipLabel(0L)).isEqualTo("Côté")
+        assertThat(stickySavingsChipLabel(50_00L) { "${it / 100} €" }).isEqualTo("50 €")
+        assertThat(stickySavingsChipLabel(50_00L, futurePreview = true)).isNull()
+    }
 }

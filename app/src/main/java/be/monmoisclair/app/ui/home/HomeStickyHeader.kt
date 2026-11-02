@@ -16,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -28,13 +30,13 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.format.MoneyFormat
-import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.DisplayFit
+import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Sticky Accueil (7.08) : mois · Reste + Courses|épargne **à côté** · Détails QuietLink.
- * Outils = colonne droite du hero (1 tap Accueil, pas Menu, pas bandeau sous sticky).
- * Statut factures = tête de liste. Cible pliée Ultra ~110–160 dp.
+ * Sticky Accueil (7.09) : look premium cool mist · hero Reste fort ·
+ * Courses (chariot) + Mettre de côté (tirelire) à côté · Détails QuietLink.
+ * Statut « Encore à payer » = tête de liste. Logique métier inchangée.
  */
 @Composable
 internal fun HomeStickyHeader(
@@ -59,15 +61,16 @@ internal fun HomeStickyHeader(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(A11yTokens.PaperCream)
+                .background(HomeTokens.Canvas)
                 .padding(horizontal = fit.stickyPaddingHorizontal)
                 .padding(vertical = fit.stickyPaddingVertical),
             verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
         ) {
-            // ‹ mois › — calendrier via le libellé. Pas de logo.
+            // ‹ mois › — calendrier via le libellé.
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 MonthStep(
                     iconRes = R.drawable.ic_chevron_left,
@@ -78,18 +81,20 @@ internal fun HomeStickyHeader(
                 Text(
                     text = state.monthLabel,
                     style = MaterialTheme.typography.titleMedium,
-                    color = A11yTokens.InkMuted,
+                    color = HomeTokens.InkMuted,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .weight(1f)
-                        .defaultMinSize(minHeight = A11yTokens.minTouchHeight)
+                        .defaultMinSize(minHeight = HomeTokens.minTouch)
+                        .clip(HomeTokens.chipRadius)
+                        .background(HomeTokens.Chip)
                         .clickable(
                             role = Role.Button,
                             onClickLabel = "Choisir un mois"
                         ) { onOpenMonthPicker() }
-                        .padding(horizontal = 4.dp, vertical = 4.dp)
+                        .padding(horizontal = 8.dp, vertical = 8.dp)
                 )
                 MonthStep(
                     iconRes = R.drawable.ic_chevron_right,
@@ -113,21 +118,32 @@ internal fun HomeStickyHeader(
             }
             val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
             val hasHeroTools = coursesLabel != null || savingsLabel != null
-            // Hero : montant + Reste ; Courses|épargne à droite (même rangée, 1 tap).
+            // Hero carte : montant fort + Reste ; outils icône à droite.
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(2.dp, HomeTokens.heroRadius, clip = false)
+                    .clip(HomeTokens.heroRadius)
+                    .background(HomeTokens.HeroSurface)
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
+                Column(
                     modifier = Modifier
                         .weight(1f)
                         .semantics(mergeDescendants = true) {
                             contentDescription = "$remainingTitle : $remainingAmount"
                         },
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
+                    Text(
+                        text = remainingShort,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = HomeTokens.InkMuted,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                     Text(
                         text = remainingAmount,
                         style = MaterialTheme.typography.displayLarge.copy(
@@ -136,17 +152,9 @@ internal fun HomeStickyHeader(
                             letterSpacing = (-0.02).em
                         ),
                         color = when {
-                            state.summary.remainingCents < 0L -> A11yTokens.DangerInk
-                            else -> A11yTokens.Ink
+                            state.summary.remainingCents < 0L -> HomeTokens.Danger
+                            else -> HomeTokens.Ink
                         },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-                    Text(
-                        text = remainingShort,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = A11yTokens.InkMuted,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -162,14 +170,13 @@ internal fun HomeStickyHeader(
                     )
                 }
             }
-            // Mode aperçu = contexte, toujours visible (pas derrière « Détails »).
             if (state.isFuturePreview) {
                 val previewLabel =
                     "Aperçu — montants d’après la dernière saisie ; pas de FAIT ni d’ajout."
                 Text(
                     text = previewLabel,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.AccentWarn,
+                    color = HomeTokens.Warn,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.semantics {
@@ -195,15 +202,14 @@ internal fun HomeStickyHeader(
             if (hasStickyExtras) {
                 val detailsLabel =
                     if (stickyDetailsOpen) "Masquer" else "Détails"
-                // QuietLink disclosure — hit ≥48, pas une bande outil.
                 Text(
                     text = detailsLabel,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.Link,
+                    color = HomeTokens.Link,
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .heightIn(min = HomeTokens.minTouch)
                         .clickable(
                             role = Role.Button,
                             onClickLabel = if (stickyDetailsOpen) {
@@ -224,7 +230,7 @@ internal fun HomeStickyHeader(
                         Text(
                             text = label,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.AccentWarn,
+                            color = HomeTokens.Warn,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.semantics { contentDescription = label }
@@ -234,7 +240,7 @@ internal fun HomeStickyHeader(
                         Text(
                             text = "Ajoutez un revenu (salaire).",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.AccentWarn,
+                            color = HomeTokens.Warn,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.semantics {
@@ -247,12 +253,12 @@ internal fun HomeStickyHeader(
                         Text(
                             text = warning,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.AccentWarn,
+                            color = HomeTokens.Warn,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .heightIn(min = HomeTokens.minTouch)
                                 .clickable(
                                     role = Role.Button,
                                     onClickLabel = "Voir les échéances hors ce mois"
@@ -272,12 +278,12 @@ internal fun HomeStickyHeader(
                         Text(
                             text = pendingLabel,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
+                            color = HomeTokens.InkMuted,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .heightIn(min = HomeTokens.minTouch)
                                 .clickable(
                                     role = Role.Button,
                                     onClickLabel = "Ouvrir Dossiers"
@@ -288,17 +294,16 @@ internal fun HomeStickyHeader(
                                 }
                         )
                     }
-                    // Gain 60+ : revenir au mois courant sans ouvrir Menu (mois passé).
                     if (showGoCurrent) {
                         Text(
                             text = "Mois en cours",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.Link,
+                            color = HomeTokens.Link,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = A11yTokens.minTouchHeight)
+                                .heightIn(min = HomeTokens.minTouch)
                                 .clickable(
                                     role = Role.Button,
                                     onClickLabel = "Revenir au mois en cours"
@@ -311,6 +316,6 @@ internal fun HomeStickyHeader(
                 }
             }
         }
-        HorizontalDivider(color = A11yTokens.PaperBorder)
+        HorizontalDivider(color = HomeTokens.Divider)
     }
 }

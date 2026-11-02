@@ -30,7 +30,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("jamais le montant")
         assertThat(all).contains("Prélèvement : cochez quand vous voyez le débit")
         assertThat(all).contains("Réglages → Confort → Alertes")
-        assertThat(all).contains("Accueil, à côté du Reste : Courses")
+        assertThat(all).contains("Accueil, à côté du Reste : icône chariot Courses")
         assertThat(all).contains("quand un accord ou un courrier existe")
         assertThat(all).contains("pastille « Accord »")
         assertThat(all).contains("Menu → Dossiers")

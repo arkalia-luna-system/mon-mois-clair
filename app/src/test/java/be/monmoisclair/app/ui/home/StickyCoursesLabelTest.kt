@@ -34,4 +34,13 @@ class StickyCoursesLabelTest {
             stickyCoursesCompactLabel(1L, futurePreview = true)
         ).isNull()
     }
+
+    @Test
+    fun chip_shows_amount_or_courses() {
+        assertThat(stickyCoursesChipLabel(0L)).isEqualTo("Courses")
+        assertThat(
+            stickyCoursesChipLabel(4_500L) { cents -> "${cents / 100} €" }
+        ).isEqualTo("45 €")
+        assertThat(stickyCoursesChipLabel(1L, futurePreview = true)).isNull()
+    }
 }

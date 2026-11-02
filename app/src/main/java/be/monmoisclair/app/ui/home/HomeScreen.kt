@@ -60,7 +60,7 @@ import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.format.MoneyFormat
-import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -353,7 +353,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(A11yTokens.PaperCream)
+                .background(HomeTokens.Canvas)
                 .imePadding()
         ) {
             HomeStickyHeader(
@@ -367,8 +367,8 @@ fun HomeScreen(
                 onOpenDeadlines = onOpenDeadlines,
                 onOpenDossiers = onOpenDossiers,
                 onGoToCurrentMonth = viewModel::goToCurrentMonth,
-                // 7.08 : Courses | épargne à côté du Reste (1 tap Accueil, pas Menu).
-                coursesLabel = stickyCoursesCompactLabel(
+                // 7.09 : chips chariot | tirelire à côté du Reste (1 tap, pas Menu).
+                coursesLabel = stickyCoursesChipLabel(
                     diversSpentCents = state.diversSpentCents,
                     futurePreview = state.isFuturePreview
                 ),
@@ -378,7 +378,7 @@ fun HomeScreen(
                     futurePreview = state.isFuturePreview
                 ),
                 onOpenCourses = { coursesSheetOpen = true },
-                savingsLabel = stickySavingsLabel(
+                savingsLabel = stickySavingsChipLabel(
                     savingsMonthlyCents = state.savingsMonthlyCents,
                     futurePreview = state.isFuturePreview
                 ),
@@ -399,12 +399,12 @@ fun HomeScreen(
                 Snackbar(
                     snackbarData = data,
                     shape = MaterialTheme.shapes.small,
-                    containerColor = A11yTokens.PaperCard,
-                    contentColor = A11yTokens.Ink,
-                    actionColor = A11yTokens.Link,
+                    containerColor = HomeTokens.Card,
+                    contentColor = HomeTokens.Ink,
+                    actionColor = HomeTokens.Link,
                     modifier = Modifier
                         .wrapContentWidth()
-                        .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.small)
+                        .border(1.dp, HomeTokens.CardBorder, MaterialTheme.shapes.small)
                 )
             }
 
@@ -417,11 +417,11 @@ fun HomeScreen(
                 contentPadding = PaddingValues(
                     start = fit.screenPadding,
                     end = fit.screenPadding,
-                    top = 6.dp,
+                    top = 8.dp,
                     bottom = if (fit.compactHomeChrome) 8.dp else 12.dp
                 ),
-                // Écart cartes : 12 dp (charte) même en compact — faux clics.
-                verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)
+                // 7.09 : air cartes Accueil (HomeTokens).
+                verticalArrangement = Arrangement.spacedBy(HomeTokens.cardGap)
             ) {
                 when {
                     state.loading -> {
@@ -444,7 +444,7 @@ fun HomeScreen(
                                 Text(
                                     text = "Chargement du mois…",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.InkMuted
+                                    color = HomeTokens.InkMuted
                                 )
                             }
                         }
@@ -476,7 +476,7 @@ fun HomeScreen(
                                         "Ajoutez le salaire et les factures avec « + Ajouter » en bas."
                                     },
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = A11yTokens.InkMuted
+                                    color = HomeTokens.InkMuted
                                 )
                             }
                         }
@@ -491,17 +491,17 @@ fun HomeScreen(
                             item(key = "still-to-pay") {
                                 Text(
                                     text = label,
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.titleMedium,
                                     color = when {
                                         state.summary.stillToPayCents == 0L ->
-                                            A11yTokens.AccentOkInk
-                                        else -> A11yTokens.InkMuted
+                                            HomeTokens.Ok
+                                        else -> HomeTokens.InkMuted
                                     },
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(bottom = 2.dp)
+                                        .padding(bottom = 4.dp)
                                         .semantics { contentDescription = label }
                                 )
                             }
@@ -518,16 +518,16 @@ fun HomeScreen(
                                         colors = carnetOutlinedTextFieldColors(),
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .heightIn(min = A11yTokens.minTouchHeight),
+                                            .heightIn(min = HomeTokens.minTouch),
                                         textStyle = MaterialTheme.typography.bodyLarge,
                                         trailingIcon = if (searchQuery.isNotEmpty()) {
                                             {
                                                 Text(
                                                     text = "Effacer",
                                                     style = MaterialTheme.typography.bodyLarge,
-                                                    color = A11yTokens.Link,
+                                                    color = HomeTokens.Link,
                                                     modifier = Modifier
-                                                        .heightIn(min = A11yTokens.minTouchHeight)
+                                                        .heightIn(min = HomeTokens.minTouch)
                                                         .clickable(
                                                             role = Role.Button,
                                                             onClickLabel = "Effacer la recherche",
@@ -549,7 +549,7 @@ fun HomeScreen(
                                         Text(
                                             text = emptySearch,
                                             style = MaterialTheme.typography.bodyLarge,
-                                            color = A11yTokens.InkMuted,
+                                            color = HomeTokens.InkMuted,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(vertical = 8.dp)
@@ -562,7 +562,7 @@ fun HomeScreen(
                                         Text(
                                             text = "Le reste en haut est celui de tout le mois.",
                                             style = MaterialTheme.typography.bodyMedium,
-                                            color = A11yTokens.InkMuted,
+                                            color = HomeTokens.InkMuted,
                                             modifier = Modifier.fillMaxWidth()
                                         )
                                     }

@@ -37,3 +37,16 @@ fun stickyCoursesCompactLabel(
         "Courses"
     }
 }
+
+/**
+ * Chip 7.09 (icône chariot) : montant si saisi, sinon « Courses ».
+ * TalkBack = [stickyCoursesLabel].
+ */
+fun stickyCoursesChipLabel(
+    diversSpentCents: Long,
+    futurePreview: Boolean = false,
+    formatCents: (Long) -> String = MoneyFormat::formatCents
+): String? {
+    if (futurePreview) return null
+    return if (diversSpentCents > 0L) formatCents(diversSpentCents) else "Courses"
+}
