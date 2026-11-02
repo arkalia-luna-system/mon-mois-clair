@@ -249,7 +249,7 @@ Un reste négatif et le bandeau « à prévoir » restent en brun `#8A5A1E` (~5,
 | FAIT fond de ligne | `#E3EFE6` | `AccentOkSoft` | |
 | FAIT pastille | `#1E5631` | `AccentOk` | Ivoire dessus ~8,5:1 |
 | Retard / erreur | `#8E3418` | `AccentDanger` | Ivoire dessus ~7,8:1 ; encre brique sur papier ~7,2:1 |
-| Auto (fond de pastille) | `#C9A36A` | `AccentAuto` | Or champagne kit 7.14 · encre dessus ≥7:1 — jamais ce doré comme couleur de lettres seules |
+| Auto (fond de pastille) | `#D4B06A` | `AccentAuto` | Or champagne kit 7.15 · encre dessus ≥7:1 — jamais ce doré comme couleur de lettres seules |
 | Socle barre basse | `#EDE8DC` | `PaperWarm` | Déjà le fond des champs. Sous Menu / + Ajouter, pour que la barre ne se confonde pas avec la page |
 
 ### Suite visuelle

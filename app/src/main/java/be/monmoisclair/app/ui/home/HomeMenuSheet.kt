@@ -135,7 +135,8 @@ fun HomeMenuSheet(
                     onDismiss()
                     onOpenMonthPicker()
                 },
-                leadingIconRes = R.drawable.ic_calendar_month
+                leadingIconRes = R.drawable.ic_kit_calendar,
+                leadingColoredIcon = true
             )
 
             if (isPastMonth || isFuturePreview) {

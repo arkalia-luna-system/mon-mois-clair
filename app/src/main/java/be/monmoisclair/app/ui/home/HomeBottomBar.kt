@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -74,7 +75,8 @@ internal fun HomeBottomBar(
             ) {
                 BottomBarOutlined(
                     text = "Menu",
-                    iconRes = R.drawable.ic_menu,
+                    iconRes = R.drawable.ic_kit_journal,
+                    coloredIcon = true,
                     onClick = onMenu,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -96,7 +98,8 @@ internal fun HomeBottomBar(
                 if (isFuturePreview) {
                     BottomBarOutlined(
                         text = "Mois en cours",
-                        iconRes = R.drawable.ic_calendar_month,
+                        iconRes = R.drawable.ic_kit_calendar,
+                        coloredIcon = true,
                         onClick = onGoCurrentMonth,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -159,7 +162,8 @@ private fun BottomBarOutlined(
     text: String,
     iconRes: Int,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    coloredIcon: Boolean = false
 ) {
     val haptics = LocalHapticFeedback.current
     OutlinedButton(
@@ -179,10 +183,10 @@ private fun BottomBarOutlined(
         Icon(
             painter = painterResource(iconRes),
             contentDescription = null,
-            tint = HomeTokens.Ink,
+            tint = if (coloredIcon) Color.Unspecified else HomeTokens.Ink,
             modifier = Modifier
                 .padding(end = 8.dp)
-                .size(24.dp)
+                .size(if (coloredIcon) 26.dp else 24.dp)
         )
         Text(
             text = text,

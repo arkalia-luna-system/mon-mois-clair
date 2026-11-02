@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Palette app-wide 7.14 — mist cool + accents teal/or champagne (kit brand).
+ * Palette app-wide 7.15 — **mist cool + accents or/teal kit** (choix unique documenté).
+ * Brand chrome (launcher/splash/notif/mark) = dark premium kit ; lecture UI = mist.
  * Alignée [HomeTokens] ; contrastes ≥ 7:1 (tests WCAG).
- * Les getters Compose suivent [LocalCarnetPalette].
  */
 @Immutable
 data class CarnetPalette(
@@ -73,7 +73,7 @@ object A11yTokens {
         accentDanger = Color(0xFF8B2E18),
         dangerInk = Color(0xFF8B2E18),
         /** Or champagne kit brand (Accord / « Clair ») — ≥ 7:1 avec onGold. */
-        accentAuto = Color(0xFFC9A36A),
+        accentAuto = Color(0xFFD4B06A),
         onGold = Color(0xFF121A24),
         buttonFill = Color(0xFF0A5254),
         buttonText = Color(0xFFFFFFFF),
@@ -98,7 +98,7 @@ object A11yTokens {
         accentWarn = Color(0xFFE2C08A),
         accentDanger = Color(0xFF8E3418),
         dangerInk = Color(0xFFF4C4B6),
-        accentAuto = Color(0xFFC9A36A),
+        accentAuto = Color(0xFFD4B06A),
         onGold = Color(0xFF121A24),
         buttonFill = Color(0xFF0A5254),
         buttonText = Color(0xFFFFFFFF),

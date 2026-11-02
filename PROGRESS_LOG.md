@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.14** (brand livre+coche · launcher dark · notif silhouette · Clair or · mist UI) |
+| Dernière étape terminée | **7.15** (craft kit PNG · mist+or/teal · mini-icônes · splash fix · Clair `#D4B06A`) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke One UI (rafraîchir icône launcher + Accueil/Réglages/notif) |
-| Audit | [`brand-logo-unisson.md`](docs/audits/2026-11-02-brand-logo-unisson.md) · visual §7.14 |
+| Prochaine sous-étape | **Athalia** : re-smoke One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) |
+| Audit | [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · brand §7.15 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,26 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.15 Craft visuel expert 10/10 vs kit
+
+**Contexte :** Athalia — audit expert toutes surfaces vs lockup + kit Gemini · OUI plafond craft · crops PNG autorisés · push develop+ff main · install sans wipe.
+
+**Choix unique :** brand chrome = dark premium kit (PNG) · UI lecture = **mist + accents or `#D4B06A` / teal `#0A5254`** (pas demi-mesure mist seul).
+
+**Assets kit :** launcher FG / splash / brand mark / largeIcon / mini journal·check·calendar·profil — crops JPEG Downloads → `drawable-*dpi` · smallIcon mono blanc vector.
+
+**UI :** Menu=journal · FAIT=check · mois/calendrier kit · Confidentialité=profil · wordmark mark kit · splash n’utilise plus `book_launcher.webp`.
+
+**Audit :** [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) — notes avant→après ; craft grille kit ≈9,5–10 brand / UI mist ; **pas** claim « 10 dans la main ».
+
+**Métier/crypto/FAIT logique/offline/a11y inchangés.** Pas purple.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.15` · `versionCode` 120.  
+**Screenshots adb :** `docs/audits/screenshots/2026-11-02-*-7.15.png`.  
+**Device :** install release SM-S938B sans wipe.  
+**Smoke doigt :** Athalia — re-smoke.
 
 ### 2026-11-02 — 7.14 Brand unisson livre + coche
 

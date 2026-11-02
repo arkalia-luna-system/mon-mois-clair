@@ -25,7 +25,7 @@ import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.A11yTokens
 
 /**
- * Wordmark 7.14 : livre+coche brand + « Mon Mois » encre + « Clair » or champagne.
+ * Wordmark 7.15 : mark photoréal kit + « Mon Mois » encre + « Clair » or champagne.
  * Aligné kit brand (Downloads jf2e4w / wn6h37). Pas sur la liste du mois.
  */
 @Composable
@@ -58,7 +58,7 @@ fun AppWordmark(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_brand_mark),
+            painter = painterResource(R.drawable.ic_brand_mark_kit),
             contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier.size(markSize)
@@ -82,7 +82,7 @@ fun BrandMark(
     height: Dp = 28.dp
 ) {
     Icon(
-        painter = painterResource(R.drawable.ic_brand_mark),
+        painter = painterResource(R.drawable.ic_brand_mark_kit),
         contentDescription = null,
         tint = Color.Unspecified,
         modifier = modifier.size(height)

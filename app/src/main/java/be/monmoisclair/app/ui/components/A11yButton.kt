@@ -42,8 +42,9 @@ fun PrimaryA11yButton(
     /** Teal par défaut. Forêt pour « FAIT » sur la ligne (pas un 2ᵉ bouton de barre). */
     containerColor: Color = A11yTokens.ButtonFill,
     contentColor: Color = A11yTokens.ButtonText,
-    /** 7.13 : check Material Symbol sur FAIT. */
-    leadingIconRes: Int? = null
+    /** 7.13 / 7.15 : check FAIT — kit or/teal si [leadingColoredIcon]. */
+    leadingIconRes: Int? = null,
+    leadingColoredIcon: Boolean = false
 ) {
     val haptics = LocalHapticFeedback.current
     // 7.11 : FAIT compact = large (24) premium ; barre = small (16).
@@ -80,8 +81,8 @@ fun PrimaryA11yButton(
             Icon(
                 painter = painterResource(leadingIconRes),
                 contentDescription = null,
-                tint = contentColor,
-                modifier = Modifier.size(18.dp)
+                tint = if (leadingColoredIcon) Color.Unspecified else contentColor,
+                modifier = Modifier.size(if (leadingColoredIcon) 20.dp else 18.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
         }

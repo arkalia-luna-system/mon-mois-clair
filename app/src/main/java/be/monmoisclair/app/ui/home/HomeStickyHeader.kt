@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -81,13 +85,7 @@ internal fun HomeStickyHeader(
                     enabled = state.canGoPrev,
                     onClick = onPrevMonth
                 )
-                Text(
-                    text = state.monthLabel,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = HomeTokens.InkMuted,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                Row(
                     modifier = Modifier
                         .weight(1f)
                         .defaultMinSize(minHeight = HomeTokens.minTouch)
@@ -97,8 +95,27 @@ internal fun HomeStickyHeader(
                             role = Role.Button,
                             onClickLabel = "Choisir un mois"
                         ) { onOpenMonthPicker() }
-                        .padding(horizontal = 10.dp, vertical = 10.dp)
-                )
+                        .padding(horizontal = 10.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_kit_calendar),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .size(22.dp)
+                    )
+                    Text(
+                        text = state.monthLabel,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = HomeTokens.InkMuted,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 MonthStep(
                     iconRes = R.drawable.ic_chevron_right,
                     description = "Mois suivant",

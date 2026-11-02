@@ -279,7 +279,8 @@ internal fun ExpenseRow(
                             onClick = onToggle,
                             fillMaxWidth = false,
                             containerColor = HomeTokens.OkFill,
-                            leadingIconRes = R.drawable.ic_check,
+                            leadingIconRes = R.drawable.ic_kit_check,
+                            leadingColoredIcon = true,
                             modifier = faitModifier
                         )
                     }

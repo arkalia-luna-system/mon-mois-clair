@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Design system Accueil + référence visuelle 7.14 — mist cool + brand livre/coche.
- * Palette alignée [A11yTokens] (thème global). Touch ≥ 48 · contrastes ≥ 7:1.
+ * Design system Accueil 7.15 — mist cool + accents or/teal kit (livre/coche).
+ * Palette alignée [A11yTokens]. Touch ≥ 48 · contrastes ≥ 7:1.
  */
 @Immutable
 data class HomePalette(

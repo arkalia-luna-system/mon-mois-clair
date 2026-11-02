@@ -10,10 +10,10 @@
         <!-- windowLightNavigationBar : values-v27 (API 27+). -->
     </style>
 
-    <!-- Android 12+ — le carnet du logo, sur le même papier. -->
+    <!-- Android 12+ — marque livre+coche kit (PNG) sur navy brand. -->
     <style name="Theme.MonMoisClair.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/book_launcher</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_mark</item>
         <item name="postSplashScreenTheme">@style/Theme.MonMoisClair</item>
     </style>
 </resources>

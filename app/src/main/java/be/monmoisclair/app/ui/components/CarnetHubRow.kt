@@ -39,7 +39,9 @@ fun CarnetHubRow(
     labelColor: Color = A11yTokens.Ink,
     chevronColor: Color = A11yTokens.InkMuted,
     showDivider: Boolean = true,
-    leadingIconRes: Int? = null
+    leadingIconRes: Int? = null,
+    /** true = PNG kit or/teal (pas de tint mono). */
+    leadingColoredIcon: Boolean = false
 ) {
     val shape = MaterialTheme.shapes.medium
     if (showDivider) {
@@ -69,8 +71,8 @@ fun CarnetHubRow(
                 Icon(
                     painter = painterResource(leadingIconRes),
                     contentDescription = null,
-                    tint = A11yTokens.Link,
-                    modifier = Modifier.size(22.dp)
+                    tint = if (leadingColoredIcon) Color.Unspecified else A11yTokens.Link,
+                    modifier = Modifier.size(if (leadingColoredIcon) 26.dp else 22.dp)
                 )
             }
         }

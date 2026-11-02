@@ -149,7 +149,8 @@ fun UpcomingScreen(
             CarnetHubRow(
                 label = "${month.monthLabel} · $suffix",
                 onClick = { selectedYmKey = month.yearMonth.toString() },
-                leadingIconRes = R.drawable.ic_calendar_month
+                leadingIconRes = R.drawable.ic_kit_calendar,
+                leadingColoredIcon = true
             )
         }
     }
