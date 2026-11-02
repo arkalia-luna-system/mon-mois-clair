@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-02 (fin de journée ~7.15) — ne plus lire pour l’état craft. Vivants : `visual-expert-10` · `brand-logo-unisson` · CHARTE / JOURNAL / PRIVACY / SECURITY / NOTICE / CI.
+
 # Accueil — inspirations budget 2025–2026 (étape 1)
 
 **Date :** 2026-11-02 · **Produit :** Mon Mois Clair Accueil · **Autorisé :** Athalia — ne plus coller au « carnet papier belge » pour ce redesign.

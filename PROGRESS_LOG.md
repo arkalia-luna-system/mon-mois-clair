@@ -12,7 +12,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Dernière étape terminée | **7.15.1** (copy FR hors-brand · Aide Résumé · QuietLink Dossiers · restore sans jargon) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : re-smoke One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) + copy restore/résumé |
-| Audit | [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · brand §7.15 · patch copy 7.15.1 |
+| Audit | [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · [`brand-logo-unisson.md`](docs/audits/2026-11-02-brand-logo-unisson.md) · 7.15.1 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — Fin de journée docs (hygiène audits)
+
+**Périmètre :** docs only · pas de code app.
+
+**Archivés →** `docs/audits/archive/` (bandeau) :
+- `2026-11-02-accueil-inspiration-2026.md`
+- `2026-11-02-expert-00-synthese.md`
+- `2026-11-02-verif-audits-accueil.md`
+- `2026-11-02-visual-system-2027.md`
+- `2026-11-02-fin-journee-qa.md`
+
+**Vivants audits :** `visual-expert-10` · `brand-logo-unisson`.  
+**Index :** `docs/README.md` + `docs/archive/README.md` alignés.  
+**Propreté :** `._*` hors `.git` = **0**.
 
 ### 2026-11-02 — 7.15.1 Copy FR + alignements fonctionnels (hors-brand)
 
@@ -32,6 +47,8 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 **Fonctionnel :** QuietLink Réglages « Aussi dans Dossiers » masqué si `dossierCount == 0` (plus de cul-de-sac quand résumé ouvert pour déficit seul). Import mort `QuietLinkA11y` Accueil.
 
 **Évité (autre agent) :** HomeTokens / Theme / Color / Type / Shape / mipmap / launcher / notif / brand / drawable logo / sticky style couleurs.
+
+**Audit QA (archivé) :** [`fin-journee-qa.md`](docs/audits/archive/2026-11-02-fin-journee-qa.md) — chemins FAIT / share / restore / Courses·épargne / hub.
 
 **Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
 **Version :** `0.1.0-7.15.1` · `versionCode` 121.
@@ -124,7 +141,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Contexte :** OUI COMPLET Athalia — pousser le visuel **beaucoup plus loin** (toute l’app), quitter le look carnet crème CHARTE.
 
-**Direction :** [`docs/audits/2026-11-02-visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) — M3 Expressive dial-down finance · mist cool · pas purple / cream-terracotta.
+**Direction :** [`docs/audits/archive/2026-11-02-visual-system-2027.md`](docs/audits/archive/2026-11-02-visual-system-2027.md) — M3 Expressive dial-down finance · mist cool · pas purple / cream-terracotta.
 
 **Tokens :** `A11yTokens` Day/Night = palette globale mist (canvas `#F0F4F7`) ; `HomeTokens` prolongé (radius 24/20/16, elevations) ; shapes thème 14/20/28 ; widget + launcher bg + system bars alignés.
 
@@ -139,7 +156,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Contexte :** Athalia n’aime pas l’écran principal ; autorise explicitement de **ne plus coller** au carnet papier belge pour Accueil. Look 2026 premium 60+.
 
-**Inspirations :** [`docs/audits/2026-11-02-accueil-inspiration-2026.md`](docs/audits/2026-11-02-accueil-inspiration-2026.md) (YNAB / PocketGuard / Goodbudget / Emma / One UI — patterns, pas copie).
+**Inspirations :** [`docs/audits/archive/2026-11-02-accueil-inspiration-2026.md`](docs/audits/archive/2026-11-02-accueil-inspiration-2026.md) (YNAB / PocketGuard / Goodbudget / Emma / One UI — patterns, pas copie).
 
 **Design system Accueil :** `HomeTokens` (mist cool, hero blanc, chips ciel/sauge) — contraste ≥ 7:1 (tests). Typo existante Source Serif 4 + Source Sans 3.
 
@@ -166,7 +183,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Vérif audits P0/P1 :** fiche spacer/grille, Dossiers filet, retard épargne, résumé share, DisplayFit agressif — **OK code**. Smoke doigt = Athalia.
 
-**MD :** thématiques + expert-01…06 + premium → `docs/audits/archive/` ; vivant = verif + expert-00.
+**MD :** thématiques + expert-01…06 + premium → `docs/audits/archive/` ; (fin de journée 7.15 : verif + expert-00 + inspirations + visual-system aussi archivés ; vivants = visual-expert-10 + brand-logo).
 
 **Tests :** **410 exécutés** / 411 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
 **Version :** `0.1.0-7.08` · `versionCode` 113.  
@@ -175,7 +192,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ### 2026-11-02 — 7.07 Accueil pack B + Fiche + Aide
 
 **Contexte :** Athalia — Accueil « quasi pas changé » post-7.06 · expert-01 **4,5/10** · pack **B** (~110–140 dp).  
-**Synthèse :** [`docs/audits/2026-11-02-expert-00-synthese.md`](docs/audits/2026-11-02-expert-00-synthese.md).
+**Synthèse :** [`docs/audits/archive/2026-11-02-expert-00-synthese.md`](docs/audits/archive/2026-11-02-expert-00-synthese.md).
 
 **Vague Accueil (P0) :**
 - `DisplayFit` : densités sticky agressives **même Ultra** (pad 6 / gap 2 / hero 34).

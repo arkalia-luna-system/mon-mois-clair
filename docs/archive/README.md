@@ -1,6 +1,6 @@
 # Archive docs — ne plus éditer pour l’état produit
 
-Décisions vivantes : `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `docs/PLAN_PRODUIT_FINI.md` (court), `AUDIT_STATUS.md`, `BENCHMARK_QUALITE_2026.md`.
+Décisions vivantes : `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `PRIVACY.md`, `SECURITY.md`, `docs/NOTICE_FAMILLE_2MIN.md`, `docs/CI.md`, audits `visual-expert-10` + `brand-logo-unisson`.
 
 | Fichier / dossier | Pourquoi archivé |
 |-------------------|------------------|
@@ -12,9 +12,10 @@ Décisions vivantes : `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `docs/PLAN
 | `RECHERCHE_OUTILS_2026-10-21.md` | Sources matin |
 | `CHECKLIST_S25_2026-10-19.md` | Passage device 5.4.1 (19 oct) |
 | `campagnes-2026-10-20/` | Rapports testeurs 6.26 |
-| `audits-2026-10-23/` | Nuit-00…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 · **smoke-device** S25 (bandeau figé) |
+| `audits-2026-10-23/` | Nuit-00…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 · **smoke-device** S25 |
 | `audits-2026-10-26/` | Finals 10-26 + crash-open (bandeau ARCHIVÉ) |
-| `audits-2026-11-01/` | Samsung défaillances 6.91 + **premium-01…06** + **fix-progress** (bandeau ARCHIVÉ 7.01) |
+| `audits-2026-11-01/` | Samsung défaillances 6.91 + **premium-01…06** + **fix-progress** |
+| `../audits/archive/` | expert-00…06 · thématiques 7.02–7.08 · premium-00/clean · inspirations · visual-system · verif · fin-journee-qa (bandeau 2026-11-02) |
 
 Ne pas rouvrir pour décider d’un correctif. Reporter dans le journal ou la charte.  
-Audits vivants : `docs/audits/2026-11-01-premium-00-synthese.md` + `premium-clean-10.md`.
+Audits vivants : `docs/audits/2026-11-02-visual-expert-10.md` + `2026-11-02-brand-logo-unisson.md`.

@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-02 (fin de journée ~7.15) — ne plus lire pour l’état craft. Vivants : `visual-expert-10` · `brand-logo-unisson` · CHARTE / JOURNAL / PRIVACY / SECURITY / NOTICE / CI.
+
 # Synthèse expert-00 — P0 dédupliqués (historique 7.07 → corrigé 7.08)
 
 | Champ | Valeur |

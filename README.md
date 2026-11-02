@@ -50,7 +50,7 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 |---------|------|
 | Version | `0.1.0-7.15.1` |
 | Dernière étape | **7.15.1** Copy FR hors-brand · Aide Résumé · QuietLink Dossiers · restore sans jargon (après craft 7.15) |
-| Device | Install SM-S938B 7.15 (sans wipe). **Re-smoke Athalia** — craft grille kit ≠ « 10 dans la main » |
+| Device | Install SM-S938B **7.15.1** (sans wipe). **Re-smoke Athalia** FAIT / share / restore |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **414 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |

@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-02 (fin de journée ~7.15) — ne plus lire pour l’état craft. Vivants : `visual-expert-10` · `brand-logo-unisson` · CHARTE / JOURNAL / PRIVACY / SECURITY / NOTICE / CI.
+
 # Vérif audits Accueil — 7.08
 
 | Champ | Valeur |
