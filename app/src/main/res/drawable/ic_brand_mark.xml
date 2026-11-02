@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Marque Compose / bandeaux — M teal sur disque mist. -->
+<!-- Marque Compose / bandeaux — M teal sur disque mist gradient (7.13). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:fillColor="#D4E6EA"
-        android:pathData="M12,2c5.52,0 10,4.48 10,10s-4.48,10 -10,10S2,17.52 2,12S6.48,2 12,2z" />
+        android:pathData="M12,2c5.52,0 10,4.48 10,10s-4.48,10 -10,10S2,17.52 2,12S6.48,2 12,2z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="radial"
+                android:centerX="9.5"
+                android:centerY="9"
+                android:gradientRadius="11">
+                <item android:offset="0" android:color="#F2F8F9" />
+                <item android:offset="0.6" android:color="#C5E0E4" />
+                <item android:offset="1" android:color="#8FC4CA" />
+            </gradient>
+        </aapt:attr>
+    </path>
     <path
         android:fillColor="#0A5254"
-        android:pathData="M7.2,17.2V6.8h1.9l3.0,6.3 3.0,-6.3h1.9v10.4h-1.7V10.2l-2.9,6.2h-0.6l-2.9,-6.2v7z" />
+        android:pathData="M7.4,16.8V7.2h1.7l2.8,5.9 2.8,-5.9h1.7v9.6h-1.55V10.2l-2.7,5.7h-0.5l-2.7,-5.7v6.6z" />
 </vector>

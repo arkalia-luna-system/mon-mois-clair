@@ -2,8 +2,10 @@ package be.monmoisclair.app.ui.home
 
 import android.content.Intent
 import android.graphics.Bitmap
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -452,48 +454,50 @@ fun HomeScreen(
                     }
                     state.timeline.isEmpty() -> {
                         item {
-                            // 7.11 H08 : empty premium — carte soft + hiérarchie (pas tip-box).
+                            // 7.13 : empty premium — carte soft + fade calme.
                             val emptyShape = HomeTokens.heroRadius
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        vertical = if (fit.compactHomeChrome) {
-                                            12.dp
-                                        } else {
-                                            HomeTokens.emptyPadVertical
-                                        }
+                            AnimatedVisibility(visible = true, enter = fadeIn(tween(280))) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            vertical = if (fit.compactHomeChrome) {
+                                                16.dp
+                                            } else {
+                                                HomeTokens.emptyPadVertical
+                                            }
+                                        )
+                                        .shadow(HomeTokens.cardElevation, emptyShape, clip = false)
+                                        .clip(emptyShape)
+                                        .background(HomeTokens.HeroSurface)
+                                        .padding(
+                                            horizontal = 20.dp,
+                                            vertical = if (fit.compactHomeChrome) 20.dp else 28.dp
+                                        ),
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        if (fit.compactHomeChrome) 10.dp else 12.dp
                                     )
-                                    .shadow(HomeTokens.cardElevation, emptyShape, clip = false)
-                                    .clip(emptyShape)
-                                    .background(HomeTokens.Card)
-                                    .padding(
-                                        horizontal = 18.dp,
-                                        vertical = if (fit.compactHomeChrome) 18.dp else 22.dp
-                                    ),
-                                verticalArrangement = Arrangement.spacedBy(
-                                    if (fit.compactHomeChrome) 8.dp else 10.dp
-                                )
-                            ) {
-                                Text(
-                                    text = if (state.isFuturePreview) {
-                                        "Rien de prévu ce mois-là"
-                                    } else {
-                                        "Rien encore ce mois"
-                                    },
-                                    style = MaterialTheme.typography.titleLarge,
-                                    color = HomeTokens.Ink
-                                )
-                                Text(
-                                    text = if (state.isFuturePreview) {
-                                        "Les factures et rentrées réapparaissent ici quand elles sont dues. " +
-                                            "Revenez au mois en cours pour ajouter."
-                                    } else {
-                                        "Ajoutez le salaire et les factures avec « + Ajouter » en bas."
-                                    },
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = HomeTokens.InkMuted
-                                )
+                                ) {
+                                    Text(
+                                        text = if (state.isFuturePreview) {
+                                            "Rien de prévu ce mois-là"
+                                        } else {
+                                            "Rien encore ce mois"
+                                        },
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        color = HomeTokens.Ink
+                                    )
+                                    Text(
+                                        text = if (state.isFuturePreview) {
+                                            "Les factures et rentrées réapparaissent ici quand elles sont dues. " +
+                                                "Revenez au mois en cours pour ajouter."
+                                        } else {
+                                            "Ajoutez le salaire et les factures avec « + Ajouter » en bas."
+                                        },
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = HomeTokens.InkMuted
+                                    )
+                                }
                             }
                         }
                     }

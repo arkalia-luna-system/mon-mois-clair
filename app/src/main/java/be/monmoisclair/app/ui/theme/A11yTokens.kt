@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Palette app-wide 7.12 — mist cool 2027 (plus de crème carnet).
+ * Palette app-wide 7.13 — mist cool 2027 (plus de crème carnet).
  * Alignée [HomeTokens] ; contrastes ≥ 7:1 (tests WCAG).
  * Les getters Compose suivent [LocalCarnetPalette].
  */

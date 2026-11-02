@@ -3,13 +3,17 @@ package be.monmoisclair.app.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -18,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -34,9 +39,11 @@ fun PrimaryA11yButton(
     enabled: Boolean = true,
     /** false = bouton compact (ex. FAIT à droite d’une carte). */
     fillMaxWidth: Boolean = true,
-    /** Teal par défaut. Forêt pour « FAIT ✓ » sur la ligne (pas un 2ᵉ bouton de barre). */
+    /** Teal par défaut. Forêt pour « FAIT » sur la ligne (pas un 2ᵉ bouton de barre). */
     containerColor: Color = A11yTokens.ButtonFill,
-    contentColor: Color = A11yTokens.ButtonText
+    contentColor: Color = A11yTokens.ButtonText,
+    /** 7.13 : check Material Symbol sur FAIT. */
+    leadingIconRes: Int? = null
 ) {
     val haptics = LocalHapticFeedback.current
     // 7.11 : FAIT compact = large (24) premium ; barre = small (16).
@@ -54,7 +61,7 @@ fun PrimaryA11yButton(
         contentPadding = if (fillMaxWidth) {
             PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         } else {
-            PaddingValues(horizontal = 14.dp, vertical = 8.dp)
+            PaddingValues(horizontal = 12.dp, vertical = 8.dp)
         },
         shape = shape,
         elevation = ButtonDefaults.buttonElevation(
@@ -69,6 +76,15 @@ fun PrimaryA11yButton(
             disabledContentColor = contentColor.copy(alpha = 0.85f)
         )
     ) {
+        if (leadingIconRes != null) {
+            Icon(
+                painter = painterResource(leadingIconRes),
+                contentDescription = null,
+                tint = contentColor,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+        }
         Text(
             text = text,
             style = MaterialTheme.typography.labelLarge,

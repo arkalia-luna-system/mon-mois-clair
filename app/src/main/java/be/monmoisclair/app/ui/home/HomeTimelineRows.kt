@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -274,10 +275,11 @@ internal fun ExpenseRow(
                         )
                     } else {
                         PrimaryA11yButton(
-                            text = "FAIT ✓",
+                            text = "FAIT",
                             onClick = onToggle,
                             fillMaxWidth = false,
                             containerColor = HomeTokens.OkFill,
+                            leadingIconRes = R.drawable.ic_check,
                             modifier = faitModifier
                         )
                     }

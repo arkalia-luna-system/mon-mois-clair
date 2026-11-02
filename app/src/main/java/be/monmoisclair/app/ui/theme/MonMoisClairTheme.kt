@@ -111,7 +111,7 @@ internal fun carnetTypography(ink: Color, muted: Color) = Typography(
     displayLarge = TextStyle(
         fontFamily = BrandSerif,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 34.sp,
+        fontSize = 40.sp,
         color = ink
     ).tabular(),
     displayMedium = TextStyle(

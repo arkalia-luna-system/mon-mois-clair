@@ -1,6 +1,6 @@
 package be.monmoisclair.app.ui.upcoming
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +22,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -33,6 +35,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.R
 import be.monmoisclair.app.domain.usecase.UpcomingLine
 import be.monmoisclair.app.domain.usecase.UpcomingMonth
 import be.monmoisclair.app.ui.components.CarnetHubRow
@@ -80,14 +83,19 @@ fun UpcomingScreen(
         }
 
         CarnetPageTitle("À venir")
+        val introShape = MaterialTheme.shapes.large
         Text(
             text = "Aperçu des mois suivants (sans FAIT). Pour un mois précis, " +
                 "ouvrez le calendrier sur l’accueil.",
             style = MaterialTheme.typography.bodyLarge,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(introShape)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 16.dp, vertical = 14.dp)
         )
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 8.dp else 12.dp))
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 10.dp else 14.dp))
 
         if (state.loading && state.months.isEmpty()) {
             Row(
@@ -95,7 +103,9 @@ fun UpcomingScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
+                    .clip(introShape)
+                    .background(A11yTokens.PaperCard)
+                    .padding(16.dp)
                     .semantics {
                         contentDescription = "Chargement de l’aperçu"
                         liveRegion = LiveRegionMode.Polite
@@ -113,9 +123,13 @@ fun UpcomingScreen(
         if (state.months.isEmpty()) {
             Text(
                 text = "Rien de prévu sur les prochains mois.",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(introShape)
+                    .background(A11yTokens.PaperCard)
+                    .padding(horizontal = 18.dp, vertical = 22.dp)
             )
             return@PinnedBackScaffold
         }
@@ -134,7 +148,8 @@ fun UpcomingScreen(
             }
             CarnetHubRow(
                 label = "${month.monthLabel} · $suffix",
-                onClick = { selectedYmKey = month.yearMonth.toString() }
+                onClick = { selectedYmKey = month.yearMonth.toString() },
+                leadingIconRes = R.drawable.ic_calendar_month
             )
         }
     }
@@ -170,14 +185,14 @@ private fun UpcomingLineCard(line: UpcomingLine, compact: Boolean) {
         append(" · le ${line.dayOfMonth}")
     }
     val shape = MaterialTheme.shapes.medium
-    val rowPad = if (compact) 10.dp else 14.dp
-    // Charte carnet : filet seul (pas ombre Material).
+    val rowPad = if (compact) 12.dp else 16.dp
+    // 7.13 : carte soft ombre (plus filet carnet seul).
     Surface(
         color = A11yTokens.PaperCard,
         shape = shape,
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, A11yTokens.PaperBorder, shape)
+            .shadow(2.dp, shape, clip = false)
     ) {
         Column(
             modifier = Modifier

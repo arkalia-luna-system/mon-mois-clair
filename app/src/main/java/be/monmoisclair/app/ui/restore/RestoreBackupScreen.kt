@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -160,49 +163,72 @@ fun RestoreBackupScreen(
     }
 
     val fit = rememberDisplayFit()
+    val sectionShape = MaterialTheme.shapes.large
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         CarnetPageTitle("Restaurer une sauvegarde")
-        Text(
-            text = "À utiliser après une réinstallation ou sur un nouveau téléphone. " +
-                "Cette action remplace tout le carnet. " +
-                "Si la copie vient d’un mail ou de WhatsApp, entrez le code noté à part.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted,
+        // 7.13 : intro en carte mid (plus mur de texte plat).
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = if (fit.compactHomeChrome) 6.dp else 8.dp)
-        )
+                .padding(vertical = if (fit.compactHomeChrome) 6.dp else 10.dp)
+                .shadow(1.dp, sectionShape, clip = false)
+                .clip(sectionShape)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 16.dp, vertical = 14.dp)
+        ) {
+            Text(
+                text = "À utiliser après une réinstallation ou sur un nouveau téléphone. " +
+                    "Cette action remplace tout le carnet. " +
+                    "Si la copie vient d’un mail ou de WhatsApp, entrez le code noté à part.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.InkMuted,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
-        OutlinedTextField(
-            value = state.shareCodeDraft,
-            onValueChange = viewModel::onShareCodeChange,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !state.busy,
-            singleLine = true,
-            label = { Text("Code noté sur papier") },
-            placeholder = { Text("8 chiffres du téléphone d’origine") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
-        )
-
-        if (CleartextLegacyGrace.OPT_IN_AVAILABLE) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Checkbox(
-                    checked = state.allowCleartextLegacy,
-                    onCheckedChange = viewModel::onAllowCleartextLegacyChange,
-                    enabled = !state.busy
-                )
-                Text(
-                    text = RestoreMessages.CLEARTEXT_GRACE_CHECKBOX,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.InkMuted,
-                    modifier = Modifier.weight(1f)
-                )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
+                .shadow(2.dp, sectionShape, clip = false)
+                .clip(sectionShape)
+                .background(A11yTokens.PaperCard)
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "Code de partage",
+                style = MaterialTheme.typography.titleMedium,
+                color = A11yTokens.Ink
+            )
+            OutlinedTextField(
+                value = state.shareCodeDraft,
+                onValueChange = viewModel::onShareCodeChange,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !state.busy,
+                singleLine = true,
+                label = { Text("Code noté sur papier") },
+                placeholder = { Text("8 chiffres du téléphone d’origine") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
+            )
+            if (CleartextLegacyGrace.OPT_IN_AVAILABLE) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Checkbox(
+                        checked = state.allowCleartextLegacy,
+                        onCheckedChange = viewModel::onAllowCleartextLegacyChange,
+                        enabled = !state.busy
+                    )
+                    Text(
+                        text = RestoreMessages.CLEARTEXT_GRACE_CHECKBOX,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
         }
 

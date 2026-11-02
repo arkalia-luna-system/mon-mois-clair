@@ -41,7 +41,10 @@ internal fun HomeBottomBar(
     onAdd: () -> Unit,
     onGoCurrentMonth: () -> Unit
 ) {
-    HorizontalDivider(color = HomeTokens.Divider)
+    HorizontalDivider(
+        thickness = HomeTokens.hairline,
+        color = HomeTokens.Divider.copy(alpha = 0.65f)
+    )
     Surface(
         color = HomeTokens.BarSurface,
         shadowElevation = HomeTokens.barElevation,
@@ -53,9 +56,9 @@ internal fun HomeBottomBar(
                 .fillMaxWidth()
                 .padding(
                     horizontal = HomeTokens.screenPad,
-                    vertical = 10.dp
+                    vertical = 12.dp
                 ),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -126,9 +129,10 @@ private fun BottomBarFilled(
         modifier = modifier
             .heightIn(min = HomeTokens.minTouch)
             .semantics { contentDescription = "+ $text" },
-        shape = HomeTokens.buttonRadius,
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp, pressedElevation = 0.dp),
-        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
+        // 7.13 : FAB soft (radius large + icône plus présente).
+        shape = MaterialTheme.shapes.large,
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 0.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = A11yTokens.ButtonFill,
             contentColor = A11yTokens.ButtonText
@@ -139,8 +143,8 @@ private fun BottomBarFilled(
             contentDescription = null,
             tint = A11yTokens.ButtonText,
             modifier = Modifier
-                .padding(end = 6.dp)
-                .size(20.dp)
+                .padding(end = 8.dp)
+                .size(24.dp)
         )
         Text(
             text = text,
@@ -177,8 +181,8 @@ private fun BottomBarOutlined(
             contentDescription = null,
             tint = HomeTokens.Ink,
             modifier = Modifier
-                .padding(end = 6.dp)
-                .size(20.dp)
+                .padding(end = 8.dp)
+                .size(24.dp)
         )
         Text(
             text = text,

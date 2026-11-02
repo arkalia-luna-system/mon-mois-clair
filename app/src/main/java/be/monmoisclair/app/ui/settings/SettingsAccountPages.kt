@@ -1,8 +1,11 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -221,17 +226,27 @@ fun SettingsPrivacyScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.PRIVACY)
+        val lockShape = MaterialTheme.shapes.large
+        // 7.13 : intro + toggle en cartes soft (plus texte plat).
         Text(
             text = "Le carnet est protégé sur le téléphone. " +
                 "Le verrou ci-dessous cache aussi l’écran, le widget et les montants des alertes.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(lockShape)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 16.dp, vertical = 14.dp)
         )
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 10.dp else 14.dp))
         val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .shadow(2.dp, lockShape, clip = false)
+                .clip(lockShape)
+                .background(A11yTokens.PaperCard)
                 .heightIn(min = A11yTokens.minTouchHeight)
                 .clickable(
                     enabled = !state.busy && canToggle,
@@ -240,6 +255,7 @@ fun SettingsPrivacyScreen(
                     if (state.biometricEnabled) viewModel.disableBiometric()
                     else requestEnable()
                 }
+                .padding(horizontal = 12.dp, vertical = 10.dp)
                 .semantics {
                     contentDescription = if (state.biometricEnabled) {
                         "Verrouiller avec empreinte ou code, activé"

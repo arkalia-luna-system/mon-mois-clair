@@ -57,17 +57,17 @@ fun HowItWorksScreen(
             color = A11yTokens.InkMuted
         )
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
-        // 7.11 AID : cartes soft + fade/slide léger (plus de filets plat).
+        // 7.13 AID : cartes soft + padding aéré + fade/slide.
         HowItWorksCopy.sections.forEachIndexed { index, section ->
             val expanded = openIndex == index
-            val shape = MaterialTheme.shapes.medium
+            val shape = MaterialTheme.shapes.large
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .shadow(2.dp, shape, clip = false)
                     .clip(shape)
                     .background(A11yTokens.PaperCard)
-                    .padding(horizontal = 14.dp, vertical = 4.dp)
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
             ) {
                 Row(
                     modifier = Modifier

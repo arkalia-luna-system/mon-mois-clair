@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -31,7 +32,7 @@ import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Chip outil Accueil 7.10 — icône filled + libellé court, ≥48 dp.
+ * Chip outil Accueil 7.13 — well tonal + icône filled ≥26 dp + libellé, ≥48 dp.
  */
 @Composable
 internal fun StickyIconTool(
@@ -43,37 +44,46 @@ internal fun StickyIconTool(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    Row(
         modifier = modifier
-            .widthIn(min = HomeTokens.minTouch, max = 108.dp)
+            .widthIn(min = HomeTokens.minTouch)
             .heightIn(min = HomeTokens.minTouch)
-            .clip(HomeTokens.chipRadius)
+            .clip(HomeTokens.wellRadius)
             .background(chipColor)
             .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
-            .padding(horizontal = 8.dp, vertical = 6.dp)
+            .padding(horizontal = 12.dp, vertical = 10.dp)
             .semantics { this.contentDescription = contentDescription },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Icon(
-            painter = painterResource(iconRes),
-            contentDescription = null,
-            tint = HomeTokens.Ink,
-            modifier = Modifier.size(24.dp)
-        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(40.dp)
+                .clip(HomeTokens.chipRadius)
+                .background(HomeTokens.HeroSurface.copy(alpha = 0.55f))
+        ) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                tint = HomeTokens.Ink,
+                modifier = Modifier.size(26.dp)
+            )
+        }
         Text(
             text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = HomeTokens.InkMuted,
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+            color = HomeTokens.Ink,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start,
+            modifier = Modifier.weight(1f, fill = false)
         )
     }
 }
 
 /**
- * 7.09 : Courses (chariot) | Mettre de côté (tirelire) à côté du Reste.
+ * 7.13 : Courses | Mettre de côté en grille sous le montant (icon wells).
  */
 @Composable
 internal fun StickyHeroTools(
@@ -85,47 +95,8 @@ internal fun StickyHeroTools(
     onOpenSavings: () -> Unit
 ) {
     if (coursesLabel == null && savingsLabel == null) return
-    Column(
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        if (coursesLabel != null) {
-            StickyIconTool(
-                iconRes = R.drawable.ic_cart,
-                label = coursesLabel,
-                chipColor = HomeTokens.CoursesChip,
-                onClickLabel = "Modifier les courses",
-                contentDescription = coursesDescription ?: coursesLabel,
-                onClick = onOpenCourses
-            )
-        }
-        if (savingsLabel != null) {
-            StickyIconTool(
-                iconRes = R.drawable.ic_piggy,
-                label = savingsLabel,
-                chipColor = HomeTokens.SavingsChip,
-                onClickLabel = "Modifier mettre de côté",
-                contentDescription = savingsDescription ?: savingsLabel,
-                onClick = onOpenSavings
-            )
-        }
-    }
-}
-
-/** Rangée secondaire legacy : Courses | Mettre de côté. */
-@Composable
-internal fun StickyToolsRow(
-    coursesLabel: String?,
-    coursesDescription: String?,
-    onOpenCourses: () -> Unit,
-    savingsLabel: String?,
-    savingsDescription: String?,
-    onOpenSavings: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    if (coursesLabel == null && savingsLabel == null) return
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -151,6 +122,29 @@ internal fun StickyToolsRow(
                 modifier = Modifier.weight(1f)
             )
         }
+    }
+}
+
+/** Rangée secondaire legacy : Courses | Mettre de côté. */
+@Composable
+internal fun StickyToolsRow(
+    coursesLabel: String?,
+    coursesDescription: String?,
+    onOpenCourses: () -> Unit,
+    savingsLabel: String?,
+    savingsDescription: String?,
+    onOpenSavings: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        StickyHeroTools(
+            coursesLabel = coursesLabel,
+            coursesDescription = coursesDescription,
+            onOpenCourses = onOpenCourses,
+            savingsLabel = savingsLabel,
+            savingsDescription = savingsDescription,
+            onOpenSavings = onOpenSavings
+        )
     }
 }
 
@@ -210,7 +204,7 @@ internal fun MonthStep(
             painter = painterResource(iconRes),
             contentDescription = null,
             tint = if (enabled) HomeTokens.InkMuted else HomeTokens.InkMuted.copy(alpha = 0.4f),
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(26.dp)
         )
     }
 }

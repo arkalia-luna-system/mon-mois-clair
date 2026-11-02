@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Couche monochrome Android 13+ (themed icons) — silhouette M seule. -->
+<!-- Couche monochrome Android 13+ — silhouette M inset (padding safe). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -7,5 +7,5 @@
     android:viewportHeight="108">
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M36,72V36h7.2l10.8,22.5L64.8,36H72v36h-6.6V47.4L54.6,70.2h-1.2L42.6,47.4V72z" />
+        android:pathData="M38,70V38h6.4l9.6,20L63.6,38H70v32h-5.8V48.2L54.4,68.4h-0.8L43.8,48.2V70z" />
 </vector>

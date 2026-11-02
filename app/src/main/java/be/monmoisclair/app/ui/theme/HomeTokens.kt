@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Design system Accueil + référence visuelle 7.12 — mist cool 2027.
+ * Design system Accueil + référence visuelle 7.13 — mist cool 2027.
  * Palette alignée [A11yTokens] (thème global). Touch ≥ 48 · contrastes ≥ 7:1.
  */
 @Immutable
@@ -39,25 +39,28 @@ data class HomePalette(
 
 object HomeTokens {
     val minTouch = 48.dp
-    val heroRadius = RoundedCornerShape(24.dp)
+    val heroRadius = RoundedCornerShape(28.dp)
     val cardRadius = RoundedCornerShape(20.dp)
     val chipRadius = RoundedCornerShape(16.dp)
+    val wellRadius = RoundedCornerShape(18.dp)
     val buttonRadius = RoundedCornerShape(16.dp)
     val cardGap = 14.dp
     val screenPad = 20.dp
-    val heroElevation = 3.dp
+    /** Tonal > carte bancaire : ombre dial-down. */
+    val heroElevation = 1.5.dp
     val cardElevation = 2.dp
     val barElevation = 4.dp
+    val hairline = 0.5.dp
     /** Empty Accueil / bandeau statut. */
-    val emptyPadVertical = 28.dp
+    val emptyPadVertical = 32.dp
 
     /**
-     * Jour — mist cool + cartes blanches + teal profond (pas violet).
+     * Jour — mist cool + hero mid tonal + teal profond (pas violet).
      * Contrastes ink/muted/link/danger/ok/warn ≥ 7:1 sur canvas et card (tests).
      */
     val Day = HomePalette(
         canvas = Color(0xFFF0F4F7),
-        heroSurface = Color(0xFFFFFFFF),
+        heroSurface = Color(0xFFE8F1F4),
         card = Color(0xFFFFFFFF),
         cardBorder = Color(0xFFC9D5DE),
         chip = Color(0xFFE4EEF2),
@@ -79,7 +82,7 @@ object HomeTokens {
     /** Nuit — surfaces ardoise ; fills sombres pour pastilles (texte crème). */
     val Night = HomePalette(
         canvas = Color(0xFF12181E),
-        heroSurface = Color(0xFF1C242C),
+        heroSurface = Color(0xFF243038),
         card = Color(0xFF1C242C),
         cardBorder = Color(0xFF3A4A56),
         chip = Color(0xFF2A343C),

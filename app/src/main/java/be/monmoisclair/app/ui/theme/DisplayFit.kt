@@ -31,8 +31,7 @@ data class DisplayFit(
     val bannerPadding: Dp,
     val sectionGap: Dp,
     /**
-     * Un seul chiffre. Charte étude ~36–42 confort / ≥ 34 compact —
-     * 7.07 : sticky Accueil toujours densifié (liste > air Ultra).
+     * Un seul chiffre. 7.13 : emphase display 36 compact / 40 confort (wow Accueil).
      */
     val remainingAmountSp: Float
 ) {
@@ -46,8 +45,7 @@ data class DisplayFit(
         /**
          * Sous ~800 dp de hauteur, le sticky mange trop la liste
          * (S26 FHD+ ≈ 780–832 dp ; densités élevées One UI aussi).
-         * Autres surfaces (liste pad, tips) : compact vs confort.
-         * Sticky Accueil : densités agressives **sur toutes hauteurs** (7.07 pack B).
+         * 7.13 : confort = breathing + typo plus grande ; compact reste densifié.
          */
         const val COMPACT_HEIGHT_DP = 800
 
@@ -58,12 +56,11 @@ data class DisplayFit(
                 screenWidthDp = screenWidthDp,
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
-                // 7.07 pack B : même densités sticky Ultra / S26 — liste d’abord.
-                stickyPaddingVertical = 6.dp,
+                stickyPaddingVertical = if (compact) 8.dp else 12.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
                 bannerPadding = if (compact) 8.dp else 12.dp,
-                sectionGap = 2.dp,
-                remainingAmountSp = 34f
+                sectionGap = if (compact) 6.dp else 10.dp,
+                remainingAmountSp = if (compact) 36f else 40f
             )
         }
     }
@@ -78,7 +75,7 @@ fun DisplayFit.withFontScale(fontScale: Float): DisplayFit {
     val visualCap = when {
         fontScale >= 1.8f -> 28f
         fontScale >= 1.5f -> 30f
-        else -> min(remainingAmountSp, 34f)
+        else -> min(remainingAmountSp, 36f)
     }
     return copy(
         stickyPaddingVertical = minDp(stickyPaddingVertical, 6.dp),

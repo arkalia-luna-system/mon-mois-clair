@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.12** (brand launcher M mist/teal · notif · hubs leading icons · hero strip · widget mist) |
+| Dernière étape terminée | **7.13** (hero tonal Accueil · icon wells · logo mist→teal · FAIT check · surfaces modernes) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke visuel (launcher + Accueil + Réglages + fiche + Confort) |
-| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) §7.12 |
+| Prochaine sous-étape | **Athalia** : re-smoke visuel (launcher + Accueil wow + Menu wells + Restore/Privacy) |
+| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) §7.13 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,26 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.13 Passe agressive « plus nouvelle »
+
+**Contexte :** Athalia — encore trop « vieille app » · OUI total changements visuels · viser meilleures apps 2026–27.
+
+**Recherche :** M3 Expressive + CHI 2026 (typo emphatique, containment) · Material Symbols Rounded filled · icon grids fintech · glass dial-down → tonal mid. Audit §7.13 mis à jour.
+
+**Accueil wow :** hero mid mist (plus carte bancaire filet) · montant plein largeur 36–40 sp · Courses/Tirelire en wells grille · hairline · breathing DisplayFit · empty fade · FAIT + check Symbol · FAB Ajouter.
+
+**Brand / icons :** launcher M gradient mist→teal + padding · hubs wells tonals · Menu/Add Rounded filled.
+
+**Surfaces :** Restore / Privacy / À venir / Aide — cartes & sections modernes.
+
+**Métier/crypto/offline/a11y inchangés.** Pas purple.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.13` · `versionCode` 118.  
+**Screenshots adb :** Accueil / Menu / Réglages / fiche / Apparence → `docs/audits/screenshots/2026-11-02-*-7.13.png`.  
+**Device :** install release SM-S938B sans wipe.  
+**Smoke doigt :** Athalia — re-smoke.
 
 ### 2026-11-02 — 7.12 Brand launcher + polish hubs 2027
 
