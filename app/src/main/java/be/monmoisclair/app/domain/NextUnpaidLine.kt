@@ -21,8 +21,11 @@ object NextUnpaidLine {
     ): Line? {
         val todo = expenses.filter { it.status == ExpenseStatus.TODO }
         if (todo.isEmpty()) return null
+        // Préférer une vraie facture : l’épargne volontaire ne vole pas la ligne widget.
+        val bills = todo.filter { ExpenseOverdue.appliesToLabel(it.label) }
+        val pool = bills.ifEmpty { todo }
         val ym = runCatching { YearMonth.parse(ledgerId) }.getOrNull()
-        val chosen = todo.minWith(
+        val chosen = pool.minWith(
             compareBy<ExpenseInstanceEntity>(
                 { dueEpochDay(it, ym) },
                 { it.label }
@@ -35,7 +38,8 @@ object NextUnpaidLine {
                 ledgerId = ledgerId,
                 dayOfMonth = chosen.dayOfMonth,
                 status = chosen.status,
-                today = today
+                today = today,
+                label = chosen.label
             )
         )
     }

@@ -54,4 +54,27 @@ class ExpenseOverdueTest {
             )
         ).isFalse()
     }
+
+    @Test
+    fun voluntary_savings_never_overdue() {
+        assertThat(ExpenseOverdue.appliesToLabel(ExpenseOverdue.VOLUNTARY_SAVINGS_LABEL)).isFalse()
+        assertThat(
+            ExpenseOverdue.isOverdue(
+                ledgerId = "2026-11",
+                dayOfMonth = 1,
+                status = ExpenseStatus.TODO,
+                today = LocalDate.of(2026, 11, 2),
+                label = ExpenseOverdue.VOLUNTARY_SAVINGS_LABEL
+            )
+        ).isFalse()
+        assertThat(
+            ExpenseOverdue.isOverdue(
+                ledgerId = "2026-11",
+                dayOfMonth = 1,
+                status = ExpenseStatus.TODO,
+                today = LocalDate.of(2026, 11, 2),
+                label = "Loyer"
+            )
+        ).isTrue()
+    }
 }

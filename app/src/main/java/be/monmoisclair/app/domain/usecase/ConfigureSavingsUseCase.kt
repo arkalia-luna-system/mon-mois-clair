@@ -8,6 +8,7 @@ import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.InstanceIds
 import be.monmoisclair.app.domain.MonthDayClamp
 import be.monmoisclair.app.domain.MonthSummaryCalculator
@@ -209,6 +210,6 @@ class ConfigureSavingsUseCase @Inject constructor(
     }
 
     companion object {
-        const val LABEL = "Mettre de côté"
+        const val LABEL = ExpenseOverdue.VOLUNTARY_SAVINGS_LABEL
     }
 }

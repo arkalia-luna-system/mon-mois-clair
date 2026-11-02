@@ -38,7 +38,8 @@ object HowItWorksCopy {
         ),
         Section(
             title = "En retard",
-            body = "Date passée et pas FAIT : badge brique. Rappel chaque jour à 10 h jusqu’au FAIT."
+            body = "Date passée et pas FAIT : pastille brique. Rappel chaque jour à 10 h jusqu’au FAIT. " +
+                "« Mettre de côté » n’est jamais en retard — c’est un geste volontaire."
         ),
         Section(
             title = "Alertes",
@@ -55,8 +56,9 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Retard ou accord",
-            body = "Plan (à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +
-                "pas le total de la dette. Chaque FAIT baisse le reste. " +
+            body = "Ce n’est pas la pastille « En retard ». C’est un plan de remboursement " +
+                "(à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +
+                "sans le total de la dette. Chaque FAIT baisse le reste. " +
                 "Menu → Dossiers. Résumé texte/PDF pour créancier."
         ),
         Section(

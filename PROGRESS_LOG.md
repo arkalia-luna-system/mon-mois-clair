@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.02** (fix résumé mois PDF/share — wipe ON_STOP + UX Réglages + contenu) |
+| Dernière étape terminée | **7.03** (fix retard/accord — épargne hors En retard + copy 60+) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke **Préparer un résumé** (Dossiers + Réglages) · puis S26 D1–D7 · restore `.mmc` |
+| Prochaine sous-étape | **Athalia** : re-smoke **Retard / Accord** (Accueil Mettre de côté + fiche + Dossiers) · puis résumé · S26 · restore |
 | Audit premium | notes **honnêtes** · premium-00 + clean-10 vivants · 01–06 archivés · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,22 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.03 retard / accord (smoke Athalia)
+
+**Contexte :** point smoke — impression légère / débutante / fouillis autour de « Retard » et « Accord ».  
+**Audit :** [`docs/audits/2026-11-02-retard-accord.md`](docs/audits/2026-11-02-retard-accord.md).
+
+**P0 :**
+- « Mettre de côté » n’affiche plus la pastille **En retard** (Accueil, widget, notif OVERDUE) — geste volontaire ≠ facture.
+
+**P1 :**
+- Fiche « Retard ou accord » : hint = reste dû ≠ pastille En retard ; tip conversion court ; copy unifiée « Garder le courrier… ».
+- Aide : En retard / Retard ou accord clarifiés ; épargne hors retard.
+
+**Tests :** **410 exécutés** / 411 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.03` · `versionCode` 108.  
+**Smoke doigt :** Athalia — Accueil (pas En retard sur Mettre de côté) + fiche bloc + empty Dossiers.
 
 ### 2026-11-02 — 7.02 résumé mois (smoke Athalia P0)
 

@@ -164,7 +164,8 @@ class HomeViewModel @Inject constructor(
                                 isOverdue = ExpenseOverdue.isOverdue(
                                     ledgerId = exp.ledgerId,
                                     dayOfMonth = exp.dayOfMonth,
-                                    status = exp.status
+                                    status = exp.status,
+                                    label = exp.label
                                 ),
                                 isAutoDebit = exp.isAutoDebit,
                                 paymentNote = exp.paymentNote,

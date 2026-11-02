@@ -329,11 +329,11 @@ object EntryFormCore {
     const val AGREEMENT_ONCE_HINT =
         "Un accord doit être une facture qui revient (mensuel, 3 mois ou annuel)."
     const val CREDITOR_WITHOUT_OPENING_HINT =
-        "Indiquez le reste dû, ou « Ranger sans plan », ou videz l’IBAN et l’e-mail."
+        "Indiquez le reste dû, ou « Garder le courrier (sans montant) », ou videz l’IBAN et l’e-mail."
     const val FEE_AMOUNT_HINT = "Vérifiez le montant des frais."
     const val FEE_NOTE_WITHOUT_AMOUNT_HINT =
         "Indiquez le montant des frais avec le motif."
     const val PENDING_LETTER_HAS_OPENING =
-        "Videz le reste dû pour ranger sans plan, ou Enregistrer un accord."
+        "Videz le reste dû pour garder le courrier sans montant, ou Enregistrer un accord."
     const val PENDING_LETTER_WHO = "Indiquez à qui (le nom en haut)."
 }

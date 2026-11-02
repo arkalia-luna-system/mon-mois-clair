@@ -9,9 +9,9 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-407%2F408-success)](#statut-technique)
+[![Tests](https://img.shields.io/badge/tests-410%2F411-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.02-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.03-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,11 +48,11 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.02` |
-| Dernière étape | **7.02** résumé mois PDF/share (wipe TTL + UX Réglages + contenu Reste/À payer) — re-smoke Athalia |
-| Device | Install SM-S938B 7.02 (sans wipe). **Résumé + S26 / restore / TalkBack / Device Care / QuietLink doigt : Athalia** — pas claim « 10/10 dans la main » |
+| Version | `0.1.0-7.03` |
+| Dernière étape | **7.03** retard/accord (épargne hors En retard + copy fiche/Aide/Dossiers) — re-smoke Athalia |
+| Device | Install SM-S938B 7.03 (sans wipe). **Retard/Accord + résumé + S26 / restore doigt : Athalia** — pas claim « 10/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **407 exécutés** OK (`--rerun-tasks`, 92 XML · 1 `@Ignore` migration 1→N) |
+| Tests unitaires | **410 exécutés** OK (`--rerun-tasks`, 92 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |
 
 Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)

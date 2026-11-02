@@ -135,13 +135,13 @@ fun DossiersScreen(
             )
             Text(
                 text = "Sur une facture : « Retard ou accord », puis le reste dû. " +
-                    "Sans montant : « Ranger sans plan ».",
+                    "Sans montant : « Garder le courrier (sans montant) ».",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()
             )
             SecondaryA11yButton(
-                text = "Ranger un courrier",
+                text = "Garder un courrier",
                 onClick = onAddPending
             )
             return@PinnedBackScaffold
@@ -246,7 +246,7 @@ fun DossiersScreen(
             }
         }
         SecondaryA11yButton(
-            text = "Ranger un courrier",
+            text = "Garder un courrier",
             onClick = onAddPending
         )
         Spacer(modifier = Modifier.height(sectionGap))

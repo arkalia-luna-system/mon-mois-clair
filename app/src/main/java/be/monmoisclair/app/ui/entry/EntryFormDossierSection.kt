@@ -28,9 +28,6 @@ internal fun EntryFormDossierSection(
     dossierExpanded: Boolean,
     onDossierExpanded: (Boolean) -> Unit,
     isAgreement: Boolean,
-    isSettled: Boolean,
-    remainingCents: Long?,
-    pacePhrase: String?,
     causeLabel: String,
     onCauseLabel: (String) -> Unit,
     causeBring: Modifier,
@@ -59,7 +56,7 @@ internal fun EntryFormDossierSection(
         FormSectionToggle(
             title = "Retard ou accord",
             expanded = dossierExpanded,
-            closedHint = "Huissier, hôpital, plan de paiement…",
+            closedHint = "Reste dû à rembourser — pas la pastille En retard",
             onToggle = { onDossierExpanded(!dossierExpanded) }
         )
         if (dossierExpanded) {
@@ -69,30 +66,13 @@ internal fun EntryFormDossierSection(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
             if (!isAgreement) {
-                if (isSettled) {
-                    Text(
-                        text = "Soldé",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = A11yTokens.AccentOkInk
-                    )
-                }
-                remainingCents?.let { rem ->
-                    if (!isSettled) {
-                        Text(
-                            text = "Encore ${MoneyFormat.formatCents(rem)} à rembourser.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = A11yTokens.InkMuted,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        if (!pacePhrase.isNullOrBlank()) {
-                            Text(
-                                text = pacePhrase,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = A11yTokens.InkMuted
-                            )
-                        }
-                    }
-                }
+                Text(
+                    text = "Plan de remboursement (reste dû). " +
+                        "Pas la pastille « En retard » de l’accueil.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
             OutlinedTextField(
                 value = causeLabel,
@@ -123,7 +103,7 @@ internal fun EntryFormDossierSection(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Text(
-                    text = "Vide = pas un accord. Le montant du haut = ce mois.",
+                    text = "Vide = pas d’accord. En haut = le versement de ce mois.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()

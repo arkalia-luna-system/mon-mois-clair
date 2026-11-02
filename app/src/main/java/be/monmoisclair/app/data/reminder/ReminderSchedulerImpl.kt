@@ -61,7 +61,8 @@ class ReminderSchedulerImpl @Inject constructor(
         val overdue = ExpenseOverdue.isOverdue(
             ledgerId = expense.ledgerId,
             dayOfMonth = expense.dayOfMonth,
-            status = expense.status
+            status = expense.status,
+            label = expense.label
         )
         reconcileKind(
             expense = expense,

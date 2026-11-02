@@ -41,6 +41,34 @@ class CarnetWidgetTextTest {
     }
 
     @Test
+    fun prefers_bill_over_voluntary_savings() {
+        val next = NextUnpaidLine.pick(
+            expenses = listOf(
+                expense(ExpenseOverdue.VOLUNTARY_SAVINGS_LABEL, day = 1, cents = 2_000),
+                expense("Gaz", day = 15, cents = 9_000)
+            ),
+            ledgerId = "2026-10",
+            today = today
+        )
+        assertThat(next!!.label).isEqualTo("Gaz")
+        // today = 20 oct. · Gaz jour 15 → en retard (facture réelle, pas l’épargne).
+        assertThat(next.overdue).isTrue()
+    }
+
+    @Test
+    fun savings_alone_is_never_marked_overdue() {
+        val next = NextUnpaidLine.pick(
+            expenses = listOf(
+                expense(ExpenseOverdue.VOLUNTARY_SAVINGS_LABEL, day = 1, cents = 2_000)
+            ),
+            ledgerId = "2026-10",
+            today = today
+        )
+        assertThat(next!!.label).isEqualTo(ExpenseOverdue.VOLUNTARY_SAVINGS_LABEL)
+        assertThat(next.overdue).isFalse()
+    }
+
+    @Test
     fun open_month_shows_reste_and_next_line() {
         val text = CarnetWidgetText.compose(
             locked = false,

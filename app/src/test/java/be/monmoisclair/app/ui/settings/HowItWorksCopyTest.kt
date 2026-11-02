@@ -60,6 +60,10 @@ class HowItWorksCopyTest {
         assertThat(papier).doesNotContain("Voir la photo")
         val accord = HowItWorksCopy.sections.first { it.title == "Retard ou accord" }.body
         assertThat(accord).doesNotContain("IBAN")
+        assertThat(accord).contains("pas la pastille")
+        assertThat(accord).contains("plan de remboursement")
+        val retard = HowItWorksCopy.sections.first { it.title == "En retard" }.body
+        assertThat(retard).contains("Mettre de côté")
         val annee = HowItWorksCopy.sections.first { it.title == "Sur une année" }.body
         assertThat(annee).doesNotContain("1 à 31")
     }
