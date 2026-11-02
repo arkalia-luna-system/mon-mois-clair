@@ -1,7 +1,7 @@
 package be.monmoisclair.app.ui.settings
 
 /**
- * Aide « Comment ça marche » — textes figés, testables, ton familial.
+ * Aide « Comment ça marche » — textes figés, testables, ton familial 60+.
  * Affiché depuis Réglages (contact = Menu Accueil uniquement).
  * P1-U4 : FAIT + Sauvegarde en tête (1ʳᵉ panique / geste fort).
  */
@@ -28,8 +28,8 @@ object HowItWorksCopy {
         Section(
             title = "Le chiffre en haut",
             body = "« Reste après factures » = revenus − factures du mois — pas le solde bancaire. " +
-                "« Factures ouvertes » = encore dû. « Après les FAIT » (brun, dans Détails) = seulement les cochées. " +
-                "Pas de report auto : un revenu « Reste du mois passé », une fois."
+                "« Factures ouvertes » = encore dû. Dans Détails, « Après les FAIT » = " +
+                "seulement les cochées. Pas de report auto : un revenu « Reste du mois passé », une fois."
         ),
         Section(
             title = "Courses",
@@ -37,22 +37,15 @@ object HowItWorksCopy {
                 "Le gros Reste ne bouge pas ; « Après courses » montre le solde."
         ),
         Section(
+            title = "Mettre de côté",
+            body = "Ligne sous le Reste (comme Courses ; sinon derrière « Détails »). " +
+                "Jour et retrait : Réglages → Données → Jour du Mettre de côté. " +
+                "FAIT = virement fait. Pas d’argent dans l’app."
+        ),
+        Section(
             title = "En retard",
             body = "Date passée et pas FAIT : pastille brique. Rappel chaque jour à 10 h jusqu’au FAIT. " +
                 "« Mettre de côté » n’est jamais en retard — c’est un geste volontaire."
-        ),
-        Section(
-            title = "Alertes",
-            body = "3 j avant à 10 h, le jour à 9 h, puis chaque matin à 10 h si impayé. " +
-                "Rien ne sonne : Réglages → Alertes. " +
-                DeviceCareCopy.HINT
-        ),
-        Section(
-            title = "Facture papier",
-            body = "« Scanner une facture » lit le QR belge. « Copier » pour la banque. " +
-                "Photo et PDF à côté. « Lire la communication sur la photo » = " +
-                "communication seulement — jamais le montant. Eau / énergie : souvent " +
-                "une nouvelle +++ chaque mois (loyer ou prélèvement : la ref peut rester)."
         ),
         Section(
             title = "Retard ou accord",
@@ -62,16 +55,29 @@ object HowItWorksCopy {
                 "Menu → Dossiers. Résumé texte/PDF pour créancier."
         ),
         Section(
-            title = "Mettre de côté",
-            body = "Ligne sous le Reste (sticky, comme Courses ; sinon derrière « Détails »). " +
-                "Jour et retrait : Réglages → Données → Jour du Mettre de côté. " +
-                "FAIT = virement fait. Pas d’argent dans l’app."
+            title = "Facture papier",
+            body = "« Scanner une facture » lit le QR belge. « Copier » pour la banque. " +
+                "Photo et PDF à côté. « Lire la communication sur la photo » = " +
+                "communication seulement — jamais le montant. Eau / énergie : souvent " +
+                "une nouvelle +++ chaque mois (loyer ou prélèvement : la ref peut rester)."
         ),
         Section(
             title = "Sur une année",
             body = "« 1× par an » / « tous les 3 mois » : réapparaissent le bon mois. " +
                 "Aperçu : calendrier Accueil ou Menu → À venir. " +
                 "Hors ce mois : Réglages → Données → Échéances hors ce mois."
+        ),
+        Section(
+            title = "Résumé du mois",
+            body = "Réglages → Données → Préparer un résumé, ou Menu → Dossiers. " +
+                "Texte ou PDF : Reste, À payer, FAIT. À envoyer à qui vous voulez — " +
+                "rien ne quitte le téléphone tant que vous ne partagez pas."
+        ),
+        Section(
+            title = "Alertes",
+            body = "3 j avant à 10 h, le jour à 9 h, puis chaque matin à 10 h si impayé. " +
+                "Rien ne sonne : Réglages → Alertes. " +
+                DeviceCareCopy.HINT
         ),
         Section(
             title = "Empreinte",

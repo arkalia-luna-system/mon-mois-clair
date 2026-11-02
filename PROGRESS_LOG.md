@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.04** (hub Réglages — échéances → Données, copy épargne, hub allégé) |
+| Dernière étape terminée | **7.05** (Dependabot #54 pin + truth/material · Aide Résumé) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke **Réglages hub** · Retard/Accord · résumé · S26 · restore |
+| Prochaine sous-étape | **Athalia** : re-smoke **Aide** · Réglages hub · Retard/Accord · résumé · S26 · restore |
 | Audit premium | notes **honnêtes** · premium-00 + clean-10 vivants · 01–06 archivés · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,22 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.05 Dependabot + Aide
+
+**Dependabot / PRs :**
+- **#54** kotlin-gradle-plugin : bump **non safe** (AGP 9) → pin **2.0.21** ; alerte **dismissed** `tolerable_risk` ; `dependabot.yml` ignore Kotlin/KSP ≥2.1 + coroutines ≥1.10.
+- **#16** Guava : déjà forcé 33.7.2 (7.01) → **closed** ; config Dependabot reprise.
+- **#17** Gradle 9.8.2 → **closed** (AGP 8.x).
+- **#18** coroutines 1.11 → tenté, **casse** metadata Kotlin 2.2 vs compilateur 2.0.21 → **reste 1.9.0**, closed.
+- **#19** Kotlin 2.4.21 → **closed** (AGP 9).
+- **#20** truth **1.4.5** · **#21** material **1.14.0** → appliqués manuellement, PRs closed.
+
+**Aide :** audit [`docs/audits/2026-11-02-aide.md`](docs/audits/2026-11-02-aide.md) · section **Résumé du mois** · réordre Mettre de côté près Courses · copy 60+.
+
+**Tests :** **410 exécutés** / 411 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.05` · `versionCode` 110.  
+**Smoke doigt :** Athalia — re-smoke Aide (Résumé + Sauvegarde + En retard / Accord).
 
 ### 2026-11-02 — 7.04 hub Réglages (smoke Athalia)
 

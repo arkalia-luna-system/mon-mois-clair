@@ -16,6 +16,7 @@ class HowItWorksCopyTest {
         assertThat(titles).contains("Facture papier")
         assertThat(titles).contains("Sur une année")
         assertThat(titles).contains("Retard ou accord")
+        assertThat(titles).contains("Résumé du mois")
         // P1-U4 : FAIT + Sauvegarde en tête.
         assertThat(titles.indexOf("Marquer FAIT")).isEqualTo(0)
         assertThat(titles.indexOf("Sauvegarde")).isEqualTo(1)
@@ -37,6 +38,8 @@ class HowItWorksCopyTest {
         assertThat(all).contains("À venir")
         assertThat(all).contains("tous les 3 mois")
         assertThat(all).contains("Échéances hors ce mois")
+        assertThat(all).contains("Préparer un résumé")
+        assertThat(all).contains("À payer")
         assertThat(all).contains("Restaurer")
         assertThat(all).contains("Réglages → Sauvegarde")
         assertThat(all.lowercase()).contains("n’envoyez jamais le code avec la copie")
@@ -47,6 +50,7 @@ class HowItWorksCopyTest {
         assertThat(all.lowercase()).doesNotContain("aes-gcm")
         assertThat(all).doesNotContain("widget")
         assertThat(all).doesNotContain("Apparence")
+        assertThat(all).doesNotContain("QuietLink")
         assertThat(all).doesNotContain("Un souci")
         assertThat(all).doesNotContain("Arkalia Système")
         assertThat(all).doesNotContain("Athalia")
@@ -66,5 +70,8 @@ class HowItWorksCopyTest {
         assertThat(retard).contains("Mettre de côté")
         val annee = HowItWorksCopy.sections.first { it.title == "Sur une année" }.body
         assertThat(annee).doesNotContain("1 à 31")
+        val resume = HowItWorksCopy.sections.first { it.title == "Résumé du mois" }.body
+        assertThat(resume).contains("PDF")
+        assertThat(resume).contains("Dossiers")
     }
 }

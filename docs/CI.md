@@ -73,8 +73,11 @@ Hilt ≥2.59 → **AGP 9** — **incompatible** stack actuelle (AGP **8.7.3**, K
 KSP / Compose plugin **2.0.21**, Hilt **2.52**). Tentative bump **non safe**
 aujourd’hui (casserait le build). **Pin documenté :** rester **2.0.21** jusqu’à
 migration AGP 9 coordonnée. Risque limité au **classpath build** (pas APK
-runtime ; CVSS local + privilèges élevés). Dismiss UI possible (raison : tooling
-pin + hors runtime) après rescan.
+runtime ; CVSS local + privilèges élevés).
+**2026-11-02 (7.05) :** alerte GitHub **dismissed** (`tolerable_risk`) +
+`dependabot.yml` ignore Kotlin/KSP/Compose plugin **≥2.1** (target `develop`).
+PR bot Kotlin **2.4.21** / Gradle wrapper **9.8.2** **closes** (AGP 8).
+Revisite uniquement avec migration AGP 9.
 
 **Alerte #61 `com.google.guava:guava` (CVE-2026-102554 / GHSA-xxph-c9ww-hj94) :**
 HIGH — CompactHashMap/CompactHashSet/MapMakerInternalMap deserialization OOM.
