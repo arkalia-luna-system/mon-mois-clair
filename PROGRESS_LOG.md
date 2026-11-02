@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.07** (Accueil pack B sticky agressive · Fiche · Aide/Dossiers) |
+| Dernière étape terminée | **7.08** (Accueil Courses\|épargne à côté du Reste · vérif audits · archive MD) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke **Accueil** (sticky ~110–140 · liste · Menu Courses/épargne) · Fiche grille · Aide · résumé · S26 · restore |
-| Audit premium | notes **honnêtes** · expert-00 synthèses + 01–06 · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
+| Prochaine sous-étape | **Athalia** : smoke Accueil (Reste + Courses\|épargne 1 tap, sans Menu) · liste · Fiche · Aide · S26 · restore |
+| Audit | [`verif-audits-accueil.md`](docs/audits/2026-11-02-verif-audits-accueil.md) · expert-00 · détails → `docs/audits/archive/` |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,24 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.08 Accueil outils à côté du Reste
+
+**Contexte :** Athalia refuse Courses|épargne dans **Menu** (erreur 7.07). Accueil = config rapide 60+ ; layout libre (à côté OK, pas forcer bandeau sous sticky).
+
+**Fix Accueil :**
+- `StickyHeroTools` : Courses \| Mettre de côté **à droite du Reste** (taps ≥48), 1 tap → sheets.
+- Retirés de `HomeMenuSheet`.
+- Aide + tests : « Accueil, à côté du Reste » (plus « Menu → Courses »).
+- CHARTE sticky alignée.
+
+**Vérif audits P0/P1 :** fiche spacer/grille, Dossiers filet, retard épargne, résumé share, DisplayFit agressif — **OK code**. Smoke doigt = Athalia.
+
+**MD :** thématiques + expert-01…06 + premium → `docs/audits/archive/` ; vivant = verif + expert-00.
+
+**Tests :** **410 exécutés** / 411 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.08` · `versionCode` 113.  
+**Smoke doigt :** Athalia — Accueil Courses|épargne visibles **sans** Menu.
 
 ### 2026-11-02 — 7.07 Accueil pack B + Fiche + Aide
 

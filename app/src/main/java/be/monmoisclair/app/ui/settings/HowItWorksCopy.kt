@@ -3,7 +3,7 @@ package be.monmoisclair.app.ui.settings
 /**
  * Aide « Comment ça marche » — textes figés, testables, ton familial 60+.
  * Affiché depuis Réglages (contact = Menu Accueil uniquement).
- * 7.07 : corps plus courts ; Courses/épargne = Menu ; Dossiers conditionnel.
+ * 7.08 : corps courts ; Courses/épargne = Accueil (à côté du Reste) ; Dossiers conditionnel.
  */
 object HowItWorksCopy {
     const val TITLE = "Comment ça marche"
@@ -34,12 +34,12 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Courses",
-            body = "Menu → Courses (›) : courses / pharmacie. " +
+            body = "Accueil, à côté du Reste : Courses (›) — courses / pharmacie. " +
                 "Le gros Reste ne bouge pas ; le détail « il reste » est dans la feuille."
         ),
         Section(
             title = "Mettre de côté",
-            body = "Menu → Mettre de côté (›). " +
+            body = "Accueil, à côté du Reste (sous Courses) : Mettre de côté (›). " +
                 "Jour et retrait : Réglages → Données → Jour du Mettre de côté. " +
                 "FAIT = virement fait. Pas d’argent dans l’app."
         ),

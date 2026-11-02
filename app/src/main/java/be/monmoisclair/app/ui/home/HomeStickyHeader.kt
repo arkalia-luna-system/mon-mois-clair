@@ -32,9 +32,9 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.DisplayFit
 
 /**
- * Sticky Accueil (7.07 pack B) : mois · Reste 1 ligne · Détails QuietLink.
- * Courses / épargne / statut factures = hors sticky (Menu + tête de liste).
- * Cible pliée Ultra ~110–140 dp — liste nettement visible.
+ * Sticky Accueil (7.08) : mois · Reste + Courses|épargne **à côté** · Détails QuietLink.
+ * Outils = colonne droite du hero (1 tap Accueil, pas Menu, pas bandeau sous sticky).
+ * Statut factures = tête de liste. Cible pliée Ultra ~110–160 dp.
  */
 @Composable
 internal fun HomeStickyHeader(
@@ -47,7 +47,13 @@ internal fun HomeStickyHeader(
     onNextMonth: () -> Unit,
     onOpenDeadlines: () -> Unit,
     onOpenDossiers: () -> Unit,
-    onGoToCurrentMonth: () -> Unit = {}
+    onGoToCurrentMonth: () -> Unit = {},
+    coursesLabel: String? = null,
+    coursesDescription: String? = null,
+    onOpenCourses: () -> Unit = {},
+    savingsLabel: String? = null,
+    savingsDescription: String? = null,
+    onOpenSavings: () -> Unit = {}
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -106,38 +112,55 @@ internal fun HomeStickyHeader(
                 else -> "Reste"
             }
             val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
-            // Hero 1 ligne : montant dominant + libellé court (TalkBack = titre complet).
+            val hasHeroTools = coursesLabel != null || savingsLabel != null
+            // Hero : montant + Reste ; Courses|épargne à droite (même rangée, 1 tap).
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics(mergeDescendants = true) {
-                        contentDescription = "$remainingTitle : $remainingAmount"
-                    },
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(
-                    text = remainingAmount,
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = fit.remainingAmountSp.sp,
-                        lineHeight = (fit.remainingAmountSp + 4f).sp,
-                        letterSpacing = (-0.02).em
-                    ),
-                    color = when {
-                        state.summary.remainingCents < 0L -> A11yTokens.DangerInk
-                        else -> A11yTokens.Ink
-                    },
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false)
-                )
-                Text(
-                    text = remainingShort,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics(mergeDescendants = true) {
+                            contentDescription = "$remainingTitle : $remainingAmount"
+                        },
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = remainingAmount,
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontSize = fit.remainingAmountSp.sp,
+                            lineHeight = (fit.remainingAmountSp + 4f).sp,
+                            letterSpacing = (-0.02).em
+                        ),
+                        color = when {
+                            state.summary.remainingCents < 0L -> A11yTokens.DangerInk
+                            else -> A11yTokens.Ink
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    Text(
+                        text = remainingShort,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = A11yTokens.InkMuted,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                if (hasHeroTools) {
+                    StickyHeroTools(
+                        coursesLabel = coursesLabel,
+                        coursesDescription = coursesDescription,
+                        onOpenCourses = onOpenCourses,
+                        savingsLabel = savingsLabel,
+                        savingsDescription = savingsDescription,
+                        onOpenSavings = onOpenSavings
+                    )
+                }
             }
             // Mode aperçu = contexte, toujours visible (pas derrière « Détails »).
             if (state.isFuturePreview) {

@@ -47,12 +47,7 @@ fun HomeMenuSheet(
     onOpenUpcoming: () -> Unit = {},
     remindersBlocked: Boolean = false,
     onOpenHealth: () -> Unit = {},
-    onOpenSupport: () -> Unit = {},
-    /** 7.07 : Courses / épargne hors sticky — QuietLinks Menu. */
-    coursesLabel: String? = null,
-    savingsLabel: String? = null,
-    onOpenCourses: () -> Unit = {},
-    onOpenSavings: () -> Unit = {}
+    onOpenSupport: () -> Unit = {}
 ) {
     val showDossiers = hasDossiers || dossierCount > 0 || pendingLetterCount > 0
     // Libellé court « Dossiers » (= PageTitle / Aide « Menu → Dossiers »).
@@ -90,29 +85,7 @@ fun HomeMenuSheet(
             CarnetPageTitle("Menu", withTopSpacer = false)
             Spacer(modifier = Modifier.height(menuGap))
 
-            // 7.07 pack B : Courses / épargne hors sticky (capacité préservée).
-            if (coursesLabel != null) {
-                QuietLinkA11y(
-                    text = coursesLabel,
-                    onClick = {
-                        onDismiss()
-                        onOpenCourses()
-                    },
-                    onClickLabel = "Modifier les courses"
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-            if (savingsLabel != null) {
-                QuietLinkA11y(
-                    text = savingsLabel,
-                    onClick = {
-                        onDismiss()
-                        onOpenSavings()
-                    },
-                    onClickLabel = "Modifier mettre de côté"
-                )
-                Spacer(modifier = Modifier.height(menuGap))
-            }
+            // 7.08 : Courses / épargne = Accueil (à côté du Reste), pas Menu.
 
             if (remindersBlocked) {
                 CarnetHubRow(

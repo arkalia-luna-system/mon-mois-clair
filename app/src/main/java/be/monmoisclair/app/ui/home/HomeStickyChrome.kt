@@ -3,12 +3,14 @@ package be.monmoisclair.app.ui.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,8 +27,7 @@ import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 
 /**
- * Cellule outil sticky (Courses / épargne) — demi-largeur, ≥48 dp, › discret.
- * Remplace deux StickyLinkRow empilées pour libérer la liste.
+ * Cellule outil Accueil (Courses / épargne) — ≥48 dp, › discret.
  */
 @Composable
 internal fun StickyToolCell(
@@ -35,7 +36,8 @@ internal fun StickyToolCell(
     onClickLabel: String,
     contentDescription: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    fillLabel: Boolean = true
 ) {
     Row(
         modifier = modifier
@@ -52,13 +54,53 @@ internal fun StickyToolCell(
             color = labelColor,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
+            modifier = if (fillLabel) Modifier.weight(1f) else Modifier
         )
         Text(
             text = "›",
             style = MaterialTheme.typography.titleMedium,
             color = A11yTokens.InkMuted
         )
+    }
+}
+
+/**
+ * 7.08 : Courses | épargne **à côté** du Reste (colonne droite, taps ≥48).
+ * Pas Menu ; pas bandeau sous sticky — liste d’abord.
+ */
+@Composable
+internal fun StickyHeroTools(
+    coursesLabel: String?,
+    coursesDescription: String?,
+    onOpenCourses: () -> Unit,
+    savingsLabel: String?,
+    savingsDescription: String?,
+    onOpenSavings: () -> Unit
+) {
+    if (coursesLabel == null && savingsLabel == null) return
+    Column(horizontalAlignment = Alignment.End) {
+        if (coursesLabel != null) {
+            StickyToolCell(
+                label = coursesLabel,
+                labelColor = A11yTokens.InkMuted,
+                onClickLabel = "Modifier les courses",
+                contentDescription = coursesDescription ?: coursesLabel,
+                onClick = onOpenCourses,
+                modifier = Modifier.widthIn(min = 48.dp, max = 152.dp),
+                fillLabel = false
+            )
+        }
+        if (savingsLabel != null) {
+            StickyToolCell(
+                label = savingsLabel,
+                labelColor = A11yTokens.InkMuted,
+                onClickLabel = "Modifier mettre de côté",
+                contentDescription = savingsDescription ?: savingsLabel,
+                onClick = onOpenSavings,
+                modifier = Modifier.widthIn(min = 48.dp, max = 152.dp),
+                fillLabel = false
+            )
+        }
     }
 }
 
@@ -70,11 +112,12 @@ internal fun StickyToolsRow(
     onOpenCourses: () -> Unit,
     savingsLabel: String?,
     savingsDescription: String?,
-    onOpenSavings: () -> Unit
+    onOpenSavings: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     if (coursesLabel == null && savingsLabel == null) return
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

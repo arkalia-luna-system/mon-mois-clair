@@ -38,7 +38,7 @@ Il sert à **voir et agir sur le mois** : reste, liste des rentrées / sorties, 
 |-------|------|--------|
 | Gros **Reste après factures** | Revenus − **toutes** les factures du mois (FAIT ou non) | Toujours |
 | **Factures ouvertes** (ex-« À payer ») | Somme des factures encore TODO | S’il y a des factures ; « Tout est payé » si 0 — **1 ligne statut max** visible |
-| **Courses** + **Mettre de côté** (tap ≥48) | Divers + forfait mensuel ; sheets d’édition | Hors aperçu futur — **une rangée secondaire** (2 cellules), pas 2 hero empilés ; libellé Courses court en sticky (`Courses` / `Courses X €`) |
+| **Courses** + **Mettre de côté** (tap ≥48) | Divers + forfait mensuel ; sheets d’édition | Hors aperçu futur — **Accueil 1 tap** (à côté du Reste, pas Menu) ; libellé Courses court (`Courses` / `Courses X €`) |
 | **Après les FAIT** · alertes / courriers · Mois en cours (si passé) | Secondaire | Derrière **Détails / Masquer** (pas de mini-dashboard) |
 
 Courses / épargne : sheets depuis le sticky (›). Sticky volontairement **basse** (liste d’abord). Pas de 2ᵉ formulaire en bas de liste ; pas de logo / wordmark sur le sticky.

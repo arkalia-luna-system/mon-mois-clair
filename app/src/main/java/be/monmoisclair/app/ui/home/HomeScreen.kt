@@ -108,7 +108,7 @@ fun HomeScreen(
     /** Unique UI Courses : sheet depuis le sticky (pas de formulaire en bas de liste). */
     var coursesSheetOpen by remember { mutableStateOf(false) }
     var savingsSheetOpen by remember { mutableStateOf(false) }
-    /** Sticky : Détails secondaires (Après FAIT, alertes) ; Courses|épargne en rangée. */
+    /** Sticky : Détails secondaires ; Courses|épargne à côté du Reste (7.08). */
     var stickyDetailsOpen by remember { mutableStateOf(false) }
     LaunchedEffect(state.isFuturePreview) {
         if (state.isFuturePreview) {
@@ -307,17 +307,7 @@ fun HomeScreen(
             onOpenUpcoming = onOpenUpcoming,
             remindersBlocked = remindersBlocked,
             onOpenHealth = onOpenHealth,
-            onOpenSupport = viewModel::writeSupportMail,
-            coursesLabel = stickyCoursesCompactLabel(
-                diversSpentCents = state.diversSpentCents,
-                futurePreview = state.isFuturePreview
-            ),
-            savingsLabel = stickySavingsLabel(
-                savingsMonthlyCents = state.savingsMonthlyCents,
-                futurePreview = state.isFuturePreview
-            ),
-            onOpenCourses = { coursesSheetOpen = true },
-            onOpenSavings = { savingsSheetOpen = true }
+            onOpenSupport = viewModel::writeSupportMail
         )
     }
     if (monthPickerOpen) {
@@ -376,7 +366,27 @@ fun HomeScreen(
                 onNextMonth = viewModel::nextMonth,
                 onOpenDeadlines = onOpenDeadlines,
                 onOpenDossiers = onOpenDossiers,
-                onGoToCurrentMonth = viewModel::goToCurrentMonth
+                onGoToCurrentMonth = viewModel::goToCurrentMonth,
+                // 7.08 : Courses | épargne à côté du Reste (1 tap Accueil, pas Menu).
+                coursesLabel = stickyCoursesCompactLabel(
+                    diversSpentCents = state.diversSpentCents,
+                    futurePreview = state.isFuturePreview
+                ),
+                coursesDescription = stickyCoursesLabel(
+                    diversSpentCents = state.diversSpentCents,
+                    afterDiversCents = state.afterDiversCents,
+                    futurePreview = state.isFuturePreview
+                ),
+                onOpenCourses = { coursesSheetOpen = true },
+                savingsLabel = stickySavingsLabel(
+                    savingsMonthlyCents = state.savingsMonthlyCents,
+                    futurePreview = state.isFuturePreview
+                ),
+                savingsDescription = stickySavingsLabel(
+                    savingsMonthlyCents = state.savingsMonthlyCents,
+                    futurePreview = state.isFuturePreview
+                ),
+                onOpenSavings = { savingsSheetOpen = true }
             )
             // FAIT : bandeau papier compact sous le sticky (pas barre pleine largeur).
             SnackbarHost(
