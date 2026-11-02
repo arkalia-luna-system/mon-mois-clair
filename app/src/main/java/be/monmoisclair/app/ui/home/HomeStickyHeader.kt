@@ -10,15 +10,12 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -35,8 +32,9 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.DisplayFit
 
 /**
- * Sticky Accueil (7.06) : mois · Reste hero · statut · rangée Courses|épargne · Détails.
- * Priorité : liste factures visible dès l’ouverture — sticky beaucoup moins haute.
+ * Sticky Accueil (7.07 pack B) : mois · Reste 1 ligne · Détails QuietLink.
+ * Courses / épargne / statut factures = hors sticky (Menu + tête de liste).
+ * Cible pliée Ultra ~110–140 dp — liste nettement visible.
  */
 @Composable
 internal fun HomeStickyHeader(
@@ -47,8 +45,6 @@ internal fun HomeStickyHeader(
     onOpenMonthPicker: () -> Unit,
     onPrevMonth: () -> Unit,
     onNextMonth: () -> Unit,
-    onOpenCourses: () -> Unit,
-    onOpenSavings: () -> Unit,
     onOpenDeadlines: () -> Unit,
     onOpenDossiers: () -> Unit,
     onGoToCurrentMonth: () -> Unit = {}
@@ -103,14 +99,23 @@ internal fun HomeStickyHeader(
                 state.summary.remainingCents < 0L -> "Déficit après factures"
                 else -> "Reste après factures"
             }
+            val remainingShort = when {
+                state.isFuturePreview && state.summary.remainingCents < 0L -> "Aperçu déficit"
+                state.isFuturePreview -> "Aperçu reste"
+                state.summary.remainingCents < 0L -> "Déficit"
+                else -> "Reste"
+            }
             val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
-            // Hero groupé : titre + chiffre sans Spacer séparateur.
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    text = remainingTitle,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = A11yTokens.InkMuted
-                )
+            // Hero 1 ligne : montant dominant + libellé court (TalkBack = titre complet).
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = "$remainingTitle : $remainingAmount"
+                    },
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Text(
                     text = remainingAmount,
                     style = MaterialTheme.typography.displayLarge.copy(
@@ -122,58 +127,18 @@ internal fun HomeStickyHeader(
                         state.summary.remainingCents < 0L -> A11yTokens.DangerInk
                         else -> A11yTokens.Ink
                     },
-                    modifier = Modifier.semantics {
-                        contentDescription = "$remainingTitle : $remainingAmount"
-                    }
-                )
-            }
-            stickyStillToPayLabel(
-                stillToPayCents = state.summary.stillToPayCents,
-                hasExpenses = state.timeline.any { it is TimelineItem.Expense },
-                futurePreview = state.isFuturePreview
-            )?.let { label ->
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = when {
-                        state.summary.stillToPayCents == 0L -> A11yTokens.AccentOkInk
-                        else -> A11yTokens.InkMuted
-                    },
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.semantics { contentDescription = label }
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                Text(
+                    text = remainingShort,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.InkMuted,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-            // Rangée secondaire compacte : Courses | Mettre de côté (1×48, pas 2×48).
-            val coursesCompact = stickyCoursesCompactLabel(
-                diversSpentCents = state.diversSpentCents,
-                futurePreview = state.isFuturePreview
-            )
-            val coursesFull = stickyCoursesLabel(
-                diversSpentCents = state.diversSpentCents,
-                afterDiversCents = state.afterDiversCents,
-                futurePreview = state.isFuturePreview
-            )
-            val savingsLabel = stickySavingsLabel(
-                savingsMonthlyCents = state.savingsMonthlyCents,
-                futurePreview = state.isFuturePreview
-            )
-            StickyToolsRow(
-                coursesLabel = coursesCompact,
-                coursesDescription = when {
-                    coursesFull == null -> null
-                    state.diversSpentCents > 0L -> "$coursesFull. Modifier les courses"
-                    else -> "Courses. Noter un montant"
-                },
-                onOpenCourses = onOpenCourses,
-                savingsLabel = savingsLabel,
-                savingsDescription = when {
-                    savingsLabel == null -> null
-                    state.savingsMonthlyCents > 0L -> "$savingsLabel. Modifier"
-                    else -> "Mettre de côté. Choisir un montant"
-                },
-                onOpenSavings = onOpenSavings
-            )
             // Mode aperçu = contexte, toujours visible (pas derrière « Détails »).
             if (state.isFuturePreview) {
                 val previewLabel =
@@ -207,7 +172,12 @@ internal fun HomeStickyHeader(
             if (hasStickyExtras) {
                 val detailsLabel =
                     if (stickyDetailsOpen) "Masquer" else "Détails"
-                Row(
+                // QuietLink disclosure — hit ≥48, pas une bande outil.
+                Text(
+                    text = detailsLabel,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Link,
+                    maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = A11yTokens.minTouchHeight)
@@ -220,26 +190,8 @@ internal fun HomeStickyHeader(
                             }
                         ) { onStickyDetailsOpenChange(!stickyDetailsOpen) }
                         .padding(vertical = 2.dp)
-                        .semantics { contentDescription = detailsLabel },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = detailsLabel,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = A11yTokens.InkMuted,
-                        maxLines = 1
-                    )
-                    Icon(
-                        painter = painterResource(
-                            if (stickyDetailsOpen) R.drawable.ic_expand_less
-                            else R.drawable.ic_expand_more
-                        ),
-                        contentDescription = null,
-                        tint = A11yTokens.InkMuted,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
+                        .semantics { contentDescription = detailsLabel }
+                )
             }
             AnimatedVisibility(visible = stickyDetailsOpen && hasStickyExtras) {
                 Column(

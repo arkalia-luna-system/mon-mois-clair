@@ -32,7 +32,7 @@ data class DisplayFit(
     val sectionGap: Dp,
     /**
      * Un seul chiffre. Charte étude ~36–42 confort / ≥ 34 compact —
-     * sans gonfler le sticky (Détails plié par défaut).
+     * 7.07 : sticky Accueil toujours densifié (liste > air Ultra).
      */
     val remainingAmountSp: Float
 ) {
@@ -46,6 +46,8 @@ data class DisplayFit(
         /**
          * Sous ~800 dp de hauteur, le sticky mange trop la liste
          * (S26 FHD+ ≈ 780–832 dp ; densités élevées One UI aussi).
+         * Autres surfaces (liste pad, tips) : compact vs confort.
+         * Sticky Accueil : densités agressives **sur toutes hauteurs** (7.07 pack B).
          */
         const val COMPACT_HEIGHT_DP = 800
 
@@ -56,12 +58,12 @@ data class DisplayFit(
                 screenWidthDp = screenWidthDp,
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
-                // 7.06 : sticky basse — hero Reste + rangée outil ; liste d’abord.
-                stickyPaddingVertical = if (compact) 8.dp else 10.dp,
+                // 7.07 pack B : même densités sticky Ultra / S26 — liste d’abord.
+                stickyPaddingVertical = 6.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
                 bannerPadding = if (compact) 8.dp else 12.dp,
-                sectionGap = if (compact) 4.dp else 6.dp,
-                remainingAmountSp = if (compact) 34f else 40f
+                sectionGap = 2.dp,
+                remainingAmountSp = 34f
             )
         }
     }
@@ -79,9 +81,9 @@ fun DisplayFit.withFontScale(fontScale: Float): DisplayFit {
         else -> min(remainingAmountSp, 34f)
     }
     return copy(
-        stickyPaddingVertical = minDp(stickyPaddingVertical, 8.dp),
+        stickyPaddingVertical = minDp(stickyPaddingVertical, 6.dp),
         bannerPadding = minDp(bannerPadding, 8.dp),
-        sectionGap = minDp(sectionGap, 4.dp),
+        sectionGap = minDp(sectionGap, 2.dp),
         remainingAmountSp = visualCap / fontScale
     )
 }

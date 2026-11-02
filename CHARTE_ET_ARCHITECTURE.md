@@ -153,9 +153,9 @@ Appliqué **une seule fois** dans `MainActivity`.
 
 ### Adaptation hauteur (`DisplayFit`)
 
-- Si `screenHeightDp ≤ 800` → **chrome Home compact** (paddings réduits) pour laisser la place à la **liste**.
-- Sinon → mode confort Ultra.
-- Montant « Reste » = signal n°1 (34 sp si l’écran est court, ~40 sp sinon ; étude 36–42). Serif **seulement** pour ce chiffre.
+- Si `screenHeightDp ≤ 800` → **surfaces** (liste pad, tips, sheets) en mode compact.
+- **Sticky Accueil** : densités « liste d’abord » **sur toutes hauteurs** (y compris Ultra) — pad serré, gap 2, hero ~34 sp 1 ligne ; Courses / épargne hors sticky (Menu).
+- Montant « Reste » = signal n°1 (≥ 34 sp). Serif **seulement** pour ce chiffre.
 - Titres d’écran, noms de factures, boutons : sans-serif.
 - Barre du bas : un seul bouton plein **teal** (« + Ajouter »), sur un socle `PaperWarm`. Menu, Copier, Remettre restent un trait. Coins des boutons : 12 dp.
 - Sur la ligne, « FAIT ✓ » est un plein **forêt** (`AccentOk`) : c’est l’action de la facture, pas un deuxième bouton de barre. Une fois FAIT, le bouton redevient le trait « Remettre ».

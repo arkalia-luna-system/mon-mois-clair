@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
@@ -335,12 +334,6 @@ private fun DossierRow(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .shadow(
-                elevation = 2.dp,
-                shape = shape,
-                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
-                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
-            )
             .clip(shape)
             .background(A11yTokens.PaperCard, shape)
             .border(1.dp, A11yTokens.PaperBorder, shape)
@@ -412,12 +405,6 @@ private fun PendingLetterRow(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = A11yTokens.minTouchHeight)
-            .shadow(
-                elevation = 2.dp,
-                shape = shape,
-                ambientColor = A11yTokens.Ink.copy(alpha = 0.10f),
-                spotColor = A11yTokens.Ink.copy(alpha = 0.08f)
-            )
             .clip(shape)
             .background(A11yTokens.PaperCard, shape)
             .border(1.dp, A11yTokens.PaperBorder, shape)

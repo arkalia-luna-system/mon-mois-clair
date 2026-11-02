@@ -370,14 +370,8 @@ internal fun EntryFormScaffold(
                 onSelect = { onDay(it.toString()) },
                 enabled = !lockAmountAndDay
             )
-            // Sous sticky Enregistrer / Annuler / Supprimer : jour 31 scrollable
-            // (3×48 dp + clearance — sticky 3 actions plus haut que 2× sur S938B).
-            Spacer(
-                modifier = Modifier.height(
-                    A11yTokens.minTouchHeight * 3 + A11yTokens.bottomSystemClearance
-                )
-            )
-
+            // 7.07 : plus de spacer mort ~172 dp entre grille et Fréquence
+            // (clearance sticky = Spacer bas unique, plus bas).
 
             EntryFormRecurrenceSection(
                 showRecurring = showRecurring,

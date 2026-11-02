@@ -3,7 +3,7 @@ package be.monmoisclair.app.ui.settings
 /**
  * Aide « Comment ça marche » — textes figés, testables, ton familial 60+.
  * Affiché depuis Réglages (contact = Menu Accueil uniquement).
- * P1-U4 : FAIT + Sauvegarde en tête (1ʳᵉ panique / geste fort).
+ * 7.07 : corps plus courts ; Courses/épargne = Menu ; Dossiers conditionnel.
  */
 object HowItWorksCopy {
     const val TITLE = "Comment ça marche"
@@ -20,25 +20,26 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Sauvegarde",
-            body = "Réglages → Sauvegarde : écrivez le code une fois sur papier. " +
+            body = "Réglages → Sauvegarde (ou « Code et copie » en tête) : code une fois sur papier. " +
                 "N’envoyez jamais le code avec la copie. " +
                 "Nouveau téléphone : Restaurer, puis ce code. " +
                 "Les vieilles copies non protégées ne s’ouvrent plus — à jeter."
         ),
         Section(
             title = "Le chiffre en haut",
-            body = "« Reste après factures » = revenus − factures du mois — pas le solde bancaire. " +
-                "« Factures ouvertes » = encore dû. Dans Détails, « Après les FAIT » = " +
-                "seulement les cochées. Pas de report auto : un revenu « Reste du mois passé », une fois."
+            body = "« Reste » = revenus − factures du mois — pas le solde bancaire. " +
+                "Sous la liste : « Factures ouvertes » = encore dû. " +
+                "Dans Détails, « Après les FAIT » = seulement les cochées. " +
+                "Pas de report auto : un revenu « Reste du mois passé », une fois."
         ),
         Section(
             title = "Courses",
-            body = "À côté de « Mettre de côté » sous le Reste (›) : courses / pharmacie. " +
+            body = "Menu → Courses (›) : courses / pharmacie. " +
                 "Le gros Reste ne bouge pas ; le détail « il reste » est dans la feuille."
         ),
         Section(
             title = "Mettre de côté",
-            body = "À côté de Courses sous le Reste (›). " +
+            body = "Menu → Mettre de côté (›). " +
                 "Jour et retrait : Réglages → Données → Jour du Mettre de côté. " +
                 "FAIT = virement fait. Pas d’argent dans l’app."
         ),
@@ -52,14 +53,15 @@ object HowItWorksCopy {
             body = "Ce n’est pas la pastille « En retard ». C’est un plan de remboursement " +
                 "(à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +
                 "sans le total de la dette. Chaque FAIT baisse le reste. " +
-                "Menu → Dossiers. Résumé texte/PDF pour créancier."
+                "Menu → Dossiers (quand un accord ou un courrier existe). " +
+                "Résumé texte/PDF pour créancier."
         ),
         Section(
             title = "Facture papier",
             body = "« Scanner une facture » lit le QR belge. « Copier » pour la banque. " +
                 "Photo et PDF à côté. « Lire la communication sur la photo » = " +
                 "communication seulement — jamais le montant. Eau / énergie : souvent " +
-                "une nouvelle +++ chaque mois (loyer ou prélèvement : la ref peut rester)."
+                "une nouvelle +++ chaque mois."
         ),
         Section(
             title = "Sur une année",
@@ -69,14 +71,14 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Résumé du mois",
-            body = "Réglages → Données → Préparer un résumé, ou Menu → Dossiers. " +
-                "Texte ou PDF : Reste, À payer, FAIT. À envoyer à qui vous voulez — " +
-                "rien ne quitte le téléphone tant que vous ne partagez pas."
+            body = "Réglages → Données → Préparer un résumé, ou Menu → Dossiers " +
+                "(si un accord / courrier est là). Texte ou PDF : Reste, À payer, FAIT. " +
+                "Rien ne quitte le téléphone tant que vous ne partagez pas."
         ),
         Section(
             title = "Alertes",
             body = "3 j avant à 10 h, le jour à 9 h, puis chaque matin à 10 h si impayé. " +
-                "Rien ne sonne : Réglages → Alertes. " +
+                "Rien ne sonne : Réglages → Confort → Alertes. " +
                 DeviceCareCopy.HINT
         ),
         Section(

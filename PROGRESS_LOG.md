@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.06** (Accueil sticky basse — liste factures visible) |
+| Dernière étape terminée | **7.07** (Accueil pack B sticky agressive · Fiche · Aide/Dossiers) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke **Accueil** (sticky + liste) · Aide · Réglages hub · Retard/Accord · résumé · S26 · restore |
-| Audit premium | notes **honnêtes** · premium-00 + clean-10 vivants · 01–06 archivés · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
+| Prochaine sous-étape | **Athalia** : re-smoke **Accueil** (sticky ~110–140 · liste · Menu Courses/épargne) · Fiche grille · Aide · résumé · S26 · restore |
+| Audit premium | notes **honnêtes** · expert-00 synthèses + 01–06 · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,26 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.07 Accueil pack B + Fiche + Aide
+
+**Contexte :** Athalia — Accueil « quasi pas changé » post-7.06 · expert-01 **4,5/10** · pack **B** (~110–140 dp).  
+**Synthèse :** [`docs/audits/2026-11-02-expert-00-synthese.md`](docs/audits/2026-11-02-expert-00-synthese.md).
+
+**Vague Accueil (P0) :**
+- `DisplayFit` : densités sticky agressives **même Ultra** (pad 6 / gap 2 / hero 34).
+- Hero Reste **1 ligne** ; statut « Factures ouvertes » → tête de liste.
+- Courses \| Mettre de côté → **Menu QuietLinks** (hors sticky).
+- Détails = QuietLink.
+
+**Vague Fiche :** spacer ~172 dp retiré ; grille jours repliable (chip « Jour N »).  
+**Vague UI/Aide/Nav :** Aide raccourcie + chemins Menu/Confort/Dossiers ; ombre Dossiers → filet.
+
+**Estimation sticky pliée Ultra (Détails fermés, sans extras) :** ~**100–120 dp** ; avec Détails QuietLink ~**110–140** (vs ~230–285 en 7.06).
+
+**Tests :** **410 exécutés** / 411 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.07` · `versionCode` 112.  
+**Smoke doigt :** Athalia — Accueil sticky basse + liste + Menu Courses/épargne.
 
 ### 2026-11-02 — 7.06 Accueil sticky (espace liste)
 

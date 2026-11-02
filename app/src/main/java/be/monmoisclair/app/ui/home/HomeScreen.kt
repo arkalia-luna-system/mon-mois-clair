@@ -211,6 +211,13 @@ fun HomeScreen(
             return@LaunchedEffect
         }
         if (index < 0) return@LaunchedEffect
+        // Offset tête de liste : statut factures (si présent) + champ recherche.
+        val hasStillToPay = stickyStillToPayLabel(
+            stillToPayCents = state.summary.stillToPayCents,
+            hasExpenses = state.timeline.any { it is TimelineItem.Expense },
+            futurePreview = state.isFuturePreview
+        ) != null
+        if (hasStillToPay) index += 1
         if (searchFieldVisible) index += 1
         listState.animateScrollToItem(index)
     }
@@ -300,7 +307,17 @@ fun HomeScreen(
             onOpenUpcoming = onOpenUpcoming,
             remindersBlocked = remindersBlocked,
             onOpenHealth = onOpenHealth,
-            onOpenSupport = viewModel::writeSupportMail
+            onOpenSupport = viewModel::writeSupportMail,
+            coursesLabel = stickyCoursesCompactLabel(
+                diversSpentCents = state.diversSpentCents,
+                futurePreview = state.isFuturePreview
+            ),
+            savingsLabel = stickySavingsLabel(
+                savingsMonthlyCents = state.savingsMonthlyCents,
+                futurePreview = state.isFuturePreview
+            ),
+            onOpenCourses = { coursesSheetOpen = true },
+            onOpenSavings = { savingsSheetOpen = true }
         )
     }
     if (monthPickerOpen) {
@@ -357,8 +374,6 @@ fun HomeScreen(
                 onOpenMonthPicker = { monthPickerOpen = true },
                 onPrevMonth = viewModel::prevMonth,
                 onNextMonth = viewModel::nextMonth,
-                onOpenCourses = { coursesSheetOpen = true },
-                onOpenSavings = { savingsSheetOpen = true },
                 onOpenDeadlines = onOpenDeadlines,
                 onOpenDossiers = onOpenDossiers,
                 onGoToCurrentMonth = viewModel::goToCurrentMonth
@@ -392,7 +407,7 @@ fun HomeScreen(
                 contentPadding = PaddingValues(
                     start = fit.screenPadding,
                     end = fit.screenPadding,
-                    top = if (fit.compactHomeChrome) 8.dp else 12.dp,
+                    top = 6.dp,
                     bottom = if (fit.compactHomeChrome) 8.dp else 12.dp
                 ),
                 // Écart cartes : 12 dp (charte) même en compact — faux clics.
@@ -457,6 +472,30 @@ fun HomeScreen(
                         }
                     }
                     else -> {
+                        // 7.07 : statut factures hors sticky — tête de liste (scroll).
+                        stickyStillToPayLabel(
+                            stillToPayCents = state.summary.stillToPayCents,
+                            hasExpenses = state.timeline.any { it is TimelineItem.Expense },
+                            futurePreview = state.isFuturePreview
+                        )?.let { label ->
+                            item(key = "still-to-pay") {
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = when {
+                                        state.summary.stillToPayCents == 0L ->
+                                            A11yTokens.AccentOkInk
+                                        else -> A11yTokens.InkMuted
+                                    },
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 2.dp)
+                                        .semantics { contentDescription = label }
+                                )
+                            }
+                        }
                         if (searchFieldVisible) {
                             item(key = "search") {
                                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

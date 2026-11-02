@@ -9,9 +9,9 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-411%2F412-success)](#statut-technique)
+[![Tests](https://img.shields.io/badge/tests-410%2F411-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.06-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.07-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -27,7 +27,7 @@ Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
 
 | | |
 |--|--|
-| **Reste sticky** | Gros chiffre du mois · Factures ouvertes · rangée Courses \| Mettre de côté |
+| **Reste sticky** | Gros chiffre 1 ligne · Détails QuietLink · Courses \| épargne dans Menu |
 | **Factures** | Récurrence · FAIT le JJ/MM · En retard · Prélèvement · grille jour 1–31 |
 | **Papier belge** | QR EPC · communication mod 97 · photo WebP · PDF courrier · OCR `+++` |
 | **Accords** | Pastille · reste dû · IBAN · Écrire · frais datés · Mes dossiers |
@@ -48,11 +48,11 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.06` |
-| Dernière étape | **7.06** Accueil sticky basse (rangée Courses\|épargne · liste visible) — re-smoke Accueil Athalia |
-| Device | Install SM-S938B 7.06 (sans wipe). **Accueil sticky + Aide + Réglages hub + Retard/Accord + résumé + S26 / restore doigt : Athalia** — pas claim « 10/10 dans la main » |
+| Version | `0.1.0-7.07` |
+| Dernière étape | **7.07** Accueil pack B sticky ~110–140 dp · Fiche spacer/grille · Aide/Dossiers |
+| Device | Install SM-S938B 7.07 (sans wipe). **Re-smoke Accueil sticky + liste + Menu Courses/épargne : Athalia** — pas claim « 10/10 dans la main » |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| Tests unitaires | **411 exécutés** OK (`--rerun-tasks`, 92 XML · 1 `@Ignore` migration 1→N) |
+| Tests unitaires | **410 exécutés** OK (`--rerun-tasks`, 92 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |
 
 Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)

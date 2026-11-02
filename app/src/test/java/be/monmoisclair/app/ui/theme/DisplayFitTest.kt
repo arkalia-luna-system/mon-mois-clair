@@ -13,22 +13,16 @@ class DisplayFitTest {
     }
 
     @Test
-    fun remainingAmountSp_smallerOnCompact() {
+    fun stickyTokens_aggressiveOnTallAndCompact() {
+        // 7.07 pack B : Ultra (>800) = mêmes densités sticky que S26.
         val compact = DisplayFit.from(360, 780)
         val tall = DisplayFit.from(412, 900)
-        assertThat(compact.remainingAmountSp).isLessThan(tall.remainingAmountSp)
-        // Charte : compact ≥ 34 sp ; confort ~36–42.
-        assertThat(compact.remainingAmountSp).isAtLeast(34f)
-        assertThat(tall.remainingAmountSp).isAtLeast(36f)
-        assertThat(tall.remainingAmountSp).isAtMost(42f)
-    }
-
-    @Test
-    fun stickyPadding_tighterOnCompact() {
-        val compact = DisplayFit.from(360, 780)
-        val tall = DisplayFit.from(412, 900)
-        assertThat(compact.stickyPaddingVertical.value)
-            .isLessThan(tall.stickyPaddingVertical.value)
+        assertThat(compact.stickyPaddingVertical.value).isEqualTo(6f)
+        assertThat(tall.stickyPaddingVertical.value).isEqualTo(6f)
+        assertThat(compact.sectionGap.value).isEqualTo(2f)
+        assertThat(tall.sectionGap.value).isEqualTo(2f)
+        assertThat(compact.remainingAmountSp).isEqualTo(34f)
+        assertThat(tall.remainingAmountSp).isEqualTo(34f)
         assertThat(compact.bannerPadding.value)
             .isLessThan(tall.bannerPadding.value)
     }
