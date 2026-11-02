@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.15.1** + hygiène code mort (imports EntryForm/Accueil · sticky legacy) |
+| Dernière étape terminée | **7.16** passage final craft (hygiène assets brand morts + grille domaines) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) + copy restore/résumé |
-| Audit | [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · 7.15.1 |
+| Prochaine sous-étape | **Athalia uniquement** : smoke doigt One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) + S26 / restore code papier — **pas** claimés ici |
+| Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,19 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.16 Passage final craft
+
+**Contexte :** Mission Athalia — dernier passage multi-domaines · craft fini · smoke doigt **non** claimé.
+
+**P0/P1 fermés :** assets brand morts retirés (`book_launcher.webp`, `ic_brand_mark.xml`, `ic_launcher_foreground.xml`) — prod = PNG kit 7.15 uniquement. Pas d’écart fonctionnel critique restant (FAIT / Courses·épargne / résumé / restore copy / Settings hub / Aide = code OK).
+
+**Évité :** redesign · métier/crypto/offline · claim S26/restore doigt.
+
+**Tests :** **413 exécutés** / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.16` · `versionCode` 122.  
+**Ship :** `develop` = `main` · install release SM-S938B sans wipe.  
+**Audit :** [`passage-final.md`](docs/audits/2026-11-02-passage-final.md).
 
 ### 2026-11-02 — Fin de journée code mort (Kotlin unused)
 

@@ -11,7 +11,7 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-413%2F414-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.15.1-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.16-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -48,9 +48,9 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.15.1` |
-| Dernière étape | **7.15.1** + hygiène code mort Kotlin (imports EntryForm/Accueil · sticky legacy) |
-| Device | Install SM-S938B **7.15.1** (sans wipe). **Re-smoke Athalia** FAIT / share / restore |
+| Version | `0.1.0-7.16` |
+| Dernière étape | **7.16** passage final craft — hygiène assets brand morts + audit grille |
+| Device | Install SM-S938B **7.16** (sans wipe). **Smoke doigt Athalia** uniquement restant |
 | Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | Tests unitaires | **413 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |

@@ -20,13 +20,15 @@ Lots **A→F** et le détail de construction sont **clos** :
 
 ## Pas encore « objet fini dans la main »
 
-- S26 (cible principale) tenu en main.
-- Restore + code de copie prouvés au doigt (noter papier · `.mmc` · 2ᵉ device).
-- Smoke doigt encore partiel (notif ; widget nuit ; photo).
+Craft code/UI/docs **clos** à **7.16** — voir [`audits/2026-11-02-passage-final.md`](audits/2026-11-02-passage-final.md).
+
+- S26 (cible principale) tenu en main — **Athalia**.
+- Restore + code de copie prouvés au doigt (noter papier · 2ᵉ device) — **Athalia**.
+- Smoke doigt One UI (launcher/splash/FAIT/notif) — **Athalia**.
 - Tests d’écran instrumentés · scission god-files Home/Entry (**reporté** après cadeau).
 
 ## Prochain geste
 
-Smoke S26 D1–D7 + restore code (Athalia). Notice 2 min : [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md). Ultra partiel : 6.78–6.82.
+Checklist doigt seule : [`audits/2026-11-02-passage-final.md`](audits/2026-11-02-passage-final.md) § Athalia. Notice 2 min : [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md).
 
 Constats dossiers (figé, historique) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.

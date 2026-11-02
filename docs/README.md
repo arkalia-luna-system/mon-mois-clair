@@ -1,6 +1,6 @@
 # Docs — Mon Mois Clair
 
-Index **actif** (~7.15). Historique : [`archive/`](archive/README.md) · audits figés : [`audits/archive/`](audits/archive/).
+Index **actif** (~7.16). Historique : [`archive/`](archive/README.md) · audits figés : [`audits/archive/`](audits/archive/).
 
 ## Vivant (à jour)
 
@@ -13,7 +13,8 @@ Index **actif** (~7.15). Historique : [`archive/`](archive/README.md) · audits 
 | [`../README.md`](../README.md) | Vitrine + version |
 | [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md) | Brief oral cadeau (code papier · Arkalia) |
 | [`CI.md`](CI.md) | CI + Dependabot Security |
-| [`audits/2026-11-02-fin-journee-qa.md`](audits/2026-11-02-fin-journee-qa.md) | QA fin de journée · chemins critiques · 7.15.1 |
+| [`audits/2026-11-02-passage-final.md`](audits/2026-11-02-passage-final.md) | Passage final craft · grille domaines · 7.16 |
+| [`audits/2026-11-02-fin-journee-qa.md`](audits/2026-11-02-fin-journee-qa.md) | QA chemins critiques · 7.15.1 |
 | [`audits/2026-11-02-visual-expert-10.md`](audits/2026-11-02-visual-expert-10.md) | Craft kit PNG · notes 7.15 |
 | [`audits/2026-11-02-brand-logo-unisson.md`](audits/2026-11-02-brand-logo-unisson.md) | Brand unisson livre+coche 7.14→7.15 |
 
@@ -35,9 +36,10 @@ Index **actif** (~7.15). Historique : [`archive/`](archive/README.md) · audits 
 |--------|------|
 | Règles produit / UI / étapes | **Charte** |
 | Ce qui a été codé aujourd’hui | **Journal** |
+| Passage final craft (notes / preuves / reste) | **passage-final** |
 | QA chemins critiques (FAIT / share / restore) | **fin-journee-qa** |
 | Craft brand / kit 7.15 | **visual-expert-10** + **brand-logo** |
-| Smoke téléphone | **AUDIT_STATUS** + checklist Athalia (NOTICE) |
+| Smoke téléphone | **AUDIT_STATUS** + checklist Athalia (NOTICE / passage-final) |
 | Brief famille / APK | **NOTICE** + **DISTRIBUTION** |
 | Audits thématiques / expert / premium | **audits/archive/** + **archive/** |
 
