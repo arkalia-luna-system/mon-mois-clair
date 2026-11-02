@@ -166,7 +166,7 @@ dependencies {
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("androidx.work:work-testing:2.12.0")
     testImplementation("com.google.truth:truth:1.4.5")
-    testImplementation("org.json:json:20240303")
+    testImplementation("org.json:json:20260814")
 
     // androidTest : smoke stables (pas de Compose/Hilt flaky). connected = Athalia si device.
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
