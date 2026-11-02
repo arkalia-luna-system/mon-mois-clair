@@ -56,8 +56,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.MainActivity
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import be.monmoisclair.app.ui.components.BrandMark
-import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.HomeTokens
@@ -451,22 +452,37 @@ fun HomeScreen(
                     }
                     state.timeline.isEmpty() -> {
                         item {
-                            // H08 : empty sans carte tip ni BrandMark.
+                            // 7.11 H08 : empty premium — carte soft + hiérarchie (pas tip-box).
+                            val emptyShape = HomeTokens.heroRadius
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = if (fit.compactHomeChrome) 16.dp else 24.dp),
+                                    .padding(
+                                        vertical = if (fit.compactHomeChrome) {
+                                            12.dp
+                                        } else {
+                                            HomeTokens.emptyPadVertical
+                                        }
+                                    )
+                                    .shadow(HomeTokens.cardElevation, emptyShape, clip = false)
+                                    .clip(emptyShape)
+                                    .background(HomeTokens.Card)
+                                    .padding(
+                                        horizontal = 18.dp,
+                                        vertical = if (fit.compactHomeChrome) 18.dp else 22.dp
+                                    ),
                                 verticalArrangement = Arrangement.spacedBy(
-                                    if (fit.compactHomeChrome) 6.dp else 8.dp
+                                    if (fit.compactHomeChrome) 8.dp else 10.dp
                                 )
                             ) {
-                                CarnetPageTitle(
-                                    if (state.isFuturePreview) {
+                                Text(
+                                    text = if (state.isFuturePreview) {
                                         "Rien de prévu ce mois-là"
                                     } else {
                                         "Rien encore ce mois"
                                     },
-                                    withTopSpacer = false
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = HomeTokens.Ink
                                 )
                                 Text(
                                     text = if (state.isFuturePreview) {
@@ -489,19 +505,21 @@ fun HomeScreen(
                             futurePreview = state.isFuturePreview
                         )?.let { label ->
                             item(key = "still-to-pay") {
+                                // 7.11 : bandeau statut mist (micro-rythme sous hero).
+                                val paidOk = state.summary.stillToPayCents == 0L
                                 Text(
                                     text = label,
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = when {
-                                        state.summary.stillToPayCents == 0L ->
-                                            HomeTokens.Ok
-                                        else -> HomeTokens.InkMuted
-                                    },
+                                    color = if (paidOk) HomeTokens.Ok else HomeTokens.Ink,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(bottom = 4.dp)
+                                        .clip(HomeTokens.chipRadius)
+                                        .background(
+                                            if (paidOk) HomeTokens.OkSoft else HomeTokens.Chip
+                                        )
+                                        .padding(horizontal = 12.dp, vertical = 10.dp)
                                         .semantics { contentDescription = label }
                                 )
                             }

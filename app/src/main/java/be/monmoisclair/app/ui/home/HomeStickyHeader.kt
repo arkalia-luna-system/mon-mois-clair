@@ -1,6 +1,10 @@
 package be.monmoisclair.app.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +38,7 @@ import be.monmoisclair.app.ui.theme.DisplayFit
 import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Sticky Accueil (7.10) : hero 2027 · chips chariot/tirelire · mist cool global.
+ * Sticky Accueil (7.11) : hero 2027 · chips chariot/tirelire · mist cool global.
  * Statut « Encore à payer » = tête de liste. Logique métier inchangée.
  */
 @Composable
@@ -221,7 +225,11 @@ internal fun HomeStickyHeader(
                         .semantics { contentDescription = detailsLabel }
                 )
             }
-            AnimatedVisibility(visible = stickyDetailsOpen && hasStickyExtras) {
+            AnimatedVisibility(
+                visible = stickyDetailsOpen && hasStickyExtras,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(fit.sectionGap)
                 ) {

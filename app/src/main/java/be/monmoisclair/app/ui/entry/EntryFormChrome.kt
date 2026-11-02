@@ -27,7 +27,7 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
-/** Titre de section repliable — titleLarge, pas un Secondary plein largeur. */
+/** Titre de section repliable — titleLarge InkMuted + lien teal (7.11). */
 @Composable
 internal fun FormSectionToggle(
     title: String,
@@ -40,7 +40,7 @@ internal fun FormSectionToggle(
         Text(
             text = label,
             style = MaterialTheme.typography.titleLarge,
-            color = A11yTokens.Ink,
+            color = if (expanded) A11yTokens.Ink else A11yTokens.Link,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = A11yTokens.minTouchHeight)
@@ -70,6 +70,7 @@ internal fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
     val vPad = if (fit.compactHomeChrome) 10.dp else 12.dp
     // FORM02 : choix exclusifs = pastille capsule, pas bouton 16 dp.
     val shape = StampShape
+    // 7.11 : sélection teal filled ; idle = mid mist (pas bordure carnet).
     val bg = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm
     val fg = if (selected) A11yTokens.ButtonText else A11yTokens.Ink
     Text(
@@ -79,10 +80,12 @@ internal fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .clip(shape)
             .background(bg, shape)
-            .border(
-                1.dp,
-                if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
-                shape
+            .then(
+                if (selected) {
+                    Modifier
+                } else {
+                    Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+                }
             )
             .clickable(role = Role.RadioButton, onClick = onClick)
             .heightIn(min = A11yTokens.minTouchHeight)

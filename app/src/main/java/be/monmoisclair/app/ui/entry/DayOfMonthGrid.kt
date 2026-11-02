@@ -103,10 +103,12 @@ fun DayOfMonthGrid(
                             .alpha(if (enabled) 1f else 0.45f)
                             .clip(shape)
                             .background(bg, shape)
-                            .border(
-                                1.dp,
-                                if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
-                                shape
+                            .then(
+                                if (selected) {
+                                    Modifier
+                                } else {
+                                    Modifier.border(1.dp, A11yTokens.PaperBorder, shape)
+                                }
                             )
                             .semantics {
                                 this.selected = selected

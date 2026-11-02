@@ -63,8 +63,8 @@ internal fun HomeReceiptDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
-            color = A11yTokens.PaperCream,
-            shape = MaterialTheme.shapes.medium,
+            color = A11yTokens.PaperCard,
+            shape = MaterialTheme.shapes.extraLarge,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(A11yTokens.screenPadding)
@@ -186,11 +186,11 @@ internal fun HomePastToggleDialog(
     onDismiss: () -> Unit
 ) {
     if (pendingId == null) return
-    // H14 : même papier que le dialog photo (PaperCream).
+    // H14 7.11 : dialog carte soft (PaperCard + XL).
     AlertDialog(
         onDismissRequest = onDismiss,
-        shape = MaterialTheme.shapes.medium,
-        containerColor = A11yTokens.PaperCream,
+        shape = MaterialTheme.shapes.extraLarge,
+        containerColor = A11yTokens.PaperCard,
         title = {
             Text(
                 text = "Mois passé",

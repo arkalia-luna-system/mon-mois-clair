@@ -1,6 +1,5 @@
 package be.monmoisclair.app.ui.settings
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -87,13 +87,14 @@ fun SettingsDeadlinesScreen(
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                 state.offMonthPeriodics.forEach { item ->
+                    val cardShape = MaterialTheme.shapes.medium
                     Surface(
-                        color = A11yTokens.PaperWarm,
-                        shape = MaterialTheme.shapes.medium,
+                        color = A11yTokens.PaperCard,
+                        shape = cardShape,
                         modifier = Modifier
                             .fillMaxWidth()
+                            .shadow(2.dp, cardShape, clip = false)
                             .heightIn(min = A11yTokens.minTouchHeight)
-                            .border(1.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
                             .clickable(
                                 role = Role.Button,
                                 onClickLabel = "Modifier ${item.label}"

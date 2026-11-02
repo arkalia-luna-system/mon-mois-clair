@@ -36,6 +36,7 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
@@ -68,7 +69,7 @@ fun HomeSavingsSheet(
         sheetState = sheetState,
         shape = MaterialTheme.shapes.extraLarge,
         dragHandle = { CarnetSheetHandle() },
-        containerColor = A11yTokens.PaperCream,
+        containerColor = HomeTokens.Canvas,
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
     ) {
         Column(

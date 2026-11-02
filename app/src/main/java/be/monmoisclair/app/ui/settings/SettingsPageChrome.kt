@@ -1,9 +1,11 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -13,10 +15,13 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -69,15 +74,22 @@ internal fun ThemeOptionRow(
     enabled: Boolean,
     onSelect: () -> Unit
 ) {
+    // 7.11 Apparence : cartes soft sélectionnables (pas radio plat).
+    val shape = MaterialTheme.shapes.medium
+    val bg = if (selected) A11yTokens.PaperWarm else A11yTokens.PaperCard
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(if (selected) 0.dp else 2.dp, shape, clip = false)
+            .clip(shape)
+            .background(bg)
             .heightIn(min = A11yTokens.minTouchHeight)
             .clickable(
                 enabled = enabled,
                 role = Role.RadioButton,
                 onClick = onSelect
             )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .semantics {
                 contentDescription = if (selected) {
                     "$label, sélectionné"
@@ -98,7 +110,7 @@ internal fun ThemeOptionRow(
         )
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleLarge,
             color = A11yTokens.Ink
         )
     }

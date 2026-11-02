@@ -39,6 +39,8 @@ fun PrimaryA11yButton(
     contentColor: Color = A11yTokens.ButtonText
 ) {
     val haptics = LocalHapticFeedback.current
+    // 7.11 : FAIT compact = large (24) premium ; barre = small (16).
+    val shape = if (fillMaxWidth) MaterialTheme.shapes.small else MaterialTheme.shapes.large
     Button(
         onClick = {
             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -52,9 +54,14 @@ fun PrimaryA11yButton(
         contentPadding = if (fillMaxWidth) {
             PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         } else {
-            PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+            PaddingValues(horizontal = 14.dp, vertical = 8.dp)
         },
-        shape = MaterialTheme.shapes.small,
+        shape = shape,
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = if (fillMaxWidth) 0.dp else 2.dp,
+            pressedElevation = 0.dp,
+            disabledElevation = 0.dp
+        ),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor,
@@ -81,7 +88,7 @@ fun SecondaryA11yButton(
     fillMaxWidth: Boolean = true
 ) {
     val haptics = LocalHapticFeedback.current
-    // Contour PaperBorder + poids Medium : plus discret que les titres de section.
+    // 7.11 : Secondary = carte soft (pas trait plat carnet).
     OutlinedButton(
         onClick = {
             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -98,7 +105,9 @@ fun SecondaryA11yButton(
             if (enabled) A11yTokens.PaperBorder else A11yTokens.PaperBorder.copy(alpha = 0.45f)
         ),
         colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = A11yTokens.PaperCard,
             contentColor = A11yTokens.Ink,
+            disabledContainerColor = A11yTokens.PaperCard.copy(alpha = 0.55f),
             disabledContentColor = A11yTokens.InkMuted.copy(alpha = 0.55f)
         ),
         contentPadding = if (fillMaxWidth) {

@@ -40,6 +40,7 @@ import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 internal fun DayBadge(label: String, compact: Boolean = false) {
+    // 7.11 : chip filled mist (plus de filet carnet).
     val shape = StampShape
     Text(
         text = label,
@@ -49,10 +50,9 @@ internal fun DayBadge(label: String, compact: Boolean = false) {
         modifier = Modifier
             .widthIn(min = if (compact) 48.dp else 56.dp)
             .background(HomeTokens.Chip, shape)
-            .border(1.dp, HomeTokens.CardBorder, shape)
             .padding(
-                horizontal = if (compact) 4.dp else 6.dp,
-                vertical = if (compact) 4.dp else 4.dp
+                horizontal = if (compact) 6.dp else 8.dp,
+                vertical = if (compact) 4.dp else 5.dp
             )
             .semantics { contentDescription = "Échéance $label" }
     )
@@ -76,10 +76,12 @@ internal fun StatusChip(
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
             .semantics { contentDescription = "Statut : $text" }
-            .border(
-                1.dp,
-                if (outlined) HomeTokens.InkMuted else HomeTokens.CardBorder,
-                shape
+            .then(
+                if (outlined) {
+                    Modifier.border(1.dp, HomeTokens.CardBorder, shape)
+                } else {
+                    Modifier
+                }
             )
             .background(container, shape)
             .padding(horizontal = hPad, vertical = vPad)

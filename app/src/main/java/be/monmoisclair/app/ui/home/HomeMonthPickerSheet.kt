@@ -39,6 +39,7 @@ import be.monmoisclair.app.ui.components.CarnetTitleTokens
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
@@ -70,7 +71,7 @@ fun HomeMonthPickerSheet(
         sheetState = sheetState,
         shape = MaterialTheme.shapes.extraLarge,
         dragHandle = { CarnetSheetHandle() },
-        containerColor = A11yTokens.PaperCream,
+        containerColor = HomeTokens.Canvas,
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
     ) {
         Column(
@@ -170,7 +171,9 @@ private fun MonthPastille(
         shape = chipShape,
         modifier = Modifier
             .heightIn(min = A11yTokens.minTouchHeight)
-            .border(1.dp, borderColor, chipShape)
+            .then(
+                if (selected) Modifier else Modifier.border(1.dp, borderColor, chipShape)
+            )
             .semantics(mergeDescendants = true) {
                 contentDescription = when {
                     selected -> "Mois affiché : $chipLabel ${ym.year}"

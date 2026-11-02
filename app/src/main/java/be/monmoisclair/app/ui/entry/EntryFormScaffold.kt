@@ -80,8 +80,8 @@ internal fun DiscardChangesDialog(
 ) {
     AlertDialog(
         onDismissRequest = onStay,
-        shape = MaterialTheme.shapes.medium,
-        containerColor = A11yTokens.PaperCream,
+        shape = MaterialTheme.shapes.extraLarge,
+        containerColor = A11yTokens.PaperCard,
         title = {
             Text(
                 text = "Quitter sans enregistrer ?",
@@ -523,13 +523,13 @@ internal fun EntryFormScaffold(
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
-        // FORM05 : socle papier (filet) ; 1 Primary ; Annuler = QuietLink (pas titleLarge).
+        // FORM05 7.11 : socle carte soft (ombre) ; 1 Primary ; Annuler = QuietLink.
         HorizontalDivider(color = A11yTokens.PaperBorder)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(A11yTokens.PaperWarm)
-                .padding(top = 10.dp)
+                .background(A11yTokens.PaperCard)
+                .padding(top = 12.dp)
         ) {
             PrimaryA11yButton(text = primaryLabel, onClick = onPrimary, enabled = primaryEnabled)
             if (!keyboardOpen) {

@@ -126,7 +126,8 @@ private fun BottomBarFilled(
         modifier = modifier
             .heightIn(min = HomeTokens.minTouch)
             .semantics { contentDescription = "+ $text" },
-        shape = MaterialTheme.shapes.small,
+        shape = HomeTokens.buttonRadius,
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp, pressedElevation = 0.dp),
         contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = A11yTokens.ButtonFill,
@@ -163,10 +164,11 @@ private fun BottomBarOutlined(
             onClick()
         },
         modifier = modifier.heightIn(min = HomeTokens.minTouch),
-        shape = MaterialTheme.shapes.small,
+        shape = HomeTokens.buttonRadius,
         border = androidx.compose.foundation.BorderStroke(1.dp, HomeTokens.CardBorder),
         contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
         colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = HomeTokens.Card,
             contentColor = HomeTokens.Ink
         )
     ) {

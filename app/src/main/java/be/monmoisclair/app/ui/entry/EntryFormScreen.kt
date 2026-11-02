@@ -423,8 +423,8 @@ fun EditEntryScreen(
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperCream,
+            shape = MaterialTheme.shapes.extraLarge,
+            containerColor = A11yTokens.PaperCard,
             title = {
                 val name = state.label.trim().ifBlank { "cette entrée" }
                 Text(

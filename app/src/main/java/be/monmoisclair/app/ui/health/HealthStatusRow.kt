@@ -1,40 +1,43 @@
 package be.monmoisclair.app.ui.health
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.StampShape
 
+/** Ligne Alertes 7.11 — carte soft + pastille filled (plus de filet plat). */
 @Composable
 fun HealthStatusRow(label: String, ok: Boolean) {
     val status = if (ok) "Prêt" else "À régler"
-    // Pastille capsule seule — pas de carte bordée empilée.
     val chipShape = StampShape
-    HorizontalDivider(color = A11yTokens.PaperBorder)
+    val shape = MaterialTheme.shapes.medium
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(2.dp, shape, clip = false)
+            .clip(shape)
+            .background(A11yTokens.PaperCard)
             .heightIn(min = A11yTokens.minTouchHeight)
-            .padding(vertical = 10.dp)
+            .padding(horizontal = 14.dp, vertical = 12.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = "$label : $status"
             },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             text = status,
@@ -45,15 +48,13 @@ fun HealthStatusRow(label: String, ok: Boolean) {
                     if (ok) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
                     chipShape
                 )
-                .then(
-                    if (ok) Modifier else Modifier.border(1.dp, A11yTokens.AccentWarn, chipShape)
-                )
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         )
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.Ink
+            style = MaterialTheme.typography.titleLarge,
+            color = A11yTokens.Ink,
+            modifier = Modifier.weight(1f)
         )
     }
 }

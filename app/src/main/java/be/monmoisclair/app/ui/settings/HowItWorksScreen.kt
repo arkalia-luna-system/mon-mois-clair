@@ -1,5 +1,11 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,8 +14,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,6 +26,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -35,7 +43,7 @@ fun HowItWorksScreen(
     onBack: () -> Unit
 ) {
     val fit = rememberDisplayFit()
-    val sectionGap = if (fit.compactHomeChrome) 12.dp else 16.dp
+    val sectionGap = if (fit.compactHomeChrome) 10.dp else 12.dp
     // Raccourci : une section ouverte à la fois (titres scannables, pas mur de texte).
     var openIndex by rememberSaveable { mutableStateOf(0) }
     PinnedBackScaffold(onBack = onBack) {
@@ -49,17 +57,17 @@ fun HowItWorksScreen(
             color = A11yTokens.InkMuted
         )
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
-        // AID01 : titres + corps InkMuted, filets papier (pas de cartes tip).
+        // 7.11 AID : cartes soft + fade/slide léger (plus de filets plat).
         HowItWorksCopy.sections.forEachIndexed { index, section ->
-            if (index > 0) {
-                HorizontalDivider(color = A11yTokens.PaperBorder)
-            }
             val expanded = openIndex == index
+            val shape = MaterialTheme.shapes.medium
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(
-                    if (fit.compactHomeChrome) 4.dp else 6.dp
-                )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(2.dp, shape, clip = false)
+                    .clip(shape)
+                    .background(A11yTokens.PaperCard)
+                    .padding(horizontal = 14.dp, vertical = 4.dp)
             ) {
                 Row(
                     modifier = Modifier
@@ -90,15 +98,20 @@ fun HowItWorksScreen(
                             else R.drawable.ic_expand_more
                         ),
                         contentDescription = null,
-                        tint = A11yTokens.InkMuted,
-                        modifier = Modifier.size(20.dp)
+                        tint = A11yTokens.Link,
+                        modifier = Modifier.size(22.dp)
                     )
                 }
-                if (expanded) {
+                AnimatedVisibility(
+                    visible = expanded,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
                     Text(
                         text = section.body,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = A11yTokens.InkMuted
+                        color = A11yTokens.InkMuted,
+                        modifier = Modifier.padding(bottom = 12.dp)
                     )
                 }
             }

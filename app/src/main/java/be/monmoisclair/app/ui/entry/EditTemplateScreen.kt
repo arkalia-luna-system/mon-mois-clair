@@ -80,8 +80,8 @@ fun EditTemplateScreen(
     if (confirmLeave) {
         AlertDialog(
             onDismissRequest = { confirmLeave = false },
-            shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperCream,
+            shape = MaterialTheme.shapes.extraLarge,
+            containerColor = A11yTokens.PaperCard,
             title = {
                 Text(
                     text = "Quitter sans enregistrer ?",
@@ -121,8 +121,8 @@ fun EditTemplateScreen(
         val name = state.label.trim().ifBlank { "cette échéance" }
         AlertDialog(
             onDismissRequest = { confirmArchive = false },
-            shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperCream,
+            shape = MaterialTheme.shapes.extraLarge,
+            containerColor = A11yTokens.PaperCard,
             title = {
                 Text(
                     text = "Retirer $name ?",

@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 
-/** Poignée fine PaperBorder — sheets carnet (pas la barre M3 stock). */
+/** Poignée fine mist border — sheets 2027 (pas la barre M3 stock). */
 @Composable
 fun CarnetSheetHandle() {
     Box(

@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.10** (design system 2027 global — mist cool · Accueil/Menu/Réglages/fiche/Dossiers/widget) |
+| Dernière étape terminée | **7.11** (polish surfaces 2027 — Accueil empty/statut · Aide/Alertes/Apparence · fiche/sheets/dialogs · motion) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke visuel global (Accueil + Réglages + fiche + Menu) |
-| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) · verif Accueil → `docs/audits/` |
+| Prochaine sous-étape | **Athalia** : re-smoke visuel (Accueil + Réglages + fiche + Confort) |
+| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) §7.11 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,17 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.11 Polish surfaces 2027 (suite)
+
+**Contexte :** Athalia — continuer à améliorer tout le visuel (chasse restes carnet).
+
+**UI :** shapes 16/20/24 · Secondary/Menu fill carte · ThemeOptionRow cartes · Aide cartes+fade · Alertes cartes · Accueil empty carte + bandeau « Encore à payer » · sticky Détails fade/slide · FAIT compact elevation · fiche socle PaperCard · dialogs/sheets mist+PaperCard XL. Métier/crypto/a11y **inchangés**.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.11` · `versionCode` 116.  
+**Screenshots adb :** Accueil / Réglages / fiche / Confort → `docs/audits/screenshots/2026-11-02-*-7.11.png`.  
+**Smoke doigt :** Athalia — re-smoke visuel.
 
 ### 2026-11-02 — 7.10 Design system 2027 global
 

@@ -61,8 +61,8 @@ fun SettingsSavingsScreen(
     if (confirmRemoveSavings) {
         AlertDialog(
             onDismissRequest = { confirmRemoveSavings = false },
-            shape = MaterialTheme.shapes.medium,
-            containerColor = A11yTokens.PaperCream,
+            shape = MaterialTheme.shapes.extraLarge,
+            containerColor = A11yTokens.PaperCard,
             title = { Text("Retirer « Mettre de côté » ?") },
             text = {
                 Text("Retire la ligne du mois. Les FAIT déjà cochés restent dans l’historique.")

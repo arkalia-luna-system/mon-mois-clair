@@ -31,7 +31,8 @@ private fun colorScheme(palette: CarnetPalette, night: Boolean) = run {
             onSecondary = palette.buttonText,
             background = palette.paperCream,
             onBackground = palette.ink,
-            surface = palette.paperWarm,
+            // 7.11 : surface = carte blanche ; mid = chip mist (plus warm plat).
+            surface = palette.paperCard,
             onSurface = palette.ink,
             surfaceContainerHigh = palette.paperWarm,
             surfaceContainerHighest = palette.paperWarm,
@@ -51,7 +52,7 @@ private fun colorScheme(palette: CarnetPalette, night: Boolean) = run {
             onSecondary = palette.buttonText,
             background = palette.paperCream,
             onBackground = palette.ink,
-            surface = palette.paperWarm,
+            surface = palette.paperCard,
             onSurface = palette.ink,
             surfaceContainerHigh = palette.paperWarm,
             surfaceContainerHighest = palette.paperWarm,
@@ -66,15 +67,15 @@ private fun colorScheme(palette: CarnetPalette, night: Boolean) = run {
 }
 
 /**
- * Formes 7.10 (M3 Expressive dial-down finance).
- * Boutons = [Shapes.small] 14 dp. Cartes = [Shapes.medium] 20 dp.
+ * Formes 7.11 (M3 Expressive dial-down finance).
+ * Boutons = [Shapes.small] 16 dp. Cartes = [Shapes.medium] 20–24 dp.
  * Pastilles = [StampShape] (capsule). Feuilles = [Shapes.extraLarge].
  */
 private val AppShapes = Shapes(
-    extraSmall = RoundedCornerShape(10.dp),
-    small = RoundedCornerShape(14.dp),
+    extraSmall = RoundedCornerShape(12.dp),
+    small = RoundedCornerShape(16.dp),
     medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(20.dp),
+    large = RoundedCornerShape(24.dp),
     extraLarge = RoundedCornerShape(28.dp)
 )
 
