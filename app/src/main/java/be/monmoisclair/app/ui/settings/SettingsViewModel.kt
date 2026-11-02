@@ -23,6 +23,7 @@ import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListOffMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.OffMonthPeriodic
 import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
+import be.monmoisclair.app.domain.usecase.SavingsAsideState
 import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
 import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
@@ -114,18 +115,20 @@ class SettingsViewModel @Inject constructor(
     fun refresh() {
         val dirtyAtStart = savingsDraftDirty
         viewModelScope.launch {
-            val savings = configureSavings.read()
-            val summary = prepareMonthSummary()
-            val dossierCount = listDossiers().count
-            val (shareCode, migrationFailed) = withContext(Dispatchers.IO) {
+            val loaded = withContext(Dispatchers.IO) {
+                val savings = configureSavings.read()
+                val summary = prepareMonthSummary()
+                val dossierCount = listDossiers().count
+                val offMonth = listOffMonth()
                 val code = runCatching { shareSecretVault.peekDisplayCode() }.getOrNull()
                 val failed = runCatching { dbPassphraseVault.isMigrationFailedPresent() }
                     .getOrDefault(false)
-                code to failed
+                RefreshBundle(savings, summary, dossierCount, offMonth, code, failed)
             }
             _uiState.update { cur ->
                 val dirtyNow = savingsDraftDirty
                 val keepDraft = dirtyNow || cur.savingsBusy || dirtyAtStart != dirtyNow
+                val savings = loaded.savings
                 val storedAmount = if (savings.active) {
                     MoneyFormat.centsToEditable(savings.amountCents)
                 } else {
@@ -139,7 +142,7 @@ class SettingsViewModel @Inject constructor(
                     biometricEnabled = preference.isEnabled(),
                     availability = biometricAuth.availability(),
                     backupHealth = healthStore.read(),
-                    offMonthPeriodics = listOffMonth(),
+                    offMonthPeriodics = loaded.offMonth,
                     savingsActive = savings.active,
                     savingsAmountText = if (keepDraft) cur.savingsAmountText else storedAmount,
                     savingsDay = if (keepDraft) {
@@ -149,9 +152,9 @@ class SettingsViewModel @Inject constructor(
                     },
                     savingsDeficit = if (keepDraft) cur.savingsDeficit else null,
                     savingsNextMonthNote = if (keepDraft) cur.savingsNextMonthNote else null,
-                    showSummaryButton = summary.isDeficit || dossierCount > 0,
-                    shareCopyCode = shareCode,
-                    dbMigrationFailed = migrationFailed
+                    showSummaryButton = loaded.summary.isDeficit || loaded.dossierCount > 0,
+                    shareCopyCode = loaded.shareCode,
+                    dbMigrationFailed = loaded.migrationFailed
                 )
             }
         }
@@ -336,7 +339,7 @@ class SettingsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             try {
-                val result = prepareMonthSummary()
+                val result = withContext(Dispatchers.IO) { prepareMonthSummary() }
                 val intent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
@@ -367,9 +370,9 @@ class SettingsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             try {
-                val result = prepareMonthSummary()
                 val file = withContext(Dispatchers.IO) {
-                    // PDF clair éphémère (cache/share) — wipe au lock ; pas files/ durable.
+                    val result = prepareMonthSummary()
+                    // PDF clair éphémère (cache/share) — TTL 2 min ; pas files/ durable.
                     val out = MonthSummaryPdfShare.prepareTarget(appContext.cacheDir)
                     summaryPdfWriter.write(result.text, out)
                 }
@@ -518,4 +521,13 @@ class SettingsViewModel @Inject constructor(
         }
         pendingShareKind = PendingShareKind.None
     }
+
+    private data class RefreshBundle(
+        val savings: SavingsAsideState,
+        val summary: PrepareMonthSummaryUseCase.Result,
+        val dossierCount: Int,
+        val offMonth: List<OffMonthPeriodic>,
+        val shareCode: String?,
+        val migrationFailed: Boolean
+    )
 }

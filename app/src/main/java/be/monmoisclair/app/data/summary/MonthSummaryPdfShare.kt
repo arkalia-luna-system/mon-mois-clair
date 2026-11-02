@@ -8,8 +8,10 @@ import java.io.File
  * (MMC1/MRF1 rendrait le fichier illisible hors app).
  *
  * Filet sécu : uniquement sous `cache/share/` (éphémère), jamais `files/` ;
- * [wipeShareCache] au retour arrière-plan + purge TTL à l’écriture.
- * Le même dossier héberge aussi le `.mmc` temporaire de partage — wipe inclus.
+ * purge TTL à l’écriture et à l’arrière-plan ([purgeStale]) — **pas** de wipe total
+ * sur ON_STOP (sinon FileProvider casse pendant le sheet système).
+ * [wipeShareCache] reste pour tests / nettoyage explicite.
+ * Le même dossier héberge aussi le `.mmc` temporaire de partage.
  */
 object MonthSummaryPdfShare {
 

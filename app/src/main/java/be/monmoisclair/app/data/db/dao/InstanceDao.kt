@@ -34,8 +34,20 @@ interface InstanceDao {
     @Query("SELECT * FROM income_instances ORDER BY ledgerId ASC, dayOfMonth ASC, id ASC")
     suspend fun getAllIncomes(): List<IncomeInstanceEntity>
 
+    @Query(
+        "SELECT * FROM income_instances WHERE ledgerId = :ledgerId " +
+            "ORDER BY dayOfMonth ASC, label ASC"
+    )
+    suspend fun getIncomesForLedger(ledgerId: String): List<IncomeInstanceEntity>
+
     @Query("SELECT * FROM expense_instances ORDER BY ledgerId ASC, dayOfMonth ASC, id ASC")
     suspend fun getAllExpenses(): List<ExpenseInstanceEntity>
+
+    @Query(
+        "SELECT * FROM expense_instances WHERE ledgerId = :ledgerId " +
+            "ORDER BY dayOfMonth ASC, label ASC"
+    )
+    suspend fun getExpensesForLedger(ledgerId: String): List<ExpenseInstanceEntity>
 
     @Query(
         "SELECT * FROM expense_instances WHERE ledgerId = :ledgerId AND status = :status"

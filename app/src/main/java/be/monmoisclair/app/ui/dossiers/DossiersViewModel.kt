@@ -31,7 +31,9 @@ data class DossiersUiState(
     val loading: Boolean = true,
     val snapshot: DossiersSnapshot = DossiersSnapshot(emptyList(), 0L),
     val pendingLetters: List<PendingLetterEntity> = emptyList(),
-    val summaryBusy: Boolean = false
+    val summaryBusy: Boolean = false,
+    val summaryMessage: String? = null,
+    val summaryMessageError: Boolean = false
 )
 
 @HiltViewModel
@@ -77,10 +79,12 @@ class DossiersViewModel @Inject constructor(
     /** Lot F — texte à envoyer à un créancier ou à un conseiller. */
     fun shareSummary() {
         if (_state.value.summaryBusy || _state.value.loading) return
-        _state.value = _state.value.copy(summaryBusy = true)
+        _state.update {
+            it.copy(summaryBusy = true, summaryMessage = null, summaryMessageError = false)
+        }
         viewModelScope.launch {
             try {
-                val result = prepareMonthSummary()
+                val result = withContext(Dispatchers.IO) { prepareMonthSummary() }
                 val intent = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_SUBJECT, "Résumé — Mon Mois Clair")
@@ -89,8 +93,15 @@ class DossiersViewModel @Inject constructor(
                 _shareIntents.emit(
                     Intent.createChooser(intent, "Envoyer le résumé")
                 )
+            } catch (_: Exception) {
+                _state.update {
+                    it.copy(
+                        summaryMessage = "Le résumé n’a pas pu être préparé. Réessayez.",
+                        summaryMessageError = true
+                    )
+                }
             } finally {
-                _state.value = _state.value.copy(summaryBusy = false)
+                _state.update { it.copy(summaryBusy = false) }
             }
         }
     }
@@ -98,12 +109,14 @@ class DossiersViewModel @Inject constructor(
     /** Même texte en PDF (imprimer / joindre). */
     fun shareSummaryPdf() {
         if (_state.value.summaryBusy || _state.value.loading) return
-        _state.value = _state.value.copy(summaryBusy = true)
+        _state.update {
+            it.copy(summaryBusy = true, summaryMessage = null, summaryMessageError = false)
+        }
         viewModelScope.launch {
             try {
-                val result = prepareMonthSummary()
                 val file = withContext(Dispatchers.IO) {
-                    // PDF clair éphémère (cache/share) — wipe au lock ; pas files/ durable.
+                    val result = prepareMonthSummary()
+                    // PDF clair éphémère (cache/share) — TTL 2 min ; pas files/ durable.
                     val out = MonthSummaryPdfShare.prepareTarget(appContext.cacheDir)
                     summaryPdfWriter.write(result.text, out)
                 }
@@ -120,9 +133,25 @@ class DossiersViewModel @Inject constructor(
                 _shareIntents.emit(
                     Intent.createChooser(intent, "Envoyer le PDF")
                 )
+            } catch (_: Exception) {
+                _state.update {
+                    it.copy(
+                        summaryMessage = "Le PDF n’a pas pu être préparé. Réessayez.",
+                        summaryMessageError = true
+                    )
+                }
             } finally {
-                _state.value = _state.value.copy(summaryBusy = false)
+                _state.update { it.copy(summaryBusy = false) }
             }
+        }
+    }
+
+    fun reportShareIntentFailed() {
+        _state.update {
+            it.copy(
+                summaryMessage = "Aucune app pour envoyer. Réessayez.",
+                summaryMessageError = true
+            )
         }
     }
 }

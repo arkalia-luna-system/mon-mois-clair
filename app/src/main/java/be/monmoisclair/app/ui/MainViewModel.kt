@@ -135,12 +135,12 @@ class MainViewModel @Inject constructor(
             val enabled = biometricPreference.isEnabled()
             val availability = biometricAuth.availability()
             val mustLock = enabled && availability == BiometricAvailability.Ready
-            // Caches clairs (aperçu + PDF résumé + .mmc temporaire) + clipboard :
-            // wipe dès arrière-plan (pas seulement au lock bio).
+            // Aperçu view/ + clipboard : wipe immédiat. share/ : purge TTL seulement
+            // (wipe total cassait le FileProvider pendant le sheet PDF / .mmc).
             SensitiveClipboard.clearNow(appContext)
             withContext(Dispatchers.IO) {
                 receiptPhotos.purgeViewCache()
-                MonthSummaryPdfShare.wipeShareCache(appContext.cacheDir)
+                MonthSummaryPdfShare.purgeStale(MonthSummaryPdfShare.shareDir(appContext.cacheDir))
             }
             _uiState.update {
                 it.copy(

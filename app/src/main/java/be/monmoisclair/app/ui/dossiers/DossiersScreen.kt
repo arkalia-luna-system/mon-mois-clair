@@ -42,8 +42,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.db.entity.PendingLetterEntity
 import be.monmoisclair.app.domain.usecase.DossierListItem
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSectionTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.CarnetTitleTokens
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -81,6 +83,7 @@ fun DossiersScreen(
     LaunchedEffect(Unit) {
         viewModel.shareIntents.collectLatest { intent ->
             runCatching { context.startActivity(intent) }
+                .onFailure { viewModel.reportShareIntentFailed() }
         }
     }
 
@@ -256,6 +259,17 @@ fun DossiersScreen(
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
         )
+        state.summaryMessage?.let { msg ->
+            CarnetStateBanner(
+                text = msg,
+                kind = if (state.summaryMessageError) {
+                    CarnetBannerKind.Error
+                } else {
+                    CarnetBannerKind.Ok
+                },
+                pad = if (fit.compactHomeChrome) 10.dp else 12.dp
+            )
+        }
         if (state.summaryBusy) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

@@ -116,6 +116,9 @@ class PrepareMonthSummaryUseCaseTest {
         assertThat(text).doesNotContain("secret.webp")
         assertThat(text.lowercase()).doesNotContain("total des dettes")
         assertThat(text).contains("Les photos des courriers sont dans l’application.")
+        assertThat(text).contains("Reste après factures :")
+        assertThat(text).contains("À payer :")
+        assertThat(text).contains("Total :")
         assertThat(result.isDeficit).isFalse()
     }
 
@@ -153,8 +156,66 @@ class PrepareMonthSummaryUseCaseTest {
         val text = prepare(YearMonth.of(2026, 10)).text
         assertThat(text).contains("Déficit")
         assertThat(text).contains("300")
+        assertThat(text).contains("Reste après factures :")
+        assertThat(text).contains("À payer :")
         assertThat(text.lowercase()).doesNotContain("payez d’abord")
         assertThat(text.lowercase()).doesNotContain("payez d'abord")
+    }
+
+    @Test
+    fun nonDeficit_alwaysShowsResteAndAPayer() = runBlocking {
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.instanceDao().insertIncome(
+            IncomeInstanceEntity(
+                id = "inc",
+                ledgerId = "2026-10",
+                templateId = null,
+                label = "Salaire",
+                amountCents = 200_000L,
+                dayOfMonth = 1,
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp-done",
+                ledgerId = "2026-10",
+                templateId = null,
+                label = "Eau",
+                amountCents = 4_000L,
+                dayOfMonth = 5,
+                status = ExpenseStatus.DONE,
+                doneAtEpochMs = 2L,
+                remindJ3 = false,
+                remindJd = false,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp-todo",
+                ledgerId = "2026-10",
+                templateId = null,
+                label = "Gaz",
+                amountCents = 6_000L,
+                dayOfMonth = 8,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val result = prepare(YearMonth.of(2026, 10))
+        assertThat(result.isDeficit).isFalse()
+        assertThat(result.text).contains("Reste après factures :")
+        assertThat(result.text).contains("À payer : 60 €")
+        assertThat(result.text).contains("FAIT : 40 €")
+        assertThat(result.text).doesNotContain("Déficit")
     }
 
     @Test

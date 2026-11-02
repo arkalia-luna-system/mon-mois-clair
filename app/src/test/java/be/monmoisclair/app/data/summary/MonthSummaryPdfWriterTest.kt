@@ -22,6 +22,9 @@ class MonthSummaryPdfWriterTest {
         assertThat(MonthSummaryPdfWriter.isSectionHeading("Dossiers (accords)")).isTrue()
         assertThat(MonthSummaryPdfWriter.isSectionHeading("Mis de côté")).isTrue()
         assertThat(MonthSummaryPdfWriter.isSectionHeading("Déficit ce mois : 12,00 €")).isTrue()
+        assertThat(MonthSummaryPdfWriter.isSectionHeading("Reste après factures : −12,00 €")).isTrue()
+        assertThat(MonthSummaryPdfWriter.isSectionHeading("À payer : 80,00 €")).isTrue()
+        assertThat(MonthSummaryPdfWriter.isSectionHeading("FAIT : 20,00 €")).isTrue()
         assertThat(MonthSummaryPdfWriter.isSectionHeading("Octobre 2026")).isTrue()
         assertThat(MonthSummaryPdfWriter.isSectionHeading("Août 2026")).isTrue()
 
@@ -30,9 +33,6 @@ class MonthSummaryPdfWriterTest {
         assertThat(MonthSummaryPdfWriter.isSectionHeading("— aucun")).isFalse()
         assertThat(
             MonthSummaryPdfWriter.isSectionHeading("  Versement ce mois : 20,00 € · Reste : 100,00 €")
-        ).isFalse()
-        assertThat(
-            MonthSummaryPdfWriter.isSectionHeading("Reste après factures : −12,00 €")
         ).isFalse()
         assertThat(
             MonthSummaryPdfWriter.isSectionHeading("Mon Mois Clair — résumé")

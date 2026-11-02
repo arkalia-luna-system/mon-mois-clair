@@ -181,7 +181,10 @@ class MonthSummaryPdfWriter @Inject constructor(
                 t == "Factures du mois" -> true
                 t == "Dossiers (accords)" -> true
                 t == "Mis de côté" -> true
+                t.startsWith("Reste après factures") -> true
                 t.startsWith("Déficit ce mois") -> true
+                t.startsWith("À payer") -> true
+                t.startsWith("FAIT :") -> true
                 MONTH_TITLE.matches(t) -> true
                 else -> false
             }

@@ -34,10 +34,8 @@ class PrepareMonthSummaryUseCase @Inject constructor(
 
     suspend operator fun invoke(yearMonth: YearMonth = AppClock.currentYearMonth()): Result {
         val ledgerId = AppClock.ledgerId(yearMonth)
-        val incomes = instanceDao.getAllIncomes().filter { it.ledgerId == ledgerId }
-            .sortedWith(compareBy({ it.dayOfMonth }, { it.label }))
-        val expenses = instanceDao.getAllExpenses().filter { it.ledgerId == ledgerId }
-            .sortedWith(compareBy({ it.dayOfMonth }, { it.label }))
+        val incomes = instanceDao.getIncomesForLedger(ledgerId)
+        val expenses = instanceDao.getExpensesForLedger(ledgerId)
         val summary = MonthSummaryCalculator.compute(incomes, expenses)
         val savingsId = appMetaDao.get(AppMetaKeys.SAVINGS_TEMPLATE_ID)?.value?.trim().orEmpty()
         val dossiers = listDossiers()
@@ -48,13 +46,26 @@ class PrepareMonthSummaryUseCase @Inject constructor(
         sb.appendLine(monthTitle(yearMonth))
         sb.appendLine()
 
+        // Chiffres clés (alignés sticky Accueil) — toujours, pas seulement en déficit.
+        sb.appendLine("Reste après factures : ${EuroFormat.formatCents(summary.remainingCents)}")
         if (summary.remainingCents < 0L) {
             sb.appendLine(
                 "Déficit ce mois : ${EuroFormat.formatCents(kotlin.math.abs(summary.remainingCents))}"
             )
-            sb.appendLine("Reste après factures : ${EuroFormat.formatCents(summary.remainingCents)}")
-            sb.appendLine()
         }
+        if (summary.stillToPayCents <= 0L) {
+            sb.appendLine("À payer : tout est payé")
+        } else {
+            sb.appendLine("À payer : ${EuroFormat.formatCents(summary.stillToPayCents)}")
+        }
+        val doneCents = expenses
+            .asSequence()
+            .filter { it.status == ExpenseStatus.DONE }
+            .sumOf { it.amountCents }
+        if (doneCents > 0L) {
+            sb.appendLine("FAIT : ${EuroFormat.formatCents(doneCents)}")
+        }
+        sb.appendLine()
 
         sb.appendLine("Revenus")
         if (incomes.isEmpty()) {
@@ -65,6 +76,7 @@ class PrepareMonthSummaryUseCase @Inject constructor(
                     "• ${inc.label} — ${EuroFormat.formatCents(inc.amountCents)}"
                 )
             }
+            sb.appendLine("Total : ${EuroFormat.formatCents(summary.totalIncomeCents)}")
         }
         sb.appendLine()
 

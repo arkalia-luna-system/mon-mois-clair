@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.01** (Dependabot Guava #61 + propreté audits + ship fin de journée) |
+| Dernière étape terminée | **7.02** (fix résumé mois PDF/share — wipe ON_STOP + UX Réglages + contenu) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : smoke S26 D1–D7 · restore `.mmc` · QuietLink mail · TalkBack · Device Care · Drive — **STOP craft** code (plafond doigt) |
+| Prochaine sous-étape | **Athalia** : re-smoke **Préparer un résumé** (Dossiers + Réglages) · puis S26 D1–D7 · restore `.mmc` |
 | Audit premium | notes **honnêtes** · premium-00 + clean-10 vivants · 01–06 archivés · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,26 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.02 résumé mois (smoke Athalia P0)
+
+**Contexte :** premier point smoke — « Préparer un résumé » lent / ne marche pas assez bien.  
+**Audit :** [`docs/audits/2026-11-02-resume-mois.md`](docs/audits/2026-11-02-resume-mois.md).
+
+**P0 :**
+- ON_STOP : `purgeStale` sur `cache/share/` (plus de wipe total qui cassait FileProvider pendant le sheet PDF / `.mmc`).
+- Réglages → Préparer un résumé : boutons texte + PDF branchés (`SettingsShareEffect`) — fini le cul-de-sac QuietLink seul.
+
+**P1 :**
+- Résumé : toujours **Reste** / **À payer** / **FAIT** (si >0) + total revenus ; épargne à part inchangée.
+- Perf : queries ledger `getIncomesForLedger` / `getExpensesForLedger` ; prepare + refresh Settings sur `Dispatchers.IO`.
+- Dossiers : catch + bannière erreur + échec `startActivity`.
+
+**Docs :** PRIVACY / SECURITY alignés (TTL share, pas wipe total ON_STOP).
+
+**Tests :** **407 exécutés** / 408 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.02` · `versionCode` 107.  
+**Smoke doigt :** Athalia — re-smoke résumé (Dossiers + Réglages + PDF lisible).
 
 ### 2026-11-01 — 7.01 Dependabot Guava + propreté (fin de journée)
 

@@ -14,6 +14,7 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`CI.md`](CI.md) | CI + Dependabot Security (force protobuf/netty) |
 | [`audits/2026-11-01-premium-00-synthese.md`](audits/2026-11-01-premium-00-synthese.md) | Synthèse audits premium |
 | [`audits/2026-11-01-premium-clean-10.md`](audits/2026-11-01-premium-clean-10.md) | Notes craft **honnêtes** + propreté |
+| [`audits/2026-11-02-resume-mois.md`](audits/2026-11-02-resume-mois.md) | Smoke résumé mois PDF / share (P0 wipe + UX) |
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 

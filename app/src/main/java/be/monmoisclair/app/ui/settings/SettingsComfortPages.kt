@@ -126,20 +126,40 @@ fun SettingsSummaryScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val fit = rememberDisplayFit()
+    val tipPad = fit.tipPad
 
     SettingsResumeRefresh(viewModel)
+    SettingsShareEffect(viewModel)
 
-    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
+    PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy && !state.summaryBusy) {
         SettingsPageTitle(SettingsHubCopy.SUMMARY)
         Text(
-            text = "Texte ou PDF pour un créancier ou un conseiller — dans Dossiers. " +
-                "Ce PDF n’est pas une copie de sauvegarde.",
+            text = "Texte ou PDF pour un créancier ou un conseiller. " +
+                "Le PDF est lisible tout de suite (clair) : ce n’est pas une copie de sauvegarde.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
         )
+        state.flashMessage?.let { msg ->
+            CarnetStateBanner(
+                text = msg,
+                kind = if (state.flashMessageError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
+                pad = tipPad
+            )
+        }
+        SecondaryA11yButton(
+            text = if (state.summaryBusy) "Préparation…" else "Préparer un résumé",
+            onClick = viewModel::shareMonthSummary,
+            enabled = !state.busy && !state.summaryBusy
+        )
+        SecondaryA11yButton(
+            text = if (state.summaryBusy) "Préparation…" else "PDF du résumé",
+            onClick = viewModel::shareMonthSummaryPdf,
+            enabled = !state.busy && !state.summaryBusy
+        )
         QuietLinkA11y(
-            text = "Ouvrir Dossiers",
+            text = "Aussi dans Dossiers",
             onClick = onOpenDossiers
         )
     }

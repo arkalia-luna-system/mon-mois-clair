@@ -15,7 +15,7 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 | **Room** (SQLite `mon_mois_clair.db`) | Mois, factures, libellés, montants, notes / `+++`, IBAN, chemins photos — **chiffré au repos** (SQLCipher ; clé enveloppée Android Keystore) |
 | Dossier Documents (SAF) | Backups JSON enveloppe AES-GCM (code de copie) + photos/PDF locaux enveloppés — **pas en clair** depuis 6.81 |
 | Photos / PDF reçus | `files/receipts/` chiffrés (MRF1) ; aperçu = déchiffrement temporaire dans `cache/view/` (TTL **2 min** ; **wipe dès arrière-plan**) |
-| PDF résumé mois | **Clair** (lisible hors app — MMC1 le rendrait inutile) mais **éphémère** : `cache/share/` seulement, TTL **2 min**, **wipe dès arrière-plan** (PDF **et** `.mmc` temporaire) ; filigrane « données sensibles » ; pas une copie `.mmc` |
+| PDF résumé mois | **Clair** (lisible hors app — MMC1 le rendrait inutile) mais **éphémère** : `cache/share/` seulement, TTL **2 min** (purge à l’arrière-plan **et** à la prochaine préparation — **pas** de wipe total immédiat, sinon le sheet de partage échoue) ; filigrane « données sensibles » ; pas une copie `.mmc` |
 | Presse-papiers | Communication / IBAN copiés : marqués sensibles (Android 13+) et **vidés après ~30 s** (aussi wipe immédiat à l’arrière-plan ; API 26–27 = clip vide) |
 
 `android:allowBackup="false"` : pas de sauvegarde cloud Android automatique de l’app.

@@ -15,7 +15,7 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 - **Wrap sans bio** (`mmc_db_wrap_v1`) : **volontaire** — widget et alarmes doivent ouvrir Room hors porte UI ; le verrou bio (`mmc_unlock_v1`) ne wrappe pas la passphrase SQLCipher.
 - **Backups SAF / copie WhatsApp** : enveloppe AES-GCM (`MMC1`) dérivée du **code de copie** (8 chiffres, Keystore local). Sans ce code, un fichier partagé est **illisible**. Texte d’envoi rappelle de **ne pas** coller le code dans le même message. Anciennes copies ZIP/JSON claires : **refusées** (`CleartextLegacyGrace.OPT_IN_AVAILABLE = false` depuis 6.99) — seul chemin = `.mmc` / `MMC1B64`.
 - **Photos / PDF reçus** : fichiers `receipts/` et copies SAF enveloppés (`MRF1`) avec la même clé wrap Keystore. Cache `view/` TTL **2 min** + **wipe dès ON_STOP** (arrière-plan), pas seulement au verrou.
-- **PDF résumé mois** : **clair** volontairement (partage/impression) ; uniquement `cache/share/` éphémère (TTL **2 min** + wipe arrière-plan des **PDF et `.mmc` temporaires**) ; watermark + note d’envoi « pas une copie `.mmc` ».
+- **PDF résumé mois** : **clair** volontairement (partage/impression) ; uniquement `cache/share/` éphémère (TTL **2 min** : purge périmés à l’arrière-plan / à l’écriture — **pas** de wipe total ON_STOP, pour laisser le FileProvider servir le sheet système) ; watermark + note d’envoi « pas une copie `.mmc` ».
 - Biométrie optionnelle = porte UI + **CryptoObject** (clé `mmc_unlock_v1`, AUTH_BIOMETRIC_STRONG \| DEVICE_CREDENTIAL) quand disponible ; sinon fallback porte UI (DB déjà chiffrée).
 - Widget / notifs : montants **et** libellés masqués si biométrie ON.
 - Keystore de signature release : **jamais** dans git (`*.jks`, `keystore.properties`).
