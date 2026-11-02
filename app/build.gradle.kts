@@ -164,14 +164,14 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.17")
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("androidx.work:work-testing:2.12.0")
-    testImplementation("com.google.truth:truth:1.4.4")
+    testImplementation("com.google.truth:truth:1.4.5")
     testImplementation("org.json:json:20240303")
 
     // androidTest : smoke stables (pas de Compose/Hilt flaky). connected = Athalia si device.
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test:core:1.6.1")
-    androidTestImplementation("com.google.truth:truth:1.4.4")
+    androidTestImplementation("com.google.truth:truth:1.4.5")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     androidTestImplementation("androidx.room:room-runtime:$roomVersion")
     androidTestImplementation("androidx.room:room-ktx:$roomVersion")
