@@ -15,6 +15,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,8 +25,8 @@ import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.A11yTokens
 
 /**
- * Wordmark 7.12 : monogramme M mist/teal + nom serif (plus de lockup webp carnet).
- * Pas sur la liste du mois.
+ * Wordmark 7.14 : livre+coche brand + « Mon Mois » encre + « Clair » or champagne.
+ * Aligné kit brand (Downloads jf2e4w / wn6h37). Pas sur la liste du mois.
  */
 @Composable
 fun AppWordmark(
@@ -36,8 +39,17 @@ fun AppWordmark(
     } else {
         Modifier.clearAndSetSemantics {}
     }
-    val markSize = (width.value * 0.22f).dp.coerceIn(36.dp, 56.dp)
-    val titleSp = (width.value * 0.105f).coerceIn(18f, 26f)
+    val markSize = (width.value * 0.18f).dp.coerceIn(32.dp, 52.dp)
+    // Garde ≥ 18 sp a11y ; largeur min recommandée ~220 pour « Clair » visible.
+    val titleSp = (width.value * 0.095f).coerceIn(18f, 26f)
+    val wordmark = buildAnnotatedString {
+        withStyle(SpanStyle(color = A11yTokens.Ink)) {
+            append("Mon Mois ")
+        }
+        withStyle(SpanStyle(color = A11yTokens.AccentAuto)) {
+            append("Clair")
+        }
+    }
     Row(
         modifier = modifier
             .then(spoken)
@@ -52,19 +64,18 @@ fun AppWordmark(
             modifier = Modifier.size(markSize)
         )
         Text(
-            text = "Mon Mois Clair",
+            text = wordmark,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = titleSp.sp,
                 lineHeight = (titleSp + 4f).sp,
                 letterSpacing = (-0.01).sp
             ),
-            color = A11yTokens.Ink,
             maxLines = 1
         )
     }
 }
 
-/** Monogramme seul, pour une bandeau ou une petite accroche. */
+/** Marque livre+coche seule, pour bandeau ou accroche. */
 @Composable
 fun BrandMark(
     modifier: Modifier = Modifier,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Couche monochrome Android 13+ — silhouette M inset (padding safe). -->
+<!-- Couche monochrome Android 13+ — silhouette livre + coche inset (safe zone). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -7,5 +7,10 @@
     android:viewportHeight="108">
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M38,70V38h6.4l9.6,20L63.6,38H70v32h-5.8V48.2L54.4,68.4h-0.8L43.8,48.2V70z" />
+        android:fillType="evenOdd"
+        android:pathData="M54,81C44.8,81 35,74.8 30.2,65.2L25.5,43.5C22.8,33 31.5,24.5 42,23L49.2,21.5C52.5,20.9 54.5,23.2 54.5,26.5V53H53.5V26.5C53.5,23.2 55.5,20.9 58.8,21.5L66,23C76.5,24.5 85.2,33 82.5,43.5L77.8,65.2C73,74.8 63.2,81 54,81Z
+M54,70.5C59.8,70.5 65,67 68.2,60.8L71.8,48C72.9,42.2 69.5,37.5 63.5,36L57.5,34.5C55.2,34 54,35.2 54,37.5V55.5C54,58.2 54,58.2 54,58.2C54,58.2 54,58.2 54,55.5V37.5C54,35.2 52.8,34 50.5,34.5L44.5,36C38.5,37.5 35.1,42.2 36.2,48L39.8,60.8C43,67 48.2,70.5 54,70.5Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M41.5,53.5L49.5,63C50.5,64.2 52.4,64.2 53.4,63L74.5,31.5C75.9,29.4 75.1,26.5 72.6,25.8C70.8,25.3 68.8,26.4 67.8,28.2L52,56.5L47.5,51C46.2,49.5 43.8,49.5 42.5,51C41.2,52.5 41.2,53 41.5,53.5Z" />
 </vector>

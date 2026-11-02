@@ -114,7 +114,7 @@ class PaymentNotificationHelper @Inject constructor(
 
     /**
      * smallIcon = silhouette M blanche (barre d’état) ;
-     * largeIcon = monogramme mist/teal (bannière Samsung collapsed) ;
+     * largeIcon = livre+coche couleur simplifiée (bannière Samsung collapsed) ;
      * setColor = accent teal brand.
      */
     private fun baseBuilder(title: String, body: String): NotificationCompat.Builder {

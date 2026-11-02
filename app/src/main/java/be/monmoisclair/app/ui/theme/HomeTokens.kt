@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Design system Accueil + référence visuelle 7.13 — mist cool 2027.
+ * Design system Accueil + référence visuelle 7.14 — mist cool + brand livre/coche.
  * Palette alignée [A11yTokens] (thème global). Touch ≥ 48 · contrastes ≥ 7:1.
  */
 @Immutable

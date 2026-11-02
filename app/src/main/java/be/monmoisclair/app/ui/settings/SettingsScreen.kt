@@ -94,7 +94,8 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             AppWordmark(
-                width = if (fit.compactHomeChrome) 140.dp else 160.dp,
+                // 7.14 : assez large pour « Clair » or (évite coupe à 140–160).
+                width = if (fit.compactHomeChrome) 220.dp else 260.dp,
                 announce = false
             )
             if (stepLabel != null) {

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Adaptive foreground 108×108 — monogramme « M » 7.13.
-  Disque radial mist→teal soft · M avec padding safe (~66). Pas purple.
+  Adaptive foreground 108×108 — livre ouvert + coche (kit brand 7.14).
+  Glyph inset ~safe zone Google (contenu ≈ 66 dp). Glow teal soft, or champagne.
+  Source : Downloads Gemini wn6h37 + kit jf2e4w — vectors dérivés, pas JPG brut.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
@@ -9,28 +10,71 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Halo soft (légèrement hors disque, reste dans le canvas 108). -->
+    <!-- Halo teal (dial-down, reste dans le canvas). -->
     <path
-        android:pathData="M54,20c18.78,0 34,15.22 34,34s-15.22,34 -34,34s-34,-15.22 -34,-34s15.22,-34 34,-34z">
+        android:pathData="M54,22c17.67,0 32,14.33 32,32s-14.33,32 -32,32s-32,-14.33 -32,-32s14.33,-32 32,-32z">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:type="radial"
-                android:centerX="48"
-                android:centerY="44"
-                android:gradientRadius="40">
-                <item android:offset="0" android:color="#F2F8F9" />
-                <item android:offset="0.55" android:color="#C5E0E4" />
-                <item android:offset="1" android:color="#7FB8BE" />
+                android:centerX="54"
+                android:centerY="46"
+                android:gradientRadius="36">
+                <item android:offset="0" android:color="#995EEAD4" />
+                <item android:offset="0.55" android:color="#440D9488" />
+                <item android:offset="1" android:color="#000A1620" />
             </gradient>
         </aapt:attr>
     </path>
-    <!-- Disque intérieur mist (containment). -->
+    <!-- Anneau or (livre extérieur). -->
     <path
-        android:fillColor="#E8F1F3"
-        android:fillAlpha="0.55"
-        android:pathData="M54,26c15.46,0 28,12.54 28,28s-12.54,28 -28,28s-28,-12.54 -28,-28s12.54,-28 28,-28z" />
-    <!-- M géométrique bold — inset pour padding adaptive. -->
+        android:fillType="evenOdd"
+        android:pathData="M54,80C45.2,80 36.5,74.2 32.2,65.2L27.5,44.5C25.2,35.2 32.5,26.8 42.2,25.2L49.5,23.8C52.4,23.2 54.2,25.2 54.2,28.2V54H53.8V28.2C53.8,25.2 55.6,23.2 58.5,23.8L65.8,25.2C75.5,26.8 82.8,35.2 80.5,44.5L75.8,65.2C71.5,74.2 62.8,80 54,80Z
+M54,71.2C59.5,71.2 64.5,68 67.4,62.2L70.8,49.5C71.7,44.8 69.2,40.5 64.6,39.2L58.2,37.5C56.5,37.1 55.4,38 55.4,39.8V56.2C55.4,58.8 54.6,60.2 54,60.2C53.4,60.2 52.6,58.8 52.6,56.2V39.8C52.6,38 51.5,37.1 49.8,37.5L43.4,39.2C38.8,40.5 36.3,44.8 37.2,49.5L40.6,62.2C43.5,68 48.5,71.2 54,71.2Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="30"
+                android:startY="28"
+                android:endX="82"
+                android:endY="78"
+                android:type="linear">
+                <item android:offset="0" android:color="#F0D9A0" />
+                <item android:offset="0.5" android:color="#C9A36A" />
+                <item android:offset="1" android:color="#A67C3D" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Anneau teal (livre intérieur). -->
     <path
-        android:fillColor="#0A5254"
-        android:pathData="M38,70V38h6.4l9.6,20L63.6,38H70v32h-5.8V48.2L54.4,68.4h-0.8L43.8,48.2V70z" />
+        android:fillType="evenOdd"
+        android:pathData="M54,77C46.2,77 38.5,71.8 34.8,63.8L30.8,45.2C29,37.5 35.2,30.8 43.2,29.6L50,28.4C52.1,28 53.4,29.5 53.4,31.6V54.5H54.6V31.6C54.6,29.5 55.9,28 58,28.4L64.8,29.6C72.8,30.8 79,37.5 77.2,45.2L73.2,63.8C69.5,71.8 61.8,77 54,77Z
+M54,69.5C59,69.5 63.5,66.6 66.2,61.4L69.2,49.8C70,45.6 67.8,42 63.8,40.9L58.2,39.5C56.8,39.2 55.9,40 55.9,41.3V55.5C55.9,57.8 54.8,59 54,59C53.2,59 52.1,57.8 52.1,55.5V41.3C52.1,40 51.2,39.2 49.8,39.5L44.2,40.9C40.2,42 38,45.6 38.8,49.8L41.8,61.4C44.5,66.6 49,69.5 54,69.5Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="36"
+                android:startY="30"
+                android:endX="74"
+                android:endY="74"
+                android:type="linear">
+                <item android:offset="0" android:color="#7FF5E0" />
+                <item android:offset="0.45" android:color="#2DD4BF" />
+                <item android:offset="1" android:color="#0F766E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Coche (bras long = page droite / clarté). -->
+    <path
+        android:pathData="M42.8,53.2L50.2,61.8C51.1,62.8 52.6,62.8 53.5,61.8L72.2,33.8C73.4,32 72.8,29.5 70.6,28.9C69,28.5 67.2,29.4 66.3,31L52.2,55.2L47.9,50.2C46.7,48.9 44.6,48.9 43.4,50.2C42.2,51.5 42.2,52.6 42.8,53.2Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="44"
+                android:startY="62"
+                android:endX="72"
+                android:endY="30"
+                android:type="linear">
+                <item android:offset="0" android:color="#2DD4BF" />
+                <item android:offset="0.5" android:color="#C9A36A" />
+                <item android:offset="1" android:color="#F0D9A0" />
+            </gradient>
+        </aapt:attr>
+    </path>
 </vector>

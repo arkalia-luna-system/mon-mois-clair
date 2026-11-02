@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Palette app-wide 7.13 — mist cool 2027 (plus de crème carnet).
+ * Palette app-wide 7.14 — mist cool + accents teal/or champagne (kit brand).
  * Alignée [HomeTokens] ; contrastes ≥ 7:1 (tests WCAG).
  * Les getters Compose suivent [LocalCarnetPalette].
  */
@@ -72,7 +72,8 @@ object A11yTokens {
         accentWarn = Color(0xFF5C3D12),
         accentDanger = Color(0xFF8B2E18),
         dangerInk = Color(0xFF8B2E18),
-        accentAuto = Color(0xFFD99B26),
+        /** Or champagne kit brand (Accord / « Clair ») — ≥ 7:1 avec onGold. */
+        accentAuto = Color(0xFFC9A36A),
         onGold = Color(0xFF121A24),
         buttonFill = Color(0xFF0A5254),
         buttonText = Color(0xFFFFFFFF),
@@ -97,7 +98,7 @@ object A11yTokens {
         accentWarn = Color(0xFFE2C08A),
         accentDanger = Color(0xFF8E3418),
         dangerInk = Color(0xFFF4C4B6),
-        accentAuto = Color(0xFFD99B26),
+        accentAuto = Color(0xFFC9A36A),
         onGold = Color(0xFF121A24),
         buttonFill = Color(0xFF0A5254),
         buttonText = Color(0xFFFFFFFF),

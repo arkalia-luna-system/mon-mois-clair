@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 7.12 : mist cool + fond launcher légèrement teinté teal. -->
-    <color name="ic_launcher_background">#E8F1F3</color>
+    <!-- 7.14 : fond launcher dark navy (kit brand livre+coche · One UI squircle). -->
+    <color name="ic_launcher_background">#0A1620</color>
     <color name="paper_cream">#F0F4F7</color>
     <color name="widget_ink">#121A24</color>
     <color name="widget_muted">#3D4F5C</color>

@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.13** (hero tonal Accueil · icon wells · logo mist→teal · FAIT check · surfaces modernes) |
+| Dernière étape terminée | **7.14** (brand livre+coche · launcher dark · notif silhouette · Clair or · mist UI) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke visuel (launcher + Accueil wow + Menu wells + Restore/Privacy) |
-| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) §7.13 |
+| Prochaine sous-étape | **Athalia** : re-smoke One UI (rafraîchir icône launcher + Accueil/Réglages/notif) |
+| Audit | [`brand-logo-unisson.md`](docs/audits/2026-11-02-brand-logo-unisson.md) · visual §7.14 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,26 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.14 Brand unisson livre + coche
+
+**Contexte :** Athalia — logo cible + kit brand (Downloads) · OUI unisson launcher / notif / UI.
+
+**Sources :**  
+`/Users/athalia/Downloads/Gemini_Generated_Image_wn6h37wn6h37wn6h.jpeg` (lockup) ·  
+`/Users/athalia/Downloads/Gemini_Generated_Image_jf2e4wjf2e4wjf2e.jpeg` (kit) · audit [`brand-logo-unisson.md`](docs/audits/2026-11-02-brand-logo-unisson.md).
+
+**Décisions :** launcher dark navy + livre/coche teal/or (safe zone) · smallIcon blanc · largeIcon couleur · UI **mist** + accents teal/`#C9A36A` · wordmark « Clair » or · nav kit Gemini = référence seulement.
+
+**Assets :** vectors adaptive / mono / notif / brand mark — pas JPG Gemini brut en launcher.
+
+**Métier/crypto/FAIT/offline/a11y inchangés.** Pas purple.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.14` · `versionCode` 119.  
+**Screenshots adb :** Accueil / Réglages / launcher → `docs/audits/screenshots/2026-11-02-*-7.14.png`.  
+**Device :** install release SM-S938B sans wipe.  
+**Smoke doigt :** Athalia — re-smoke (rafraîchir icône One UI).
 
 ### 2026-11-02 — 7.13 Passe agressive « plus nouvelle »
 
