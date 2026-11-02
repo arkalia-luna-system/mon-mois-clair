@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Design system Accueil + référence visuelle 7.11 — mist cool 2027.
+ * Design system Accueil + référence visuelle 7.12 — mist cool 2027.
  * Palette alignée [A11yTokens] (thème global). Touch ≥ 48 · contrastes ≥ 7:1.
  */
 @Immutable
@@ -45,9 +45,9 @@ object HomeTokens {
     val buttonRadius = RoundedCornerShape(16.dp)
     val cardGap = 14.dp
     val screenPad = 20.dp
-    val heroElevation = 4.dp
+    val heroElevation = 3.dp
     val cardElevation = 2.dp
-    val barElevation = 6.dp
+    val barElevation = 4.dp
     /** Empty Accueil / bandeau statut. */
     val emptyPadVertical = 28.dp
 

@@ -8,12 +8,17 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,7 +43,7 @@ import be.monmoisclair.app.ui.theme.DisplayFit
 import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Sticky Accueil (7.11) : hero 2027 · chips chariot/tirelire · mist cool global.
+ * Sticky Accueil (7.12) : hero mist + filet teal · chips chariot/tirelire.
  * Statut « Encore à payer » = tête de liste. Logique métier inchangée.
  */
 @Composable
@@ -121,56 +126,76 @@ internal fun HomeStickyHeader(
             }
             val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
             val hasHeroTools = coursesLabel != null || savingsLabel != null
-            // Hero 7.10 : carte blanche + ombre soft ; outils icône à droite.
+            // Hero 7.12 : carte + filet teal gauche (glanceable finance) ; outils à droite.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
                     .shadow(HomeTokens.heroElevation, HomeTokens.heroRadius, clip = false)
                     .clip(HomeTokens.heroRadius)
                     .background(HomeTokens.HeroSurface)
-                    .padding(horizontal = 16.dp, vertical = 14.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    .heightIn(min = 72.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
+                Box(
+                    modifier = Modifier
+                        .width(4.dp)
+                        .fillMaxHeight()
+                        .background(
+                            if (state.summary.remainingCents < 0L) {
+                                HomeTokens.DangerFill
+                            } else {
+                                HomeTokens.Link
+                            }
+                        )
+                )
+                Row(
                     modifier = Modifier
                         .weight(1f)
-                        .semantics(mergeDescendants = true) {
-                            contentDescription = "$remainingTitle : $remainingAmount"
-                        },
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                        .padding(start = 14.dp, end = 16.dp, top = 14.dp, bottom = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Text(
-                        text = remainingShort,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = HomeTokens.InkMuted,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = remainingAmount,
-                        style = MaterialTheme.typography.displayLarge.copy(
-                            fontSize = fit.remainingAmountSp.sp,
-                            lineHeight = (fit.remainingAmountSp + 4f).sp,
-                            letterSpacing = (-0.02).em
-                        ),
-                        color = when {
-                            state.summary.remainingCents < 0L -> HomeTokens.Danger
-                            else -> HomeTokens.Ink
-                        },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                if (hasHeroTools) {
-                    StickyHeroTools(
-                        coursesLabel = coursesLabel,
-                        coursesDescription = coursesDescription,
-                        onOpenCourses = onOpenCourses,
-                        savingsLabel = savingsLabel,
-                        savingsDescription = savingsDescription,
-                        onOpenSavings = onOpenSavings
-                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = "$remainingTitle : $remainingAmount"
+                            },
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Text(
+                            text = remainingShort,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = HomeTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = remainingAmount,
+                            style = MaterialTheme.typography.displayLarge.copy(
+                                fontSize = fit.remainingAmountSp.sp,
+                                lineHeight = (fit.remainingAmountSp + 4f).sp,
+                                letterSpacing = (-0.025).em
+                            ),
+                            color = when {
+                                state.summary.remainingCents < 0L -> HomeTokens.Danger
+                                else -> HomeTokens.Ink
+                            },
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    if (hasHeroTools) {
+                        StickyHeroTools(
+                            coursesLabel = coursesLabel,
+                            coursesDescription = coursesDescription,
+                            onOpenCourses = onOpenCourses,
+                            savingsLabel = savingsLabel,
+                            savingsDescription = savingsDescription,
+                            onOpenSavings = onOpenSavings
+                        )
+                    }
                 }
             }
             if (state.isFuturePreview) {

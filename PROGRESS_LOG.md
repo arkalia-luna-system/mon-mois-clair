@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.11** (polish surfaces 2027 — Accueil empty/statut · Aide/Alertes/Apparence · fiche/sheets/dialogs · motion) |
+| Dernière étape terminée | **7.12** (brand launcher M mist/teal · notif · hubs leading icons · hero strip · widget mist) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke visuel (Accueil + Réglages + fiche + Confort) |
-| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) §7.11 |
+| Prochaine sous-étape | **Athalia** : re-smoke visuel (launcher + Accueil + Réglages + fiche + Confort) |
+| Audit | [`visual-system-2027.md`](docs/audits/2026-11-02-visual-system-2027.md) §7.12 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,19 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.12 Brand launcher + polish hubs 2027
+
+**Contexte :** Athalia — pousser encore le visuel (meilleures apps 2026/27) · OUI tout type de changement UI.
+
+**Brand :** adaptive icon monogramme « M » mist/teal + monochrome · smallIcon M + largeIcon PNG mist/teal · accent notif `#0A5254` · wordmark Compose M+serif.
+
+**UI :** Menu/Réglages/Backup/Bio — leading icons + sections · hero Accueil filet teal/danger · ombres 3/2/4 · widget canvas mist. Métier/crypto/FAIT/offline/a11y **inchangés**. Pas purple.
+
+**Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.12` · `versionCode` 117.  
+**Screenshots adb :** Accueil / Réglages / fiche / Apparence → `docs/audits/screenshots/2026-11-02-*-7.12.png`.  
+**Smoke doigt :** Athalia — re-smoke launcher + surfaces.
 
 ### 2026-11-02 — 7.11 Polish surfaces 2027 (suite)
 

@@ -27,7 +27,7 @@ import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.A11yTokens
 
 /**
- * Ligne hub 7.10 : carte soft + titre + › , cible ≥ 48 dp.
+ * Ligne hub 7.12 : carte soft + leading icon optionnel + titre + › , cible ≥ 48 dp.
  * Même rythme Menu Accueil / hub Réglages.
  */
 @Composable

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Alignés A11yTokens.Day 7.10 (mist cool / ink / muted / border / danger). -->
-    <color name="ic_launcher_background">#F0F4F7</color>
+    <!-- 7.12 : mist cool + fond launcher légèrement teinté teal. -->
+    <color name="ic_launcher_background">#E8F1F3</color>
     <color name="paper_cream">#F0F4F7</color>
     <color name="widget_ink">#121A24</color>
     <color name="widget_muted">#3D4F5C</color>
     <color name="widget_danger">#8B2E18</color>
     <color name="widget_rule">#C9D5DE</color>
+    <color name="widget_canvas">#F0F4F7</color>
 </resources>

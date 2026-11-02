@@ -74,12 +74,13 @@ internal fun ThemeOptionRow(
     enabled: Boolean,
     onSelect: () -> Unit
 ) {
-    // 7.11 Apparence : cartes soft sélectionnables (pas radio plat).
+    // 7.12 Apparence : cartes mist sélectionnables (pas radio plat).
     val shape = MaterialTheme.shapes.medium
     val bg = if (selected) A11yTokens.PaperWarm else A11yTokens.PaperCard
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(vertical = 3.dp)
             .shadow(if (selected) 0.dp else 2.dp, shape, clip = false)
             .clip(shape)
             .background(bg)
@@ -89,7 +90,7 @@ internal fun ThemeOptionRow(
                 role = Role.RadioButton,
                 onClick = onSelect
             )
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = 10.dp, vertical = 6.dp)
             .semantics {
                 contentDescription = if (selected) {
                     "$label, sélectionné"

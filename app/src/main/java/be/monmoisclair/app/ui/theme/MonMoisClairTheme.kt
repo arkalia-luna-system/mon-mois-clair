@@ -191,7 +191,7 @@ internal fun carnetTypography(ink: Color, muted: Color) = Typography(
         lineHeight = 24.sp
     ).tabular(),
     // Pas de couleur figée : les boutons Primary doivent hériter de
-    // LocalContentColor (crème sur vert), pas d’Ink sombre illisible.
+    // LocalContentColor (clair sur teal/vert), pas d’Ink sombre illisible.
     labelLarge = TextStyle(
         fontFamily = UiSans,
         fontWeight = FontWeight.SemiBold,

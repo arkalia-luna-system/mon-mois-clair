@@ -100,7 +100,7 @@ internal fun TypeChip(text: String, selected: Boolean, onClick: () -> Unit) {
 internal fun CheckRow(checked: Boolean, label: String, onChecked: (Boolean) -> Unit) {
     // Checkbox avec onCheckedChange réel : le pattern toggleable+null
     // n’enregistre pas les taps sur One UI / uiautomator (case « Revient… » morte).
-    // Pas de carte bordée : rythme crème + case teal (FORM07).
+    // Pas de carte bordée : rythme mist + case teal (FORM07).
     Row(
         modifier = Modifier
             .fillMaxWidth()

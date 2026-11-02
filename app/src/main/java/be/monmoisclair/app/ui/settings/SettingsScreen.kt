@@ -15,9 +15,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.CarnetHubRow
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -45,23 +47,29 @@ fun SettingsScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         CarnetPageTitle(SettingsHubCopy.TITLE)
-        // P0-U1 : code / copie en 1ʳᵉ ligne hub (pas Restore dans Menu Accueil).
+        // 7.12 : sections + leading icons (densité top-app).
+        CarnetSectionTitle("Essentiel")
         CarnetHubRow(
             label = SettingsHubCopy.BACKUP_SHORTCUT,
             onClick = onOpenBackup,
-            showDivider = false
+            showDivider = false,
+            leadingIconRes = R.drawable.ic_backup
         )
+        CarnetSectionTitle("Groupes")
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_ACCOUNT,
-            onClick = onOpenAccountGroup
+            onClick = onOpenAccountGroup,
+            leadingIconRes = R.drawable.ic_data
         )
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_COMFORT,
-            onClick = onOpenComfortGroup
+            onClick = onOpenComfortGroup,
+            leadingIconRes = R.drawable.ic_comfort
         )
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_HELP,
-            onClick = onOpenHelp
+            onClick = onOpenHelp,
+            leadingIconRes = R.drawable.ic_help
         )
 
         val versionName = try {
@@ -119,12 +127,32 @@ fun SettingsAccountGroupScreen(
     SettingsResumeRefresh(viewModel)
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.GROUP_ACCOUNT)
-        CarnetHubRow(label = SettingsHubCopy.BACKUP, onClick = onOpenBackup)
-        CarnetHubRow(label = SettingsHubCopy.DEADLINES, onClick = onOpenDeadlines)
-        CarnetHubRow(label = SettingsHubCopy.SAVINGS_ROW, onClick = onOpenSavings)
-        CarnetHubRow(label = SettingsHubCopy.PRIVACY, onClick = onOpenPrivacy)
+        CarnetHubRow(
+            label = SettingsHubCopy.BACKUP,
+            onClick = onOpenBackup,
+            leadingIconRes = R.drawable.ic_backup
+        )
+        CarnetHubRow(
+            label = SettingsHubCopy.DEADLINES,
+            onClick = onOpenDeadlines,
+            leadingIconRes = R.drawable.ic_upcoming
+        )
+        CarnetHubRow(
+            label = SettingsHubCopy.SAVINGS_ROW,
+            onClick = onOpenSavings,
+            leadingIconRes = R.drawable.ic_piggy
+        )
+        CarnetHubRow(
+            label = SettingsHubCopy.PRIVACY,
+            onClick = onOpenPrivacy,
+            leadingIconRes = R.drawable.ic_privacy
+        )
         if (state.showSummaryButton) {
-            CarnetHubRow(label = SettingsHubCopy.SUMMARY, onClick = onOpenSummary)
+            CarnetHubRow(
+                label = SettingsHubCopy.SUMMARY,
+                onClick = onOpenSummary,
+                leadingIconRes = R.drawable.ic_data
+            )
         }
     }
 }
@@ -140,7 +168,15 @@ fun SettingsComfortGroupScreen(
     SettingsResumeRefresh(viewModel)
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.GROUP_COMFORT)
-        CarnetHubRow(label = SettingsHubCopy.APPEARANCE, onClick = onOpenAppearance)
-        CarnetHubRow(label = SettingsHubCopy.ALERTS, onClick = onOpenHealth)
+        CarnetHubRow(
+            label = SettingsHubCopy.APPEARANCE,
+            onClick = onOpenAppearance,
+            leadingIconRes = R.drawable.ic_comfort
+        )
+        CarnetHubRow(
+            label = SettingsHubCopy.ALERTS,
+            onClick = onOpenHealth,
+            leadingIconRes = R.drawable.ic_alerts
+        )
     }
 }

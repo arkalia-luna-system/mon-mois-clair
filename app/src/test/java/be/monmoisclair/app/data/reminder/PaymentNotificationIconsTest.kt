@@ -45,6 +45,7 @@ class PaymentNotificationIconsTest {
         )!!
         val notification = NotificationCompat.Builder(context, "paiements")
             .setSmallIcon(R.drawable.ic_notification)
+            .setColor(0xFF0A5254.toInt())
             .setContentTitle("test")
             .setContentText("body")
             .setLargeIcon(large)

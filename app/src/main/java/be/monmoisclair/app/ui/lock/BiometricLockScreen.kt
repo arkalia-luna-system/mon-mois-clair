@@ -1,7 +1,6 @@
 package be.monmoisclair.app.ui.lock
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -19,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -101,30 +102,40 @@ fun BiometricLockScreen(
         verticalArrangement = Arrangement.spacedBy(lockGap)
     ) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 12.dp else 32.dp))
-        // LOCK01 : une composition, pas deux cartes empilées.
-        AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 260.dp)
-        CarnetPageTitle("Application verrouillée", withTopSpacer = false)
-        Text(
-            text = "Empreinte, code ou visage. Si rien ne s’ouvre : le bouton ci-dessous.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted
-        )
-        message?.let {
-            val errShape = MaterialTheme.shapes.medium
+        // 7.12 LOCK : carte soft unique (wordmark + copie), pas double cadre.
+        val lockShape = MaterialTheme.shapes.large
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(2.dp, lockShape, clip = false)
+                .clip(lockShape)
+                .background(A11yTokens.PaperCard)
+                .padding(horizontal = 18.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(lockGap)
+        ) {
+            AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
+            CarnetPageTitle("Application verrouillée", withTopSpacer = false)
             Text(
-                text = it,
-                color = A11yTokens.DangerInk,
+                text = "Empreinte, code ou visage. Si rien ne s’ouvre : le bouton ci-dessous.",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                    .background(A11yTokens.PaperCard, errShape)
-                    .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
-                    .semantics {
-                        liveRegion = LiveRegionMode.Assertive
-                        contentDescription = it
-                    }
+                color = A11yTokens.InkMuted
             )
+            message?.let {
+                Text(
+                    text = it,
+                    color = A11yTokens.DangerInk,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(A11yTokens.PaperWarm)
+                        .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
+                        .semantics {
+                            liveRegion = LiveRegionMode.Assertive
+                            contentDescription = it
+                        }
+                )
+            }
         }
         Spacer(modifier = Modifier.weight(1f))
         PrimaryA11yButton(text = "Déverrouiller maintenant", onClick = { prompt() })

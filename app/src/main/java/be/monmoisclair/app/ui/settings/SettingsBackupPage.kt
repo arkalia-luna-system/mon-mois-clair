@@ -14,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.ui.components.CarnetBannerKind
+import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
@@ -123,7 +124,8 @@ fun SettingsBackupScreen(
             onClick = viewModel::shareSecurityCopy,
             enabled = !state.busy
         )
-        // SET04 : restaurer = Danger (destructif).
+        // 7.12 : section restaurer séparée (densité top-app) ; Danger = destructif.
+        CarnetSectionTitle("Restaurer")
         DangerA11yButton(
             text = "Restaurer une sauvegarde",
             onClick = onOpenRestore,

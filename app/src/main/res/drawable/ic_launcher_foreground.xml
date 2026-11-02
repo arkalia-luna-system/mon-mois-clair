@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive foreground 108×108 — monogramme « M » premium (safe zone ~66).
+  Teal #0A5254 sur fond mist (layer background). Pas de shadow/mask.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Disque soft mist-teal (containment, reste dans la safe zone). -->
+    <path
+        android:fillColor="#D4E6EA"
+        android:pathData="M54,24c16.57,0 30,13.43 30,30s-13.43,30 -30,30s-30,-13.43 -30,-30s13.43,-30 30,-30z" />
+    <!-- M géométrique bold — lisible à 48 dp. -->
+    <path
+        android:fillColor="#0A5254"
+        android:pathData="M36,72V36h7.2l10.8,22.5L64.8,36H72v36h-6.6V47.4L54.6,70.2h-1.2L42.6,47.4V72z" />
+</vector>

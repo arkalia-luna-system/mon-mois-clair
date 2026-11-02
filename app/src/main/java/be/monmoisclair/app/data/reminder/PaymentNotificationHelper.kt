@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -112,8 +113,9 @@ class PaymentNotificationHelper @Inject constructor(
     }
 
     /**
-     * smallIcon = silhouette blanche (barre d’état) ;
-     * largeIcon = bitmap coloré livre+coche (bannière Samsung collapsed).
+     * smallIcon = silhouette M blanche (barre d’état) ;
+     * largeIcon = monogramme mist/teal (bannière Samsung collapsed) ;
+     * setColor = accent teal brand.
      */
     private fun baseBuilder(title: String, body: String): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -128,7 +130,18 @@ class PaymentNotificationHelper @Inject constructor(
     private fun decodeAppLargeIcon(): Bitmap? {
         return runCatching {
             BitmapFactory.decodeResource(context.resources, R.drawable.ic_notification_large)
+                ?: renderDrawableBitmap(R.drawable.ic_notification_large)
         }.getOrNull()
+    }
+
+    private fun renderDrawableBitmap(resId: Int): Bitmap? {
+        val drawable = ContextCompat.getDrawable(context, resId) ?: return null
+        val size = (56f * context.resources.displayMetrics.density).toInt().coerceAtLeast(96)
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, size, size)
+        drawable.draw(canvas)
+        return bitmap
     }
 
     private fun notifyIfAllowed(notificationId: Int, notification: Notification) {

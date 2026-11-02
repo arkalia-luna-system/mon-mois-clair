@@ -87,7 +87,7 @@ fun HomeMenuSheet(
             CarnetPageTitle("Menu", withTopSpacer = false)
             Spacer(modifier = Modifier.height(menuGap))
 
-            // 7.08 : Courses / épargne = Accueil (à côté du Reste), pas Menu.
+            // 7.12 : leading icons + sections densifiées (top-app rows).
 
             if (remindersBlocked) {
                 CarnetHubRow(
@@ -97,7 +97,8 @@ fun HomeMenuSheet(
                         onOpenHealth()
                     },
                     labelColor = A11yTokens.AccentWarn,
-                    showDivider = false
+                    showDivider = false,
+                    leadingIconRes = R.drawable.ic_alerts
                 )
             }
 
@@ -116,7 +117,8 @@ fun HomeMenuSheet(
                     onClick = {
                         onDismiss()
                         onOpenDossiers()
-                    }
+                    },
+                    leadingIconRes = R.drawable.ic_folder
                 )
             }
             CarnetHubRow(
@@ -124,14 +126,16 @@ fun HomeMenuSheet(
                 onClick = {
                     onDismiss()
                     onOpenUpcoming()
-                }
+                },
+                leadingIconRes = R.drawable.ic_upcoming
             )
             CarnetHubRow(
                 label = "Choisir un mois",
                 onClick = {
                     onDismiss()
                     onOpenMonthPicker()
-                }
+                },
+                leadingIconRes = R.drawable.ic_calendar_month
             )
 
             if (isPastMonth || isFuturePreview) {
