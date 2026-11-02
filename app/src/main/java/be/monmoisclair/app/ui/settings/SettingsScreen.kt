@@ -25,6 +25,7 @@ import be.monmoisclair.app.ui.theme.rememberDisplayFit
 /**
  * Hub Réglages : 3 groupes → sous-écrans sujet.
  * Alertes / Aide / Restaurer restent ici (pas dans le Menu Accueil).
+ * Échéances = Données (métier) ; Confort = Apparence + Alertes seulement.
  */
 @Composable
 fun SettingsScreen(
@@ -110,6 +111,7 @@ fun SettingsAccountGroupScreen(
     onOpenPrivacy: () -> Unit,
     onOpenSummary: () -> Unit,
     onOpenBackup: () -> Unit,
+    onOpenDeadlines: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -117,7 +119,8 @@ fun SettingsAccountGroupScreen(
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.GROUP_ACCOUNT)
         CarnetHubRow(label = SettingsHubCopy.BACKUP, onClick = onOpenBackup)
-        CarnetHubRow(label = SettingsHubCopy.SAVINGS, onClick = onOpenSavings)
+        CarnetHubRow(label = SettingsHubCopy.DEADLINES, onClick = onOpenDeadlines)
+        CarnetHubRow(label = SettingsHubCopy.SAVINGS_ROW, onClick = onOpenSavings)
         CarnetHubRow(label = SettingsHubCopy.PRIVACY, onClick = onOpenPrivacy)
         if (state.showSummaryButton) {
             CarnetHubRow(label = SettingsHubCopy.SUMMARY, onClick = onOpenSummary)
@@ -130,7 +133,6 @@ fun SettingsComfortGroupScreen(
     onBack: () -> Unit,
     onOpenAppearance: () -> Unit,
     onOpenHealth: () -> Unit,
-    onOpenDeadlines: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -139,6 +141,5 @@ fun SettingsComfortGroupScreen(
         SettingsPageTitle(SettingsHubCopy.GROUP_COMFORT)
         CarnetHubRow(label = SettingsHubCopy.APPEARANCE, onClick = onOpenAppearance)
         CarnetHubRow(label = SettingsHubCopy.ALERTS, onClick = onOpenHealth)
-        CarnetHubRow(label = SettingsHubCopy.DEADLINES, onClick = onOpenDeadlines)
     }
 }

@@ -16,6 +16,7 @@ Index **actif**. Historique : [`archive/`](archive/README.md).
 | [`audits/2026-11-01-premium-clean-10.md`](audits/2026-11-01-premium-clean-10.md) | Notes craft **honnêtes** + propreté |
 | [`audits/2026-11-02-resume-mois.md`](audits/2026-11-02-resume-mois.md) | Smoke résumé mois PDF / share (P0 wipe + UX) |
 | [`audits/2026-11-02-retard-accord.md`](audits/2026-11-02-retard-accord.md) | Smoke retard / accord (épargne hors pastille + copy) |
+| [`audits/2026-11-02-reglages-hub.md`](audits/2026-11-02-reglages-hub.md) | Smoke hub Réglages (échéances / doublon épargne / copy) |
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 

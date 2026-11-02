@@ -170,7 +170,7 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomC
 
 ## 7. Hub Réglages & usage sur une année (verrouillé)
 
-**Forme (6.70 / 6.76) :** hub = **3 groupes** (Données & sauvegarde / Confort / Aide) → sujets (Apparence, Alertes→Santé, Échéances, Mettre de côté, Confidentialité, Préparer un résumé si utile, Sauvegarde). Aide ouvre Comment ça marche. Max **2 niveaux** après le hub. Pas tout empilé sur une page.
+**Forme (6.70 / 6.76 / 7.04) :** hub = **3 groupes** (Données & sauvegarde / Confort / Aide) → sujets. **Données** : Sauvegarde, Échéances hors ce mois, Jour du Mettre de côté, Confidentialité, Préparer un résumé si utile. **Confort** : Apparence, Alertes→Santé. Aide ouvre Comment ça marche. Raccourci hub « Code et copie ». Max **2 niveaux** après le hub. Pas tout empilé sur une page. Montant « Mettre de côté » = Accueil ; jour / retrait = Réglages.
 
 ### Inventaire (indispensable vs redondant)
 
@@ -188,7 +188,7 @@ Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomC
 | Besoin | Où | Point de friction → réponse |
 |--------|-----|-----------------------------|
 | Loyer, salaire, courses | Home mois courant | OK (liste + reste + divers) |
-| Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Échéances** (toujours visible, même vide) |
+| Assurance / taxe annuelle | Création 1× + bandeau L le mois d’avant | Hors mois : **Réglages → Données → Échéances** (toujours visible, même vide) |
 | Feuilleter / sauter un mois | Accueil ‹ › + **calendrier** (ou Menu → Choisir un mois) | **Mois en cours** (Menu / calendrier) |
 | Rappels qui ne sonnent pas | Réglages → Confort → Alertes | Un seul hub (pas de doublon Menu) |
 | Aide / restore | Réglages → Aide / Données & sauvegarde → Sauvegarde | Menu ne liste plus Comment ça marche ni Restaurer |

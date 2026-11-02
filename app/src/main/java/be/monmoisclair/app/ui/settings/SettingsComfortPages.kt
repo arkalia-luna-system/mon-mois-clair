@@ -70,6 +70,13 @@ fun SettingsDeadlinesScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.DEADLINES)
+        Text(
+            text = "Assurances, taxes… qui ne tombent pas ce mois-ci. " +
+                "Elles réapparaissent le bon mois sur Accueil.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted,
+            modifier = Modifier.fillMaxWidth()
+        )
         if (state.offMonthPeriodics.isEmpty()) {
             Text(
                 text = "Aucune pour l’instant.",

@@ -109,8 +109,8 @@ fun SettingsSavingsScreen(
     ) {
         SettingsPageTitle(SettingsHubCopy.SAVINGS)
         Text(
-            text = "Montant aussi depuis Accueil (ligne sous Courses). Ici : jour et retrait. " +
-                "Chaque mois, ce montant compte dans le Reste (autre compte).",
+            text = "Montant : depuis Accueil (sous Courses). Ici : jour du mois et retrait. " +
+                "Chaque mois, ce montant sort du Reste (vers un autre compte).",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()

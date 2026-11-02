@@ -64,13 +64,14 @@ object HowItWorksCopy {
         Section(
             title = "Mettre de côté",
             body = "Ligne sous le Reste (sticky, comme Courses ; sinon derrière « Détails »). " +
-                "Ou Réglages pour le jour. FAIT = virement fait. Pas d’argent dans l’app."
+                "Jour et retrait : Réglages → Données → Jour du Mettre de côté. " +
+                "FAIT = virement fait. Pas d’argent dans l’app."
         ),
         Section(
             title = "Sur une année",
             body = "« 1× par an » / « tous les 3 mois » : réapparaissent le bon mois. " +
                 "Aperçu : calendrier Accueil ou Menu → À venir. " +
-                "Hors ce mois : Réglages → Échéances hors ce mois."
+                "Hors ce mois : Réglages → Données → Échéances hors ce mois."
         ),
         Section(
             title = "Empreinte",

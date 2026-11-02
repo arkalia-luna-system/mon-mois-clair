@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.03** (fix retard/accord — épargne hors En retard + copy 60+) |
+| Dernière étape terminée | **7.04** (hub Réglages — échéances → Données, copy épargne, hub allégé) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : re-smoke **Retard / Accord** (Accueil Mettre de côté + fiche + Dossiers) · puis résumé · S26 · restore |
+| Prochaine sous-étape | **Athalia** : re-smoke **Réglages hub** · Retard/Accord · résumé · S26 · restore |
 | Audit premium | notes **honnêtes** · premium-00 + clean-10 vivants · 01–06 archivés · main = Athalia · [`premium-clean-10.md`](docs/audits/2026-11-01-premium-clean-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,22 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-02 — 7.04 hub Réglages (smoke Athalia)
+
+**Contexte :** point smoke — hub Réglages fouillis / débutant.  
+**Audit :** [`docs/audits/2026-11-02-reglages-hub.md`](docs/audits/2026-11-02-reglages-hub.md).
+
+**P0 :**
+- « Échéances hors ce mois » déplacé **Données & sauvegarde** (hors Confort).
+- « Mettre de côté » hub → **« Jour du Mettre de côté »** (montant reste Accueil ; jour/retrait gardés).
+
+**P1 :**
+- Hub : « Code et copie » · « Comment ça marche » ; tip échéances ; Aide HowItWorks alignée.
+
+**Tests :** **410 exécutés** / 411 (1 skipped), 92 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.04` · `versionCode` 109.  
+**Smoke doigt :** Athalia — hub + Données (échéances / jour épargne) + Confort (2 lignes).
 
 ### 2026-11-02 — 7.03 retard / accord (smoke Athalia)
 

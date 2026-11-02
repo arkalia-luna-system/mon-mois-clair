@@ -157,6 +157,7 @@ fun AppNavHost(
                 onOpenPrivacy = { navController.navigate(AppRoute.SettingsPrivacy) },
                 onOpenSummary = { navController.navigate(AppRoute.SettingsSummary) },
                 onOpenBackup = { navController.navigate(AppRoute.SettingsBackup) },
+                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) },
                 viewModel = hiltViewModel(parent)
             )
         }
@@ -166,7 +167,6 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() },
                 onOpenAppearance = { navController.navigate(AppRoute.SettingsAppearance) },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
-                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) },
                 viewModel = hiltViewModel(parent)
             )
         }

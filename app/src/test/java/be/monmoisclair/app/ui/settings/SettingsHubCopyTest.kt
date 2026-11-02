@@ -18,34 +18,41 @@ class SettingsHubCopyTest {
     fun comfortAndAccountRows_coverCharteTopics() {
         assertThat(SettingsHubCopy.comfortRows()).containsExactly(
             SettingsHubCopy.APPEARANCE,
-            SettingsHubCopy.ALERTS,
-            SettingsHubCopy.DEADLINES
+            SettingsHubCopy.ALERTS
         ).inOrder()
+        assertThat(SettingsHubCopy.comfortRows())
+            .doesNotContain(SettingsHubCopy.DEADLINES)
         assertThat(SettingsHubCopy.accountRows(showSummary = false)).containsExactly(
             SettingsHubCopy.BACKUP,
-            SettingsHubCopy.SAVINGS,
+            SettingsHubCopy.DEADLINES,
+            SettingsHubCopy.SAVINGS_ROW,
             SettingsHubCopy.PRIVACY
         ).inOrder()
         assertThat(SettingsHubCopy.accountRows(showSummary = true))
             .containsExactly(
                 SettingsHubCopy.BACKUP,
-                SettingsHubCopy.SAVINGS,
+                SettingsHubCopy.DEADLINES,
+                SettingsHubCopy.SAVINGS_ROW,
                 SettingsHubCopy.PRIVACY,
                 SettingsHubCopy.SUMMARY
             ).inOrder()
-        assertThat(SettingsHubCopy.BACKUP_SHORTCUT).contains("code")
-        assertThat(SettingsHubCopy.HELP).contains("Comment ça marche")
+        assertThat(SettingsHubCopy.BACKUP_SHORTCUT).contains("Code")
+        assertThat(SettingsHubCopy.HELP).isEqualTo("Comment ça marche")
+        assertThat(SettingsHubCopy.GROUP_HELP).isEqualTo(SettingsHubCopy.HELP)
+        // Hub ≠ Accueil sticky : précise jour / retrait.
+        assertThat(SettingsHubCopy.SAVINGS_ROW).contains("Jour")
+        assertThat(SettingsHubCopy.SAVINGS_ROW).isNotEqualTo(SettingsHubCopy.SAVINGS)
     }
 
     @Test
     fun alwaysVisibleRows_coverCharteTopics() {
         assertThat(SettingsHubCopy.alwaysVisibleRows).containsExactly(
             SettingsHubCopy.APPEARANCE,
-            SettingsHubCopy.SAVINGS,
-            SettingsHubCopy.PRIVACY,
             SettingsHubCopy.ALERTS,
-            SettingsHubCopy.DEADLINES,
             SettingsHubCopy.BACKUP,
+            SettingsHubCopy.DEADLINES,
+            SettingsHubCopy.SAVINGS_ROW,
+            SettingsHubCopy.PRIVACY,
             SettingsHubCopy.HELP
         ).inOrder()
     }
@@ -57,9 +64,9 @@ class SettingsHubCopyTest {
         val withSummary = SettingsHubCopy.hubRows(showSummary = true)
         assertThat(withSummary).contains(SettingsHubCopy.SUMMARY)
         assertThat(withSummary.indexOf(SettingsHubCopy.SUMMARY))
-            .isEqualTo(withSummary.indexOf(SettingsHubCopy.DEADLINES) + 1)
-        assertThat(withSummary.indexOf(SettingsHubCopy.BACKUP))
-            .isEqualTo(withSummary.indexOf(SettingsHubCopy.SUMMARY) + 1)
+            .isEqualTo(withSummary.indexOf(SettingsHubCopy.PRIVACY) + 1)
+        assertThat(withSummary.indexOf(SettingsHubCopy.DEADLINES))
+            .isEqualTo(withSummary.indexOf(SettingsHubCopy.BACKUP) + 1)
     }
 
     @Test
@@ -70,6 +77,7 @@ class SettingsHubCopyTest {
         assertThat(SettingsHubCopy.alwaysVisibleRows).contains(SettingsHubCopy.BACKUP)
         assertThat(SettingsHubCopy.comfortRows()).contains(SettingsHubCopy.ALERTS)
         assertThat(SettingsHubCopy.accountRows(false)).contains(SettingsHubCopy.BACKUP)
+        assertThat(SettingsHubCopy.accountRows(false)).contains(SettingsHubCopy.DEADLINES)
         assertThat(SettingsHubCopy.hubGroups).contains(SettingsHubCopy.GROUP_HELP)
     }
 }
