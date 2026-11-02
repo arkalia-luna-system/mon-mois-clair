@@ -12,7 +12,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Dernière étape terminée | **7.15.1** + hygiène code mort (imports EntryForm/Accueil · sticky legacy) |
 | Étape en cours | — |
 | Prochaine sous-étape | **Athalia** : re-smoke One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) + copy restore/résumé |
-| Audit | [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · [`brand-logo-unisson.md`](docs/audits/2026-11-02-brand-logo-unisson.md) · 7.15.1 |
+| Audit | [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · 7.15.1 |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -26,20 +26,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 **Périmètre :** imports morts EntryForm (Screen/Scaffold) · HomeScreen/CoursesSheet/StickyChrome · suppression `StickyToolsRow` / `StickyLinkRow` (0 call site) · `stickyCoursesCompactLabel` + test associé.  
 **Évité :** theme / HomeTokens / mipmap / brand · Aide strings (déjà 7.15.1).  
 **Version :** inchangée `0.1.0-7.15.1` · `versionCode` 121.  
-**Tests :** **413 exécutés** / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).
+**Tests :** **413 exécutés** / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Device :** install release SM-S938B sans wipe.
 
 ### 2026-11-02 — Fin de journée docs (hygiène audits)
 
-**Périmètre :** docs only · pas de code app.
+**Périmètre :** docs · QA chemins critiques vivant à nouveau en racine audits.
 
 **Archivés →** `docs/audits/archive/` (bandeau) :
 - `2026-11-02-accueil-inspiration-2026.md`
 - `2026-11-02-expert-00-synthese.md`
 - `2026-11-02-verif-audits-accueil.md`
 - `2026-11-02-visual-system-2027.md`
-- `2026-11-02-fin-journee-qa.md`
 
-**Vivants audits :** `visual-expert-10` · `brand-logo-unisson`.  
+**Vivants audits :** [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · `visual-expert-10` · `brand-logo-unisson`.  
 **Index :** `docs/README.md` + `docs/archive/README.md` alignés.  
 **Propreté :** `._*` hors `.git` = **0**.
 
@@ -55,9 +55,10 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Évité (autre agent) :** HomeTokens / Theme / Color / Type / Shape / mipmap / launcher / notif / brand / drawable logo / sticky style couleurs.
 
-**Audit QA (archivé) :** [`fin-journee-qa.md`](docs/audits/archive/2026-11-02-fin-journee-qa.md) — chemins FAIT / share / restore / Courses·épargne / hub.
+**Audit QA :** [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) — chemins FAIT / share / restore / Courses·épargne / hub.
 
 **Tests :** **414 exécutés** / 415 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Device :** install release SM-S938B sans wipe (`0.1.0-7.15.1` / 121).  
 **Version :** `0.1.0-7.15.1` · `versionCode` 121.
 
 ### 2026-11-02 — 7.15 Craft visuel expert 10/10 vs kit

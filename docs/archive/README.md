@@ -15,7 +15,7 @@ Décisions vivantes : `CHARTE_ET_ARCHITECTURE.md`, `PROGRESS_LOG.md`, `PRIVACY.m
 | `audits-2026-10-23/` | Nuit-00…08 · valorisation · évaluation cadeau · plan chiffrement pré-6.81 · **smoke-device** S25 |
 | `audits-2026-10-26/` | Finals 10-26 + crash-open (bandeau ARCHIVÉ) |
 | `audits-2026-11-01/` | Samsung défaillances 6.91 + **premium-01…06** + **fix-progress** |
-| `../audits/archive/` | expert-00…06 · thématiques 7.02–7.08 · premium-00/clean · inspirations · visual-system · verif · fin-journee-qa (bandeau 2026-11-02) |
+| `../audits/archive/` | expert-00…06 · thématiques 7.02–7.08 · premium-00/clean · inspirations · visual-system · verif |
 
 Ne pas rouvrir pour décider d’un correctif. Reporter dans le journal ou la charte.  
 Audits vivants : `docs/audits/2026-11-02-visual-expert-10.md` + `2026-11-02-brand-logo-unisson.md`.
