@@ -3,23 +3,32 @@
 **Le carnet du mois, sur le téléphone — pas une banque.**
 
 Reste après factures · FAIT ✓ · rappels exacts · photo & PDF · **100 % hors ligne**.  
-Pas de compte. Pas de cloud. Pas de pub. Distribution familiale via **Play Internal** (Galaxy / One UI).
+Pas de compte. Pas de cloud. Pas de pub.
+
+Carnet familial belge (papier, QR EPC, communication structurée) — distribution via **Google Play Internal Testing**, APK sideload en secours. Validé sur Galaxy S25 Ultra (One UI).
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-413%2F414-success)](#statut-technique)
-[![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.17-informational)](#statut-technique)
+[![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/unit%20tests-413%20pass%20·%201%20skipped-success)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.17-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+<p align="center">
+  <img src="docs/audits/screenshots/2026-11-02-accueil-7.15.png" alt="Accueil — Reste du mois" width="220" />
+  &nbsp;
+  <img src="docs/audits/screenshots/2026-11-02-menu-7.15.png" alt="Menu — Réglages, dossiers, mois" width="220" />
+  &nbsp;
+  <img src="docs/audits/screenshots/2026-11-02-reglages-7.15.png" alt="Réglages — code, données, confort" width="220" />
+</p>
+
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
-Mon Mois Clair reste sur l’appareil : saisie manuelle, sauvegarde locale (JSON + ZIP photos). Canal famille : Play tests internes (MAJ auto) ; APK sideload en secours.
+Mon Mois Clair reste sur l’appareil : saisie manuelle, base chiffrée, sauvegarde locale (JSON enveloppe + photos).  
+
+Dépôt **public** (vitrine craft) · usage = familial / Play Internal. Aucun keystore ni APK versionné.
 
 Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
-
-> Dépôt **public** (vitrine craft) · usage produit = familial / Play Internal. Pas de keystore ni APK versionnés.
 
 ---
 
@@ -27,45 +36,46 @@ Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
 
 | | |
 |--|--|
-| **Reste sticky** | Design 2027 mist/teal/or kit · launcher/splash PNG · mini-icônes Menu/FAIT/mois · hero tonal |
-| **Factures** | Récurrence · FAIT le JJ/MM · En retard · Prélèvement · grille jour 1–31 |
+| **Reste sticky** | Lecture claire du mois · mist / teal / or · launcher & splash kit |
+| **Factures** | Récurrence · FAIT le JJ/MM · En retard · Prélèvement · jour 1–31 |
 | **Papier belge** | QR EPC · communication mod 97 · photo WebP · PDF courrier · OCR `+++` |
 | **Accords** | Pastille · reste dû · IBAN · Écrire · frais datés · Mes dossiers |
-| **Sérénité** | Backup SAF · biométrie · `FLAG_SECURE` · widget · encre de nuit · Alertes |
+| **Sérénité** | Backup SAF · biométrie · `FLAG_SECURE` · widget · encre de nuit · alertes |
 
-Hors scope volontaire : banque, catégories, graphiques, synchro cloud.  
-Play = **piste Internal familiale** seulement (pas une pub store grand public).
+**Hors scope volontaire :** banque ouverte, catégories marketing, graphiques, synchro cloud.  
+Play = **piste Internal familiale** seulement — pas une publication Store grand public.
 
 ---
 
 ## Confidentialité
 
-Voir **[`PRIVACY.md`](PRIVACY.md)** — pas d’`INTERNET`, backups SAF, presse-papiers sensible.  
-Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
+- Politique HTTPS (Play) : [privacy.html](https://arkalia-luna-system.github.io/mon-mois-clair-privacy/privacy.html)
+- Détail technique : [`PRIVACY.md`](PRIVACY.md) — pas d’`INTERNET`, backups SAF, presse-papiers sensible
+- Crypto locale : SQLCipher + Android Keystore · [`SECURITY.md`](SECURITY.md)
 
 ---
 
-## Statut technique
+## Statut
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.17` |
-| Dernière étape | **7.17** canal Play Internal (AAB + checklist famille) |
-| Device | Baseline SM-S938B **7.16** (sans wipe). Smoke doigt Athalia + bascule Play = demain |
-| Distribution | **Play Internal** recommandé — [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) · sideload secours [`DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
-| AAB | `dist/MonMoisClair-release.aab` (gitignoré ; build `bundleRelease`) |
-| Tests unitaires | **413 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |
+| Version | `0.1.0-7.17` (`versionCode` 123) |
+| Dernière étape | **7.17** — canal Play Internal (AAB + checklist famille + privacy HTTPS) |
+| Device | Baseline Galaxy S25 Ultra (SM-S938B), install release **7.16** sans wipe |
+| Distribution | **Play Internal** recommandé — [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) · sideload secours [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
+| AAB | `dist/MonMoisClair-release.aab` (gitignoré ; `./gradlew :app:bundleRelease`) |
+| Tests unitaires | **413** passent, **1** `@Ignore` (migration 1→N), 0 failure — journal local `--rerun-tasks` |
 | Schéma Room | **8** |
 
-Journal (détail) : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Benchmark : [`docs/BENCHMARK_QUALITE_2026.md`](docs/BENCHMARK_QUALITE_2026.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)
+Non claimé ici (volontaire) : smoke doigt « cadeau », restore famille en conditions réelles, compte Play Console déjà provisionné.
 
-Archives figées (historique) : [`docs/archive/`](docs/archive/) — noms de personas d’époque ; le contact vivant = **Arkalia**.
+Journal : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · Charte : [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) · Docs : [`docs/README.md`](docs/README.md) · Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
 ---
 
 ## Stack
 
-Kotlin · Jetpack Compose · Room · Hilt · SAF + WorkManager · `AlarmManager` exact · `Europe/Brussels` · `be.monmoisclair.app`
+Kotlin · Jetpack Compose · Room (SQLCipher) · Hilt · CameraX / ML Kit barcode offline · SAF + WorkManager · `AlarmManager` exact · fuseau `Europe/Brussels` · package `be.monmoisclair.app`
 
 ---
 
@@ -81,7 +91,7 @@ adb install -r dist/MonMoisClair-release.apk
 ```
 
 `local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK/AAB dans `dist/` ignorés.  
-CI : push **`develop`** → compile + tests. Feuille de route : [`docs/CI.md`](docs/CI.md).
+CI : push **`develop`** (et `main`) → compile + tests. Feuille de route : [`docs/CI.md`](docs/CI.md).
 
 ---
 

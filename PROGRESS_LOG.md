@@ -21,6 +21,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ## Journal
 
+### 2026-11-04 — Vitrine GitHub + fix CI flaky EntryForm
+
+**Contexte :** polish README public + profil GitHub ; CI `main` rouge sur même SHA que `develop` vert.
+
+**Cause CI :** `EntryFormUiModelsTest.groupedModels_stayBounded` utilisait `constructors[0]` — ordre JVM instable avec synthétiques `DefaultConstructorMarker`.
+
+**Livré :**
+- Fix test : arity via constructeurs sans `DefaultConstructorMarker`
+- README MMC : vitrine pro, captures 7.15, privacy HTTPS, PII « Athalia » retirée du statut, claims non anticipés
+- Badge CI pointé sur `develop` ; lien `docs/DISTRIBUTION_FAMILLE.md` corrigé
+
+**Évité :** claim smoke S26 / Play Console déjà live / GO cadeau.
+
+**Tests :** **413** exécutés / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).
+
 ### 2026-11-04 — Dépôt public (vitrine GitHub)
 
 **Contexte :** Athalia — GO portfolio si scan secrets OK.

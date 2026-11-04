@@ -5,21 +5,26 @@ import org.junit.Test
 
 /**
  * Garde-fou A-P0-1 : Scaffold consomme des modèles groupés, pas une liste plate ≥ 40 params.
+ *
+ * Ne pas utiliser `constructors[0]` : l’ordre JVM inclut les synthétiques
+ * `DefaultConstructorMarker` et n’est pas stable (CI flaky develop vert / main rouge).
  */
 class EntryFormUiModelsTest {
 
+    private fun primaryArity(clazz: Class<*>): Int =
+        clazz.declaredConstructors
+            .filter { ctor ->
+                ctor.parameterTypes.none { it.name == "kotlin.jvm.internal.DefaultConstructorMarker" }
+            }
+            .maxOf { it.parameterCount }
+
     @Test
     fun groupedModels_stayBounded() {
-        assertThat(EntryFormIdentityUi::class.java.constructors[0].parameterCount)
-            .isAtMost(12)
-        assertThat(EntryFormRecurrenceUi::class.java.constructors[0].parameterCount)
-            .isAtMost(16)
-        assertThat(EntryFormPaymentUi::class.java.constructors[0].parameterCount)
-            .isAtMost(24)
-        assertThat(EntryFormDossierUi::class.java.constructors[0].parameterCount)
-            .isAtMost(24)
-        assertThat(EntryFormChromeUi::class.java.constructors[0].parameterCount)
-            .isAtMost(10)
+        assertThat(primaryArity(EntryFormIdentityUi::class.java)).isAtMost(12)
+        assertThat(primaryArity(EntryFormRecurrenceUi::class.java)).isAtMost(16)
+        assertThat(primaryArity(EntryFormPaymentUi::class.java)).isAtMost(24)
+        assertThat(primaryArity(EntryFormDossierUi::class.java)).isAtMost(24)
+        assertThat(primaryArity(EntryFormChromeUi::class.java)).isAtMost(10)
         val groups = listOf(
             "EntryFormIdentityUi",
             "EntryFormRecurrenceUi",
