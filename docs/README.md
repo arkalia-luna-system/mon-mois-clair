@@ -1,6 +1,6 @@
 # Docs — Mon Mois Clair
 
-Index **actif** (~7.16). Historique : [`archive/`](archive/README.md) · audits figés : [`audits/archive/`](audits/archive/).
+Index **actif** (~7.17). Historique : [`archive/`](archive/README.md) · audits figés : [`audits/archive/`](audits/archive/).
 
 ## Vivant (à jour)
 
@@ -12,6 +12,8 @@ Index **actif** (~7.16). Historique : [`archive/`](archive/README.md) · audits 
 | [`../PROGRESS_LOG.md`](../PROGRESS_LOG.md) | Journal — ce qui est codé |
 | [`../README.md`](../README.md) | Vitrine + version |
 | [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md) | Brief oral cadeau (code papier · Arkalia) |
+| [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) | Checklist Play Console Internal (famille) |
+| [`privacy.html`](privacy.html) | Politique HTTPS (GitHub Pages `/docs`) |
 | [`CI.md`](CI.md) | CI + Dependabot Security |
 | [`audits/2026-11-02-passage-final.md`](audits/2026-11-02-passage-final.md) | Passage final craft · grille domaines · 7.16 |
 | [`audits/2026-11-02-fin-journee-qa.md`](audits/2026-11-02-fin-journee-qa.md) | QA chemins critiques · 7.15.1 |
@@ -23,7 +25,7 @@ Index **actif** (~7.16). Historique : [`archive/`](archive/README.md) · audits 
 | Fichier | Rôle |
 |---------|------|
 | [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | État + prochain geste (lots A→F = archive) |
-| [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Envoi / MAJ APK sans USB |
+| [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Play Internal + sideload secours |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy (checklist) |
 | [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème apps 2026 (suivre journal) |
 | [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
@@ -40,14 +42,15 @@ Index **actif** (~7.16). Historique : [`archive/`](archive/README.md) · audits 
 | QA chemins critiques (FAIT / share / restore) | **fin-journee-qa** |
 | Craft brand / kit 7.15 | **visual-expert-10** + **brand-logo** |
 | Smoke téléphone | **AUDIT_STATUS** + checklist Athalia (NOTICE / passage-final) |
-| Brief famille / APK | **NOTICE** + **DISTRIBUTION** |
+| Brief famille / Play / APK | **NOTICE** + **PLAY_INTERNAL** + **DISTRIBUTION** |
 | Audits thématiques / expert / premium | **audits/archive/** + **archive/** |
 
 ## Local (hors git utile)
 
 | Chemin | Rôle |
 |--------|------|
-| `dist/MonMoisClair-release.apk` | APK famille (gitignoré) |
+| `dist/MonMoisClair-release.aab` | AAB Play Internal (gitignoré) |
+| `dist/MonMoisClair-release.apk` | APK sideload secours (gitignoré) |
 | `dist/verify/` | RESET + README tracked ; captures **locales** gitignorées |
 | `docs/audits/smoke/` | PNG/XML device **gitignorés** (PII) |
 | `docs/audits/screenshots/` | Captures adb versionnées (sans PII foyer) |

@@ -14,6 +14,7 @@
 *.ap_
 *.aab
 /dist/*.apk
+/dist/*.aab
 # Captures device (lourdes) — garder les .md / .xml de rapport
 /dist/verify/**/*.png
 /dist/verify/*.png

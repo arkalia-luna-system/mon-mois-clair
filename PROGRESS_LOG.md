@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.16** passage final craft (hygiène assets brand morts + grille domaines) |
+| Dernière étape terminée | **7.17** canal Play Internal (AAB + checklist + privacy HTTPS) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia uniquement** : smoke doigt One UI (launcher/splash/Accueil/FAIT/Menu/Réglages/notif) + S26 / restore code papier — **pas** claimés ici |
+| Prochaine sous-étape | **Athalia** : compte Play Console + app + Internal (voir [`PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md)) · smoke doigt / S26 / restore — **pas** claimés ici |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,24 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-04 — 7.17 Canal Play Internal (famille)
+
+**Contexte :** Athalia OUI — tests internes Play (MAJ auto) ; WhatsApp/Drive ≠ canal principal.
+
+**Livré (repo) :**
+- `bundleRelease` → `dist/MonMoisClair-release.aab` (gitignoré)
+- Checklist [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md)
+- Page HTTPS [`docs/privacy.html`](docs/privacy.html) (activer GitHub Pages `/docs`)
+- [`DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) / README : Play Internal recommandé · sideload secours
+- Workflow squelette [`.github/workflows/publish-play-internal.yml`](.github/workflows/publish-play-internal.yml) (`workflow_dispatch` only · pas d’upload auto)
+
+**Évité :** création compte Play · secrets CI · claim smoke device / S26.
+
+**AAB :** `dist/MonMoisClair-release.aab` · **~27 Mo** (28 740 393 octets) · signé keystore release (CN=Mon Mois Clair).  
+**Tests :** **413 exécutés** / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.17` · `versionCode` 123.  
+**Ship :** `develop` (+ ff `main` si tests verts).
 
 ### 2026-11-02 — 7.16 Passage final craft
 

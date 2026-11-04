@@ -1,0 +1,102 @@
+# Publish Play Internal — SQUELETTE (manuel uniquement)
+# ---------------------------------------------------------------------------
+# Ne se lance PAS sur push main/develop.
+# Prérequis secrets (Settings → Secrets and variables → Actions) :
+#   PLAY_SERVICE_ACCOUNT_JSON  — JSON compte de service Play Console
+#     (Play Console → Users & permissions → Invite user → Service account
+#      avec droit Releases vers la piste Internal ; lier le projet Cloud)
+# Optionnel plus tard :
+#   PLAY_PACKAGE_NAME          — défaut be.monmoisclair.app
+#
+# Keystore d’upload : NE PAS committer. Pour CI un jour :
+#   ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
+#   ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+# Aujourd’hui ce workflow s’arrête après le rappel — pas d’upload auto
+# tant que les secrets ne sont pas configurés et le job « upload » décommenté.
+# ---------------------------------------------------------------------------
+
+name: Publish Play Internal (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Taper PUBLISH pour confirmer (sinon le job refuse)"
+        required: true
+        default: ""
+      track:
+        description: "Piste Play"
+        required: true
+        default: "internal"
+        type: choice
+        options:
+          - internal
+
+# Jamais de concurrency cancel : dépôt familial, runs rares.
+
+jobs:
+  guard-and-remind:
+    name: Garde-fou + rappel secrets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Vérifier confirmation
+        run: |
+          if [ "${{ inputs.confirm }}" != "PUBLISH" ]; then
+            echo "::error::Confirmation manquante. Relancer avec confirm=PUBLISH."
+            exit 1
+          fi
+          echo "Confirm OK — piste=${{ inputs.track }}"
+
+      - name: Rappeler la checklist (pas d’upload auto)
+        run: |
+          echo "=== Play Internal — squelette ==="
+          echo "1. Secrets requis avant tout upload CI :"
+          echo "   - PLAY_SERVICE_ACCOUNT_JSON"
+          echo "   - (keystore upload) ANDROID_KEYSTORE_* si build CI"
+          echo "2. Aujourd’hui : build local + upload manuel AAB."
+          echo "   Voir docs/PLAY_INTERNAL_TESTING.md"
+          echo "3. Pour activer l’upload CI : ajouter un job bundle+upload"
+          echo "   (gradle bundleRelease + r0adkll/upload-google-play"
+          echo "    ou google-github-actions) UNIQUEMENT quand les secrets"
+          echo "   existent — ne pas brancher on.push."
+          if [ -z "${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}" ]; then
+            echo "::warning::PLAY_SERVICE_ACCOUNT_JSON absent — normal tant que non configuré."
+          else
+            echo "Secret PLAY_SERVICE_ACCOUNT_JSON détecté (présent) — upload CI pas encore branché."
+          fi
+
+  # --- DÉSACTIVÉ / à activer plus tard (décommenter + secrets) -------------
+  # bundle-and-upload:
+  #   name: Bundle AAB + upload Internal
+  #   needs: guard-and-remind
+  #   if: false  # passer à true seulement après secrets + revue Athalia
+  #   runs-on: ubuntu-24.04
+  #   timeout-minutes: 40
+  #   permissions:
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: actions/setup-java@v5
+  #       with:
+  #         distribution: temurin
+  #         java-version: "17"
+  #     - uses: gradle/actions/setup-gradle@v6
+  #     - uses: android-actions/setup-android@v4
+  #       with:
+  #         packages: platform-tools platforms;android-35 build-tools;35.0.0
+  #     - name: Decode keystore
+  #       run: |
+  #         echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > upload.jks
+  #         # écrire keystore.properties hors cache…
+  #     - run: ./gradlew :app:bundleRelease --no-daemon
+  #     - name: Upload to Play Internal
+  #       uses: r0adkll/upload-google-play@v1
+  #       with:
+  #         serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+  #         packageName: be.monmoisclair.app
+  #         releaseFiles: /home/runner/.cache/mon-mois-clair/gradle-build/app/outputs/bundle/release/app-release.aab
+  #         track: internal
+  #         status: completed

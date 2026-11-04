@@ -1,67 +1,84 @@
-# Distribution famille — APK sans USB
+# Distribution famille — Play Internal (recommandé) + sideload secours
 
-Les destinataires de l’APK **n’ont pas besoin** de brancher le téléphone sur le Mac.  
-**Arkalia** construit chez elle → envoie le fichier → mise à jour **chez eux**.
+**Canal recommandé :** [Google Play — tests internes](PLAY_INTERNAL_TESTING.md)  
+→ mises à jour **automatiques** · pas d’APK à renvoyer · lien d’invitation une fois.
 
-## 1. Arkalia (Mac) — build
+**Canal secours :** APK sideload (ci-dessous) si Play indisponible, téléphone hors compte Google, ou dépannage Arkalia.
+
+Les destinataires **n’ont pas besoin** d’USB.  
+Checklist complète Play : [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md).
+
+---
+
+## A. Play Internal (chemin normal)
+
+1. Athalia : compte Play Console + app `be.monmoisclair.app` + piste **Internal** (voir checklist).
+2. Upload `dist/MonMoisClair-release.aab` (build : `./gradlew :app:bundleRelease`).
+3. Ajouter les e-mails famille → envoyer le **lien d’invitation**.
+4. Chez eux : accepter → installer / mettre à jour via **Play Store**.
+
+**Attention signature :** un sideload déjà installé n’est **pas** toujours la même signature que Play.  
+Avant toute réinstall forcée → **backup `.mmc`** + code papier (NOTICE famille).
+
+---
+
+## B. Sideload APK (secours)
+
+### 1. Arkalia (Mac) — build APK
 
 ```bash
 COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
-# APK : dist/MonMoisClair-release.apk  (~42 Mo, multi-ABI + ML Kit / SQLCipher)
+# APK : dist/MonMoisClair-release.apk  (~42 Mo, ARM + ML Kit / SQLCipher)
 ```
 
 - Toujours l’APK **release** signé (jamais debug).
-- **Même keystore** qu’avant = mise à jour sans perdre les données Room.
-- Vérifier la version dans le fichier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`
-  (ex. `versionName='0.1.0-7.00'` — lire le journal).
+- **Même keystore** qu’avant = mise à jour sideload sans perdre les données Room.
+- Vérifier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`  
+  (ex. `versionName='0.1.0-7.17'` — lire le journal).
 
-## 2. Envoyer (sans USB)
+### 2. Envoyer (sans USB) — uniquement si Play Internal ne convient pas
 
 | Canal | Comment |
 |-------|---------|
-| **Google Drive** | Déposer l’APK → partager le lien (ou le fichier) avec la famille |
-| **WhatsApp** | Envoyer le document `.apk` (parfois renommé / bloqué selon version WA → préférer Drive) |
-| **Mail** | Pièce jointe si &lt; limite du fournisseur ; sinon Drive |
+| **Google Drive** | Déposer l’APK → partager le lien |
+| **WhatsApp** | Document `.apk` (parfois bloqué → préférer Drive) |
+| **Mail** | Pièce jointe si &lt; limite ; sinon Drive |
 
-## 3. Chez eux (Galaxy) — installer / mettre à jour
+### 3. Chez eux (Galaxy) — installer / mettre à jour
 
 1. Ouvrir le message / le lien Drive.
-2. **Télécharger** le fichier si besoin (Mes fichiers / Téléchargements).
+2. **Télécharger** si besoin (Mes fichiers / Téléchargements).
 3. **Ouvrir** `MonMoisClair-release.apk`.
-4. Si demandé : autoriser l’installation d’apps de cette source (une seule fois).
-5. Toucher **Installer** ou **Mettre à jour**.
-6. Ouvrir Mon Mois Clair → Menu → **Réglages** → vérifier que la version affichée est la nouvelle (ex. **7.00** — lire le journal).
-7. Vérifier le mois en cours (Reste, factures).
+4. Autoriser l’installation depuis cette source si demandé.
+5. **Installer** ou **Mettre à jour**.
+6. Réglages dans l’app → vérifier `versionName` = journal.
+7. Vérifier le mois (Reste, factures).
 
-## Pièges
+### Pièges sideload
 
 | Piège | Effet |
 |-------|--------|
-| APK **debug** | Signature différente → « application non installée » ou données à part |
-| Ancien APK (schéma Room plus bas) | Peut refuser d’ouvrir une base déjà migrée |
-| Mail qui refuse la pièce (~42 Mo) | Utiliser Drive / WhatsApp |
-| WhatsApp qui bloque `.apk` | Envoyer via Drive |
-| Keystore différent | Mise à jour impossible sans désinstaller (perte données) |
+| APK **debug** | Signature différente → échec ou données à part |
+| Ancien APK (schéma Room plus bas) | Peut refuser une base déjà migrée |
+| Mail / WhatsApp qui refuse ~42 Mo / `.apk` | Drive |
+| Keystore différent (ou bascule Play autre clé) | MAJ impossible sans désinstall (backup `.mmc` d’abord) |
+
+---
 
 ## Dans l’app
 
-Pas de téléchargement automatique (l’app n’a **pas** Internet).  
-Pour un souci : Accueil → Menu → **« Un souci ? Écrire à Arkalia Système »** → mail (joindre une capture dans Gmail).
+Pas de téléchargement automatique **dans** l’app (pas d’`INTERNET`).  
+Les MAJ Play passent par le **Play Store**, pas par Mon Mois Clair.  
+Souci : Accueil → Menu → **« Un souci ? Écrire à Arkalia Système »**.
 
-## Annexe — USB (option, poste Arkalia)
+---
 
-Même fichier que pour la famille, pour tester sur ton tel :
+## Annexe — USB (poste Arkalia)
 
 ```bash
 adb push dist/MonMoisClair-release.apk /sdcard/Download/MonMoisClair-release.apk
-# Au doigt : Mes fichiers → Téléchargements → MonMoisClair-release.apk
-# Ou shell :
-adb push dist/MonMoisClair-release.apk /data/local/tmp/MonMoisClair-release.apk
-adb shell pm install -r /data/local/tmp/MonMoisClair-release.apk
+# Ou :
+adb install -r dist/MonMoisClair-release.apk
 ```
 
 Sur One UI, l’intent `file://` vers l’installateur est souvent bloqué.
-
-## Plus tard (option)
-
-Play Store **tests internes** = mises à jour auto. Hors produit actuel.

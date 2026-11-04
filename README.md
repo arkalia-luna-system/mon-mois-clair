@@ -3,7 +3,7 @@
 **Le carnet du mois, sur le téléphone — pas une banque.**
 
 Reste après factures · FAIT ✓ · rappels exacts · photo & PDF · **100 % hors ligne**.  
-Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
+Pas de compte. Pas de cloud. Pas de pub. Distribution familiale via **Play Internal** (Galaxy / One UI).
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
@@ -11,11 +11,11 @@ Pas de compte. Pas de cloud. Pas de pub. Sideload familial (Galaxy / One UI).
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-413%2F414-success)](#statut-technique)
 [![Device](https://img.shields.io/badge/validé-S25%20Ultra%20(SM--S938B)-success)](docs/AUDIT_STATUS.md)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.16-informational)](#statut-technique)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.17-informational)](#statut-technique)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
-Mon Mois Clair reste sur l’appareil : saisie manuelle, sauvegarde locale (JSON + ZIP photos), distribution par APK.
+Mon Mois Clair reste sur l’appareil : saisie manuelle, sauvegarde locale (JSON + ZIP photos). Canal famille : Play tests internes (MAJ auto) ; APK sideload en secours.
 
 Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
 
@@ -33,7 +33,8 @@ Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
 | **Accords** | Pastille · reste dû · IBAN · Écrire · frais datés · Mes dossiers |
 | **Sérénité** | Backup SAF · biométrie · `FLAG_SECURE` · widget · encre de nuit · Alertes |
 
-Hors scope volontaire : banque, catégories, graphiques, synchro, Play Store.
+Hors scope volontaire : banque, catégories, graphiques, synchro cloud.  
+Play = **piste Internal familiale** seulement (pas une pub store grand public).
 
 ---
 
@@ -48,10 +49,11 @@ Sécurité / keystore : [`SECURITY.md`](SECURITY.md).
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.16` |
-| Dernière étape | **7.16** passage final craft — hygiène assets brand morts + audit grille |
-| Device | Install SM-S938B **7.16** (sans wipe). **Smoke doigt Athalia** uniquement restant |
-| Distribution | Sideload **release signé** — [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
+| Version | `0.1.0-7.17` |
+| Dernière étape | **7.17** canal Play Internal (AAB + checklist famille) |
+| Device | Baseline SM-S938B **7.16** (sans wipe). Smoke doigt Athalia + bascule Play = demain |
+| Distribution | **Play Internal** recommandé — [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) · sideload secours [`DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
+| AAB | `dist/MonMoisClair-release.aab` (gitignoré ; build `bundleRelease`) |
 | Tests unitaires | **413 exécutés** OK (`--rerun-tasks`, 93 XML · 1 `@Ignore` migration 1→N) |
 | Schéma Room | **8** |
 
@@ -73,11 +75,12 @@ Kotlin · Jetpack Compose · Room · Hilt · SAF + WorkManager · `AlarmManager`
 export COPYFILE_DISABLE=1
 # Volume T7 : préférer ./scripts/git-safe.sh <commande git>
 ./gradlew :app:testDebugUnitTest --rerun-tasks
-./gradlew :app:assembleRelease
+./gradlew :app:bundleRelease   # → dist/MonMoisClair-release.aab (Play Internal)
+./gradlew :app:assembleRelease # → dist/MonMoisClair-release.apk (secours sideload)
 adb install -r dist/MonMoisClair-release.apk
 ```
 
-`local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK dans `dist/` ignoré.  
+`local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK/AAB dans `dist/` ignorés.  
 CI : push **`develop`** → compile + tests. Feuille de route : [`docs/CI.md`](docs/CI.md).
 
 ---
@@ -87,5 +90,5 @@ CI : push **`develop`** → compile + tests. Feuille de route : [`docs/CI.md`](d
 [MIT](LICENSE) — © 2026 **Arkalia Luna** / [arkalia-luna-system](https://github.com/arkalia-luna-system).
 
 <p align="center">
-  <sub>Belgique · local-first · sideload familial · validé S25 Ultra</sub>
+  <sub>Belgique · local-first · Play Internal familial · validé S25 Ultra</sub>
 </p>

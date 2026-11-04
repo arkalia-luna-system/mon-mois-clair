@@ -57,4 +57,6 @@ Bug, idée ou question : Accueil → **Menu** → **« Un souci ? Écrire à Ark
 
 - [`SECURITY.md`](SECURITY.md) — modèle de menace, keystore, Dependabot
 - [`CHARTE_ET_ARCHITECTURE.md`](CHARTE_ET_ARCHITECTURE.md) — règles produit
-- [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) — APK sideload (hors Play Store)
+- [`docs/privacy.html`](docs/privacy.html) — page HTTPS pour Play (GitHub Pages `/docs`)
+- [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) — piste Internal famille
+- [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) — Play recommandé · APK sideload secours

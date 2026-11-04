@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confidentialité — Mon Mois Clair</title>
+  <meta name="description" content="Politique de confidentialité de Mon Mois Clair : app 100 % locale, sans compte, sans Internet." />
+  <style>
+    :root {
+      --ink: #1a2e2a;
+      --mist: #f3f7f5;
+      --teal: #2a6b5e;
+      --line: #c5d4ce;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.55;
+      color: var(--ink);
+      background: linear-gradient(180deg, #e8f2ee 0%, var(--mist) 28%, #fff 100%);
+      min-height: 100vh;
+    }
+    main {
+      max-width: 40rem;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+    h1 { font-size: 1.65rem; margin: 0 0 0.35rem; letter-spacing: -0.02em; }
+    .lede { color: var(--teal); margin: 0 0 1.75rem; font-size: 1.05rem; }
+    h2 { font-size: 1.15rem; margin: 1.75rem 0 0.5rem; color: var(--teal); }
+    p, li { font-size: 0.98rem; }
+    ul { padding-left: 1.2rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      margin: 0.75rem 0 1rem;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.55rem 0.65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #e4efe9; }
+    .note {
+      border-left: 3px solid var(--teal);
+      padding: 0.65rem 0.85rem;
+      background: #eef6f3;
+      margin: 1rem 0;
+    }
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.88rem;
+      color: #4a5c56;
+    }
+    a { color: var(--teal); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Confidentialité — Mon Mois Clair</h1>
+    <p class="lede">App 100&nbsp;% locale. Pas de compte, pas de serveur Mon Mois Clair, pas d’analytics.</p>
+
+    <h2>Réseau</h2>
+    <ul>
+      <li><strong>Aucune</strong> permission Internet dans l’app.</li>
+      <li>Aucun appel HTTP/API, aucune synchro cloud, aucune publicité.</li>
+      <li>Les intents «&nbsp;partager&nbsp;» / «&nbsp;mail&nbsp;» / «&nbsp;ouvrir PDF&nbsp;» passent par d’autres apps choisies sur le téléphone. Une fois hors de Mon Mois Clair, c’est leur politique qui s’applique.</li>
+    </ul>
+
+    <h2>Données sur l’appareil</h2>
+    <table>
+      <thead>
+        <tr><th>Où</th><th>Quoi</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Base locale (Room / SQLCipher)</td>
+          <td>Mois, factures, montants, notes, IBAN, chemins photos — chiffré au repos ; clé enveloppée Android Keystore.</td>
+        </tr>
+        <tr>
+          <td>Dossier Documents (SAF)</td>
+          <td>Backups JSON enveloppe AES-GCM (code de copie) + médias locaux enveloppés.</td>
+        </tr>
+        <tr>
+          <td>Photos / PDF reçus</td>
+          <td>Fichiers chiffrés dans l’espace app ; aperçu temporaire en cache.</td>
+        </tr>
+        <tr>
+          <td>Presse-papiers</td>
+          <td>Communication / IBAN : marqués sensibles et vidés après ~30&nbsp;s.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Pas de sauvegarde cloud Android automatique de l’app (<code>allowBackup=false</code>).</p>
+    <div class="note">
+      Ce n’est <strong>pas</strong> un coffre parfait. Après déverrouillage, les données sont en RAM / à l’écran.
+      Code de copie oublié + téléphone mort sans autre copie = données perdues (pas de serveur de recovery).
+    </div>
+
+    <h2>Collecte / partage avec des tiers</h2>
+    <p><strong>Aucune collecte</strong> par Mon Mois Clair. Aucune donnée n’est envoyée à Arkalia, Google Play ni un serveur de l’éditeur via l’app elle-même.</p>
+    <p>Si tu installes via Google Play : Google traite l’installation / les mises à jour selon sa propre politique Play — indépendante de Mon Mois Clair.</p>
+
+    <h2>Widget &amp; notifications</h2>
+    <ul>
+      <li>Widget : affiche le Reste (montants masqués si verrou biométrique activé).</li>
+      <li>Notifications locales (rappels) : libellé + montant ; montant masqué si verrou ON.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Bug, idée ou question : dans l’app, Accueil → <strong>Menu</strong> → «&nbsp;Un souci ? Écrire à Arkalia Système&nbsp;» (mail via le client du téléphone).</p>
+
+    <footer>
+      Texte aligné sur <code>PRIVACY.md</code> du dépôt.
+      Package Android : <code>be.monmoisclair.app</code>.
+      Dernière révision page : 2026-11-04.
+    </footer>
+  </main>
+</body>
+</html>
