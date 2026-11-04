@@ -16,14 +16,14 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "be.monmoisclair.app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 123
-        versionName = "0.1.0-7.17"
+        targetSdk = 36
+        versionCode = 124
+        versionName = "0.1.0-7.18"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

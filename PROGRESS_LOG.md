@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.17** canal Play Internal (AAB + checklist + privacy HTTPS) |
+| Dernière étape terminée | **7.18** targetSdk/compileSdk 36 (Play Internal) |
 | Étape en cours | — |
-| Prochaine sous-étape | **Athalia** : compte Play Console + app + Internal (voir [`PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md)) · smoke doigt / S26 / restore — **pas** claimés ici |
+| Prochaine sous-étape | Publish Internal Play (AAB 124) · smoke doigt / S26 / restore — **pas** claimés ici |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,23 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-04 — 7.18 targetSdk 36 (Play Internal)
+
+**Contexte :** Athalia OUI — Play bloque Save and publish Internal : AAB target API 35, exigence ≥ 36.
+
+**Livré :**
+- `compileSdk` / `targetSdk` → **36** (`minSdk` 26 inchangé)
+- `versionCode` **124** · `versionName` `0.1.0-7.18` (123 déjà attaché à la draft Internal)
+- CI : platform `android-36` + build-tools `36.0.0`
+- Tests : `robolectric.properties` `sdk=35` (sandbox 36 exige Java 21 ; toolchain reste 17)
+
+**Évité :** Production · claim lien invitation actif avant publish · bump JDK 21.
+
+**AAB :** `dist/MonMoisClair-release.aab` · ~27 Mo (28 740 515 octets) · SHA-256 `33cf6e28…4112` · Bureau `7-MonMoisClair.aab` / `8-MonMoisClair-7.18.aab`.  
+**Tests :** **413** exécutés / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.18` · `versionCode` 124 · targetSdk **36**.  
+**Ship :** `develop` only (pas `main` / pas Production).
 
 ### 2026-11-04 — Vitrine GitHub + fix CI flaky EntryForm
 

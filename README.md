@@ -12,7 +12,7 @@ Carnet familial belge (papier, QR EPC, communication structurée) — distributi
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/unit%20tests-413%20pass%20·%201%20skipped-success)](#statut)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.17-informational)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.18-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 <p align="center">
@@ -59,12 +59,12 @@ Play = **piste Internal familiale** seulement — pas une publication Store gran
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.17` (`versionCode` 123) |
-| Dernière étape | **7.17** — canal Play Internal (AAB + checklist famille + privacy HTTPS) |
+| Version | `0.1.0-7.18` (`versionCode` 124) |
+| Dernière étape | **7.18** — targetSdk 36 (exigence Play Internal) |
 | Device | Baseline Galaxy S25 Ultra (SM-S938B), install release **7.16** sans wipe |
 | Distribution | **Play Internal** recommandé — [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) · sideload secours [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | AAB | `dist/MonMoisClair-release.aab` (gitignoré ; `./gradlew :app:bundleRelease`) |
-| Tests unitaires | **413** passent, **1** `@Ignore` (migration 1→N), 0 failure — journal local `--rerun-tasks` |
+| Tests unitaires | **413** passent, **1** `@Ignore` (migration 1→N), 0 failure — journal local `--rerun-tasks` (Robolectric sandbox 35) |
 | Schéma Room | **8** |
 
 Non claimé ici (volontaire) : smoke doigt « cadeau », restore famille en conditions réelles, compte Play Console déjà provisionné.
