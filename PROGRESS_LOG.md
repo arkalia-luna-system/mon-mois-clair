@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.18** targetSdk/compileSdk 36 (Play Internal) |
+| Dernière étape terminée | **7.19** bump Play Internal CI (versionCode 125) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt / S26 / restore — **pas** claimés ici · confirmer MAJ Play Galaxy = `0.1.0-7.18` |
+| Prochaine sous-étape | Smoke doigt / S26 / restore — **pas** claimés ici · confirmer MAJ Play Galaxy = `0.1.0-7.19` |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-04 — 7.19 bump + ship Play Internal via CI
+
+**Contexte :** Athalia OUI — secrets + SA Play prêts · bump **125** · merge `main` → workflow **Publish Play Internal**.
+
+**Livré :**
+- `versionCode` **125** · `versionName` `0.1.0-7.19`
+- Vérif `gh secret list` : 5 secrets présents (noms uniquement)
+- Push `develop` + ff `main` pour déclencher upload piste **Internal** (pas Production)
+
+**Évité :** Production · force-push · staging secrets / `dist/play/`.
+
+**Tests :** **413** exécutés / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.19` · `versionCode` 125.  
+**Ship :** `develop` + ff `main` → workflow Publish Play Internal.
 
 ### 2026-11-04 — CI auto-deploy Play Internal (push main)
 

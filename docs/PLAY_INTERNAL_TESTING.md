@@ -5,7 +5,7 @@ Objectif : canal principal = **Play Internal Testing** (MAJ auto) · sideload = 
 
 **Ne crée pas le compte ici** — cette page guide uniquement.  
 Package : `be.monmoisclair.app` · AAB local : `dist/MonMoisClair-release.aab`  
-Dernier build documenté : **`0.1.0-7.18`** / `versionCode` **124** · targetSdk **36** · **~27 Mo** (lire le journal si plus récent).
+Dernier build documenté : **`0.1.0-7.19`** / `versionCode` **125** · targetSdk **36** · **~27 Mo** (lire le journal si plus récent).
 
 **MAJ auto = Play Store** (piste Internal Active + testeurs opt-in).  
 Pas d’API In-App Updates dans l’app (pas d’`INTERNET`) — ouvrir Play / laisser les MAJ auto Play faire le travail.
@@ -115,9 +115,9 @@ Même pour Internal, Google demande souvent une fiche de base :
 ### 9. Recevoir une **new version** (Galaxy / famille)
 
 1. Compte Google du téléphone = e-mail de la liste testeurs + **opt-in** lien Internal accepté.
-2. Play Console : release Internal **Active** avec le nouveau `versionCode` (ex. **124**).
+2. Play Console : release Internal **Active** avec le nouveau `versionCode` (ex. **125**).
 3. Sur le téléphone : ouvrir **Play Store** → Mon Mois Clair → **Mettre à jour** (ou MAJ auto Play activée).
-4. Dans l’app : Réglages → `versionName` = journal (ex. `0.1.0-7.18`).
+4. Dans l’app : Réglages → `versionName` = journal (ex. `0.1.0-7.19`).
 
 Pas besoin d’ouvrir Mon Mois Clair pour « forcer » une MAJ : c’est **Play** qui livre.  
 Si le téléphone a encore un sideload **7.16 / 7.17** avec une autre clé → wipe + restore `.mmc` (tableau §8).
