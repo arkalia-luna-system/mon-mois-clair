@@ -133,22 +133,105 @@ Si le téléphone a encore un sideload **7.16 / 7.17** avec une autre clé → w
 | Publier en **Production** trop tôt | Hors scope « famille Internal » |
 | Compte testeur sans Gmail ajouté à la liste | Lien Play refuse l’install |
 | Croire que WhatsApp/Drive reste le canal MAJ | Non — désormais **Play Internal** = canal recommandé |
-| Activer le workflow CI `publish-play-internal.yml` sans secrets | Échec ; laisser `workflow_dispatch` uniquement |
+| Merger `main` **sans** bump `versionCode` | Play refuse l’upload (version déjà utilisée) |
+| Secrets GitHub absents | Workflow skippe l’upload (run vert + notice) — pas de déploiement |
+| Track **production** | **Interdit** — le workflow n’expose que `internal` |
 
 ---
 
 ## Après J+0 (rythme)
 
+**Canal recommandé (après secrets CI) :** bump sur `develop` → merge/ff `main` → Actions upload Internal auto.
+
+**Secours manuel :**
+
 1. Sur le Mac : `bundleRelease` → AAB dans `dist/`
 2. Play Console → Internal → nouvelle release → upload AAB → déployer
 3. Famille : notification Play / ouvrir Play Store → Mettre à jour (auto si activé)
 
-Automatisation CI (optionnelle, **désactivée par défaut**) :  
-[`.github/workflows/publish-play-internal.yml`](../.github/workflows/publish-play-internal.yml) — secrets documentés dans le fichier ; ne pas brancher sur `push` main tant que les secrets ne sont pas là.
+---
+
+## CI auto-deploy (push `main` → Internal)
+
+Workflow : [`.github/workflows/publish-play-internal.yml`](../.github/workflows/publish-play-internal.yml)
+
+| | |
+|--|--|
+| Déclencheurs | **push sur `main`** · `workflow_dispatch` (saisir `PUBLISH`) |
+| Piste | **`internal` uniquement** — jamais Production |
+| `releaseStatus` | `completed` (disponible aux testeurs) |
+| Sans secrets | job d’upload **skippé** (run vert) — pas de CI rouge |
+
+### Secrets GitHub — noms exacts
+
+Dans le dépôt → **Settings → Secrets and variables → Actions → New repository secret** :
+
+| Nom du secret | Contenu |
+|---------------|---------|
+| `PLAY_SERVICE_ACCOUNT_JSON` | JSON **brut** du compte de service (tout le fichier, y compris `{`…`}`) |
+| `RELEASE_KEYSTORE_BASE64` | Keystore release (`.jks`) encodé en **une ligne** base64 |
+| `RELEASE_KEYSTORE_PASSWORD` | Mot de passe du keystore (`storePassword`) |
+| `RELEASE_KEY_ALIAS` | Alias de la clé (ex. `monmoisclair`) |
+| `RELEASE_KEY_PASSWORD` | Mot de passe de la clé (`keyPassword`) |
+
+Ne jamais committer ces valeurs. `keystore.properties` / `*.jks` restent gitignorés.
+
+### Compte de service Play — clics (une fois)
+
+1. **Google Cloud Console** → [console.cloud.google.com](https://console.cloud.google.com)  
+   - Créer / choisir un projet (ex. `mon-mois-clair-play`).  
+   - **IAM et administration → Comptes de service → Créer**  
+     - Nom : `play-internal-upload`  
+     - Rôle : laisser minimal ici (l’accès Play se gère dans Play Console).  
+   - Onglet **Clés → Ajouter une clé → Créer → JSON** → télécharger le fichier.  
+   - Coller le contenu JSON dans le secret GitHub `PLAY_SERVICE_ACCOUNT_JSON`.
+
+2. **Lier l’API Play**  
+   - Cloud → **API et services → Bibliothèque** → chercher **Google Play Android Developer API** → **Activer**.
+
+3. **Play Console** → [play.google.com/console](https://play.google.com/console)  
+   - **Utilisateurs et autorisations → Inviter de nouveaux utilisateurs**  
+   - Coller l’**e-mail** du compte de service (`…@….iam.gserviceaccount.com`).  
+   - Droits : **Version vers les pistes de test** / *Release to testing tracks* (Internal).  
+     **Pas** besoin de « Release to production ».  
+   - Appliquer à l’app **Mon Mois Clair** (`be.monmoisclair.app`) → **Inviter**.
+
+4. Attendre quelques minutes (propagation IAM), puis les secrets keystore (ci-dessous).
+
+### Encoder le keystore en base64 (Mac)
+
+Depuis la racine du projet (chemin réel du `.jks` = celui de `keystore.properties`) :
+
+```bash
+# Une seule ligne, sans retour — coller dans RELEASE_KEYSTORE_BASE64
+base64 -i release/monmoisclair-release.jks | tr -d '\n' | pbcopy
+echo "Base64 copié dans le presse-papiers ($(pbpaste | wc -c) octets)"
+```
+
+Les 3 autres secrets keystore = les valeurs de ton `keystore.properties` local (`storePassword`, `keyAlias`, `keyPassword`).
+
+### Bump version — **sur `develop` avant merge `main`**
+
+Play refuse un `versionCode` déjà uploadé. **Pas d’auto-bump CI** (trop risqué pour un dépôt familial).
+
+1. Sur `develop` : incrémenter `versionCode` (+1) et `versionName` dans `app/build.gradle.kts`.  
+2. Mettre à jour `PROGRESS_LOG.md` / README si tu closes une étape.  
+3. Tests verts → commit → push `develop`.  
+4. **Ensuite seulement** : merge/ff `main` → le workflow publie Internal.
+
+### Première activation
+
+1. Créer les **5 secrets** (action Athalia).  
+2. Vérifier qu’une release Internal a déjà existé à la main (app pas « draft » pure — sinon `completed` peut échouer → passer temporairement le workflow en `status: draft` ou finir la fiche Console).  
+3. Petit bump `versionCode` sur `develop` → merge `main` → onglet **Actions** → run **Publish Play Internal**.  
+4. Play Console → Tests internes → nouvelle version Active → famille : MAJ Play Store.
+
+Si `completed` échoue alors que l’app est encore brouillon Console : documenter / basculer `status: draft` dans le workflow et publier la release à la main une fois.
 
 ---
 
 ## Liens utiles
+
 
 - [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) — sideload = **secours**
 - [`PRIVACY.md`](../PRIVACY.md) — texte source confidentialité

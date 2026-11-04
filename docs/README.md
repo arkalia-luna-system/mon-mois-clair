@@ -12,7 +12,7 @@ Index **actif** (~7.17). Historique : [`archive/`](archive/README.md) · audits 
 | [`../PROGRESS_LOG.md`](../PROGRESS_LOG.md) | Journal — ce qui est codé |
 | [`../README.md`](../README.md) | Vitrine + version |
 | [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md) | Brief oral cadeau (code papier · Arkalia) |
-| [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) | Checklist Play Console Internal (famille) |
+| [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) | Checklist Play Internal + CI auto-deploy (secrets, compte de service) |
 | [`privacy.html`](privacy.html) | Politique HTTPS (GitHub Pages `/docs`) |
 | [`CI.md`](CI.md) | CI + Dependabot Security |
 | [`audits/2026-11-02-passage-final.md`](audits/2026-11-02-passage-final.md) | Passage final craft · grille domaines · 7.16 |

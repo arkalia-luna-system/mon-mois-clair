@@ -13,7 +13,7 @@ Checklist complète Play : [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md
 ## A. Play Internal (chemin normal)
 
 1. Athalia : compte Play Console + app `be.monmoisclair.app` + piste **Internal** (voir checklist).
-2. Upload `dist/MonMoisClair-release.aab` (build : `./gradlew :app:bundleRelease`).
+2. Après les 5 secrets GitHub : merge `main` → CI upload Internal auto ; sinon upload manuel `dist/MonMoisClair-release.aab` (`bundleRelease`).
 3. Ajouter les e-mails famille → envoyer le **lien d’invitation**.
 4. Chez eux : accepter → installer / mettre à jour via **Play Store**.
 

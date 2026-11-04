@@ -1,102 +1,171 @@
-# Publish Play Internal — SQUELETTE (manuel uniquement)
+# Publish Play Internal — AAB signé → piste Internal uniquement
 # ---------------------------------------------------------------------------
-# Ne se lance PAS sur push main/develop.
-# Prérequis secrets (Settings → Secrets and variables → Actions) :
-#   PLAY_SERVICE_ACCOUNT_JSON  — JSON compte de service Play Console
-#     (Play Console → Users & permissions → Invite user → Service account
-#      avec droit Releases vers la piste Internal ; lier le projet Cloud)
-# Optionnel plus tard :
-#   PLAY_PACKAGE_NAME          — défaut be.monmoisclair.app
+# Déclencheurs : push sur main · workflow_dispatch (confirm=PUBLISH)
+# JAMAIS track production.
 #
-# Keystore d’upload : NE PAS committer. Pour CI un jour :
-#   ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
-#   ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
-# Aujourd’hui ce workflow s’arrête après le rappel — pas d’upload auto
-# tant que les secrets ne sont pas configurés et le job « upload » décommenté.
+# Secrets (Settings → Secrets and variables → Actions) — noms exacts :
+#   PLAY_SERVICE_ACCOUNT_JSON   — JSON brut du compte de service Play
+#   RELEASE_KEYSTORE_BASE64     — keystore .jks/.keystore encodé base64
+#   RELEASE_KEYSTORE_PASSWORD
+#   RELEASE_KEY_ALIAS
+#   RELEASE_KEY_PASSWORD
+#
+# Si un secret manque : le job d’upload est skippé (run vert + notice).
+# Guide : docs/PLAY_INTERNAL_TESTING.md § CI auto-deploy
 # ---------------------------------------------------------------------------
 
-name: Publish Play Internal (manual)
+name: Publish Play Internal
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       confirm:
         description: "Taper PUBLISH pour confirmer (sinon le job refuse)"
         required: true
         default: ""
-      track:
-        description: "Piste Play"
-        required: true
-        default: "internal"
-        type: choice
-        options:
-          - internal
 
-# Jamais de concurrency cancel : dépôt familial, runs rares.
+# Pas de concurrency cancel : dépôt familial, runs rares.
 
 jobs:
-  guard-and-remind:
-    name: Garde-fou + rappel secrets
+  gate:
+    name: Prérequis secrets
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
     steps:
-      - name: Vérifier confirmation
+      - name: Vérifier confirmation manuelle
+        if: github.event_name == 'workflow_dispatch'
         run: |
           if [ "${{ inputs.confirm }}" != "PUBLISH" ]; then
             echo "::error::Confirmation manquante. Relancer avec confirm=PUBLISH."
             exit 1
           fi
-          echo "Confirm OK — piste=${{ inputs.track }}"
+          echo "Confirm OK — piste=internal uniquement"
 
-      - name: Rappeler la checklist (pas d’upload auto)
+      - id: check
+        name: Vérifier présence des secrets
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
-          echo "=== Play Internal — squelette ==="
-          echo "1. Secrets requis avant tout upload CI :"
-          echo "   - PLAY_SERVICE_ACCOUNT_JSON"
-          echo "   - (keystore upload) ANDROID_KEYSTORE_* si build CI"
-          echo "2. Aujourd’hui : build local + upload manuel AAB."
-          echo "   Voir docs/PLAY_INTERNAL_TESTING.md"
-          echo "3. Pour activer l’upload CI : ajouter un job bundle+upload"
-          echo "   (gradle bundleRelease + r0adkll/upload-google-play"
-          echo "    ou google-github-actions) UNIQUEMENT quand les secrets"
-          echo "   existent — ne pas brancher on.push."
-          if [ -z "${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}" ]; then
-            echo "::warning::PLAY_SERVICE_ACCOUNT_JSON absent — normal tant que non configuré."
+          missing=0
+          for name in \
+            PLAY_SERVICE_ACCOUNT_JSON \
+            RELEASE_KEYSTORE_BASE64 \
+            RELEASE_KEYSTORE_PASSWORD \
+            RELEASE_KEY_ALIAS \
+            RELEASE_KEY_PASSWORD
+          do
+            eval "val=\$$name"
+            if [ -z "$val" ]; then
+              echo "::notice::Secret manquant : $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Publish Play Internal ignoré — créer les 5 secrets puis rejouer (voir docs/PLAY_INTERNAL_TESTING.md)."
           else
-            echo "Secret PLAY_SERVICE_ACCOUNT_JSON détecté (présent) — upload CI pas encore branché."
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "Secrets présents — upload Internal autorisé."
           fi
 
-  # --- DÉSACTIVÉ / à activer plus tard (décommenter + secrets) -------------
-  # bundle-and-upload:
-  #   name: Bundle AAB + upload Internal
-  #   needs: guard-and-remind
-  #   if: false  # passer à true seulement après secrets + revue Athalia
-  #   runs-on: ubuntu-24.04
-  #   timeout-minutes: 40
-  #   permissions:
-  #     contents: read
-  #   steps:
-  #     - uses: actions/checkout@v5
-  #     - uses: actions/setup-java@v5
-  #       with:
-  #         distribution: temurin
-  #         java-version: "17"
-  #     - uses: gradle/actions/setup-gradle@v6
-  #     - uses: android-actions/setup-android@v4
-  #       with:
-  #         packages: platform-tools platforms;android-35 build-tools;35.0.0
-  #     - name: Decode keystore
-  #       run: |
-  #         echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > upload.jks
-  #         # écrire keystore.properties hors cache…
-  #     - run: ./gradlew :app:bundleRelease --no-daemon
-  #     - name: Upload to Play Internal
-  #       uses: r0adkll/upload-google-play@v1
-  #       with:
-  #         serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-  #         packageName: be.monmoisclair.app
-  #         releaseFiles: /home/runner/.cache/mon-mois-clair/gradle-build/app/outputs/bundle/release/app-release.aab
-  #         track: internal
-  #         status: completed
+  publish:
+    name: Bundle AAB + upload Internal
+    needs: gate
+    if: needs.gate.outputs.ready == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    env:
+      GRADLE_OPTS: >-
+        -Dorg.gradle.daemon=false
+        -Dorg.gradle.vfs.watch=false
+        -Dkotlin.compiler.execution.strategy=in-process
+      ORG_GRADLE_PROJECT_org.gradle.caching: "true"
+      ORG_GRADLE_PROJECT_org.gradle.parallel: "true"
+      AAB_PATH: /home/runner/.cache/mon-mois-clair/gradle-build/app/outputs/bundle/release/app-release.aab
+      MAPPING_PATH: /home/runner/.cache/mon-mois-clair/gradle-build/app/outputs/mapping/release/mapping.txt
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools platforms;android-36 build-tools;36.0.0
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Decode keystore + keystore.properties
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > release/ci-upload.jks
+          # Même schéma que keystore.properties.example (lu par app/build.gradle.kts)
+          {
+            echo "storeFile=release/ci-upload.jks"
+            echo "storePassword=${RELEASE_KEYSTORE_PASSWORD}"
+            echo "keyAlias=${RELEASE_KEY_ALIAS}"
+            echo "keyPassword=${RELEASE_KEY_PASSWORD}"
+          } > keystore.properties
+          test -s release/ci-upload.jks
+          test -f keystore.properties
+
+      - name: Build signed App Bundle
+        run: ./gradlew :app:bundleRelease --stacktrace --no-daemon
+
+      - name: Vérifier AAB
+        run: |
+          set -euo pipefail
+          ls -lh "$AAB_PATH"
+          test -s "$AAB_PATH"
+
+      - name: Upload AAB artifact (secours)
+        uses: actions/upload-artifact@v7
+        with:
+          name: play-internal-aab
+          path: |
+            ${{ env.AAB_PATH }}
+            ${{ env.MAPPING_PATH }}
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload to Play Internal Testing
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: be.monmoisclair.app
+          releaseFiles: ${{ env.AAB_PATH }}
+          # Piste Internal uniquement — jamais production / alpha / beta.
+          tracks: internal
+          # completed = disponible aux testeurs Internal (si l’app n’est plus « draft » Console).
+          # Si Play refuse : passer temporairement à draft et publier à la main (doc).
+          status: completed
+          changesNotSentForReview: true
+          mappingFile: ${{ env.MAPPING_PATH }}

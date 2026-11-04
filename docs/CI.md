@@ -88,6 +88,16 @@ Vulnérable `≥4.0` / `≤33.7.1` ; premier patch **`33.7.2`** (`33.7.2-jre` /
 Vérifier avec `./gradlew :app:dependencies`. Alertes GitHub peuvent rester rouges
 jusqu’au **rescan** Dependabot même si le force local est OK.
 
+## Publish Play Internal (push `main`)
+
+Workflow : [`.github/workflows/publish-play-internal.yml`](../.github/workflows/publish-play-internal.yml)
+
+- Déclenché sur **push `main`** (+ `workflow_dispatch` avec `confirm=PUBLISH`).
+- Build `bundleRelease` signé → upload piste **`internal` uniquement** (`r0adkll/upload-google-play`, `status: completed`).
+- **Jamais** Production.
+- Sans les 5 secrets → skip propre (pas de rouge). Guide + noms exacts : [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) § CI auto-deploy.
+- Bump `versionCode` **sur `develop` avant** merge `main` (pas d’auto-bump CI).
+
 ## Phase 4 — plus corsé (optionnel)
 
 - Tests instrumentés / emulator (lent, coûteux) — seulement si vraiment utile.

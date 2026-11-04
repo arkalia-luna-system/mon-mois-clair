@@ -91,7 +91,7 @@ adb install -r dist/MonMoisClair-release.apk
 ```
 
 `local.properties` / `keystore.properties` / `*.jks` jamais versionnés. APK/AAB dans `dist/` ignorés.  
-CI : push **`develop`** (et `main`) → compile + tests. Feuille de route : [`docs/CI.md`](docs/CI.md).
+CI : push **`develop`** (et `main`) → compile + tests. Push **`main`** → AAB Play **Internal** si secrets présents ([`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md)). Feuille de route : [`docs/CI.md`](docs/CI.md).
 
 ---
 

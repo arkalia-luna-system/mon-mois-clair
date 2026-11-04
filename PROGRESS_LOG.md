@@ -21,6 +21,22 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ## Journal
 
+### 2026-11-04 — CI auto-deploy Play Internal (push main)
+
+**Contexte :** Athalia OUI — merge/ff `main` → upload AAB automatique piste **Internal** (pas Production).
+
+**Livré :**
+- Workflow [`.github/workflows/publish-play-internal.yml`](.github/workflows/publish-play-internal.yml) : push `main` + `workflow_dispatch` · decode keystore · `bundleRelease` · `r0adkll/upload-google-play` track **`internal`** / `status: completed`
+- Skip propre si secrets absents (run vert + notice)
+- Doc : [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) § CI auto-deploy (compte de service, base64, 5 secrets, bump `versionCode` sur `develop`)
+- `docs/CI.md` + commentaire `keystore.properties.example`
+
+**Évité :** track Production · auto-bump version CI · merge `main` tant que secrets non créés · secrets dans le repo.
+
+**Tests :** **413** exécutés / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`) — pas de touch `build.gradle`.  
+**Version :** reste `0.1.0-7.18` / `versionCode` **124**.  
+**Ship :** `develop` seulement (pas de ff `main` pour activer l’upload avant secrets).
+
 ### 2026-11-04 — Ship develop → main (7.18 / MAJ Play)
 
 **Contexte :** Athalia OUI — push/merge `main` pour aligner dépôt ; new version « arrive direct » via Play Internal.
