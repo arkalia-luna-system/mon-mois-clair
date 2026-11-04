@@ -28,7 +28,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 **Livré (repo) :**
 - `bundleRelease` → `dist/MonMoisClair-release.aab` (gitignoré)
 - Checklist [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md)
-- Page HTTPS [`docs/privacy.html`](docs/privacy.html) (activer GitHub Pages `/docs`)
+- Page HTTPS live : https://arkalia-luna-system.github.io/mon-mois-clair-privacy/privacy.html (repo public dédié ; source [`docs/privacy.html`](docs/privacy.html) — dépôt app resté privé)
 - [`DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) / README : Play Internal recommandé · sideload secours
 - Workflow squelette [`.github/workflows/publish-play-internal.yml`](.github/workflows/publish-play-internal.yml) (`workflow_dispatch` only · pas d’upload auto)
 

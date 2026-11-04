@@ -66,23 +66,15 @@ Dans **Contenu de l’appli → Sécurité des données** :
 
 Play demande une **URL HTTPS publique**.
 
-**Fichier prêt :** [`docs/privacy.html`](privacy.html) (miroir de `PRIVACY.md`) — présent sur `main`  
-(blob `d33635db3daa4269e253abd22421161c104df5ce` · commit `6c55f25`).
+**URL live (coller dans Play) :**  
+https://arkalia-luna-system.github.io/mon-mois-clair-privacy/privacy.html
 
-**GitHub Pages — état 2026-11-04 :** **KO (pas live)**  
-Tentative `gh api …/pages` (branch `main`, path `/docs`) → **422** :  
-*« Your current plan does not support GitHub Pages for this repository. »*  
-Cause : dépôt **privé** ; le plan actuel de l’org/user ne permet pas Pages sur repo privé.  
-URL cible **non joignable** (curl → **404**) :  
-`https://arkalia-luna-system.github.io/mon-mois-clair/privacy.html`
+- Repo public dédié : [`arkalia-luna-system/mon-mois-clair-privacy`](https://github.com/arkalia-luna-system/mon-mois-clair-privacy) (uniquement `privacy.html` + README)  
+- Pages : branch `main` / racine `/` · vérifié **HTTP 200** (2026-11-04)  
+- Source miroir dans ce dépôt : [`docs/privacy.html`](privacy.html) (blob `d33635db3daa4269e253abd22421161c104df5ce` · commit `6c55f25`)  
+- Le dépôt **Mon Mois Clair** reste **privé** (Pages dessus = 422 plan / repo privé — ne pas le rendre public)
 
-**Pour rendre cette URL live**, Athalia doit choisir **une** option :
-
-1. **Rendre le dépôt public** (Settings → Change visibility) puis réactiver Pages (`main` + `/docs`), **ou**
-2. **Upgrader** le plan GitHub (Pro / Team) pour Pages sur repo privé, puis Settings → Pages → Deploy from branch → `main` / `/docs`, **ou**
-3. Héberger **uniquement** `privacy.html` ailleurs (Cloudflare Pages, Netlify drop, gist public) et coller **cette** URL dans Play.
-
-- [ ] URL HTTPS **live** (ouvrir en navigation privée sans login GitHub)
+- [x] URL HTTPS **live** (ouvrir en navigation privée sans login GitHub)
 - [ ] Coller l’URL réelle dans la fiche Play (Politique de confidentialité)
 
 ### 6. Fiche minimale (store listing)
