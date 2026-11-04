@@ -113,7 +113,7 @@ dependencies {
     val hiltVersion = "2.52"
 
     implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
@@ -166,7 +166,7 @@ dependencies {
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("androidx.work:work-testing:2.12.0")
     testImplementation("com.google.truth:truth:1.4.5")
-    testImplementation("org.json:json:20240303")
+    testImplementation("org.json:json:20260814")
 
     // androidTest : smoke stables (pas de Compose/Hilt flaky). connected = Athalia si device.
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
