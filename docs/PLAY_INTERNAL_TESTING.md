@@ -5,7 +5,10 @@ Objectif : canal principal = **Play Internal Testing** (MAJ auto) · sideload = 
 
 **Ne crée pas le compte ici** — cette page guide uniquement.  
 Package : `be.monmoisclair.app` · AAB local : `dist/MonMoisClair-release.aab`  
-Dernier build documenté : **`0.1.0-7.17`** / `versionCode` **123** · **~27 Mo** (lire le journal si plus récent).
+Dernier build documenté : **`0.1.0-7.18`** / `versionCode` **124** · targetSdk **36** · **~27 Mo** (lire le journal si plus récent).
+
+**MAJ auto = Play Store** (piste Internal Active + testeurs opt-in).  
+Pas d’API In-App Updates dans l’app (pas d’`INTERNET`) — ouvrir Play / laisser les MAJ auto Play faire le travail.
 
 ---
 
@@ -49,9 +52,9 @@ Dernier build documenté : **`0.1.0-7.17`** / `versionCode` **123** · **~27 Mo*
 2. Choisir **Exporter et importer une clé depuis un dépôt Java** / **Utiliser une clé existante** — **pas** « Laisser Google générer une clé d’application ».
 3. Exporter depuis ton keystore release actuel (le `.jks` local / `keystore.properties`) le certificat demandé, puis **uploader** ce fichier dans la Console.
 4. La **clé d’upload** = ton keystore actuel ; les AAB futurs restent signés avec ce même `.jks`.
-5. Si tu acceptes une clé Google seule → signature ≠ sideload famille → **désinstall/réinstall** = risque perte Room. Garder `.jks` + `keystore.properties` **hors git**.
+5. Si tu acceptes une clé Google seule (**Option B**) → signature Play ≠ sideload famille → **désinstall/réinstall** = backup `.mmc` d’abord. Garder `.jks` + `keystore.properties` **hors git** (clé d’upload).
 
-- [ ] Enrôlement terminé avec **clé existante** (keystore actuel), pas clé Google seule
+- [ ] Enrôlement App Signing terminé (Option A = même clé sideload, ou **Option B** = clé Google — wipe + `.mmc` au passage sideload → Play)
 
 ### 4. Data safety (aucune collecte)
 
@@ -91,8 +94,9 @@ Même pour Internal, Google demande souvent une fiche de base :
 
 - [ ] **Tester → Tests internes** (Internal testing)
 - [ ] Créer une release → **Upload manuel** de `dist/MonMoisClair-release.aab`
-- [ ] Notes de version courtes (ex. `0.1.0-7.17` — lire le journal)
+- [ ] Notes de version courtes (ex. `0.1.0-7.18` — lire le journal)
 - [ ] Enregistrer → **Examiner la release** → démarrer le déploiement Internal
+- [ ] Vérifier piste **Active** (pas brouillon)
 - [ ] Onglet **Testeurs** → créer une liste e-mail → ajouter les Gmail de la famille
 - [ ] Copier le **lien d’invitation** → l’envoyer (WhatsApp OK pour le *lien*, plus pour l’APK)
 - [ ] Chaque personne : ouvrir le lien → accepter d’être testeur → installer via Play Store
@@ -103,10 +107,20 @@ Même pour Internal, Google demande souvent une fiche de base :
 |-----------|-----------|
 | Téléphone **neuf** / pas d’app | Installer via le lien Internal → OK |
 | Sideload déjà installé · **même** clé de signature Play | Mise à jour Play possible sans wipe |
-| Sideload déjà installé · **clé différente** | 1) Backup `.mmc` + code papier 2) Désinstaller 3) Installer Play 4) Restaurer |
+| Sideload déjà installé · **clé différente** (souvent **Option B**) | 1) Backup `.mmc` + code papier 2) Désinstaller 3) Installer Play 4) Restaurer |
 
 - [ ] Sur **ton** Galaxy : vérifier version dans Réglages = `versionName` du journal
 - [ ] Smoke court : Accueil / FAIT / une facture / backup visible
+
+### 9. Recevoir une **new version** (Galaxy / famille)
+
+1. Compte Google du téléphone = e-mail de la liste testeurs + **opt-in** lien Internal accepté.
+2. Play Console : release Internal **Active** avec le nouveau `versionCode` (ex. **124**).
+3. Sur le téléphone : ouvrir **Play Store** → Mon Mois Clair → **Mettre à jour** (ou MAJ auto Play activée).
+4. Dans l’app : Réglages → `versionName` = journal (ex. `0.1.0-7.18`).
+
+Pas besoin d’ouvrir Mon Mois Clair pour « forcer » une MAJ : c’est **Play** qui livre.  
+Si le téléphone a encore un sideload **7.16 / 7.17** avec une autre clé → wipe + restore `.mmc` (tableau §8).
 
 ---
 

@@ -11,7 +11,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 |-------|--------|
 | Dernière étape terminée | **7.18** targetSdk/compileSdk 36 (Play Internal) |
 | Étape en cours | — |
-| Prochaine sous-étape | Publish Internal Play (AAB 124) · smoke doigt / S26 / restore — **pas** claimés ici |
+| Prochaine sous-étape | Smoke doigt / S26 / restore — **pas** claimés ici · confirmer MAJ Play Galaxy = `0.1.0-7.18` |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-04 — Ship develop → main (7.18 / MAJ Play)
+
+**Contexte :** Athalia OUI — push/merge `main` pour aligner dépôt ; new version « arrive direct » via Play Internal.
+
+**Livré :**
+- Docs : `PLAY_INTERNAL_TESTING.md` / `DISTRIBUTION_FAMILLE.md` → claims **7.18 / 124** + § comment recevoir la MAJ (Play Store, pas In-App Updates)
+- Pas d’API In-App Updates (déjà absent ; pas d’`INTERNET`)
+- Exact alarm : **inchangé** (`USE_EXACT_ALARM` + `SCHEDULE_EXACT_ALARM` — charte ne demande pas de retrait) → **pas** de bump 125
+- Pas de nouvel AAB 125 ; canal Play reste **124 / 0.1.0-7.18** si release Internal Active
+
+**Évité :** Production · force-push · staging `dist/play/` · grosse feature In-App Updates.
+
+**Tests :** **413** exécutés / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Ship :** `develop` + ff `main` (pas Production).
 
 ### 2026-11-04 — 7.18 targetSdk 36 (Play Internal)
 
@@ -36,7 +51,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 **AAB :** `dist/MonMoisClair-release.aab` · ~27 Mo (28 740 515 octets) · SHA-256 `33cf6e28…4112` · Bureau `7-MonMoisClair.aab` / `8-MonMoisClair-7.18.aab`.  
 **Tests :** **413** exécutés / 414 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
 **Version :** `0.1.0-7.18` · `versionCode` 124 · targetSdk **36**.  
-**Ship :** `develop` only (pas `main` / pas Production).
+**Ship :** `develop` then ff `main` (pas Production).
 
 ### 2026-11-04 — Vitrine GitHub + fix CI flaky EntryForm
 
