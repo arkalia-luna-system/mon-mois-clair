@@ -1,6 +1,6 @@
 # Contribuer
 
-Dépôt **privé**, usage **familial**. Les PR externes ne sont en général **pas** attendues.
+Dépôt **public** (vitrine craft Android). Usage produit = familial / Play Internal. Les PR externes ne sont en général **pas** attendues ; une contribution ciblée après lecture de la charte peut être discutée.
 
 ## Si vous touchez le code quand même
 

@@ -21,6 +21,18 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ## Journal
 
+### 2026-11-04 — Dépôt public (vitrine GitHub)
+
+**Contexte :** Athalia — GO portfolio si scan secrets OK.
+
+**Fait :**
+- Scan `git ls-files` : pas de `keystore.properties` / `.jks` / APK trackés ; `.gitignore` OK
+- Scrub : suppression `docs/audits/screenshots/2026-11-02-code-copie-7.15.png` (code sauvegarde visible)
+- README / CONTRIBUTING / PLAY_INTERNAL : plus de claim « dépôt privé »
+- Visibilité GitHub → **public** · pin profil
+
+**Alertes restantes (non bloquantes) :** archives `docs/archive/**` personas famille ; mail support marque ; IBAN d’exemple dans tests.
+
 ### 2026-11-04 — 7.17 Canal Play Internal (famille)
 
 **Contexte :** Athalia OUI — tests internes Play (MAJ auto) ; WhatsApp/Drive ≠ canal principal.
@@ -28,7 +40,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 **Livré (repo) :**
 - `bundleRelease` → `dist/MonMoisClair-release.aab` (gitignoré)
 - Checklist [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md)
-- Page HTTPS live : https://arkalia-luna-system.github.io/mon-mois-clair-privacy/privacy.html (repo public dédié ; source [`docs/privacy.html`](docs/privacy.html) — dépôt app resté privé)
+- Page HTTPS live : https://arkalia-luna-system.github.io/mon-mois-clair-privacy/privacy.html (repo public dédié ; source [`docs/privacy.html`](docs/privacy.html))
 - [`DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) / README : Play Internal recommandé · sideload secours
 - Workflow squelette [`.github/workflows/publish-play-internal.yml`](.github/workflows/publish-play-internal.yml) (`workflow_dispatch` only · pas d’upload auto)
 

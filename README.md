@@ -19,7 +19,7 @@ Mon Mois Clair reste sur l’appareil : saisie manuelle, sauvegarde locale (JSON
 
 Bug, idée, question → Accueil → **Menu** → **Arkalia Système**.
 
-> Dépôt privé (usage familial). Docs / charte / tests tenus comme un dépôt public.
+> Dépôt **public** (vitrine craft) · usage produit = familial / Play Internal. Pas de keystore ni APK versionnés.
 
 ---
 

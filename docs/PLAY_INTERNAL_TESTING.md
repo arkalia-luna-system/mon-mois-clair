@@ -72,7 +72,7 @@ https://arkalia-luna-system.github.io/mon-mois-clair-privacy/privacy.html
 - Repo public dédié : [`arkalia-luna-system/mon-mois-clair-privacy`](https://github.com/arkalia-luna-system/mon-mois-clair-privacy) (uniquement `privacy.html` + README)  
 - Pages : branch `main` / racine `/` · vérifié **HTTP 200** (2026-11-04)  
 - Source miroir dans ce dépôt : [`docs/privacy.html`](privacy.html) (blob `d33635db3daa4269e253abd22421161c104df5ce` · commit `6c55f25`)  
-- Le dépôt **Mon Mois Clair** reste **privé** (Pages dessus = 422 plan / repo privé — ne pas le rendre public)
+- Privacy HTTPS reste sur le repo dédié `mon-mois-clair-privacy` (Pages du dépôt app = optionnel, non requis)
 
 - [x] URL HTTPS **live** (ouvrir en navigation privée sans login GitHub)
 - [ ] Coller l’URL réelle dans la fiche Play (Politique de confidentialité)
