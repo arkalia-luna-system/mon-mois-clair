@@ -126,16 +126,23 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release
-          echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > release/ci-upload.jks
+          # Trim whitespace/newlines (collage secret) ; printf évite le newline d'echo.
+          B64="$(printf '%s' "$RELEASE_KEYSTORE_BASE64" | tr -d '\n\r\t ')"
+          STORE_PASS="$(printf '%s' "$RELEASE_KEYSTORE_PASSWORD" | tr -d '\n\r')"
+          KEY_ALIAS="$(printf '%s' "$RELEASE_KEY_ALIAS" | tr -d '\n\r\t ')"
+          KEY_PASS="$(printf '%s' "$RELEASE_KEY_PASSWORD" | tr -d '\n\r')"
+          printf '%s' "$B64" | base64 -d > release/ci-upload.jks
           # Même schéma que keystore.properties.example (lu par app/build.gradle.kts)
           {
-            echo "storeFile=release/ci-upload.jks"
-            echo "storePassword=${RELEASE_KEYSTORE_PASSWORD}"
-            echo "keyAlias=${RELEASE_KEY_ALIAS}"
-            echo "keyPassword=${RELEASE_KEY_PASSWORD}"
+            printf 'storeFile=release/ci-upload.jks\n'
+            printf 'storePassword=%s\n' "$STORE_PASS"
+            printf 'keyAlias=%s\n' "$KEY_ALIAS"
+            printf 'keyPassword=%s\n' "$KEY_PASS"
           } > keystore.properties
           test -s release/ci-upload.jks
           test -f keystore.properties
+          # Smoke : le keystore s’ouvre avec storePass (sans dump secrets).
+          keytool -list -keystore release/ci-upload.jks -storepass "$STORE_PASS" -alias "$KEY_ALIAS" >/dev/null
 
       - name: Build signed App Bundle
         run: ./gradlew :app:bundleRelease --stacktrace --no-daemon
@@ -167,5 +174,6 @@ jobs:
           # completed = disponible aux testeurs Internal (si l’app n’est plus « draft » Console).
           # Si Play refuse : passer temporairement à draft et publier à la main (doc).
           status: completed
-          changesNotSentForReview: true
+          # Ne pas passer changesNotSentForReview : Play répond
+          # « Changes are sent for review automatically… must not be set ».
           mappingFile: ${{ env.MAPPING_PATH }}
