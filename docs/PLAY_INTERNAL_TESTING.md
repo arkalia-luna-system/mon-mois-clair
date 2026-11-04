@@ -43,11 +43,15 @@ Dernier build documenté : **`0.1.0-7.17`** / `versionCode` **123** · **~27 Mo*
 
 ### 3. Play App Signing (critique famille)
 
-- [ ] Activer **Play App Signing** (requis pour les nouvelles apps)
-- [ ] **Recommandé pour garder les données** si la famille a déjà le sideload :
-  - Lors de l’enrôlement, choisir d’**exporter / utiliser votre clé de signature existante** (le keystore release actuel), **pas** une clé générée par Google seule
-  - Sinon : signature Play ≠ signature sideload → Android refuse la mise à jour → **désinstall + réinstall** = risque perte données Room
-- [ ] Garder `keystore.properties` + `.jks` **hors git** (comme aujourd’hui) — ce sera la **clé d’upload** (et idéalement aussi la clé de signature app si tu l’as exportée)
+**Clics Play Console (ne pas laisser Google créer une clé seule) :**
+
+1. **Configuration → Intégrité de l’appli** (ou assistant 1ʳᵉ release) → **Play App Signing**.
+2. Choisir **Exporter et importer une clé depuis un dépôt Java** / **Utiliser une clé existante** — **pas** « Laisser Google générer une clé d’application ».
+3. Exporter depuis ton keystore release actuel (le `.jks` local / `keystore.properties`) le certificat demandé, puis **uploader** ce fichier dans la Console.
+4. La **clé d’upload** = ton keystore actuel ; les AAB futurs restent signés avec ce même `.jks`.
+5. Si tu acceptes une clé Google seule → signature ≠ sideload famille → **désinstall/réinstall** = risque perte Room. Garder `.jks` + `keystore.properties` **hors git**.
+
+- [ ] Enrôlement terminé avec **clé existante** (keystore actuel), pas clé Google seule
 
 ### 4. Data safety (aucune collecte)
 
@@ -62,25 +66,24 @@ Dans **Contenu de l’appli → Sécurité des données** :
 
 Play demande une **URL HTTPS publique**.
 
-**Option la plus simple déjà dans le repo :**
+**Fichier prêt :** [`docs/privacy.html`](privacy.html) (miroir de `PRIVACY.md`) — présent sur `main`  
+(blob `d33635db3daa4269e253abd22421161c104df5ce` · commit `6c55f25`).
 
-1. Fichier prêt : [`docs/privacy.html`](privacy.html) (miroir de `PRIVACY.md`)
-2. Sur GitHub (dépôt) → **Settings → Pages** :
-   - Source : **Deploy from a branch**
-   - Branch : `main` (ou `develop`) · dossier **`/docs`**
-   - Enregistrer
-3. URL typique :  
-   `https://<org>.github.io/<repo>/privacy.html`  
-   Exemple si Pages activé sur ce dépôt :  
-   `https://arkalia-luna-system.github.io/mon-mois-clair/privacy.html`
+**GitHub Pages — état 2026-11-04 :** **KO (pas live)**  
+Tentative `gh api …/pages` (branch `main`, path `/docs`) → **422** :  
+*« Your current plan does not support GitHub Pages for this repository. »*  
+Cause : dépôt **privé** ; le plan actuel de l’org/user ne permet pas Pages sur repo privé.  
+URL cible **non joignable** (curl → **404**) :  
+`https://arkalia-luna-system.github.io/mon-mois-clair/privacy.html`
 
-**Si le dépôt reste privé** et que Pages n’est pas public :
+**Pour rendre cette URL live**, Athalia doit choisir **une** option :
 
-- Héberger **uniquement** `privacy.html` sur un petit hébergeur HTTPS (Cloudflare Pages, Netlify drop, etc.), **ou**
-- Utiliser un gist / page publique dédiée avec le même texte
+1. **Rendre le dépôt public** (Settings → Change visibility) puis réactiver Pages (`main` + `/docs`), **ou**
+2. **Upgrader** le plan GitHub (Pro / Team) pour Pages sur repo privé, puis Settings → Pages → Deploy from branch → `main` / `/docs`, **ou**
+3. Héberger **uniquement** `privacy.html` ailleurs (Cloudflare Pages, Netlify drop, gist public) et coller **cette** URL dans Play.
 
-- [ ] Coller l’URL dans la fiche Play (Store listing / Politique de confidentialité)
-- [ ] Ouvrir l’URL dans un navigateur privé pour vérifier que ça charge sans login
+- [ ] URL HTTPS **live** (ouvrir en navigation privée sans login GitHub)
+- [ ] Coller l’URL réelle dans la fiche Play (Politique de confidentialité)
 
 ### 6. Fiche minimale (store listing)
 
