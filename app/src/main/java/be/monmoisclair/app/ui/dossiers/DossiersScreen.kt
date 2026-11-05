@@ -87,19 +87,37 @@ fun DossiersScreen(
         }
     }
 
-    PinnedBackScaffold(onBack = onBack) {
+    val snap = state.snapshot
+    val pending = state.pendingLetters
+    val loadingFirst = state.loading && snap.items.isEmpty() && pending.isEmpty()
+    // 7.24 : Garder épinglé au-dessus de Retour (liste longue / empty).
+    PinnedBackScaffold(
+        onBack = onBack,
+        pinnedAboveBack = if (!loadingFirst) {
+            {
+                SecondaryA11yButton(
+                    text = "Garder un courrier",
+                    onClick = onAddPending
+                )
+            }
+        } else {
+            null
+        }
+    ) {
         CarnetPageTitle("Dossiers")
         Text(
             text = "Reste dû des accords — pas sur l’accueil.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 10.dp)
         )
 
-        val snap = state.snapshot
-        val pending = state.pendingLetters
         // Spinner seulement au tout premier chargement (liste encore vide).
-        if (state.loading && snap.items.isEmpty() && pending.isEmpty()) {
+        if (loadingFirst) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -151,10 +169,6 @@ fun DossiersScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            SecondaryA11yButton(
-                text = "Garder un courrier",
-                onClick = onAddPending
-            )
             return@PinnedBackScaffold
         }
 
@@ -261,10 +275,6 @@ fun DossiersScreen(
                 }
             }
         }
-        SecondaryA11yButton(
-            text = "Garder un courrier",
-            onClick = onAddPending
-        )
         Spacer(modifier = Modifier.height(sectionGap))
         // DOS03 : résumé sans boîte clone Réglages.
         HorizontalDivider(color = A11yTokens.PaperBorder)
@@ -452,6 +462,13 @@ private fun PendingLetterRow(
             },
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted
+        )
+        // CTA visible (pas seulement carte tappée) — rythme hub ›.
+        Text(
+            text = "Fixer un versement ›",
+            style = MaterialTheme.typography.labelLarge,
+            color = A11yTokens.Link,
+            modifier = Modifier.padding(top = if (fit.compactHomeChrome) 2.dp else 4.dp)
         )
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -93,7 +94,7 @@ fun HomeCoursesSheet(
             }
             Text(
                 text = statusLine,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = if (diversSpentCents > 0L && afterDiversCents < 0L) {
                     A11yTokens.DangerInk
                 } else {
@@ -101,6 +102,15 @@ fun HomeCoursesSheet(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(HomeTokens.chipRadius)
+                    .background(
+                        if (diversSpentCents > 0L && afterDiversCents < 0L) {
+                            A11yTokens.PaperWarm
+                        } else {
+                            HomeTokens.CoursesChip
+                        }
+                    )
+                    .padding(horizontal = 14.dp, vertical = 10.dp)
                     .semantics { contentDescription = statusLine }
             )
             OutlinedTextField(

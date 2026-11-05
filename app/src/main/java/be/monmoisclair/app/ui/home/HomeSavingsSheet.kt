@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -89,10 +90,13 @@ fun HomeSavingsSheet(
                 } else {
                     "Vers un autre compte — ce montant est retiré du reste du mois."
                 },
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(HomeTokens.chipRadius)
+                    .background(HomeTokens.SavingsChip)
+                    .padding(horizontal = 14.dp, vertical = 10.dp)
                     .semantics {
                         contentDescription = if (active) {
                             "Noté ${MoneyFormat.formatCents(monthlyCents)} par mois"

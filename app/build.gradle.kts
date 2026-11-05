@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 129
-        versionName = "0.1.0-7.23"
+        versionCode = 130
+        versionName = "0.1.0-7.24"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

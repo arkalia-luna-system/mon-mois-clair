@@ -39,10 +39,10 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.CarnetPageTitle
-import be.monmoisclair.app.ui.components.PinnedBackScaffold
-import be.monmoisclair.app.ui.components.PrimaryA11yButton
+import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
@@ -88,13 +88,25 @@ fun PendingLetterFormScreen(
         viewModel.attachPreviewBitmap(bmp)
     }
 
-    PinnedBackScaffold(onBack = onBack) {
+    // 7.24 : Ranger + Annuler épinglés (clavier / S26 — aligné Convert).
+    PinnedActionScaffold(
+        primaryLabel = if (state.saving) "Enregistrement…" else "Ranger",
+        onPrimary = viewModel::save,
+        primaryEnabled = !state.saving,
+        secondaryLabel = "Annuler",
+        onSecondary = onBack,
+        secondaryEnabled = !state.saving
+    ) {
         CarnetPageTitle("Courrier sans plan", withTopSpacer = false)
         Text(
             text = "Qui, pour quoi, photo — pas de montant, hors Reste.",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(HomeTokens.chipRadius)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 10.dp)
         )
         Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
             OutlinedTextField(
@@ -195,11 +207,6 @@ fun PendingLetterFormScreen(
                         }
                 )
             }
-            PrimaryA11yButton(
-                text = if (state.saving) "Enregistrement…" else "Ranger",
-                onClick = viewModel::save,
-                enabled = !state.saving
-            )
         }
     }
 }
