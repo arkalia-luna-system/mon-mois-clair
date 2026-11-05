@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.30** polish UI optionnel (versionCode 136) |
+| Dernière étape terminée | **7.31** aperçu B8/B6 + bandeaux (versionCode 137) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.30) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.30` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.31) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.31` via IAU Immediate |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,23 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.31 aperçu B8/B6 + bandeaux restants
+
+**Contexte :** reprise après plantage audit « jusqu’à parfait » · base 7.30 `b6cf806` propre (pas de WIP).
+
+**Audit (VÉRIFIÉ) :** CI 7.29 + 7.30 + Play Internal verts · 0 Dependabot ouvert · pas de FIXME code · Direct Boot volontairement off (CE) · Exact alarm déclaré.
+
+**Corrigé :**
+- `ListUpcomingMonths` : poche dossier séquentielle (B8) + revenus filtrés création (B6) + ancre fallback
+- `ListOffMonthPeriodics` : réserve TODO avant montant aperçu
+- Erreurs → `CarnetStateBanner` : EditTemplate, EntryFormScaffold, HomeDialogs photo, Restore message, EntryForm photo
+
+**Craft saturé hors smoke :** contraste nuit appareil · contentDescription décoratifs null volontaires · empty À venir large.
+
+**Tests :** **423** exécutés / 424 (1 skipped), 0 failure.  
+**Version :** `0.1.0-7.31` · `versionCode` **137**.  
+**Ship :** `develop` + ff `main`.
 
 ### 2026-11-05 — 7.30 tips mist + Primary + FAIT sûr
 

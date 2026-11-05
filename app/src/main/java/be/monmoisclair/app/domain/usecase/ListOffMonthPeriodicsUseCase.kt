@@ -51,12 +51,25 @@ class ListOffMonthPeriodicsUseCase @Inject constructor(
                     return@mapNotNull null
                 }
                 val next = nextOccurrence(anchor, t.intervalMonths, current)
+                val reservedTodo = if (DossierRemaining.isDossier(t.openingRemainingCents)) {
+                    db.instanceDao().expensesByTemplate(t.id)
+                        .asSequence()
+                        .filter {
+                            it.status == ExpenseStatus.TODO &&
+                                it.ledgerId < next.toString()
+                        }
+                        .sumOf { it.amountCents }
+                } else {
+                    0L
+                }
                 val amount = DossierRemaining.installmentCents(
                     t.amountCents,
                     t.openingRemainingCents,
                     paid,
-                    t.addedFeesCents
+                    t.addedFeesCents,
+                    reservedTodoCents = reservedTodo
                 )
+                if (amount <= 0L) return@mapNotNull null
                 OffMonthPeriodic(
                     templateId = t.id,
                     label = t.label,

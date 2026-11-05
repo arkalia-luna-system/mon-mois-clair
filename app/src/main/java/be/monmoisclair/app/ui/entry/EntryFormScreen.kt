@@ -45,7 +45,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.domain.CreditorMailComposer
@@ -558,27 +560,11 @@ fun EditEntryScreen(
                             )
                         }
                         else -> {
-                            val photoErrShape = MaterialTheme.shapes.medium
-                            val photoErr =
-                                "Impossible d’afficher cette photo ici. " +
-                                    "Essayez « Ouvrir à part », ou reprenez-en une."
-                            Text(
-                                text = photoErr,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = A11yTokens.DangerInk,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        1.dp,
-                                        A11yTokens.DangerInk.copy(alpha = 0.4f),
-                                        photoErrShape
-                                    )
-                                    .background(A11yTokens.PaperWarm, photoErrShape)
-                                    .padding(12.dp)
-                                    .semantics {
-                                        liveRegion = LiveRegionMode.Assertive
-                                        contentDescription = photoErr
-                                    }
+                            CarnetStateBanner(
+                                text = "Impossible d’afficher cette photo ici. " +
+                                    "Essayez « Ouvrir à part », ou reprenez-en une.",
+                                kind = CarnetBannerKind.Error,
+                                pad = 12.dp
                             )
                             val openPath = dialogPath?.takeIf { it.isNotBlank() }
                                 ?: state.receiptRelativePath.takeIf { it.isNotBlank() }

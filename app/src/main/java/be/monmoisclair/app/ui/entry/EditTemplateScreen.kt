@@ -42,8 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.RecurrenceAnchor
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSectionTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
@@ -295,21 +297,7 @@ fun EditTemplateScreen(
             Spacer(Modifier.height(8.dp))
         }
         state.error?.let {
-            val errShape = MaterialTheme.shapes.medium
-            Text(
-                text = it,
-                color = A11yTokens.DangerInk,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                    .background(A11yTokens.PaperWarm, errShape)
-                    .padding(12.dp)
-                    .semantics {
-                        liveRegion = LiveRegionMode.Assertive
-                        contentDescription = it
-                    }
-            )
+            CarnetStateBanner(text = it, kind = CarnetBannerKind.Error, pad = 12.dp)
             Spacer(Modifier.height(8.dp))
         }
         // Pied aligné EntryFormScaffold : divider + PaperCard + QuietLink Annuler.

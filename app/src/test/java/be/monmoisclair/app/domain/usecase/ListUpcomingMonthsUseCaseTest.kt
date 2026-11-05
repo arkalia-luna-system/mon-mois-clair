@@ -128,6 +128,68 @@ class ListUpcomingMonthsUseCaseTest {
     }
 
     @Test
+    fun dossier_preview_reservesCurrentTodo_andSequencesHorizon() = runBlocking {
+        // Ouverture 12 000 ; FAIT 5 000 ; courant TODO 5 000 → reste poche 2 000.
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-b8",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                active = true,
+                intervalMonths = 1,
+                anchorYearMonth = "2026-01",
+                openingRemainingCents = 12_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-01", "2026-01", createdAtEpochMs = 1L))
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-02", "2026-02", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-01:tpl-b8",
+                ledgerId = "2026-01",
+                templateId = "tpl-b8",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.DONE,
+                doneAtEpochMs = 2L,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-02:tpl-b8",
+                ledgerId = "2026-02",
+                templateId = "tpl-b8",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val months = useCase(from = YearMonth.of(2026, 2), horizonMonths = 3)
+        val etude = months.flatMap { m -> m.lines.map { m.yearMonth to it } }
+            .filter { it.second.label == "Étude" }
+        assertThat(etude).hasSize(1)
+        assertThat(etude[0].first).isEqualTo(YearMonth.of(2026, 3))
+        assertThat(etude[0].second.amountCents).isEqualTo(2_000L)
+        assertThat(etude[0].second.isAgreement).isTrue()
+    }
+
+    @Test
     fun horizon_is_capped_at_six() = runBlocking {
         db.templateDao().insertIncome(
             IncomeTemplateEntity(

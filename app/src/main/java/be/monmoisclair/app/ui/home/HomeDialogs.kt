@@ -36,6 +36,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import be.monmoisclair.app.ui.components.CarnetBannerKind
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -114,27 +116,11 @@ internal fun HomeReceiptDialog(
                         )
                     }
                     else -> {
-                        val photoErrShape = MaterialTheme.shapes.medium
-                        Text(
+                        CarnetStateBanner(
                             text = "Impossible d’afficher cette photo ici. " +
                                 "Essayez « Ouvrir à part », ou rouvrez la ligne pour en reprendre une.",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = A11yTokens.DangerInk,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    1.dp,
-                                    A11yTokens.DangerInk.copy(alpha = 0.4f),
-                                    photoErrShape
-                                )
-                                .background(A11yTokens.PaperWarm, photoErrShape)
-                                .padding(12.dp)
-                                .semantics {
-                                    liveRegion = LiveRegionMode.Assertive
-                                    contentDescription =
-                                        "Impossible d’afficher cette photo. " +
-                                            "Essayez ouvrir à part, ou reprenez-en une."
-                                }
+                            kind = CarnetBannerKind.Error,
+                            pad = 12.dp
                         )
                         SecondaryA11yButton(
                             text = "Ouvrir à part",

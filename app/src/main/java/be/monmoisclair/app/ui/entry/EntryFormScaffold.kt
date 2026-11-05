@@ -33,7 +33,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
@@ -481,21 +483,7 @@ internal fun EntryFormScaffold(
         }
 
         error?.let {
-            val errShape = MaterialTheme.shapes.medium
-            Text(
-                text = it,
-                color = A11yTokens.DangerInk,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                    .background(A11yTokens.PaperWarm, errShape)
-                    .padding(tipPad)
-                    .semantics {
-                        liveRegion = LiveRegionMode.Assertive
-                        contentDescription = it
-                    }
-            )
+            CarnetStateBanner(text = it, kind = CarnetBannerKind.Error, pad = tipPad)
             Spacer(modifier = Modifier.height(8.dp))
         }
         // FORM05 7.11 : socle carte soft (ombre) ; 1 Primary ; Annuler = QuietLink.

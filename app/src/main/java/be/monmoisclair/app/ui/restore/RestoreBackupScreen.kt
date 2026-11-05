@@ -40,7 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.backup.CleartextLegacyGrace
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
@@ -234,33 +236,10 @@ fun RestoreBackupScreen(
 
         state.message?.let { msg ->
             if (!showSuccessDialog) {
-                val msgShape = MaterialTheme.shapes.medium
-                val err = state.isError
-                Text(
+                CarnetStateBanner(
                     text = msg,
-                    color = if (err) A11yTokens.DangerInk else A11yTokens.AccentOkInk,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            1.dp,
-                            if (err) A11yTokens.DangerInk.copy(alpha = 0.4f)
-                            else A11yTokens.AccentOkInk.copy(alpha = 0.35f),
-                            msgShape
-                        )
-                        .background(
-                            if (err) A11yTokens.PaperCard else A11yTokens.AccentOkSoft,
-                            msgShape
-                        )
-                        .padding(12.dp)
-                        .semantics {
-                            liveRegion = if (err) {
-                                LiveRegionMode.Assertive
-                            } else {
-                                LiveRegionMode.Polite
-                            }
-                            contentDescription = msg
-                        }
+                    kind = if (state.isError) CarnetBannerKind.Error else CarnetBannerKind.Ok,
+                    pad = 12.dp
                 )
             }
         }

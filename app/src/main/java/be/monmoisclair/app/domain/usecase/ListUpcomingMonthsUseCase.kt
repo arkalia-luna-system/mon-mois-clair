@@ -7,6 +7,7 @@ import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.domain.RecurrenceRules
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import java.time.Instant
 import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,6 +30,10 @@ data class UpcomingMonth(
 /**
  * Aperçu lecture seule des M+1 … M+[horizon] (revenus + dépenses qui tomberaient).
  * N’écrit rien en base — le mois courant reste la seule source de vérité pour FAIT.
+ *
+ * B6 : revenus filtrés par mois de création du modèle.
+ * B8 : accords — poche restante après FAIT + TODO déjà posés (mois ≤ courant),
+ * puis allocation séquentielle sur l’horizon (même sans mois futurs ouverts).
  */
 @Singleton
 class ListUpcomingMonthsUseCase @Inject constructor(
@@ -38,16 +43,48 @@ class ListUpcomingMonthsUseCase @Inject constructor(
         from: YearMonth = AppClock.currentYearMonth(),
         horizonMonths: Int = MonthNavigation.UPCOMING_PREVIEW_MONTHS
     ): List<UpcomingMonth> {
-        // Cap volontaire : À venir ≠ calendrier Accueil (horizon ~2 ans).
         val horizon = horizonMonths.coerceIn(1, MonthNavigation.UPCOMING_PREVIEW_MONTHS)
         val expenseTemplates = db.templateDao().activeExpenseTemplates()
         val incomeTemplates = db.templateDao().activeIncomeTemplates()
+        val fromLedger = from.toString()
+
+        // Poche restante par dossier : après FAIT + TODO ≤ mois courant.
+        val dossierPocket = mutableMapOf<String, Long>()
+        for (t in expenseTemplates) {
+            if (!DossierRemaining.isDossier(t.openingRemainingCents)) continue
+            val paid = db.instanceDao().sumAmountCentsByTemplateAndStatus(
+                t.id,
+                ExpenseStatus.DONE
+            )
+            if (DossierRemaining.isSettled(t.openingRemainingCents, paid, t.addedFeesCents)) {
+                dossierPocket[t.id] = 0L
+                continue
+            }
+            val rem = DossierRemaining.remainingCents(
+                t.openingRemainingCents,
+                paid,
+                t.addedFeesCents
+            ) ?: continue
+            val reservedTodo = db.instanceDao().expensesByTemplate(t.id)
+                .asSequence()
+                .filter {
+                    it.status == ExpenseStatus.TODO && it.ledgerId <= fromLedger
+                }
+                .sumOf { it.amountCents }
+            dossierPocket[t.id] = (rem - reservedTodo).coerceAtLeast(0L)
+        }
+
         val result = mutableListOf<UpcomingMonth>()
         for (offset in 1..horizon) {
             val ym = from.plusMonths(offset.toLong())
             val lines = mutableListOf<UpcomingLine>()
-            // Revenus modèles = chaque mois (pas d’intervalle / ancre en schéma actuel).
             for (t in incomeTemplates) {
+                val anchor = YearMonth.from(
+                    Instant.ofEpochMilli(t.createdAtEpochMs)
+                        .atZone(AppClock.zone)
+                        .toLocalDate()
+                )
+                if (ym.isBefore(anchor)) continue
                 lines += UpcomingLine(
                     label = t.label,
                     amountCents = t.amountCents,
@@ -58,33 +95,31 @@ class ListUpcomingMonthsUseCase @Inject constructor(
                 )
             }
             for (t in expenseTemplates) {
-                val paid = if (DossierRemaining.isDossier(t.openingRemainingCents)) {
-                    db.instanceDao().sumAmountCentsByTemplateAndStatus(
-                        t.id,
-                        ExpenseStatus.DONE
+                val isDossier = DossierRemaining.isDossier(t.openingRemainingCents)
+                if (isDossier && (dossierPocket[t.id] ?: 0L) <= 0L) continue
+                val anchor = RecurrenceRules.parseAnchorOrNull(t.anchorYearMonth)
+                    ?: YearMonth.from(
+                        Instant.ofEpochMilli(t.createdAtEpochMs)
+                            .atZone(AppClock.zone)
+                            .toLocalDate()
                     )
-                } else {
-                    0L
-                }
-                if (DossierRemaining.isSettled(t.openingRemainingCents, paid, t.addedFeesCents)) {
-                    continue
-                }
-                val anchor = RecurrenceRules.parseAnchorOrNull(t.anchorYearMonth) ?: continue
                 if (!RecurrenceRules.shouldMaterialize(anchor, t.intervalMonths, ym)) continue
-                val amount = DossierRemaining.installmentCents(
-                    t.amountCents,
-                    t.openingRemainingCents,
-                    paid,
-                    t.addedFeesCents
-                )
-                if (amount <= 0L) continue
+                val amount = if (isDossier) {
+                    val pocket = dossierPocket[t.id] ?: 0L
+                    val capped = minOf(t.amountCents, pocket)
+                    if (capped <= 0L) continue
+                    dossierPocket[t.id] = pocket - capped
+                    capped
+                } else {
+                    t.amountCents
+                }
                 lines += UpcomingLine(
                     label = t.label,
                     amountCents = amount,
                     dayOfMonth = t.dayOfMonth,
                     isIncome = false,
                     cadenceHint = cadenceHint(t.intervalMonths),
-                    isAgreement = DossierRemaining.isDossier(t.openingRemainingCents)
+                    isAgreement = isDossier
                 )
             }
             if (lines.isEmpty()) continue
