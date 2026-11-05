@@ -67,7 +67,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 
 ## Dans l’app
 
-Via **Play Internal** : In-App Updates **Flexible** au cold start (IPC Play Store, sans `INTERNET` app) — l’utilisatrice **n’a pas** à ouvrir Play Store à la main pour une version Internal plus récente. Sideload / Option B : IAU = no-op → Store ou réinstall APK + `.mmc`.  
+Via **Play Internal** : In-App Updates **Immediate** au cold start (écran Play plein, sans `INTERNET` app) — à l’ouverture ça se met à jour tout seul ; **pas** besoin d’ouvrir Play Store à la main. Sideload / Option B : IAU = no-op (ça ne marche pas) → Store ou réinstall APK + `.mmc`.  
 Détail : [`IN_APP_UPDATES.md`](IN_APP_UPDATES.md) · [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) §9.  
 Souci : Accueil → Menu → **« Un souci ? Écrire à Arkalia Système »**.
 

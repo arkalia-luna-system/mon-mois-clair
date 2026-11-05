@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.26** fin de journée IAU docs + ménage (versionCode 132) |
+| Dernière étape terminée | **7.27** IAU Immediate cold start (versionCode 133) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.26) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.26` via IAU |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.27) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.27` via IAU Immediate |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,22 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.27 IAU Immediate (auto à l’ouverture)
+
+**Contexte :** Athalia veut MAJ **toute seule** à l’ouverture (sans ouvrir Play à la main). Flexible pouvait afficher un bandeau / demander une action — pas toujours « tout seul ».
+
+**Changement (VÉRIFIÉ code) :**
+- `AppUpdateType.IMMEDIATE` — écran Play plein → télécharge / installe → relance l’app
+- Cold start après unlock (`maybeCheckImmediateOnColdStart`) + reprise `onResumeContinueIfNeeded`
+- Conservé : pas d’`INTERNET` app · sideload / pas de Play = no-op silencieux · Internal + testeur requis
+- Docs FR simples : [`docs/IN_APP_UPDATES.md`](docs/IN_APP_UPDATES.md) · §9 `PLAY_INTERNAL_TESTING.md`
+
+**Livrable Athalia :** **Oui** (install Play Internal + testeur) — écran MAJ à l’ouverture. **Non** si sideload. Version `0.1.0-7.27` / 133.
+
+**Évité :** Production · poll CI long.
+
+---
 
 ### 2026-11-05 — 7.26 fin de journée IAU + CI + ménage
 

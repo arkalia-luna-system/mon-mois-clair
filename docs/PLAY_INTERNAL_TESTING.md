@@ -5,13 +5,13 @@ Objectif : canal principal = **Play Internal Testing** (MAJ auto) · sideload = 
 
 **Ne crée pas le compte ici** — cette page guide uniquement.  
 Package : `be.monmoisclair.app` · AAB local : `dist/MonMoisClair-release.aab`  
-Dernier build documenté : **`0.1.0-7.26`** / `versionCode` **132** · targetSdk **36** · **~27 Mo** (lire le journal si plus récent).
+Dernier build documenté : **`0.1.0-7.27`** / `versionCode` **133** · targetSdk **36** · **~27 Mo** (lire le journal si plus récent).
 
 **MAJ auto = deux canaux Play (même prérequis : piste Internal Active + testeurs opt-in) :**
-1. **In-App Updates Flexible** au cold start de Mon Mois Clair (Play Core, IPC Store — **pas** d’`INTERNET` app) → **pas besoin d’ouvrir Play Store à la main** quand une version Internal plus récente existe.
+1. **Oui — à l’ouverture** : In-App Updates **Immediate** (Play Core, IPC Store — **pas** d’`INTERNET` app) → écran de mise à jour plein écran, puis relance. **Pas besoin d’ouvrir Play Store à la main.**
 2. Secours : MAJ auto / « Mettre à jour » dans l’appli Play Store.
 
-Sideload / signature Option B ≠ install Play → IAU = **no-op** (réinstall Play + `.mmc`). Détail : §9 + [`IN_APP_UPDATES.md`](IN_APP_UPDATES.md).
+**Exception :** sideload / signature Option B ≠ install Play → IAU = **no-op** (ça ne marche pas) → réinstall Play + `.mmc`. Détail : §9 + [`IN_APP_UPDATES.md`](IN_APP_UPDATES.md).
 
 ---
 
@@ -119,12 +119,12 @@ Même pour Internal, Google demande souvent une fiche de base :
 
 1. Compte Google du téléphone = e-mail de la liste testeurs + **opt-in** lien Internal accepté.
 2. Play Console : release Internal **Active** avec le nouveau `versionCode` (lire le journal).
-3. **Canal principal — In-App Updates Flexible** : ouvrir **Mon Mois Clair** (cold start, après déverrouillage). Play Core propose / lance la MAJ **dans** l’app → **pas besoin d’ouvrir l’appli Play Store manuellement**.
+3. **Canal principal — Oui, tout seul à l’ouverture** : ouvrir **Mon Mois Clair** (cold start, après déverrouillage). Play affiche un **écran de MAJ** (Immediate), met à jour, relance l’app → **pas besoin d’ouvrir l’appli Play Store manuellement**.
 4. **Secours** : Play Store → Mon Mois Clair → **Mettre à jour** (ou MAJ auto Play activée).
 5. Vérifier : Réglages → `versionName` = journal.
 
 C’est **toujours Play** qui livre le binaire (IPC Store) — Mon Mois Clair n’a pas d’`INTERNET`.  
-Si le téléphone a encore un sideload (souvent **Option B** / autre clé) → IAU **ne s’applique pas** : wipe + restore `.mmc` puis install Play (tableau §8).
+**Exception :** si le téléphone a encore un sideload (souvent **Option B** / autre clé) → IAU **ne s’applique pas** (ça ne marche pas) : wipe + restore `.mmc` puis install Play (tableau §8).
 
 ---
 

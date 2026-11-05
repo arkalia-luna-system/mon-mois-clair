@@ -10,7 +10,7 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Sans Play Store (Robolectric) : IAU = no-op, pas de crash, cold start une seule fois.
+ * Sans Play Store (Robolectric) : IAU Immediate = no-op, pas de crash, cold start une seule fois.
  */
 @RunWith(RobolectricTestRunner::class)
 class PlayInAppUpdaterTest {
@@ -21,9 +21,9 @@ class PlayInAppUpdaterTest {
         val updater = PlayInAppUpdater(context)
         val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
 
-        updater.maybeCheckFlexibleOnColdStart(activity)
-        updater.maybeCheckFlexibleOnColdStart(activity)
-        updater.onResumeCompleteIfReady()
+        updater.maybeCheckImmediateOnColdStart(activity)
+        updater.maybeCheckImmediateOnColdStart(activity)
+        updater.onResumeContinueIfNeeded(activity)
 
         assertThat(PlayInAppUpdater.REQUEST_CODE).isEqualTo(7819)
     }

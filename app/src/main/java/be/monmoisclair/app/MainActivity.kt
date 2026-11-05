@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                         when (event) {
                             Lifecycle.Event.ON_RESUME -> {
                                 mainViewModel.reloadBiometricPreference()
-                                playInAppUpdater.onResumeCompleteIfReady()
+                                playInAppUpdater.onResumeContinueIfNeeded(this@MainActivity)
                             }
                             Lifecycle.Event.ON_STOP -> {
                                 if (!isChangingConfigurations) {
@@ -167,11 +167,11 @@ class MainActivity : AppCompatActivity() {
                     onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
                 }
 
-                // IAU Flexible : cold start une fois la session ouverte (Play Store IPC).
+                // IAU Immediate : cold start une fois la session ouverte (écran Play plein).
                 LaunchedEffect(state.loading, state.needsUnlock, sessionEntered) {
                     if (state.loading) return@LaunchedEffect
                     if (state.needsUnlock && !sessionEntered) return@LaunchedEffect
-                    playInAppUpdater.maybeCheckFlexibleOnColdStart(this@MainActivity)
+                    playInAppUpdater.maybeCheckImmediateOnColdStart(this@MainActivity)
                 }
 
                 // Zone libre boutons système : safeDrawing + tappable + bande confort (charte §6).
