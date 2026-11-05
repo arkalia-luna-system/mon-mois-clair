@@ -98,7 +98,8 @@ fun HomeMenuSheet(
                     },
                     labelColor = A11yTokens.AccentWarn,
                     showDivider = false,
-                    leadingIconRes = R.drawable.ic_alerts
+                    leadingIconRes = R.drawable.ic_alerts,
+                    leadingIconTint = A11yTokens.AccentWarn
                 )
             }
 

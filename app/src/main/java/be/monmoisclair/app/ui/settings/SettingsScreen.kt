@@ -59,7 +59,8 @@ fun SettingsScreen(
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_ACCOUNT,
             onClick = onOpenAccountGroup,
-            leadingIconRes = R.drawable.ic_data
+            leadingIconRes = R.drawable.ic_kit_profil,
+            leadingColoredIcon = true
         )
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_COMFORT,
@@ -146,8 +147,7 @@ fun SettingsAccountGroupScreen(
         CarnetHubRow(
             label = SettingsHubCopy.PRIVACY,
             onClick = onOpenPrivacy,
-            leadingIconRes = R.drawable.ic_kit_profil,
-            leadingColoredIcon = true
+            leadingIconRes = R.drawable.ic_privacy
         )
         if (state.showSummaryButton) {
             CarnetHubRow(

@@ -41,7 +41,9 @@ internal fun StickyIconTool(
     onClickLabel: String,
     contentDescription: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    /** Teal courses / forêt épargne — pas d’encre plate. */
+    iconTint: Color = HomeTokens.Link
 ) {
     Row(
         modifier = modifier
@@ -65,7 +67,7 @@ internal fun StickyIconTool(
             Icon(
                 painter = painterResource(iconRes),
                 contentDescription = null,
-                tint = HomeTokens.Ink,
+                tint = iconTint,
                 modifier = Modifier.size(26.dp)
             )
         }
@@ -107,7 +109,8 @@ internal fun StickyHeroTools(
                 onClickLabel = "Modifier les courses",
                 contentDescription = coursesDescription ?: coursesLabel,
                 onClick = onOpenCourses,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                iconTint = HomeTokens.Link
             )
         }
         if (savingsLabel != null) {
@@ -118,7 +121,8 @@ internal fun StickyHeroTools(
                 onClickLabel = "Modifier mettre de côté",
                 contentDescription = savingsDescription ?: savingsLabel,
                 onClick = onOpenSavings,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                iconTint = HomeTokens.Ok
             )
         }
     }

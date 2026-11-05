@@ -105,7 +105,7 @@ internal fun HomeStickyHeader(
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .padding(end = 8.dp)
-                            .size(22.dp)
+                            .size(26.dp)
                     )
                     Text(
                         text = state.monthLabel,
