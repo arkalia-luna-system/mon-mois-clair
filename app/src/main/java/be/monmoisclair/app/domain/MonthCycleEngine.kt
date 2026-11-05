@@ -149,7 +149,14 @@ class MonthCycleEngine @Inject constructor(
         now: Long,
         incomeTemplates: List<IncomeTemplateEntity>
     ): List<IncomeInstanceEntity> =
-        incomeTemplates.map { template ->
+        incomeTemplates.mapNotNull { template ->
+            // B6 : pas d’injection rétroactive avant le mois de création du modèle.
+            val anchor = YearMonth.from(
+                Instant.ofEpochMilli(template.createdAtEpochMs)
+                    .atZone(AppClock.zone)
+                    .toLocalDate()
+            )
+            if (yearMonth.isBefore(anchor)) return@mapNotNull null
             IncomeInstanceEntity(
                 id = InstanceIds.incomeFromTemplate(ledgerId, template.id),
                 ledgerId = ledgerId,
@@ -191,12 +198,22 @@ class MonthCycleEngine @Inject constructor(
                 ) {
                     return@mapNotNull null
                 }
-                DossierRemaining.installmentCents(
+                // B8 : réserver les TODO des mois antérieurs (ex. mois courant encore à payer).
+                val reservedTodo = instanceDao.expensesByTemplate(template.id)
+                    .asSequence()
+                    .filter {
+                        it.status == ExpenseStatus.TODO && it.ledgerId < ledgerId
+                    }
+                    .sumOf { it.amountCents }
+                val capped = DossierRemaining.installmentCents(
                     template.amountCents,
                     template.openingRemainingCents,
                     paid,
-                    template.addedFeesCents
+                    template.addedFeesCents,
+                    reservedTodoCents = reservedTodo
                 )
+                if (capped <= 0L) return@mapNotNull null
+                capped
             } else {
                 template.amountCents
             }

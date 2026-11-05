@@ -47,6 +47,7 @@ import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.CarnetTitleTokens
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
@@ -108,16 +109,7 @@ fun DossiersScreen(
         }
     ) {
         CarnetPageTitle("Dossiers")
-        Text(
-            text = "Reste dû des accords — pas sur l’accueil.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
-        )
+        CarnetTipCard(text = "Reste dû des accords — pas sur l’accueil.")
 
         // Spinner seulement au tout premier chargement (liste encore vide).
         if (loadingFirst) {

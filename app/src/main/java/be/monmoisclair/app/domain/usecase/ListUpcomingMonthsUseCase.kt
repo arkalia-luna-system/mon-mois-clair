@@ -77,6 +77,7 @@ class ListUpcomingMonthsUseCase @Inject constructor(
                     paid,
                     t.addedFeesCents
                 )
+                if (amount <= 0L) continue
                 lines += UpcomingLine(
                     label = t.label,
                     amountCents = amount,

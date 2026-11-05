@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.28** finition bugs + polish (versionCode 134) |
+| Dernière étape terminée | **7.29** B4/B6/B8 + tip/bandeaux (versionCode 135) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.28) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.28` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.29) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.29` via IAU Immediate |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,28 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.29 B4/B6/B8 + unif tip/bandeaux
+
+**Contexte :** Athalia — « continuer jusqu’à parfait » · base 7.28 `c77e25b`.
+
+**Domaine (VÉRIFIÉ + tests) :**
+- **B4** `UpdateExpenseTemplate` / `ArchiveExpenseTemplate` synchronisent / retirent les TODO futurs déjà ouverts
+- **B6** revenus : pas d’injection avant le mois de `createdAt` du modèle
+- **B8** dossier : réserve les TODO antérieurs avant plafond mois suivant (+ cap `AgreementFuturesSync`)
+- **B10** resume Accueil : bascule mois calendaire si on était sur l’ancien courant
+- **B11** restore : échec rappels/widget post-commit ≠ restauration ratée
+- `ListNextMonthPeriodics` écarte dossiers soldés ; `ListUpcoming` ignore montant ≤ 0
+
+**UI :** `CarnetTipCard` (Alertes / À venir / Dossiers) · erreurs Courses/Épargne/Bio → `CarnetStateBanner` · hairline `PinnedBackScaffold`
+
+**CI 7.28 :** develop + main + Publish Play Internal **verts** (pas de fix requis).
+
+**Évité :** Production · claim smoke S26 · unif totale ~16 tips restants · Primary Sauvegarde (décision Athalia) · poll CI.
+
+**Tests :** **422** exécutés / 423 (1 skipped), 95 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.29` · `versionCode` **135**.  
+**Ship :** `develop` + ff `main` → Publish Play Internal.
 
 ### 2026-11-05 — 7.28 finition complète (bugs + polish + ménage)
 

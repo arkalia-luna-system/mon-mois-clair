@@ -142,7 +142,16 @@ object AgreementFuturesSync {
             val existing = instanceDao.getExpenseById(id)
             if (existing != null) {
                 if (existing.status == ExpenseStatus.TODO) {
-                    pocket -= existing.amountCents
+                    // B8 : plafonner une ligne déjà trop grosse (créée sans réserve).
+                    if (pocket <= 0L) {
+                        instanceDao.deleteExpense(existing)
+                        continue
+                    }
+                    val capped = minOf(tpl.amountCents, pocket)
+                    if (existing.amountCents != capped) {
+                        instanceDao.updateExpense(existing.copy(amountCents = capped))
+                    }
+                    pocket -= capped
                     if (pocket < 0L) pocket = 0L
                 }
                 continue

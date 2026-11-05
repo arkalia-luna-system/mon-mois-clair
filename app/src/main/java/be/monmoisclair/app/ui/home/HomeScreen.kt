@@ -144,7 +144,11 @@ fun HomeScreen(
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) viewModel.refreshReminderGate()
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshReminderGate()
+                // B10 : si le process a survécu au changement de mois calendaire.
+                viewModel.refreshCurrentMonthIfRolled()
+            }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }

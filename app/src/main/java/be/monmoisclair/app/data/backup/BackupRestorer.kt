@@ -269,8 +269,12 @@ class BackupRestorer @Inject constructor(
             )
         }
 
-        reminderScheduler.reconcileAll()
-        backupScheduler.enqueueImmediate()
+        // B11 : la base est déjà remplacée — un échec rappels/widget ne doit pas
+        // faire croire que la restauration a échoué.
+        runCatching { reminderScheduler.reconcileAll() }
+            .onFailure { Log.e("BackupRestorer", "rappels post-restore", it) }
+        runCatching { backupScheduler.enqueueImmediate() }
+            .onFailure { Log.e("BackupRestorer", "backup post-restore", it) }
         try {
             widgetSink.refresh()
         } catch (e: Exception) {

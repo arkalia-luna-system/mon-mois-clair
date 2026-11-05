@@ -38,7 +38,13 @@ class ArchiveExpenseTemplateUseCaseTest {
             },
             widgetSink = CarnetWidgetSink.Noop
         )
-        archive = ArchiveExpenseTemplateUseCase(repo)
+        archive = ArchiveExpenseTemplateUseCase(
+            mutatingRepository = repo,
+            reminderScheduler = object : ReminderScheduler {
+                override suspend fun reconcileAll() = Unit
+                override suspend fun cancelFor(expenseId: String) = Unit
+            }
+        )
     }
 
     @After
@@ -71,5 +77,55 @@ class ArchiveExpenseTemplateUseCaseTest {
     @Test
     fun archive_unknown_isNotFound() = runBlocking {
         assertThat(archive("missing")).isEqualTo(ArchiveExpenseTemplateResult.NotFound)
+    }
+
+    @Test
+    fun archive_removesFutureTodoInstances() = runBlocking {
+        be.monmoisclair.app.domain.AppClock.clock =
+            java.time.Clock.fixed(
+                java.time.Instant.parse("2026-11-05T10:00:00Z"),
+                java.time.ZoneId.of("Europe/Brussels")
+            )
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-future",
+                label = "Taxe",
+                amountCents = 12_000L,
+                dayOfMonth = 15,
+                active = true,
+                intervalMonths = 12,
+                anchorYearMonth = "2027-03",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(
+            be.monmoisclair.app.data.db.entity.MonthLedgerEntity(
+                "2027-03",
+                "2027-03",
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity(
+                id = "exp:2027-03:tpl-future",
+                ledgerId = "2027-03",
+                templateId = "tpl-future",
+                label = "Taxe",
+                amountCents = 12_000L,
+                dayOfMonth = 15,
+                status = be.monmoisclair.app.domain.model.ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        assertThat(archive("tpl-future")).isEqualTo(ArchiveExpenseTemplateResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp:2027-03:tpl-future")).isNull()
+        be.monmoisclair.app.domain.AppClock.clock =
+            java.time.Clock.system(java.time.ZoneId.of("Europe/Brussels"))
     }
 }

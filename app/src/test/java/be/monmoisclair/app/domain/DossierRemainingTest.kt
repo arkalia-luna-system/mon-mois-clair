@@ -39,6 +39,27 @@ class DossierRemainingTest {
     }
 
     @Test
+    fun installment_reservesEarlierTodoBeforeNextMonth() {
+        // Reste 7 000, forfait 5 000, mois courant TODO 5 000 → suivant = 2 000.
+        assertThat(
+            DossierRemaining.installmentCents(
+                forfaitCents = 5_000L,
+                openingRemainingCents = 12_000L,
+                paidDoneCents = 5_000L,
+                reservedTodoCents = 5_000L
+            )
+        ).isEqualTo(2_000L)
+        assertThat(
+            DossierRemaining.installmentCents(
+                forfaitCents = 5_000L,
+                openingRemainingCents = 12_000L,
+                paidDoneCents = 5_000L,
+                reservedTodoCents = 7_000L
+            )
+        ).isEqualTo(0L)
+    }
+
+    @Test
     fun pacePhrase_monthly_usesSi_andProjectedDate() {
         val steady = DossierRemaining.pacePhrase(
             forfaitCents = 5_000L,

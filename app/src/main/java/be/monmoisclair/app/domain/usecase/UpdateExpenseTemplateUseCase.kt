@@ -1,6 +1,9 @@
 package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.repository.MutatingRepository
+import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.MonthDayClamp
+import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,8 +16,8 @@ sealed class UpdateExpenseTemplateResult {
 
 /**
  * Édition d’un modèle hors mois courant (montant, jour, ancre).
- * Les mois déjà matérialisés ne sont pas réécrits ici —
- * le prochain mois d’échéance utilisera le modèle mis à jour.
+ * B4 : réécrit aussi les lignes TODO des mois **futurs** déjà ouverts
+ * (aperçu / calendrier) — les FAIT et le passé restent figés.
  */
 @Singleton
 class UpdateExpenseTemplateUseCase @Inject constructor(
@@ -51,6 +54,21 @@ class UpdateExpenseTemplateUseCase @Inject constructor(
                     anchorYearMonth = anchorYearMonth.toString()
                 )
             )
+            val currentLedger = AppClock.ledgerId()
+            val futures = instanceDao.expensesFromTemplateFromLedger(templateId, currentLedger)
+                .filter {
+                    it.ledgerId > currentLedger && it.status == ExpenseStatus.TODO
+                }
+            for (item in futures) {
+                val ym = runCatching { YearMonth.parse(item.ledgerId) }.getOrNull() ?: continue
+                instanceDao.updateExpense(
+                    item.copy(
+                        label = trimmed,
+                        amountCents = amountCents,
+                        dayOfMonth = MonthDayClamp.clamp(dayOfMonth, ym)
+                    )
+                )
+            }
             UpdateExpenseTemplateResult.Success
         }
     }

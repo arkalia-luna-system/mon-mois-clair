@@ -398,6 +398,92 @@ class MonthCycleEngineTest {
         AppClock.clock = Clock.fixed(instant, brussels)
     }
 
+    /** B8 : mois courant TODO réserve le forfait — mois suivant plafonné au reste. */
+    @Test
+    fun ensureMonth_reservesCurrentTodoBeforeNextDossierInstallment() = runBlocking {
+        freezeAt("2026-02-01T10:00:00+01:00")
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-b8",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                active = true,
+                openingRemainingCents = 12_000L,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.monthLedgerDao().insert(
+            be.monmoisclair.app.data.db.entity.MonthLedgerEntity(
+                id = "2026-01",
+                yearMonth = "2026-01",
+                createdAtEpochMs = 1L
+            )
+        )
+        // Janvier FAIT 5 000 → reste 7 000.
+        db.instanceDao().insertExpense(
+            be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity(
+                id = "exp:2026-01:tpl-b8",
+                ledgerId = "2026-01",
+                templateId = "tpl-b8",
+                label = "Étude",
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.DONE,
+                doneAtEpochMs = 2L,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        engine.ensureMonthExists(YearMonth.of(2026, 2))
+        val feb = db.instanceDao().observeExpenses("2026-02").first().single()
+        assertThat(feb.amountCents).isEqualTo(5_000L)
+        assertThat(feb.status).isEqualTo(ExpenseStatus.TODO)
+
+        // Février encore TODO : mars doit être 2 000 (pas 5 000).
+        engine.ensureMonthExists(YearMonth.of(2026, 3))
+        val mar = db.instanceDao().observeExpenses("2026-03").first().single()
+        assertThat(mar.amountCents).isEqualTo(2_000L)
+    }
+
+    /** B6 : revenu créé en nov. ne doit pas apparaître sur un mois passé revisité. */
+    @Test
+    fun ensureMonth_incomeNotInjectedBeforeTemplateCreationMonth() = runBlocking {
+        freezeAt("2026-11-05T10:00:00+01:00")
+        val novEpoch = java.time.LocalDate.of(2026, 11, 5)
+            .atStartOfDay(brussels)
+            .toInstant()
+            .toEpochMilli()
+        db.templateDao().insertIncome(
+            IncomeTemplateEntity(
+                id = "tpl-new-salary",
+                label = "Salaire",
+                amountCents = 200_000L,
+                dayOfMonth = 1,
+                active = true,
+                createdAtEpochMs = novEpoch,
+                archivedAtEpochMs = null
+            )
+        )
+        // Ledger octobre déjà ouvert (vide).
+        db.monthLedgerDao().insert(
+            be.monmoisclair.app.data.db.entity.MonthLedgerEntity(
+                id = "2026-10",
+                yearMonth = "2026-10",
+                createdAtEpochMs = 1L
+            )
+        )
+        engine.ensureMonthExists(YearMonth.of(2026, 10))
+        assertThat(db.instanceDao().observeIncomes("2026-10").first()).isEmpty()
+
+        engine.ensureMonthExists(YearMonth.of(2026, 11))
+        assertThat(db.instanceDao().observeIncomes("2026-11").first()).hasSize(1)
+    }
+
     private suspend fun seedTemplates(
         incomeDay: Int,
         expenseDay: Int,

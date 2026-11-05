@@ -40,6 +40,7 @@ import be.monmoisclair.app.domain.usecase.UpcomingLine
 import be.monmoisclair.app.domain.usecase.UpcomingMonth
 import be.monmoisclair.app.ui.components.CarnetHubRow
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -84,16 +85,9 @@ fun UpcomingScreen(
 
         CarnetPageTitle("À venir")
         val introShape = MaterialTheme.shapes.large
-        Text(
+        CarnetTipCard(
             text = "Aperçu des mois suivants (sans FAIT). Pour un mois précis, " +
-                "ouvrez le calendrier sur l’accueil.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(introShape)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 16.dp, vertical = 14.dp)
+                "ouvrez le calendrier sur l’accueil."
         )
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 10.dp else 14.dp))
 

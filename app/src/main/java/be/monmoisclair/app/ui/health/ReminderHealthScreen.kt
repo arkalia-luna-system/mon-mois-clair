@@ -29,6 +29,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.settings.DeviceCareCopy
@@ -56,16 +57,7 @@ fun ReminderHealthScreen(
 
     PinnedBackScaffold(onBack = onBack) {
         CarnetPageTitle(SettingsHubCopy.ALERTS)
-        Text(
-            text = "Pastilles : le téléphone laisse-t-il sonner ?",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
-        )
+        CarnetTipCard(text = "Pastilles : le téléphone laisse-t-il sonner ?")
 
         val r = report
         if (r == null) {

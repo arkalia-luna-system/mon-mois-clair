@@ -107,6 +107,8 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val selectedMonth = MutableStateFlow(AppClock.currentYearMonth())
+    /** Calendrier vu au dernier resume — pour détecter un changement de mois (B10). */
+    private var lastCalendarMonth: java.time.YearMonth = AppClock.currentYearMonth()
     private val highlightExpenseId = MutableStateFlow<String?>(null)
     private val pendingPastToggleId = MutableStateFlow<String?>(null)
     private val nextMonthWarning = MutableStateFlow<String?>(null)
@@ -595,6 +597,17 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             monthCycleEngine.ensureCurrentMonthExists()
             selectedMonth.update { AppClock.currentYearMonth() }
+        }
+    }
+
+    /** B10 : au resume, si le calendrier a basculé et qu’on affichait l’ancien « courant ». */
+    fun refreshCurrentMonthIfRolled() {
+        val calendar = AppClock.currentYearMonth()
+        if (calendar == lastCalendarMonth) return
+        val wasOnPreviousCurrent = selectedMonth.value == lastCalendarMonth
+        lastCalendarMonth = calendar
+        if (wasOnPreviousCurrent) {
+            refreshCurrentMonth()
         }
     }
 }

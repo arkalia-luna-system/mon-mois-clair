@@ -34,17 +34,23 @@ object DossierRemaining {
     /**
      * Versement du mois : forfait, ou reste dû s’il est positif et inférieur au forfait
      * (dernière ligne partielle). Les TODO ne comptent pas dans [paidDoneCents].
+     *
+     * [reservedTodoCents] = versements TODO déjà posés sur des mois **antérieurs**
+     * (ex. mois courant encore à payer) — à réserver avant de calculer le mois suivant.
+     * Retourne 0 si plus rien à allouer (l’appelant doit omettre la ligne).
      */
     fun installmentCents(
         forfaitCents: Long,
         openingRemainingCents: Long?,
         paidDoneCents: Long,
-        addedFeesCents: Long = 0L
+        addedFeesCents: Long = 0L,
+        reservedTodoCents: Long = 0L
     ): Long {
         val rem = remainingCents(openingRemainingCents, paidDoneCents, addedFeesCents)
             ?: return forfaitCents
-        if (rem <= 0L) return forfaitCents
-        return minOf(forfaitCents, rem)
+        val available = rem - reservedTodoCents.coerceAtLeast(0L)
+        if (available <= 0L) return 0L
+        return minOf(forfaitCents, available)
     }
 
     /**

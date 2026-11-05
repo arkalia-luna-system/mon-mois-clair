@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -48,6 +49,10 @@ fun PinnedBackScaffold(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(contentGap),
             content = content
+        )
+        HorizontalDivider(
+            color = A11yTokens.PaperBorder.copy(alpha = 0.65f),
+            modifier = Modifier.padding(top = pinGap)
         )
         if (pinnedAboveBack != null) {
             Spacer(modifier = Modifier.height(pinGap))

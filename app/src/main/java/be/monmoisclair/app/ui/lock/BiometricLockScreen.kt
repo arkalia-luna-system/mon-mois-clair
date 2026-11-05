@@ -32,7 +32,9 @@ import androidx.fragment.app.FragmentActivity
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.ui.components.AppWordmark
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -122,20 +124,10 @@ fun BiometricLockScreen(
                 color = A11yTokens.InkMuted
             )
             message?.let {
-                val errShape = MaterialTheme.shapes.medium
-                Text(
+                CarnetStateBanner(
                     text = it,
-                    color = A11yTokens.DangerInk,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                        .background(A11yTokens.PaperWarm, errShape)
-                        .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
-                        .semantics {
-                            liveRegion = LiveRegionMode.Assertive
-                            contentDescription = it
-                        }
+                    kind = CarnetBannerKind.Error,
+                    pad = if (fit.compactHomeChrome) 10.dp else 12.dp
                 )
             }
         }

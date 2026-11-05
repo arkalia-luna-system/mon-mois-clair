@@ -1,7 +1,6 @@
 package be.monmoisclair.app.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,15 +22,15 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSheetHandle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
@@ -146,21 +145,7 @@ fun HomeCoursesSheet(
                 onClickLabel = "Corriger le montant des courses"
             )
             error?.let { err ->
-                val errShape = MaterialTheme.shapes.medium
-                Text(
-                    text = err,
-                    color = A11yTokens.DangerInk,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                        .background(A11yTokens.PaperWarm, errShape)
-                        .padding(12.dp)
-                        .semantics {
-                            liveRegion = LiveRegionMode.Assertive
-                            contentDescription = err
-                        }
-                )
+                CarnetStateBanner(text = err, kind = CarnetBannerKind.Error, pad = 12.dp)
             }
             Spacer(modifier = Modifier.height(4.dp))
         }
