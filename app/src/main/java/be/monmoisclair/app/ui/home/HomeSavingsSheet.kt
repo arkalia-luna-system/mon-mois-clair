@@ -31,8 +31,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSheetHandle
+import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
-import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -118,7 +118,8 @@ fun HomeSavingsSheet(
                     .then(fieldBring),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
-            SecondaryA11yButton(
+            // Parité sticky Courses : CTA primaire teal (QuietLink = détail).
+            PrimaryA11yButton(
                 text = if (active) "Mettre à jour" else "Activer",
                 onClick = onSave,
                 enabled = !busy,

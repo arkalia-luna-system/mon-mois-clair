@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -44,6 +46,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 private enum class PendingRestore {
@@ -171,7 +174,7 @@ fun RestoreBackupScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = if (fit.compactHomeChrome) 6.dp else 10.dp)
-                .shadow(1.dp, sectionShape, clip = false)
+                .shadow(2.dp, sectionShape, clip = false)
                 .clip(sectionShape)
                 .background(A11yTokens.PaperWarm)
                 .padding(horizontal = 16.dp, vertical = 14.dp)
@@ -204,11 +207,16 @@ fun RestoreBackupScreen(
             OutlinedTextField(
                 value = state.shareCodeDraft,
                 onValueChange = viewModel::onShareCodeChange,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = A11yTokens.minTouchHeight),
                 enabled = !state.busy,
                 singleLine = true,
                 label = { Text("Code noté sur papier") },
                 placeholder = { Text("8 chiffres du téléphone d’origine") },
+                textStyle = MaterialTheme.typography.bodyLarge,
+                shape = MaterialTheme.shapes.medium,
+                colors = carnetOutlinedTextFieldColors(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword)
             )
             if (CleartextLegacyGrace.OPT_IN_AVAILABLE) {
@@ -220,7 +228,12 @@ fun RestoreBackupScreen(
                     Checkbox(
                         checked = state.allowCleartextLegacy,
                         onCheckedChange = viewModel::onAllowCleartextLegacyChange,
-                        enabled = !state.busy
+                        enabled = !state.busy,
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = A11yTokens.ButtonFill,
+                            uncheckedColor = A11yTokens.FieldLine,
+                            checkmarkColor = A11yTokens.ButtonText
+                        )
                     )
                     Text(
                         text = RestoreMessages.CLEARTEXT_GRACE_CHECKBOX,

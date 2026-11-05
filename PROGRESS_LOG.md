@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.21** polish icônes kit + suite 7.20 (versionCode 127) |
+| Dernière étape terminée | **7.22** polish UI craft (versionCode 128) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt / S26 / restore — **pas** claimés ici · confirmer MAJ Play Galaxy = `0.1.0-7.21` |
+| Prochaine sous-étape | Smoke doigt / S26 / restore — **pas** claimés ici · confirmer MAJ Play Galaxy = `0.1.0-7.22` |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,27 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.22 polish UI craft
+
+**Contexte :** Athalia — craft visuel Accueil / navigation / forms / settings ; bump après 7.21. Flake CI Robolectric Maven 429 **hors périmètre** (pas de « fix » app).
+
+**Corrigé (craft code) :**
+- Accueil : CTA épargne = Primary (parité Courses) ; padding barre = 24 ; badge Menu dangerFill ; rayons Menu/+ unifiés ; MonthStep disabled ; snackbar cardRadius ; sticky preview/warnings maxLines ; pastille Accord or champagne ; picker mois dialecte HomeTokens ; dialog photo HomeTokens
+- Hub rows : ellipsis 2 lignes ; Alertes Réglages warn si bloquées ; rythme showDivider 1ʳᵉ ligne
+- Restore : champ code + checkbox tokens carnet ; elev. intro 2 dp
+- ConvertPending : un seul PageTitle ; erreur Ink
+- HealthStatusRow : label puis pastille + bordure warn
+- Lock bio : bandeau erreur borduré ; dialog épargne Ink/bodyLarge
+- Aide Alertes : `SettingsHubCopy.ALERTS`
+- Forms : `FormSectionToggle` = titleMedium ; Annuler découplé de primaryEnabled ; EditTemplate footer QuietLink + TypeChip mois + formGap fiche ; supportingText tokens carnet ; ThemeOptionRow titleMedium ; tip Dossiers bodyMedium
+
+**Évité :** refonte cream→autre · purple AI · kit cart/piggy (pas d’assets) · claim smoke doigt S26 · PendingLetter pin CTA (subjectif / hors smoke)
+
+**Tests :** **415** exécutés / 416 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.22` · `versionCode` **128**.  
+**Ship :** `develop` + ff `main` → Publish Play Internal (Athalia suit CI ; pas de poll agent).  
+**Note :** polish UI craft — **pas** « validé famille ».
 
 ### 2026-11-05 — 7.21 polish icônes (suite 7.20 déjà shippé)
 

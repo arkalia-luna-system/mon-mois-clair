@@ -201,7 +201,7 @@ internal fun HomeStickyHeader(
                     text = previewLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = HomeTokens.Warn,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.semantics { contentDescription = previewLabel }
                 )
@@ -279,7 +279,7 @@ internal fun HomeStickyHeader(
                             text = warning,
                             style = MaterialTheme.typography.bodyMedium,
                             color = HomeTokens.Warn,
-                            maxLines = 2,
+                            maxLines = if (fit.compactHomeChrome) 2 else 3,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier
                                 .fillMaxWidth()

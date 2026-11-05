@@ -219,9 +219,8 @@ internal fun ExpenseRow(
                             )
                             StatusChip(
                                 "Accord",
-                                HomeTokens.Chip,
-                                HomeTokens.Ink,
-                                outlined = true,
+                                A11yTokens.AccentAuto,
+                                A11yTokens.OnGold,
                                 compact = true
                             )
                         }
@@ -372,7 +371,7 @@ internal fun ExpenseStatusLine(
                 )
             }
             if (item.isAgreement && !hideAgreementChip && size < 2) {
-                add(Chip("Accord", HomeTokens.Chip, HomeTokens.Ink, outlined = true))
+                add(Chip("Accord", A11yTokens.AccentAuto, A11yTokens.OnGold))
             }
         }
     }.take(2)

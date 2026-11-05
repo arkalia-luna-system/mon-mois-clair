@@ -39,8 +39,9 @@ internal fun FormSectionToggle(
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
             text = label,
-            style = MaterialTheme.typography.titleLarge,
-            color = if (expanded) A11yTokens.Ink else A11yTokens.Link,
+            // Aligné CarnetSectionTitle (titleMedium) — pas plus lourd que Fréquence.
+            style = MaterialTheme.typography.titleMedium,
+            color = if (expanded) A11yTokens.InkMuted else A11yTokens.Link,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = A11yTokens.minTouchHeight)

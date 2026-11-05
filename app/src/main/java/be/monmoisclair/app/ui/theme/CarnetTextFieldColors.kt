@@ -29,5 +29,8 @@ fun carnetOutlinedTextFieldColors(): TextFieldColors = OutlinedTextFieldDefaults
     disabledTextColor = A11yTokens.InkMuted,
     errorTextColor = A11yTokens.Ink,
     focusedPlaceholderColor = A11yTokens.InkMuted,
-    unfocusedPlaceholderColor = A11yTokens.InkMuted
+    unfocusedPlaceholderColor = A11yTokens.InkMuted,
+    focusedSupportingTextColor = A11yTokens.InkMuted,
+    unfocusedSupportingTextColor = A11yTokens.InkMuted,
+    errorSupportingTextColor = A11yTokens.DangerInk
 )

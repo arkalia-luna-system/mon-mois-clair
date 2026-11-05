@@ -68,9 +68,18 @@ fun SettingsSavingsScreen(
             onDismissRequest = { confirmRemoveSavings = false },
             shape = MaterialTheme.shapes.extraLarge,
             containerColor = A11yTokens.PaperCard,
-            title = { Text("Retirer « Mettre de côté » ?") },
+            title = {
+                Text(
+                    text = "Retirer « Mettre de côté » ?",
+                    color = A11yTokens.Ink
+                )
+            },
             text = {
-                Text("Retire la ligne du mois. Les FAIT déjà cochés restent dans l’historique.")
+                Text(
+                    text = "Retire la ligne du mois. Les FAIT déjà cochés restent dans l’historique.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.Ink
+                )
             },
             confirmButton = {
                 DangerA11yButton(

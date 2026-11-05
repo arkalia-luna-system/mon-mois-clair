@@ -11,6 +11,7 @@ import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.data.crypto.DbPassphraseVault
 import be.monmoisclair.app.data.crypto.ShareSecretVault
+import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.ShareFileIntents
@@ -77,7 +78,9 @@ data class SettingsUiState(
     /** Code de copie (8 chiffres) pour rouvrir une copie WhatsApp / autre téléphone. */
     val shareCopyCode: String? = null,
     /** Migration SQLCipher Failed → DB claire temporaire (bannière confiance). */
-    val dbMigrationFailed: Boolean = false
+    val dbMigrationFailed: Boolean = false,
+    /** Aligné Menu Accueil : hub Alertes en warn si bloquées. */
+    val remindersBlocked: Boolean = false
 )
 
 @HiltViewModel
@@ -94,7 +97,8 @@ class SettingsViewModel @Inject constructor(
     private val listDossiers: ListDossiersUseCase,
     private val summaryPdfWriter: MonthSummaryPdfWriter,
     private val shareSecretVault: ShareSecretVault,
-    private val dbPassphraseVault: DbPassphraseVault
+    private val dbPassphraseVault: DbPassphraseVault,
+    private val reminderHealth: ReminderHealthChecker
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -125,7 +129,8 @@ class SettingsViewModel @Inject constructor(
                 val code = runCatching { shareSecretVault.peekDisplayCode() }.getOrNull()
                 val failed = runCatching { dbPassphraseVault.isMigrationFailedPresent() }
                     .getOrDefault(false)
-                RefreshBundle(savings, summary, dossierCount, offMonth, code, failed)
+                val alertsBlocked = reminderHealth.check().remindersBlocked
+                RefreshBundle(savings, summary, dossierCount, offMonth, code, failed, alertsBlocked)
             }
             _uiState.update { cur ->
                 val dirtyNow = savingsDraftDirty
@@ -157,7 +162,8 @@ class SettingsViewModel @Inject constructor(
                     showSummaryButton = loaded.summary.isDeficit || loaded.dossierCount > 0,
                     showDossiersSummaryLink = loaded.dossierCount > 0,
                     shareCopyCode = loaded.shareCode,
-                    dbMigrationFailed = loaded.migrationFailed
+                    dbMigrationFailed = loaded.migrationFailed,
+                    remindersBlocked = loaded.remindersBlocked
                 )
             }
         }
@@ -531,6 +537,7 @@ class SettingsViewModel @Inject constructor(
         val dossierCount: Int,
         val offMonth: List<OffMonthPeriodic>,
         val shareCode: String?,
-        val migrationFailed: Boolean
+        val migrationFailed: Boolean,
+        val remindersBlocked: Boolean
     )
 }

@@ -40,6 +40,7 @@ import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.DisplayFit
+import be.monmoisclair.app.ui.theme.HomeTokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -63,7 +64,7 @@ internal fun HomeReceiptDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
-            color = A11yTokens.PaperCard,
+            color = HomeTokens.Card,
             shape = MaterialTheme.shapes.extraLarge,
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,7 +89,7 @@ internal fun HomeReceiptDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                                .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                                .background(HomeTokens.HeroSurface, MaterialTheme.shapes.medium)
                                 .semantics {
                                     contentDescription = "Chargement de la photo"
                                     liveRegion = LiveRegionMode.Polite
@@ -109,7 +110,7 @@ internal fun HomeReceiptDialog(
                                     min = if (fit.compactHomeChrome) 220.dp else 280.dp,
                                     max = if (fit.compactHomeChrome) 420.dp else 520.dp
                                 )
-                                .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                                .background(HomeTokens.HeroSurface, MaterialTheme.shapes.medium)
                         )
                     }
                     else -> {

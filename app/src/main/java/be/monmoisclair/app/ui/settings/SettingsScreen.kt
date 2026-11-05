@@ -132,6 +132,7 @@ fun SettingsAccountGroupScreen(
         CarnetHubRow(
             label = SettingsHubCopy.BACKUP,
             onClick = onOpenBackup,
+            showDivider = false,
             leadingIconRes = R.drawable.ic_backup
         )
         CarnetHubRow(
@@ -173,12 +174,19 @@ fun SettingsComfortGroupScreen(
         CarnetHubRow(
             label = SettingsHubCopy.APPEARANCE,
             onClick = onOpenAppearance,
+            showDivider = false,
             leadingIconRes = R.drawable.ic_comfort
         )
         CarnetHubRow(
             label = SettingsHubCopy.ALERTS,
             onClick = onOpenHealth,
-            leadingIconRes = R.drawable.ic_alerts
+            leadingIconRes = R.drawable.ic_alerts,
+            labelColor = if (state.remindersBlocked) {
+                A11yTokens.AccentWarn
+            } else {
+                A11yTokens.Ink
+            },
+            leadingIconTint = if (state.remindersBlocked) A11yTokens.AccentWarn else null
         )
     }
 }

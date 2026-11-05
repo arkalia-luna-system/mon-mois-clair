@@ -19,7 +19,9 @@ class HomeTokensContrastTest {
         assertThat(WcagContrast.ratio(d.okInk, d.canvas)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(d.warn, d.canvas)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(A11yTokens.Day.buttonText, d.okFill)).isAtLeast(7.0)
+        // Badge Menu « ! » (dangerFill) + pastille Accord or champagne.
         assertThat(WcagContrast.ratio(A11yTokens.Day.buttonText, d.dangerFill)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(A11yTokens.Day.onGold, A11yTokens.Day.accentAuto)).isAtLeast(7.0)
     }
 
     @Test
@@ -34,5 +36,6 @@ class HomeTokensContrastTest {
         }
         assertThat(WcagContrast.ratio(A11yTokens.Night.buttonText, n.okFill)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(A11yTokens.Night.buttonText, n.dangerFill)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(A11yTokens.Night.onGold, A11yTokens.Night.accentAuto)).isAtLeast(7.0)
     }
 }

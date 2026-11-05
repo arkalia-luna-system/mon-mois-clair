@@ -161,13 +161,14 @@ private fun MonthPastille(
 ) {
     val chipLabel = DayLabelFormat.monthChipShort(ym)
     val chipShape = StampShape
+    // Dialecte Accueil : Chip / Link / CardBorder (comme sticky mois).
     val borderColor = when {
-        selected -> A11yTokens.ButtonFill
-        isCurrent -> A11yTokens.Link
-        else -> A11yTokens.PaperBorder
+        selected -> HomeTokens.Link
+        isCurrent -> HomeTokens.Link
+        else -> HomeTokens.CardBorder
     }
     Surface(
-        color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
+        color = if (selected) A11yTokens.ButtonFill else HomeTokens.Chip,
         shape = chipShape,
         modifier = Modifier
             .heightIn(min = A11yTokens.minTouchHeight)

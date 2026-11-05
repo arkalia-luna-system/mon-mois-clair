@@ -77,16 +77,18 @@ fun ConvertPendingLetterScreen(
                     )
                 }
             } else {
-                // SYS01 : empty / manquant = typo seule (pas tip-box).
+                // Un seul PageTitle ; erreur = titre Ink + détail muted.
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(
                         if (fit.compactHomeChrome) 6.dp else 8.dp
                     )
                 ) {
-                    CarnetPageTitle(
-                        state.error ?: "Ce courrier n’est plus là.",
-                        withTopSpacer = false
+                    Text(
+                        text = state.error ?: "Ce courrier n’est plus là.",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = A11yTokens.Ink,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     Text(
                         text = "Déjà converti ou retiré.",

@@ -91,7 +91,7 @@ fun DossiersScreen(
         CarnetPageTitle("Dossiers")
         Text(
             text = "Reste dû des accords — pas sur l’accueil.",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
             modifier = Modifier.fillMaxWidth()
         )

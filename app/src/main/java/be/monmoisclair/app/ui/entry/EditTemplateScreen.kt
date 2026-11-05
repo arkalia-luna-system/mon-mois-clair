@@ -3,7 +3,6 @@ package be.monmoisclair.app.ui.entry
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -23,8 +22,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -45,13 +43,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.RecurrenceAnchor
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.components.rememberFocusKeepsVisible
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
-import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
@@ -214,7 +213,8 @@ fun EditTemplateScreen(
     }
 
     val fit = rememberDisplayFit()
-    val formGap = if (fit.compactHomeChrome) 8.dp else 12.dp
+    // Densité alignée EntryFormScaffold (One UI).
+    val formGap = if (fit.compactHomeChrome) 14.dp else 18.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -274,11 +274,7 @@ fun EditTemplateScreen(
                 selectedDay = state.dayText.toIntOrNull(),
                 onSelect = { viewModel.setDay(it.toString()) }
             )
-            Text(
-                "Mois de la prochaine échéance",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted
-            )
+            CarnetSectionTitle("Mois de la prochaine échéance")
             Text(
                 text = state.anchorYearLabel,
                 style = MaterialTheme.typography.bodyLarge,
@@ -289,40 +285,11 @@ fun EditTemplateScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 for (m in 1..12) {
-                    val selected = state.anchorMonth == m
-                    // FORM02 : mois exclusifs = pastille capsule.
-                    val shape = StampShape
-                    val label = RecurrenceAnchor.frenchMonthLabel(m)
-                    Surface(
-                        color = if (selected) A11yTokens.ButtonFill else A11yTokens.PaperWarm,
-                        shape = shape,
-                        modifier = Modifier
-                            .heightIn(min = A11yTokens.minTouchHeight)
-                            .border(
-                                1.dp,
-                                if (selected) A11yTokens.ButtonFill else A11yTokens.PaperBorder,
-                                shape
-                            )
-                    ) {
-                        Text(
-                            text = label,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = if (selected) A11yTokens.ButtonText else A11yTokens.Ink,
-                            modifier = Modifier
-                                .clickable(
-                                    role = Role.RadioButton,
-                                    onClickLabel = label
-                                ) { viewModel.setAnchorMonth(m) }
-                                .padding(horizontal = 12.dp, vertical = 12.dp)
-                                .semantics {
-                                    contentDescription = if (selected) {
-                                        "$label, sélectionné"
-                                    } else {
-                                        label
-                                    }
-                                }
-                        )
-                    }
+                    TypeChip(
+                        text = RecurrenceAnchor.frenchMonthLabel(m),
+                        selected = state.anchorMonth == m,
+                        onClick = { viewModel.setAnchorMonth(m) }
+                    )
                 }
             }
             Spacer(Modifier.height(8.dp))
@@ -345,24 +312,36 @@ fun EditTemplateScreen(
             )
             Spacer(Modifier.height(8.dp))
         }
-        PrimaryA11yButton(
-            text = if (state.saving) "Enregistrement…" else "Enregistrer",
-            onClick = viewModel::save,
-            enabled = !state.saving
-        )
-        if (!keyboardOpen) {
-            Spacer(Modifier.height(8.dp))
-            DangerA11yButton(
-                text = "Retirer cette échéance",
-                onClick = { confirmArchive = true },
+        // Pied aligné EntryFormScaffold : divider + PaperCard + QuietLink Annuler.
+        HorizontalDivider(color = A11yTokens.PaperBorder)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(A11yTokens.PaperCard)
+                .padding(top = 12.dp)
+        ) {
+            PrimaryA11yButton(
+                text = if (state.saving) "Enregistrement…" else "Enregistrer",
+                onClick = viewModel::save,
                 enabled = !state.saving
             )
-            Spacer(Modifier.height(8.dp))
-            SecondaryA11yButton(
-                text = "Annuler",
-                onClick = { requestLeave() },
-                enabled = !state.saving
-            )
+            if (!keyboardOpen) {
+                Spacer(Modifier.height(6.dp))
+                QuietLinkA11y(
+                    text = "Annuler",
+                    onClick = { requestLeave() },
+                    enabled = true,
+                    fillMaxWidth = false,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClickLabel = "Annuler sans enregistrer"
+                )
+                Spacer(Modifier.height(6.dp))
+                DangerA11yButton(
+                    text = "Retirer cette échéance",
+                    onClick = { confirmArchive = true },
+                    enabled = !state.saving
+                )
+            }
         }
     }
 }

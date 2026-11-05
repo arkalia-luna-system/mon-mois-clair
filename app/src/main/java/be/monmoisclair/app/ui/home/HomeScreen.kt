@@ -409,13 +409,13 @@ fun HomeScreen(
             ) { data ->
                 Snackbar(
                     snackbarData = data,
-                    shape = MaterialTheme.shapes.small,
+                    shape = HomeTokens.cardRadius,
                     containerColor = HomeTokens.Card,
                     contentColor = HomeTokens.Ink,
                     actionColor = HomeTokens.Link,
                     modifier = Modifier
                         .wrapContentWidth()
-                        .border(1.dp, HomeTokens.CardBorder, MaterialTheme.shapes.small)
+                        .border(1.dp, HomeTokens.CardBorder, HomeTokens.cardRadius)
                 )
             }
 

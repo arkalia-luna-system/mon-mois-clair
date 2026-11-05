@@ -31,6 +31,7 @@ import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.settings.DeviceCareCopy
+import be.monmoisclair.app.ui.settings.SettingsHubCopy
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
@@ -53,7 +54,7 @@ fun ReminderHealthScreen(
     }
 
     PinnedBackScaffold(onBack = onBack) {
-        CarnetPageTitle("Alertes")
+        CarnetPageTitle(SettingsHubCopy.ALERTS)
         Text(
             text = "Pastilles : le téléphone laisse-t-il sonner ?",
             style = MaterialTheme.typography.bodyLarge,

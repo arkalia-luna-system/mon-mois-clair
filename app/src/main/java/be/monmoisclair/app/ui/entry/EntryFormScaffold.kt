@@ -511,7 +511,8 @@ internal fun EntryFormScaffold(
                 QuietLinkA11y(
                     text = "Annuler",
                     onClick = onCancel,
-                    enabled = primaryEnabled,
+                    // Toujours quittable (même si Enregistrer désactivé / lecture).
+                    enabled = true,
                     fillMaxWidth = false,
                     modifier = Modifier.fillMaxWidth(),
                     onClickLabel = "Annuler sans enregistrer"

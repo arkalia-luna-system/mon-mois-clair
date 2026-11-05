@@ -111,7 +111,7 @@ internal fun ThemeOptionRow(
         )
         Text(
             text = label,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = A11yTokens.Ink
         )
     }

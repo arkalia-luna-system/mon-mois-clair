@@ -140,14 +140,16 @@ internal fun MonthStep(
         modifier = Modifier
             .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
             .clip(HomeTokens.chipRadius)
-            .background(HomeTokens.Chip)
+            .background(
+                if (enabled) HomeTokens.Chip else HomeTokens.Chip.copy(alpha = 0.45f)
+            )
             .semantics(mergeDescendants = true) { contentDescription = description }
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
     ) {
         Icon(
             painter = painterResource(iconRes),
             contentDescription = null,
-            tint = if (enabled) HomeTokens.InkMuted else HomeTokens.InkMuted.copy(alpha = 0.4f),
+            tint = if (enabled) HomeTokens.InkMuted else HomeTokens.InkMuted.copy(alpha = 0.35f),
             modifier = Modifier.size(26.dp)
         )
     }

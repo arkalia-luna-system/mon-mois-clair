@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.health
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,22 +40,34 @@ fun HealthStatusRow(label: String, ok: Boolean) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = status,
-            color = if (ok) A11yTokens.AccentOkInk else A11yTokens.AccentWarn,
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier
-                .background(
-                    if (ok) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
-                    chipShape
-                )
-                .padding(horizontal = 10.dp, vertical = 4.dp)
-        )
+        // FR scan : libellé d’abord, pastille statut à droite.
         Text(
             text = label,
             style = MaterialTheme.typography.titleLarge,
             color = A11yTokens.Ink,
             modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = status,
+            color = if (ok) A11yTokens.AccentOkInk else A11yTokens.AccentWarn,
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier
+                .then(
+                    if (ok) {
+                        Modifier
+                    } else {
+                        Modifier.border(
+                            1.dp,
+                            A11yTokens.AccentWarn.copy(alpha = 0.45f),
+                            chipShape
+                        )
+                    }
+                )
+                .background(
+                    if (ok) A11yTokens.AccentOkSoft else A11yTokens.PaperWarm,
+                    chipShape
+                )
+                .padding(horizontal = 10.dp, vertical = 4.dp)
         )
     }
 }

@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.lock
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -121,14 +122,15 @@ fun BiometricLockScreen(
                 color = A11yTokens.InkMuted
             )
             message?.let {
+                val errShape = MaterialTheme.shapes.medium
                 Text(
                     text = it,
                     color = A11yTokens.DangerInk,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium)
-                        .background(A11yTokens.PaperWarm)
+                        .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.35f), errShape)
+                        .background(A11yTokens.PaperCard, errShape)
                         .padding(if (fit.compactHomeChrome) 10.dp else 12.dp)
                         .semantics {
                             liveRegion = LiveRegionMode.Assertive

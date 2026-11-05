@@ -56,7 +56,8 @@ internal fun HomeBottomBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    horizontal = HomeTokens.screenPad,
+                    // Aligné liste / sticky (24 dp) — pas HomeTokens.screenPad 20.
+                    horizontal = A11yTokens.screenPadding,
                     vertical = 12.dp
                 ),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -81,6 +82,7 @@ internal fun HomeBottomBar(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (remindersBlocked) {
+                    // Fond danger (pas Warn champagne nuit) : blanc ≥ 7:1 jour/nuit.
                     Text(
                         text = "!",
                         style = MaterialTheme.typography.labelLarge,
@@ -88,7 +90,7 @@ internal fun HomeBottomBar(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(top = 2.dp, end = 2.dp)
-                            .background(HomeTokens.Warn, StampShape)
+                            .background(HomeTokens.DangerFill, StampShape)
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                             .semantics { contentDescription = "" }
                     )
@@ -132,8 +134,8 @@ private fun BottomBarFilled(
         modifier = modifier
             .heightIn(min = HomeTokens.minTouch)
             .semantics { contentDescription = "+ $text" },
-        // 7.13 : FAB soft (radius large + icône plus présente).
-        shape = MaterialTheme.shapes.large,
+        // Même rayon que Menu (buttonRadius 16) — barre homogène.
+        shape = HomeTokens.buttonRadius,
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 0.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
         colors = ButtonDefaults.buttonColors(

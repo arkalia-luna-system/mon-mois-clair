@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.theme.A11yTokens
 
@@ -86,6 +87,8 @@ fun CarnetHubRow(
             text = label,
             style = CarnetTitleTokens.hubRowLabelStyle(MaterialTheme.typography),
             color = labelColor,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
         Text(
