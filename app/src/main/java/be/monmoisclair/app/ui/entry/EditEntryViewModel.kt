@@ -18,7 +18,6 @@ import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.CreditorMailComposer
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EpcPayment
-import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
@@ -38,7 +37,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.YearMonth
 import javax.inject.Inject
 
 /** Ligne d’historique frais pour la fiche (pas d’Android dans le domaine). */
@@ -103,7 +101,10 @@ data class EditEntryState(
     val loading: Boolean = true,
     /** Ligne absente (supprimée pendant l’ouverture). */
     val missing: Boolean = false,
-    /** Ledger d’aperçu futur : lecture seule (pas d’Enregistrer / Supprimer). */
+    /**
+     * Ancien verrou « aperçu futur » — toujours false (édition OK sur le mois visualisé).
+     * Conservé pour ne pas casser les call-sites Compose.
+     */
     val futurePreviewReadOnly: Boolean = false,
     /** Intent mail à lancer une fois (consommé par l’UI). */
     val mailDraft: CreditorMailComposer.Draft? = null,
@@ -141,7 +142,6 @@ class EditEntryViewModel @Inject constructor(
                 }
                 return
             }
-            val futureRo = isFuturePreviewLedger(e.ledgerId)
             _state.update {
                 it.copy(
                     loading = false, label = e.label,
@@ -149,9 +149,7 @@ class EditEntryViewModel @Inject constructor(
                     dayText = e.dayOfMonth.toString(),
                     recurrenceInfo = if (e.templateId != null) RecurrenceLabel.forIntervalMonths(1) else RecurrenceLabel.oneOff(),
                     recurrence = if (e.templateId != null) RecurrenceChoice.Monthly else RecurrenceChoice.Once,
-                    hasTemplate = e.templateId != null,
-                    futurePreviewReadOnly = futureRo,
-                    error = if (futureRo) EntryFormCore.FUTURE_PREVIEW_EDIT_HINT else null
+                    hasTemplate = e.templateId != null
                 )
             }
             return
@@ -202,7 +200,6 @@ class EditEntryViewModel @Inject constructor(
             ?.takeIf { isSavings }
             ?.let { instanceDao.sumAmountCentsByTemplateAndStatus(it, ExpenseStatus.DONE) }
             ?: 0L
-        val futureRo = isFuturePreviewLedger(e.ledgerId)
         val loadedPaths = EntryFormCore.resolveLoadedReceiptPaths(
             hasTemplate = tpl != null,
             instanceReceiptPath = e.receiptRelativePath,
@@ -227,8 +224,6 @@ class EditEntryViewModel @Inject constructor(
                 creditorEmail = tpl?.creditorEmail.orEmpty(),
                 addedFeesCents = fees,
                 addedFeesNote = tpl?.addedFeesNote.orEmpty(),
-                futurePreviewReadOnly = futureRo,
-                error = if (futureRo) EntryFormCore.FUTURE_PREVIEW_EDIT_HINT else null,
                 feeEvents = feeRows,
                 extraReceiptPaths = loadedPaths.extrasRaw,
                 isSavingsLine = isSavings,
@@ -547,10 +542,6 @@ class EditEntryViewModel @Inject constructor(
 
     fun save() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
-        if (_state.value.futurePreviewReadOnly) {
-            _state.update { it.copy(error = EntryFormCore.FUTURE_PREVIEW_EDIT_HINT) }
-            return
-        }
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             val s = _state.value
@@ -714,10 +705,6 @@ class EditEntryViewModel @Inject constructor(
 
     fun delete() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
-        if (_state.value.futurePreviewReadOnly) {
-            _state.update { it.copy(error = EntryFormCore.FUTURE_PREVIEW_DELETE_HINT) }
-            return
-        }
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             if (_state.value.isSavingsLine) {
@@ -738,19 +725,7 @@ class EditEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, done = true) }
                 DeleteInstanceResult.NotFound ->
                     _state.update { it.copy(saving = false, error = "Cette ligne n’est plus là.") }
-                DeleteInstanceResult.FuturePreviewBlocked ->
-                    _state.update {
-                        it.copy(
-                            saving = false,
-                            error = EntryFormCore.FUTURE_PREVIEW_DELETE_HINT
-                        )
-                    }
             }
         }
-    }
-
-    private fun isFuturePreviewLedger(ledgerId: String): Boolean {
-        val ym = runCatching { YearMonth.parse(ledgerId) }.getOrNull() ?: return false
-        return MonthNavigation.isFuturePreview(ym, AppClock.currentYearMonth())
     }
 }

@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 125
-        versionName = "0.1.0-7.19"
+        versionCode = 126
+        versionName = "0.1.0-7.20"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -150,6 +150,10 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.12.0")
     implementation("androidx.hilt:hilt-work:1.2.0")
     ksp("androidx.hilt:hilt-compiler:1.2.0")
+
+    // In-App Updates : IPC Play Store — pas d’INTERNET app (manifest strip).
+    implementation("com.google.android.play:app-update:2.1.0")
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
     // OCR latin emballé (hors Play Services) — lecture +++ sur photo, pas le montant.

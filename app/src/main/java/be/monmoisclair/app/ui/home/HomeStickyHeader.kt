@@ -195,18 +195,15 @@ internal fun HomeStickyHeader(
                 }
             }
             if (state.isFuturePreview) {
-                val previewLabel =
-                    "Aperçu — montants d’après la dernière saisie ; pas de FAIT ni d’ajout."
+                // Chrome contextuel court (pas de liveRegion : évite une « notif » TalkBack permanente).
+                val previewLabel = "Mois à venir — modification OK · pas de FAIT ni d’ajout"
                 Text(
                     text = previewLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = HomeTokens.Warn,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.semantics {
-                        liveRegion = LiveRegionMode.Polite
-                        contentDescription = previewLabel
-                    }
+                    modifier = Modifier.semantics { contentDescription = previewLabel }
                 )
             }
             val afterFaitLabel = stickyWithoutUnpaidLabel(

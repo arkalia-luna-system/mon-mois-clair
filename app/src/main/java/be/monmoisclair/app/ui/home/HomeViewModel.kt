@@ -317,7 +317,7 @@ class HomeViewModel @Inject constructor(
         val ym = selectedMonth.value
         val current = AppClock.currentYearMonth()
         if (MonthNavigation.isFuturePreview(ym, current)) {
-            _userMessages.tryEmit("Aperçu seulement — on ne coche pas FAIT sur un mois à venir.")
+            _userMessages.tryEmit("Pas de FAIT sur un mois à venir — ouvrez le mois en cours.")
             return
         }
         if (ym.isBefore(current)) {
@@ -356,7 +356,7 @@ class HomeViewModel @Inject constructor(
                 when (toggleDone.invoke(expenseId)) {
                     is ToggleExpenseDoneResult.FuturePreviewBlocked ->
                         _userMessages.tryEmit(
-                            "Aperçu seulement — on ne coche pas FAIT sur un mois à venir."
+                            "Pas de FAIT sur un mois à venir — ouvrez le mois en cours."
                         )
                     else -> Unit
                 }
@@ -364,7 +364,7 @@ class HomeViewModel @Inject constructor(
                     when (toggleDone.invoke(expenseId)) {
                         is ToggleExpenseDoneResult.FuturePreviewBlocked ->
                             _userMessages.tryEmit(
-                                "Aperçu seulement — on ne coche pas FAIT sur un mois à venir."
+                                "Pas de FAIT sur un mois à venir — ouvrez le mois en cours."
                             )
                         else -> Unit
                     }
@@ -408,7 +408,7 @@ class HomeViewModel @Inject constructor(
         if (_diversBusy.value) return
         val current = AppClock.currentYearMonth()
         if (MonthNavigation.isFuturePreview(selectedMonth.value, current)) {
-            _userMessages.tryEmit("Aperçu seulement — les courses se notent sur le mois en cours.")
+            _userMessages.tryEmit("Les courses se notent sur le mois en cours.")
             return
         }
         _diversBusy.value = true
@@ -463,7 +463,7 @@ class HomeViewModel @Inject constructor(
         if (_savingsBusy.value) return
         val current = AppClock.currentYearMonth()
         if (MonthNavigation.isFuturePreview(selectedMonth.value, current)) {
-            _userMessages.tryEmit("Aperçu seulement — l’épargne se règle sur le mois en cours.")
+            _userMessages.tryEmit("L’épargne se règle sur le mois en cours.")
             return
         }
         if (MoneyFormat.tooManyFractionDigits(eurosText)) {

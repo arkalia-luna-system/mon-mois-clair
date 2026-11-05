@@ -6,8 +6,8 @@ import java.time.YearMonth
  * Règles de navigation Home entre mois.
  *
  * - Passé : jusqu’à [HISTORY_MONTHS] (calendrier compris) ; le ledger est créé au tap.
- * - Futur : jusqu’à [FUTURE_MONTHS] en **aperçu** (factures / revenus matérialisés,
- *   sans FAIT ni ajout — assez pour vérifier une facture annuelle l’année suivante).
+ * - Futur : jusqu’à [FUTURE_MONTHS] (factures / revenus matérialisés).
+ *   Édition / suppression OK sur le mois visualisé ; pas de FAIT ni d’ajout (ni courses / épargne).
  */
 object MonthNavigation {
     /** ~2 ans passés (mois courant inclus). */
@@ -15,7 +15,7 @@ object MonthNavigation {
 
     /**
      * ~2 ans futurs sélectionnables (‹ › + calendrier Accueil).
-     * Aperçu lecture seule tant que [isFuturePreview].
+     * [isFuturePreview] = mois après le courant (garde-fous FAIT / ajout).
      */
     const val FUTURE_MONTHS = 24
 

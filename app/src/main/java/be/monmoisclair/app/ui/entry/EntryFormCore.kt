@@ -229,10 +229,11 @@ object EntryFormCore {
         )
     }
 
+    /** Conservé pour messages FAIT / courses / épargne (pas pour l’édition de ligne). */
     const val FUTURE_PREVIEW_EDIT_HINT =
-        "Aperçu seulement — ouvrez le mois en cours pour modifier."
+        "Mois à venir — ouvrez le mois en cours pour cette action."
     const val FUTURE_PREVIEW_DELETE_HINT =
-        "Aperçu seulement — on ne supprime pas sur un mois à venir."
+        "Mois à venir — ouvrez le mois en cours pour cette action."
     const val ATTACH_RETRY_NEED =
         "Reprenez une photo ou un PDF, puis Enregistrer."
     const val ATTACH_RETRY_BOTH_FAIL =

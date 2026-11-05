@@ -10,15 +10,19 @@ import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
+import be.monmoisclair.app.data.widget.CarnetWidgetSink
+import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import com.google.common.truth.Truth.assertThat
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneId
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import be.monmoisclair.app.data.widget.CarnetWidgetSink
 
 @RunWith(RobolectricTestRunner::class)
 class UpdateDeleteEntryUseCaseTest {
@@ -27,9 +31,11 @@ class UpdateDeleteEntryUseCaseTest {
     private lateinit var update: UpdateInstanceUseCase
     private lateinit var delete: DeleteInstanceUseCase
     private lateinit var add: AddEntryUseCase
+    private val brussels = ZoneId.of("Europe/Brussels")
 
     @Before
     fun setUp() {
+        AppClock.clock = Clock.fixed(Instant.parse("2026-11-05T10:00:00Z"), brussels)
         val context: Context = ApplicationProvider.getApplicationContext()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
@@ -50,6 +56,7 @@ class UpdateDeleteEntryUseCaseTest {
 
     @After
     fun tearDown() {
+        AppClock.clock = Clock.system(brussels)
         db.close()
     }
 
@@ -397,6 +404,37 @@ class UpdateDeleteEntryUseCaseTest {
         )
         val tpl = db.templateDao().getExpenseById("tpl-extra")!!
         assertThat(tpl.extraReceiptPaths).isEqualTo("receipts/a.webp\nreceipts/c.webp")
+    }
+
+    /** Taxe annuelle : montant changeable sur un mois futur visualisé (7.20). */
+    @Test
+    fun update_futureMonthInstance_isAllowed() = runBlocking {
+        seedLinkedExpense("2027-03", "exp:2027-03:taxe", "tpl-taxe", 250_00L)
+        val result = update(
+            id = "exp:2027-03:taxe",
+            isExpense = true,
+            label = "Taxe voiture",
+            amountCents = 280_00L,
+            dayOfMonth = 15,
+            applyToFollowingMonths = false
+        )
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp:2027-03:taxe")!!.amountCents)
+            .isEqualTo(280_00L)
+        assertThat(db.instanceDao().getExpenseById("exp:2027-03:taxe")!!.label)
+            .isEqualTo("Taxe voiture")
+    }
+
+    @Test
+    fun delete_futureMonthInstance_isAllowed() = runBlocking {
+        seedLinkedExpense("2027-04", "exp:2027-04:once", "tpl-once", 40_00L)
+        val result = delete(
+            id = "exp:2027-04:once",
+            isExpense = true,
+            applyToFollowingMonths = false
+        )
+        assertThat(result).isEqualTo(DeleteInstanceResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp:2027-04:once")).isNull()
     }
 
     private suspend fun seedLinkedExpense(

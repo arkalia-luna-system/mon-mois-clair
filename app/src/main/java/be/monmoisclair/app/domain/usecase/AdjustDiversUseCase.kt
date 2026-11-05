@@ -36,7 +36,7 @@ class AdjustDiversUseCase @Inject constructor(
         }
         if (MonthNavigation.isFuturePreview(ym, AppClock.currentYearMonth())) {
             return AdjustDiversResult.Failed(
-                "Aperçu seulement — les courses se notent sur le mois en cours."
+                "Les courses se notent sur le mois en cours."
             )
         }
         monthCycleEngine.ensureMonthExists(ym)

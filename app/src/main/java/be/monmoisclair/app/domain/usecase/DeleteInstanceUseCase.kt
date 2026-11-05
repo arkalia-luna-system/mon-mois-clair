@@ -3,17 +3,13 @@ package be.monmoisclair.app.domain.usecase
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
-import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.model.ExpenseStatus
-import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
 
 sealed class DeleteInstanceResult {
     data object Success : DeleteInstanceResult()
     data object NotFound : DeleteInstanceResult()
-    /** Mois futur d’aperçu : suppression refusée. */
-    data object FuturePreviewBlocked : DeleteInstanceResult()
 }
 
 @Singleton
@@ -31,18 +27,6 @@ class DeleteInstanceUseCase @Inject constructor(
         isExpense: Boolean,
         applyToFollowingMonths: Boolean
     ): DeleteInstanceResult {
-        val peekLedgerId = if (isExpense) {
-            instanceDao.getExpenseById(id)?.ledgerId
-        } else {
-            instanceDao.getIncomeById(id)?.ledgerId
-        } ?: return DeleteInstanceResult.NotFound
-        val peekYm = runCatching { YearMonth.parse(peekLedgerId) }.getOrNull()
-        if (peekYm != null &&
-            MonthNavigation.isFuturePreview(peekYm, AppClock.currentYearMonth())
-        ) {
-            return DeleteInstanceResult.FuturePreviewBlocked
-        }
-
         return mutatingRepository.mutate(
             sideEffectsWhen = { it is DeleteInstanceResult.Success }
         ) {

@@ -4,8 +4,9 @@ App **100 % locale**. Pas de compte, pas de serveur Mon Mois Clair, pas d’anal
 
 ## Réseau
 
-- **Aucune** permission `INTERNET` dans le manifeste.
-- Aucun appel HTTP/API, aucune synchro cloud, aucune pub.
+- **Aucune** permission `INTERNET` ni `ACCESS_NETWORK_STATE` dans le manifeste final (retirées via `tools:node="remove"` si une lib les merge).
+- Aucun appel HTTP/API métier, aucune synchro cloud, aucune pub.
+- **Mises à jour Play (In-App Updates Flexible)** : dialogue / téléchargement via le **Play Store** (IPC), pas via un socket de l’app. Sideload → no-op. Voir journal **7.20**.
 - Les intents « partager » / « mail » / « ouvrir PDF » passent par d’**autres apps** choisies sur le téléphone (WhatsApp, Gmail, Drive…). Une fois hors de Mon Mois Clair, c’est leur politique qui s’applique.
 
 ## Données sur l’appareil

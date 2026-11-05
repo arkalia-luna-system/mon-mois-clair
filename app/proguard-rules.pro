@@ -27,6 +27,10 @@
 -dontwarn com.google.mlkit.**
 -keep class androidx.camera.** { *; }
 
+# Play In-App Updates
+-keep class com.google.android.play.core.** { *; }
+-dontwarn com.google.android.play.core.**
+
 # SQLCipher
 -keep class net.sqlcipher.** { *; }
 -keep class net.zetetic.** { *; }

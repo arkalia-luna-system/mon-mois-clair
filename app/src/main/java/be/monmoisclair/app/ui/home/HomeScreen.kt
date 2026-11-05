@@ -158,8 +158,10 @@ fun HomeScreen(
         viewModel.userMessages.collect { msg ->
             // Pendant « Annuler » FAIT : ignorer « Copié » (sinon le bandeau disparaît).
             if (faitUndoActive) return@collect
+            snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
                 message = msg,
+                actionLabel = "OK",
                 duration = SnackbarDuration.Short
             )
         }
@@ -225,13 +227,21 @@ fun HomeScreen(
 
     var pastMarkingDone by remember { mutableStateOf(true) }
 
+    fun showBriefHint(message: String) {
+        // Remplace le snackbar courant : pas de file d’attente / spam sur taps répétés.
+        scope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = "OK",
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+
     fun onFaitToggle(expenseId: String, markingDone: Boolean) {
         if (state.isFuturePreview) {
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    "Aperçu seulement — on ne coche pas FAIT sur un mois à venir."
-                )
-            }
+            showBriefHint("Pas de FAIT sur un mois à venir — ouvrez le mois en cours.")
             return
         }
         // Mois passé : dialogue d’abord — pas de snackbar anticipé.
@@ -487,8 +497,8 @@ fun HomeScreen(
                                     )
                                     Text(
                                         text = if (state.isFuturePreview) {
-                                            "Les factures et rentrées réapparaissent ici quand elles sont dues. " +
-                                                "Revenez au mois en cours pour ajouter."
+                                            "Les lignes réapparaissent ici quand elles sont dues. " +
+                                                "Pour en ajouter, revenez au mois en cours."
                                         } else {
                                             "Ajoutez le salaire et les factures avec « + Ajouter » en bas."
                                         },
@@ -598,33 +608,17 @@ fun HomeScreen(
                             when (item) {
                                 is TimelineItem.Income -> IncomeRow(
                                     item = item,
-                                    readOnlyPreview = state.isFuturePreview,
-                                    onClick = {
-                                        if (state.isFuturePreview) {
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar(
-                                                    "Aperçu seulement — ouvrez le mois en cours pour modifier."
-                                                )
-                                            }
-                                        } else {
-                                            onEdit(item.id, false)
-                                        }
-                                    }
+                                    // readOnlyPreview n’affecte que le libellé a11y ici.
+                                    readOnlyPreview = false,
+                                    onClick = { onEdit(item.id, false) }
                                 )
                                 is TimelineItem.Expense -> ExpenseRow(
                                     item = item,
                                     highlighted = item.id == state.highlightExpenseId,
+                                    // Cache FAIT sur mois futur ; édition ligne = OK.
                                     readOnlyPreview = state.isFuturePreview,
                                     onToggle = { onFaitToggle(item.id, markingDone = !item.isDone) },
                                     onClick = {
-                                        if (state.isFuturePreview) {
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar(
-                                                    "Aperçu seulement — ouvrez le mois en cours pour modifier."
-                                                )
-                                            }
-                                            return@ExpenseRow
-                                        }
                                         viewModel.clearHighlight()
                                         onEdit(item.id, true)
                                     },

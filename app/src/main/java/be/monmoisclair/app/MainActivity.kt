@@ -52,6 +52,7 @@ import be.monmoisclair.app.ui.navigation.AppNavHost
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.MonMoisClairTheme
+import be.monmoisclair.app.update.PlayInAppUpdater
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -62,6 +63,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var widgetSink: CarnetWidgetSink
+
+    @Inject
+    lateinit var playInAppUpdater: PlayInAppUpdater
 
     private var pendingHighlightExpenseId: String? = null
 
@@ -147,8 +151,10 @@ class MainActivity : AppCompatActivity() {
                 DisposableEffect(lifecycleOwner) {
                     val observer = LifecycleEventObserver { _, event ->
                         when (event) {
-                            Lifecycle.Event.ON_RESUME ->
+                            Lifecycle.Event.ON_RESUME -> {
                                 mainViewModel.reloadBiometricPreference()
+                                playInAppUpdater.onResumeCompleteIfReady()
+                            }
                             Lifecycle.Event.ON_STOP -> {
                                 if (!isChangingConfigurations) {
                                     mainViewModel.onAppBackgrounded()
@@ -159,6 +165,13 @@ class MainActivity : AppCompatActivity() {
                     }
                     lifecycleOwner.lifecycle.addObserver(observer)
                     onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+                }
+
+                // IAU Flexible : cold start une fois la session ouverte (Play Store IPC).
+                LaunchedEffect(state.loading, state.needsUnlock, sessionEntered) {
+                    if (state.loading) return@LaunchedEffect
+                    if (state.needsUnlock && !sessionEntered) return@LaunchedEffect
+                    playInAppUpdater.maybeCheckFlexibleOnColdStart(this@MainActivity)
                 }
 
                 // Zone libre boutons système : safeDrawing + tappable + bande confort (charte §6).

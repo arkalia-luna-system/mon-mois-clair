@@ -19,7 +19,7 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 - Biométrie optionnelle = porte UI + **CryptoObject** (clé `mmc_unlock_v1`, AUTH_BIOMETRIC_STRONG \| DEVICE_CREDENTIAL) quand disponible ; sinon fallback porte UI (DB déjà chiffrée).
 - Widget / notifs : montants **et** libellés masqués si biométrie ON.
 - Keystore de signature release : **jamais** dans git (`*.jks`, `keystore.properties`).
-- Pas de permission `INTERNET`. `android:allowBackup="false"`. Release minifiée.
+- Pas de permission `INTERNET` / `ACCESS_NETWORK_STATE` (strip merge libs). `android:allowBackup="false"`. Release minifiée.
 - `FLAG_SECURE` seulement quand le verrouillage est activé. Sans verrou, l’aperçu des tâches peut montrer le mois.
 - IBAN et communication : presse-papiers marqué sensible (Android 13+) et vidé après **~30 s** (+ wipe immédiat ON_STOP ; API 26–27 = clip vide). Copie IBAN seulement si le contrôle international passe.
 - Exportés : activité lanceur, et `BootReceiver` pour les diffusions système. FileProvider et le receiver d’alarme ne le sont pas.
