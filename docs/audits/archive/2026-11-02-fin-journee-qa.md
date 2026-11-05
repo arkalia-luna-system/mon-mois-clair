@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-05 (7.33) — craft clos · ne plus lire pour l’état vivant. Vivants : `visual-expert-10` · smoke-checklist · CHARTE / JOURNAL / README.
+
 # Fin de journée QA — 2026-11-02 · 7.15.1
 
 Audit code chemins critiques (pas redesign). Device SM-S938B, install release sans wipe.

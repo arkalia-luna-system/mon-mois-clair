@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.32** peigne extrême + alarmes delete (versionCode 138) |
+| Dernière étape terminée | **7.33** matrice audits + expert pass (versionCode 139) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.32) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.32` via IAU Immediate |
-| Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.33) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.33` via IAU Immediate |
+| Audit | [`matrice-audits-7.33.md`](docs/audits/2026-11-05-matrice-audits-7.33.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,26 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.33 matrice audits + expert pass
+
+**Contexte :** Athalia — vérifier tous points audits · UI/fonc expert · nettoyer MD · base 7.32 `84a4f1d`.
+
+**Matrice :** [`docs/audits/2026-11-05-matrice-audits-7.33.md`](docs/audits/2026-11-05-matrice-audits-7.33.md) — lots craft **FAIT** ; smoke S26 / restore papier / notif **NON FAIT** (Athalia) ; brand-7.14 / passage-final **OBSOLÈTE** archivés.
+
+**Corrigé (expert) :**
+- Widget erreur lecture → `CarnetWidgetText.unavailable()` (« — » + ligne FR, pas faux verrou bio)
+- `startActivity` réglages / share / scan caméra : `runCatching` + bandeau / snackbar FR
+- CHARTE densités : Courses Accueil 1 tap (plus « hors sticky Menu ») · launcher = kit livre+coche
+- TalkBack label « Modifier Mettre de côté »
+
+**MD :** archivés `passage-final` · `fin-journee-qa` · `brand-logo-unisson` · assets/screenshots 7.14 → `docs/audits/archive/`. Vivants : matrice · smoke-checklist · visual-expert-10 · CHARTE / JOURNAL / README / PLAY / IAU.
+
+**Honnêteté :** craft expert ≠ smoke doigt. Pas de claim 10/10 dans la main.
+
+**Tests :** **425** exécutés / 426 (1 skipped), 95 XML, 0 failure.  
+**Version :** `0.1.0-7.33` · `versionCode` **139**.  
+**Ship :** `develop` + ff `main`.
 
 ### 2026-11-05 — 7.32 peigne extrême (alarmes + propreté)
 

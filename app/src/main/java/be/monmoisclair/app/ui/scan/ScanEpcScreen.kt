@@ -330,12 +330,17 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                 SecondaryA11yButton(
                     text = "Ouvrir les réglages",
                     onClick = {
-                        context.startActivity(
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                data = Uri.fromParts("package", context.packageName, null)
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
-                        )
+                        val opened = runCatching {
+                            context.startActivity(
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = Uri.fromParts("package", context.packageName, null)
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                            )
+                        }.isSuccess
+                        if (!opened) {
+                            status = "Impossible d’ouvrir les réglages. Réessayez depuis le téléphone."
+                        }
                     }
                 )
             } else {

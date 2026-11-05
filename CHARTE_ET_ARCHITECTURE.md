@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-10-23 (lot **6.76** — P0 BE B01–B03 · sticky quiet · PRIVACY).
+Mise à jour : 2026-11-05 (lot **7.33** — Courses Accueil 1 tap · launcher kit livre+coche).
 
 ## 1. Vision
 
@@ -156,7 +156,7 @@ Appliqué **une seule fois** dans `MainActivity`.
 ### Adaptation hauteur (`DisplayFit`)
 
 - Si `screenHeightDp ≤ 800` → **surfaces** (liste pad, tips, sheets) en mode compact.
-- **Sticky Accueil** : densités « liste d’abord » **sur toutes hauteurs** (y compris Ultra) — pad serré, gap 2, hero ~34 sp 1 ligne ; Courses / épargne hors sticky (Menu).
+- **Sticky Accueil** : densités « liste d’abord » **sur toutes hauteurs** (y compris Ultra) — pad serré, gap 2, hero ~34 sp 1 ligne ; **Courses / Mettre de côté = chips Accueil 1 tap** (hero, pas Menu).
 - Montant « Reste » = signal n°1 (≥ 34 sp). Serif **seulement** pour ce chiffre.
 - Titres d’écran, noms de factures, boutons : sans-serif.
 - Barre du bas : un seul bouton plein **teal** (« + Ajouter »), sur un socle `PaperWarm`. Menu, Copier, Remettre restent un trait. Coins des boutons : 12 dp.
@@ -164,7 +164,7 @@ Appliqué **une seule fois** dans `MainActivity`.
 - Cartes : coins 16 dp, ombre courte (encre ~8 %). Pastilles (jour, Accord, En retard, Prélèvement) : capsule, pas le même coin qu’un bouton.
 - Chiffres en chasse fixe (`tnum`) : les montants s’alignent.
 - Mois en toutes lettres (« Octobre 2026 »).
-- Nom de l’app : hors de l’accueil. Sur l’écran d’accueil du téléphone : **M ivoire sur teal** (`#1B4D4E`). Les rappels utilisent la même silhouette en blanc.
+- Nom de l’app : hors du sticky Accueil. Launcher / splash / notif large = **livre + coche** kit (navy `#0A1620`) ; smallIcon notif = silhouette blanche.
 - Bandeau L : fond contrasté, max 3–4 lignes.
 
 Réf. code : `DisplayFit` · `A11yTokens.bottomSystemClearance` · `SheetBottomClearance` · `HomeMenuSheet` · `DisableFrameworkScrollbars`.

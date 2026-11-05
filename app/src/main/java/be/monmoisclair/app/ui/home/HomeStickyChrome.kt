@@ -123,7 +123,7 @@ internal fun StickyHeroTools(
                 iconRes = R.drawable.ic_piggy,
                 label = savingsLabel,
                 chipColor = HomeTokens.SavingsChip,
-                onClickLabel = "Modifier mettre de côté",
+                onClickLabel = "Modifier Mettre de côté",
                 contentDescription = savingsDescription ?: savingsLabel,
                 onClick = onOpenSavings,
                 modifier = Modifier.weight(1f),

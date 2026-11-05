@@ -20,12 +20,16 @@ class ReminderHealthViewModel @Inject constructor(
     private val _report = MutableStateFlow<ReminderHealthReport?>(null)
     val report: StateFlow<ReminderHealthReport?> = _report.asStateFlow()
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
     init {
         refresh()
     }
 
     fun refresh() {
         viewModelScope.launch {
+            _errorMessage.value = null
             _report.value = healthChecker.check()
         }
     }
@@ -33,4 +37,10 @@ class ReminderHealthViewModel @Inject constructor(
     fun intentIgnoreBattery(): Intent = healthChecker.intentIgnoreBatteryOptimizations()
     fun intentExactAlarm(): Intent = healthChecker.intentExactAlarmSettings()
     fun intentNotifications(): Intent = healthChecker.intentAppNotificationSettings()
+
+    /** Réglages système inaccessibles (ROM / ActivityNotFound). */
+    fun reportSettingsIntentFailed() {
+        _errorMessage.value =
+            "Impossible d’ouvrir les réglages. Réessayez depuis le téléphone."
+    }
 }

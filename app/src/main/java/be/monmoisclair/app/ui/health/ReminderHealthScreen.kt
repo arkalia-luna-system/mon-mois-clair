@@ -28,7 +28,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -43,6 +45,7 @@ fun ReminderHealthScreen(
     viewModel: ReminderHealthViewModel = hiltViewModel()
 ) {
     val report by viewModel.report.collectAsStateWithLifecycle()
+    val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val fit = rememberDisplayFit()
@@ -58,6 +61,9 @@ fun ReminderHealthScreen(
     PinnedBackScaffold(onBack = onBack) {
         CarnetPageTitle(SettingsHubCopy.ALERTS)
         CarnetTipCard(text = "Pastilles : le téléphone laisse-t-il sonner ?")
+        errorMessage?.let { msg ->
+            CarnetStateBanner(text = msg, kind = CarnetBannerKind.Error, pad = 12.dp)
+        }
 
         val r = report
         if (r == null) {
@@ -132,19 +138,28 @@ fun ReminderHealthScreen(
         if (report?.notificationsGranted == false) {
             SecondaryA11yButton(
                 text = "Réglages notifications",
-                onClick = { context.startActivity(viewModel.intentNotifications()) }
+                onClick = {
+                    runCatching { context.startActivity(viewModel.intentNotifications()) }
+                        .onFailure { viewModel.reportSettingsIntentFailed() }
+                }
             )
         }
         if (report?.exactAlarmGranted == false) {
             SecondaryA11yButton(
                 text = "Réglages réveil à l’heure",
-                onClick = { context.startActivity(viewModel.intentExactAlarm()) }
+                onClick = {
+                    runCatching { context.startActivity(viewModel.intentExactAlarm()) }
+                        .onFailure { viewModel.reportSettingsIntentFailed() }
+                }
             )
         }
         if (report?.batteryOptimizationIgnored == false) {
             SecondaryA11yButton(
                 text = "Batterie non limitée",
-                onClick = { context.startActivity(viewModel.intentIgnoreBattery()) }
+                onClick = {
+                    runCatching { context.startActivity(viewModel.intentIgnoreBattery()) }
+                        .onFailure { viewModel.reportSettingsIntentFailed() }
+                }
             )
         }
     }

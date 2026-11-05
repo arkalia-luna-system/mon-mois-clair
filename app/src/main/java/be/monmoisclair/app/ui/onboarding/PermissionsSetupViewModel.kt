@@ -47,6 +47,13 @@ class PermissionsSetupViewModel @Inject constructor(
 
     fun intentNotifications(): Intent = healthChecker.intentAppNotificationSettings()
 
+    /** Réglages système inaccessibles (ROM / ActivityNotFound). */
+    fun reportSettingsIntentFailed() {
+        _uiState.update {
+            it.copy(errorMessage = "Impossible d’ouvrir les réglages. Réessayez depuis le téléphone.")
+        }
+    }
+
     fun finishOnboarding(allowContinueWithWarnings: Boolean) {
         viewModelScope.launch {
             val report = healthChecker.check()

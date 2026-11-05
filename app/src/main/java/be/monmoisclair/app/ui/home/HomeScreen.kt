@@ -174,6 +174,7 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.shareIntents.collect { intent ->
             runCatching { context.startActivity(intent) }
+                .onFailure { viewModel.reportShareIntentFailed() }
         }
     }
 

@@ -59,14 +59,7 @@ class CarnetWidgetRefresher @Inject constructor(
             )
         } catch (e: Exception) {
             Log.e(TAG, "lecture du mois pour le widget", e)
-            CarnetWidgetText(
-                title = "Mon Mois Clair",
-                amount = "",
-                amountNegative = false,
-                line = "Ouvrir le carnet",
-                lineOverdue = false,
-                locked = true
-            )
+            CarnetWidgetText.unavailable()
         }
     }
 

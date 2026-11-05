@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-05 (7.33) — craft clos · ne plus lire pour l’état vivant. Vivants : `visual-expert-10` · smoke-checklist · CHARTE / JOURNAL / README.
+
 # Brand unisson 7.14 — livre + coche · teal glow · or champagne
 
 **Date :** 2026-11-02 · **Étape :** `0.1.0-7.14` · **Branche :** `develop`  

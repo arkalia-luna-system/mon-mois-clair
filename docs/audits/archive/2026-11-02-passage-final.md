@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-05 (7.33) — craft clos · ne plus lire pour l’état vivant. Vivants : `visual-expert-10` · smoke-checklist · CHARTE / JOURNAL / README.
+
 # Passage final craft — 2026-11-02 · 7.16
 
 **Branche :** `develop` (= `main` après ship) · **Mission :** Athalia — dernier passage multi-domaines.  

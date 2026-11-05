@@ -13,6 +13,19 @@ data class CarnetWidgetText(
     val locked: Boolean
 ) {
     companion object {
+        /**
+         * Fallback lecture widget — montant « — » visible (pas masquer comme bio),
+         * pour ne pas laisser un trou blanc ni feindre un verrou biométrique.
+         */
+        fun unavailable(): CarnetWidgetText = CarnetWidgetText(
+            title = "Reste",
+            amount = "—",
+            amountNegative = false,
+            line = "Données indisponibles · Ouvrir",
+            lineOverdue = false,
+            locked = false
+        )
+
         fun compose(
             locked: Boolean,
             summary: MonthSummary,

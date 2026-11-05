@@ -1,14 +1,15 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-26 (état code : **6.83**).  
+Date : 2026-10-26 (barème) · **état code vivant : lire `PROGRESS_LOG` (7.33+)**.  
 Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) · [`PRIVACY.md`](../PRIVACY.md).  
-Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
+Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md) · checklist [`audits/2026-11-05-smoke-checklist-7.24.md`](audits/2026-11-05-smoke-checklist-7.24.md).  
+Matrice audits : [`audits/2026-11-05-matrice-audits-7.33.md`](audits/2026-11-05-matrice-audits-7.33.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
 
 | Statut | Contenu |
 |--------|---------|
-| **Fait** | … · **6.81** crypto · **6.82** polish copy · **6.83** quieting sticky/cartes/sheets + notice famille |
-| **Pas fait** | S26 en main · restore doigt code de copie · biométrie / notif au doigt · claim premium terminé · rescan Dependabot GitHub |
-| **Fait (craft)** | Scission god-screens Home/Entry (6.82–6.91) · `EntryFormUiModel`s (6.94) · DraftController OCR/EPC (6.97–6.98) · SettingsPages découpé (6.98) — twin Add/Edit load/save encore séparés |
+| **Fait (craft)** | … · crypto 6.81 · kit brand 7.15 · Accueil Courses 1 tap · hub / Aide / restore copy FR · B4/B6/B8 · alarmes delete · tips/bandeaux · widget fallback 7.33 · 0 Dependabot ouvert (2026-11-05) |
+| **Pas fait (doigt)** | S26 en main · restore code papier · notif réelle · TalkBack device · claim « 10/10 dans la main » |
+| **Fait (archi partielle)** | Scission Home/Entry · `EntryFormUiModel`s · DraftController OCR/EPC · SettingsPages — twin Add/Edit load volontairement séparés |
 
 Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
 

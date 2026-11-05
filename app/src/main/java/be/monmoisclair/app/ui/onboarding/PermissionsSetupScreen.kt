@@ -133,17 +133,26 @@ fun PermissionsSetupScreen(
             report != null && !report.notificationsGranted ->
                 SecondaryA11yButton(
                     text = "Ouvrir les réglages notifications",
-                    onClick = { context.startActivity(viewModel.intentNotifications()) }
+                    onClick = {
+                        runCatching { context.startActivity(viewModel.intentNotifications()) }
+                            .onFailure { viewModel.reportSettingsIntentFailed() }
+                    }
                 )
             report != null && !report.exactAlarmGranted ->
                 SecondaryA11yButton(
                     text = "Autoriser le réveil à l’heure",
-                    onClick = { context.startActivity(viewModel.intentExactAlarm()) }
+                    onClick = {
+                        runCatching { context.startActivity(viewModel.intentExactAlarm()) }
+                            .onFailure { viewModel.reportSettingsIntentFailed() }
+                    }
                 )
             report != null && !report.batteryOptimizationIgnored ->
                 SecondaryA11yButton(
                     text = "Laisser la batterie non limitée",
-                    onClick = { context.startActivity(viewModel.intentIgnoreBattery()) }
+                    onClick = {
+                        runCatching { context.startActivity(viewModel.intentIgnoreBattery()) }
+                            .onFailure { viewModel.reportSettingsIntentFailed() }
+                    }
                 )
             else ->
                 SecondaryA11yButton(

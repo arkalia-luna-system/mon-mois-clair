@@ -130,6 +130,17 @@ class CarnetWidgetTextTest {
         assertThat(text.amountNegative).isFalse()
     }
 
+    @Test
+    fun unavailable_shows_em_dash_not_bio_lock() {
+        val text = CarnetWidgetText.unavailable()
+        assertThat(text.locked).isFalse()
+        assertThat(text.amount).isEqualTo("—")
+        assertThat(text.title).isEqualTo("Reste")
+        assertThat(text.line).contains("indisponibles")
+        assertThat(text.amountNegative).isFalse()
+        assertThat(text.lineOverdue).isFalse()
+    }
+
     private fun expense(
         label: String,
         day: Int,

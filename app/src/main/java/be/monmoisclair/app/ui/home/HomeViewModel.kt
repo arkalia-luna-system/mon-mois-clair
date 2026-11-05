@@ -584,6 +584,11 @@ class HomeViewModel @Inject constructor(
         _userMessages.tryEmit(prepared.userMessage)
     }
 
+    /** Share / mail système indisponible. */
+    fun reportShareIntentFailed() {
+        _userMessages.tryEmit("Aucune app pour envoyer. Réessayez.")
+    }
+
     /** Décode la photo **dans l’app** (S01) — pas via `ACTION_VIEW` externe. */
     suspend fun loadReceiptBitmap(relativePath: String): Bitmap? =
         receiptPhotos.decodeBitmap(relativePath)
