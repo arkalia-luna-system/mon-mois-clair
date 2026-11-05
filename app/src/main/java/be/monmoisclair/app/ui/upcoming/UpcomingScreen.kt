@@ -156,16 +156,7 @@ private fun UpcomingMonthDetail(month: UpcomingMonth) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
     CarnetPageTitle(month.monthLabel)
-    Text(
-        text = "Lecture seule — pas de FAIT ici.",
-        style = MaterialTheme.typography.bodyMedium,
-        color = A11yTokens.InkMuted,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(A11yTokens.PaperWarm)
-            .padding(horizontal = 14.dp, vertical = 10.dp)
-    )
+    CarnetTipCard(text = "Lecture seule — pas de FAIT ici.")
     Spacer(modifier = Modifier.height(if (compact) 8.dp else 12.dp))
     Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
         month.lines.forEach { line ->

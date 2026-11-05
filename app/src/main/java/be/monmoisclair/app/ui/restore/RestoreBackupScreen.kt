@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.backup.CleartextLegacyGrace
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
@@ -169,25 +170,11 @@ fun RestoreBackupScreen(
     val sectionShape = MaterialTheme.shapes.large
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         CarnetPageTitle("Restaurer une sauvegarde")
-        // 7.13 : intro en carte mid (plus mur de texte plat).
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = if (fit.compactHomeChrome) 6.dp else 10.dp)
-                .shadow(2.dp, sectionShape, clip = false)
-                .clip(sectionShape)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 16.dp, vertical = 14.dp)
-        ) {
-            Text(
-                text = "À utiliser après une réinstallation ou sur un nouveau téléphone. " +
-                    "Cette action remplace tout le carnet. " +
-                    "Si la copie vient d’un mail ou de WhatsApp, entrez le code noté à part.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        CarnetTipCard(
+            text = "À utiliser après une réinstallation ou sur un nouveau téléphone. " +
+                "Cette action remplace tout le carnet. " +
+                "Si la copie vient d’un mail ou de WhatsApp, entrez le code noté à part."
+        )
 
         Column(
             modifier = Modifier

@@ -37,7 +37,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.reminder.ReminderHealthReport
 import be.monmoisclair.app.ui.components.AppWordmark
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.settings.DeviceCareCopy
@@ -84,16 +87,9 @@ fun PermissionsSetupScreen(
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
         CarnetPageTitle("Alertes fiables", withTopSpacer = false)
-        Text(
+        CarnetTipCard(
             text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +
-                "le réveil à l’heure, et laissez la batterie non limitée pour cette application.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 12.dp)
+                "le réveil à l’heure, et laissez la batterie non limitée pour cette application."
         )
 
         if (report != null) {
@@ -124,21 +120,7 @@ fun PermissionsSetupScreen(
         }
 
         state.errorMessage?.let { msg ->
-            val errShape = MaterialTheme.shapes.medium
-            Text(
-                text = msg,
-                color = A11yTokens.DangerInk,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                    .background(A11yTokens.PaperWarm, errShape)
-                    .padding(12.dp)
-                    .semantics {
-                        liveRegion = LiveRegionMode.Assertive
-                        contentDescription = msg
-                    }
-            )
+            CarnetStateBanner(text = msg, kind = CarnetBannerKind.Error, pad = 12.dp)
         }
 
         // ONB02 : un seul Secondary « corriger » à la fois (priorité notif → réveil → batterie).

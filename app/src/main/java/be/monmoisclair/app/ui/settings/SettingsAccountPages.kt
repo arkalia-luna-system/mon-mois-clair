@@ -40,8 +40,10 @@ import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
+import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -111,7 +113,7 @@ fun SettingsSavingsScreen(
                 state.savingsDeficit?.let { deficit ->
                     CarnetStateBanner(text = deficit, kind = CarnetBannerKind.Warn, pad = tipPad)
                 }
-                SecondaryA11yButton(
+                PrimaryA11yButton(
                     text = savingsActionLabel(state.savingsBusy, state.savingsActive),
                     onClick = viewModel::saveSavings,
                     enabled = !state.busy && !state.savingsBusy
@@ -122,12 +124,9 @@ fun SettingsSavingsScreen(
         }
     ) {
         SettingsPageTitle(SettingsHubCopy.SAVINGS)
-        Text(
+        CarnetTipCard(
             text = "Montant : depuis Accueil (sous Courses). Ici : jour du mois et retrait. " +
-                "Chaque mois, ce montant sort du Reste (vers un autre compte).",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+                "Chaque mois, ce montant sort du Reste (vers un autre compte)."
         )
         OutlinedTextField(
             value = state.savingsAmountText,
@@ -170,7 +169,7 @@ fun SettingsSavingsScreen(
                     }
             )
         }
-        SecondaryA11yButton(
+        PrimaryA11yButton(
             text = savingsActionLabel(state.savingsBusy, state.savingsActive),
             onClick = viewModel::saveSavings,
             enabled = !state.busy && !state.savingsBusy
@@ -237,16 +236,9 @@ fun SettingsPrivacyScreen(
         SettingsPageTitle(SettingsHubCopy.PRIVACY)
         val lockShape = MaterialTheme.shapes.large
         // 7.13 : intro + toggle en cartes soft (plus texte plat).
-        Text(
+        CarnetTipCard(
             text = "Le carnet est protégé sur le téléphone. " +
-                "Le verrou ci-dessous cache aussi l’écran, le widget et les montants des alertes.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(lockShape)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 16.dp, vertical = 14.dp)
+                "Le verrou ci-dessous cache aussi l’écran, le widget et les montants des alertes."
         )
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 10.dp else 14.dp))
         val canToggle = state.availability == BiometricAvailability.Ready || state.biometricEnabled

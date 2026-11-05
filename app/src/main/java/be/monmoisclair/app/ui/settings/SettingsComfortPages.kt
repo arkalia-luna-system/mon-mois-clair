@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.model.ThemePreference
 import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -80,16 +81,7 @@ fun SettingsDeadlinesScreen(
             modifier = Modifier.fillMaxWidth()
         )
         if (state.offMonthPeriodics.isEmpty()) {
-            Text(
-                text = "Aucune pour l’instant.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(A11yTokens.PaperWarm)
-                    .padding(horizontal = 14.dp, vertical = 12.dp)
-            )
+            CarnetTipCard(text = "Aucune pour l’instant.")
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                 state.offMonthPeriodics.forEach { item ->
@@ -198,15 +190,8 @@ fun SettingsHelpScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.HELP)
-        Text(
-            text = "Mode d’emploi court — le contact Arkalia reste dans le Menu Accueil.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
+        CarnetTipCard(
+            text = "Mode d’emploi court — le contact Arkalia reste dans le Menu Accueil."
         )
         SecondaryA11yButton(
             text = "Comment ça marche",

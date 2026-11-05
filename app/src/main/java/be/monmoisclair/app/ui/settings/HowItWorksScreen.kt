@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.HomeTokens
@@ -53,16 +54,7 @@ fun HowItWorksScreen(
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
         // PageTitle ≠ titres de section (titleMedium Ink, tappables).
         CarnetPageTitle(HowItWorksCopy.TITLE, withTopSpacer = false)
-        Text(
-            text = "Touchez un titre pour lire.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(HomeTokens.chipRadius)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
-        )
+        CarnetTipCard(text = "Touchez un titre pour lire.")
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 6.dp else 10.dp))
         // 7.23 AID : cartes Accueil (radius 20 + filet) + titreMedium.
         HowItWorksCopy.sections.forEachIndexed { index, section ->

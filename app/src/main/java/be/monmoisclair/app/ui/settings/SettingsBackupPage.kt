@@ -23,9 +23,10 @@ import be.monmoisclair.app.domain.model.BackupHealth
 import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
-import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -73,16 +74,8 @@ fun SettingsBackupScreen(
                     }
             )
         }
-        // 7.23 : intro en carte mist (rythme Accueil), pas mur plat.
-        Text(
-            text = "Trois étapes : 1) noter le code · 2) choisir le dossier · 3) envoyer une copie.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(introShape)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 12.dp)
+        CarnetTipCard(
+            text = "Trois étapes : 1) noter le code · 2) choisir le dossier · 3) envoyer une copie."
         )
         if (state.backupHealth != BackupHealth.NOT_CONFIGURED) {
             Text(
@@ -134,12 +127,12 @@ fun SettingsBackupScreen(
                 pad = tipPad
             )
         }
-        SecondaryA11yButton(
+        PrimaryA11yButton(
             text = "2. Choisir le dossier",
             onClick = onOpenSaf,
             enabled = !state.busy
         )
-        SecondaryA11yButton(
+        PrimaryA11yButton(
             text = "3. Envoyer une copie",
             onClick = viewModel::shareSecurityCopy,
             enabled = !state.busy

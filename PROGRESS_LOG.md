@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.29** B4/B6/B8 + tip/bandeaux (versionCode 135) |
+| Dernière étape terminée | **7.30** polish UI optionnel (versionCode 136) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.29) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.29` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.30) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.30` via IAU Immediate |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,22 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.30 tips mist + Primary + FAIT sûr
+
+**Contexte :** passe optionnelle post-7.29 (`8e79f24`).
+
+**UI (VÉRIFIÉ) :**
+- Tips mist → `CarnetTipCard` (Sauvegarde, Aide, HowItWorks, Privacy, Épargne, SAF, Permissions, Restore, Courriers, Convert, À venir détail, empty Échéances/Dossiers)
+- Erreurs onboarding/courriers → `CarnetStateBanner`
+- **Primary** : Sauvegarde étapes 2–3 · Enregistrer Épargne Réglages
+- **FAIT** : snackbar optimiste conservé ; anti double-tap ; erreurs VM plus masquées pendant Annuler (seul « Copié » filtré) ; message NotFound
+
+**Évité :** Production · claim smoke S26 · empty À venir (carte large dédiée) · warns Permissions bordés
+
+**Tests :** **422** exécutés / 423 (1 skipped), 0 failure.  
+**Version :** `0.1.0-7.30` · `versionCode` **136**.  
+**Ship :** `develop` + ff `main`.
 
 ### 2026-11-05 — 7.29 B4/B6/B8 + unif tip/bandeaux
 

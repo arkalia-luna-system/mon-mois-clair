@@ -23,7 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.AppWordmark
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -57,17 +60,9 @@ fun SafSetupScreen(
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
         CarnetPageTitle("Dossier de sauvegarde", withTopSpacer = false)
-        // ONB01 : 2 phrases — tip mist (rythme Aide / Backup).
-        Text(
+        CarnetTipCard(
             text = "Choisissez un dossier dans Documents (pas Téléchargements). " +
-                "Trois copies y seront écrites à chaque changement.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 12.dp)
+                "Trois copies y seront écrites à chaque changement."
         )
         if (state.saving) {
             Text(
@@ -84,21 +79,7 @@ fun SafSetupScreen(
             )
         }
         state.errorMessage?.let { msg ->
-            val errShape = MaterialTheme.shapes.medium
-            Text(
-                text = msg,
-                color = A11yTokens.DangerInk,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                    .background(A11yTokens.PaperWarm, errShape)
-                    .padding(12.dp)
-                    .semantics {
-                        liveRegion = LiveRegionMode.Assertive
-                        contentDescription = msg
-                    }
-            )
+            CarnetStateBanner(text = msg, kind = CarnetBannerKind.Error, pad = 12.dp)
         }
     }
 }

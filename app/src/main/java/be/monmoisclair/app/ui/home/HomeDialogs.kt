@@ -216,9 +216,9 @@ internal fun HomePastToggleDialog(
             PrimaryA11yButton(
                 text = if (pastMarkingDone) "Marquer FAIT" else "Remettre à payer",
                 onClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     val id = pendingId
-                    viewModel.confirmPastToggle()
+                    if (!viewModel.confirmPastToggle()) return@PrimaryA11yButton
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     scope.launch {
                         onFaitUndoActive(true)
                         try {

@@ -160,8 +160,8 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.userMessages.collect { msg ->
-            // Pendant « Annuler » FAIT : ignorer « Copié » (sinon le bandeau disparaît).
-            if (faitUndoActive) return@collect
+            // Pendant snackbar FAIT : seulement ignorer « Copié » (pas les erreurs).
+            if (faitUndoActive && msg.startsWith("Copié")) return@collect
             snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
                 message = msg,
@@ -254,8 +254,10 @@ fun HomeScreen(
             viewModel.requestToggleDone(expenseId)
             return
         }
+        // Snackbar optimiste : immédiat, mais seulement si le toggle est accepté
+        // (pas de 2ᵉ bandeau contradictoire sur double tap).
+        if (!viewModel.requestToggleDone(expenseId)) return
         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-        viewModel.requestToggleDone(expenseId)
         scope.launch {
             faitUndoActive = true
             try {

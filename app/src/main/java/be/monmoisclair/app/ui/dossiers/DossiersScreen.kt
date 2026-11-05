@@ -247,19 +247,7 @@ fun DossiersScreen(
                 .padding(bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
         )
         if (pending.isEmpty()) {
-            Text(
-                text = "Aucun pour le moment.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(A11yTokens.PaperWarm)
-                    .padding(
-                        horizontal = 14.dp,
-                        vertical = if (fit.compactHomeChrome) 10.dp else 12.dp
-                    )
-            )
+            CarnetTipCard(text = "Aucun pour le moment.")
         } else {
             var confirmDiscardId by remember { mutableStateOf<String?>(null) }
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {

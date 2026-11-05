@@ -29,7 +29,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.entry.DayOfMonthGrid
@@ -126,15 +129,8 @@ fun ConvertPendingLetterScreen(
                 color = A11yTokens.InkMuted
             )
         }
-        Text(
-            text = "Le versement entre dans le Reste. IBAN et e-mail : ensuite dans la fiche.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
+        CarnetTipCard(
+            text = "Le versement entre dans le Reste. IBAN et e-mail : ensuite dans la fiche."
         )
 
         OutlinedTextField(
@@ -177,21 +173,7 @@ fun ConvertPendingLetterScreen(
             enabled = !state.saving && !state.loading
         )
         state.error?.let { err ->
-            val errShape = MaterialTheme.shapes.medium
-            Text(
-                err,
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.DangerInk,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                    .background(A11yTokens.PaperWarm, errShape)
-                    .padding(tipPad)
-                    .semantics {
-                        liveRegion = LiveRegionMode.Assertive
-                        contentDescription = err
-                    }
-            )
+            CarnetStateBanner(text = err, kind = CarnetBannerKind.Error, pad = tipPad)
         }
         if (state.saving) {
             Text(

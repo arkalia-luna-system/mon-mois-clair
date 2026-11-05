@@ -38,7 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedActionScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -98,16 +101,7 @@ fun PendingLetterFormScreen(
         secondaryEnabled = !state.saving
     ) {
         CarnetPageTitle("Courrier sans plan", withTopSpacer = false)
-        Text(
-            text = "Qui, pour quoi, photo — pas de montant, hors Reste.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(HomeTokens.chipRadius)
-                .background(A11yTokens.PaperWarm)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
-        )
+        CarnetTipCard(text = "Qui, pour quoi, photo — pas de montant, hors Reste.")
         Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
             OutlinedTextField(
                 value = state.who,
@@ -178,21 +172,7 @@ fun PendingLetterFormScreen(
                 )
             }
             state.error?.let { err ->
-                val errShape = MaterialTheme.shapes.medium
-                Text(
-                    err,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.DangerInk,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.DangerInk.copy(alpha = 0.4f), errShape)
-                        .background(A11yTokens.PaperWarm, errShape)
-                        .padding(tipPad)
-                        .semantics {
-                            liveRegion = LiveRegionMode.Assertive
-                            contentDescription = err
-                        }
-                )
+                CarnetStateBanner(text = err, kind = CarnetBannerKind.Error, pad = tipPad)
             }
             if (state.saving) {
                 Text(

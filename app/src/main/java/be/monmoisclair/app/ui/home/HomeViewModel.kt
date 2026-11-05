@@ -334,24 +334,33 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun requestToggleDone(expenseId: String) {
+    /**
+     * @return false si un FAIT est déjà en cours sur cette ligne
+     * (évite un 2ᵉ snackbar optimiste contradictoire).
+     */
+    fun requestToggleDone(expenseId: String): Boolean {
         val ym = selectedMonth.value
         val current = AppClock.currentYearMonth()
         if (MonthNavigation.isFuturePreview(ym, current)) {
             _userMessages.tryEmit("Pas de FAIT sur un mois à venir — ouvrez le mois en cours.")
-            return
+            return false
         }
         if (ym.isBefore(current)) {
             pendingPastToggleId.value = expenseId
-        } else {
-            performToggle(expenseId)
+            return true
         }
+        if (expenseId in toggleInFlight) return false
+        performToggle(expenseId)
+        return true
     }
 
-    fun confirmPastToggle() {
-        val id = pendingPastToggleId.value ?: return
+    /** @return false si la ligne a disparu ou est déjà en cours. */
+    fun confirmPastToggle(): Boolean {
+        val id = pendingPastToggleId.value ?: return false
         pendingPastToggleId.value = null
+        if (id in toggleInFlight) return false
         performToggle(id)
+        return true
     }
 
     fun dismissPastToggle() {
@@ -366,6 +375,18 @@ class HomeViewModel @Inject constructor(
     private val toggleInFlight = mutableSetOf<String>()
     private val toggleUndoQueued = mutableSetOf<String>()
 
+    private fun emitToggleResult(result: ToggleExpenseDoneResult) {
+        when (result) {
+            is ToggleExpenseDoneResult.FuturePreviewBlocked ->
+                _userMessages.tryEmit(
+                    "Pas de FAIT sur un mois à venir — ouvrez le mois en cours."
+                )
+            is ToggleExpenseDoneResult.NotFound ->
+                _userMessages.tryEmit("Cette ligne n’est plus là.")
+            is ToggleExpenseDoneResult.Toggled -> Unit
+        }
+    }
+
     private fun performToggle(expenseId: String, fromUndo: Boolean = false) {
         if (expenseId in toggleInFlight) {
             if (fromUndo) toggleUndoQueued.add(expenseId)
@@ -374,21 +395,9 @@ class HomeViewModel @Inject constructor(
         toggleInFlight.add(expenseId)
         viewModelScope.launch {
             try {
-                when (toggleDone.invoke(expenseId)) {
-                    is ToggleExpenseDoneResult.FuturePreviewBlocked ->
-                        _userMessages.tryEmit(
-                            "Pas de FAIT sur un mois à venir — ouvrez le mois en cours."
-                        )
-                    else -> Unit
-                }
+                emitToggleResult(toggleDone.invoke(expenseId))
                 if (toggleUndoQueued.remove(expenseId)) {
-                    when (toggleDone.invoke(expenseId)) {
-                        is ToggleExpenseDoneResult.FuturePreviewBlocked ->
-                            _userMessages.tryEmit(
-                                "Pas de FAIT sur un mois à venir — ouvrez le mois en cours."
-                            )
-                        else -> Unit
-                    }
+                    emitToggleResult(toggleDone.invoke(expenseId))
                 }
             } finally {
                 toggleInFlight.remove(expenseId)
