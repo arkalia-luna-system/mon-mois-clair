@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.33** matrice audits + expert pass (versionCode 139) |
+| Dernière étape terminée | **7.34** audit expert craft 10/10 (versionCode 140) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.33) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.33` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.34) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.34` via IAU Immediate |
 | Audit | [`matrice-audits-7.33.md`](docs/audits/2026-11-05-matrice-audits-7.33.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,33 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.34 audit expert craft 10/10
+
+**Contexte :** Athalia mode expert — rendre Mon Mois Clair irréprochable. Audit exhaustif 4 axes (Architecture/code · Fonctionnel · UI/affichage/icônes · Qualité/tests/docs). Base 7.33 `f01b5ed`.
+
+**Audit (221 fichiers source, 96 fichiers test) :**
+- Architecture/code : Clean Architecture (domain/data/ui) · MutatingRepository transactionnel · SQLCipher + Keystore · pas de catch vide · pas de FIXME · Suppress justifiés · ProGuard complet
+- Fonctionnel : Calculs corrects (MonthSummary, RecurrenceRules, DossierRemaining) · FAIT / Undo / mois passé OK · Courses & Épargne · Backup/restore + checksum SHA-256 · IAU Immediate
+- UI/affichage : mist/teal/gold kit · WCAG ≥ 7:1 · cibles ≥ 48 dp · tnum · serif Reste seul · PageTitle InkMuted · Courses/Côté chips Accueil 1 tap · a11y semantics partout
+- Qualité/tests/docs : 425 tests / 1 @Ignore documentaire / 0 failure · Dependabot patchée · INTERNET removed · FLAG_SECURE · README/CHARTE/PROGRESS alignés
+
+**Finding unique corrigé :**
+- `SettingsScreen.kt` : `getPackageInfo(pkg, 0)` → API-aware (SDK ≥ 33 : `PackageInfoFlags.of(0)`) + `remember {}` (évite recomposition inutile). Aligné sur `HomeViewModel.kt` qui faisait déjà correctement.
+
+**Impossible sans appareil (smoke) :**
+- Vérification doigt Galaxy S26 / S25 Ultra (affichage réel, insets, One UI)
+- Notification J-3 / Jour J / OVERDUE (AlarmManager exact)
+- Biométrie empreinte bout en bout
+- Restore famille (SAF + JSON + photos)
+- IAU Play Internal (vérifier version Play = 7.34)
+- Widget sur launcher (lecture + nuit + biométrie)
+- Scan QR EPC caméra
+- PDF résumé export
+
+**Tests :** **425** exécutés / 426 (1 skipped), 0 failure — `--rerun-tasks` 2026-11-05.
+**Version :** `0.1.0-7.34` · `versionCode` **140**.
+**Ship :** `develop` + ff `main`.
 
 ### 2026-11-05 — 7.33 matrice audits + expert pass
 

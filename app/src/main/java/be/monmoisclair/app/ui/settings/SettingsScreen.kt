@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.settings
 
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
@@ -76,11 +78,21 @@ fun SettingsScreen(
             leadingColoredIcon = true
         )
 
-        val versionName = try {
-            val p = context.packageManager.getPackageInfo(context.packageName, 0)
-            p.versionName
-        } catch (_: Exception) {
-            null
+        val versionName = remember {
+            runCatching {
+                val pm = context.packageManager
+                val pkg = context.packageName
+                val info = if (Build.VERSION.SDK_INT >= 33) {
+                    pm.getPackageInfo(
+                        pkg,
+                        android.content.pm.PackageManager.PackageInfoFlags.of(0)
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    pm.getPackageInfo(pkg, 0)
+                }
+                info.versionName
+            }.getOrNull()
         }
         val stepLabel = AppVersionDisplay.stepLabel(versionName)
         Column(

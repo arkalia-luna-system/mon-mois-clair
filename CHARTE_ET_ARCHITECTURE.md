@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-11-05 (lot **7.33** — Courses Accueil 1 tap · launcher kit livre+coche).
+Mise à jour : 2026-11-05 (lot **7.34** — audit expert craft 10/10).
 
 ## 1. Vision
 
