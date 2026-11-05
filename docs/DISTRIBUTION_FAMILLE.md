@@ -34,7 +34,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 - Toujours l’APK **release** signé (jamais debug).
 - **Même keystore** qu’avant = mise à jour sideload sans perdre les données Room.
 - Vérifier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`  
-  (ex. `versionName='0.1.0-7.25'` — lire le journal).
+  (ex. `versionName='0.1.0-7.26'` — lire le journal).
 
 ### 2. Envoyer (sans USB) — uniquement si Play Internal ne convient pas
 
@@ -67,8 +67,8 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 
 ## Dans l’app
 
-Via **Play Internal** : In-App Updates Flexible au démarrage (IPC Play Store, sans `INTERNET` app). Sideload : ouvrir le Store ou réinstaller l’APK.  
-Les MAJ Play passent par le **Play Store**, pas par Mon Mois Clair.  
+Via **Play Internal** : In-App Updates **Flexible** au cold start (IPC Play Store, sans `INTERNET` app) — l’utilisatrice **n’a pas** à ouvrir Play Store à la main pour une version Internal plus récente. Sideload / Option B : IAU = no-op → Store ou réinstall APK + `.mmc`.  
+Détail : [`IN_APP_UPDATES.md`](IN_APP_UPDATES.md) · [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) §9.  
 Souci : Accueil → Menu → **« Un souci ? Écrire à Arkalia Système »**.
 
 ---

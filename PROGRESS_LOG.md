@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.25** UI totale craft + CI retry (versionCode 131) |
+| Dernière étape terminée | **7.26** fin de journée IAU docs + ménage (versionCode 132) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.25) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.25` |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.26) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.26` via IAU |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,28 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.26 fin de journée IAU + CI + ménage
+
+**Contexte :** Athalia OUI — mission fin de journée (IAU, tour UI, CI, ménage, push).
+
+**IAU (VÉRIFIÉ code) :**
+- Flexible cold start après unlock (`PlayInAppUpdater` + `MainActivity`) · pas d’`INTERNET` app · sideload = no-op
+- Confirmé : install Play Internal + testeur → **pas besoin d’ouvrir Play Store à la main** (Play Core gère le flux)
+- Limites documentées : [`docs/IN_APP_UPDATES.md`](docs/IN_APP_UPDATES.md) · §9 `PLAY_INTERNAL_TESTING.md`
+- Test Robolectric no-op / idempotence ajouté
+
+**UI/fonc (revue code, pas smoke doigt) :** sticky Courses/épargne, édition futur + FAIT bloqué, snackbar mois, backup/restore paths, hubs 7.25 — pas de défaut évident restant. **Pas** claim smoke S26.
+
+**CI :** develop + main **7.25** verts (CI + Publish Play Internal). Échecs historiques 7.21/7.23 = flake ; HEAD déjà OK — pas de rerun.
+
+**Ménage :** `dist/play/` staging supprimé + gitignoré (clés/pem/assets Play locaux) · AppleDouble `._*` nettoyés. Conservés : charte, PROGRESS, README, PLAY_INTERNAL, privacy, keystore hors git, AAB/APK `dist/` gitignorés.
+
+**Évité :** Production · claim smoke · poll CI infini · bump sans besoin (code+docs IAU justifient **132**).
+
+**Tests :** **416** exécutés / 417 (1 skipped), 94 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.26` · `versionCode` **132**.  
+**Ship :** `develop` + ff `main` → Publish Play Internal.
 
 ### 2026-11-05 — 7.25 UI totale craft + CI retry
 

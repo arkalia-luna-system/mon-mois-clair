@@ -13,10 +13,23 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Mises à jour Play **In-App** (Flexible) via le Play Store (IPC),
+ * Mises à jour Play **In-App Updates** (type **Flexible**) via le Play Store (IPC),
  * sans permission `INTERNET` dans l’app.
  *
- * Sideload / pas de Play Store → no-op silencieux.
+ * ## Comportement (install Play Internal)
+ * 1. Cold start, **après** déverrouillage / Accueil prêt (`MainActivity`).
+ * 2. Si une version plus récente est disponible sur la piste Internal :
+ *    Play Core ouvre le flux Flexible **dans** l’app (pas besoin d’ouvrir
+ *    l’appli Play Store manuellement).
+ * 3. Téléchargement en arrière-plan → `completeUpdate()` quand `DOWNLOADED`
+ *    (listener + reprise `onResume`).
+ *
+ * ## Limites honnêtes
+ * - Install **via Play Internal** + compte **testeur** opt-in requis.
+ * - Sideload / Option B (signature ≠ Play) / pas de Play → **no-op** silencieux.
+ * - Flexible peut demander un **accord** utilisateur (UI Play Core) ; ce n’est
+ *   pas un téléchargement 100 % invisible.
+ * - Secours : ouvrir Play Store → Mettre à jour (MAJ auto Play).
  */
 @Singleton
 class PlayInAppUpdater @Inject constructor(

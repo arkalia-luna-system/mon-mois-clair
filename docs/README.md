@@ -13,6 +13,7 @@ Index **actif** (~7.17). Historique : [`archive/`](archive/README.md) · audits 
 | [`../README.md`](../README.md) | Vitrine + version |
 | [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md) | Brief oral cadeau (code papier · Arkalia) |
 | [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) | Checklist Play Internal + CI auto-deploy (secrets, compte de service) |
+| [`IN_APP_UPDATES.md`](IN_APP_UPDATES.md) | MAJ auto Flexible (cold start, limites sideload) |
 | [`privacy.html`](privacy.html) | Politique HTTPS (GitHub Pages `/docs`) |
 | [`CI.md`](CI.md) | CI + Dependabot Security |
 | [`audits/2026-11-02-passage-final.md`](audits/2026-11-02-passage-final.md) | Passage final craft · grille domaines · 7.16 |
@@ -42,7 +43,7 @@ Index **actif** (~7.17). Historique : [`archive/`](archive/README.md) · audits 
 | QA chemins critiques (FAIT / share / restore) | **fin-journee-qa** |
 | Craft brand / kit 7.15 | **visual-expert-10** + **brand-logo** |
 | Smoke téléphone | **AUDIT_STATUS** + checklist Athalia (NOTICE / passage-final) |
-| Brief famille / Play / APK | **NOTICE** + **PLAY_INTERNAL** + **DISTRIBUTION** |
+| Brief famille / Play / APK | **NOTICE** + **PLAY_INTERNAL** + **DISTRIBUTION** + **IN_APP_UPDATES** |
 | Audits thématiques / expert / premium | **audits/archive/** + **archive/** |
 
 ## Local (hors git utile)

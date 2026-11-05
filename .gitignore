@@ -15,6 +15,8 @@
 *.aab
 /dist/*.apk
 /dist/*.aab
+# Staging Play Console (clés / assets upload) — jamais versionner
+/dist/play/
 # Captures device (lourdes) — garder les .md / .xml de rapport
 /dist/verify/**/*.png
 /dist/verify/*.png
