@@ -5,7 +5,9 @@ import android.content.Intent
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.data.db.entity.PendingLetterEntity
+import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.ShareFileIntents
@@ -42,7 +44,9 @@ class DossiersViewModel @Inject constructor(
     private val listDossiers: ListDossiersUseCase,
     private val listPendingLetters: ListPendingLettersUseCase,
     private val prepareMonthSummary: PrepareMonthSummaryUseCase,
-    private val summaryPdfWriter: MonthSummaryPdfWriter
+    private val summaryPdfWriter: MonthSummaryPdfWriter,
+    private val pendingLetterDao: PendingLetterDao,
+    private val mutatingRepository: MutatingRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(DossiersUiState())
     val state: StateFlow<DossiersUiState> = _state.asStateFlow()
@@ -152,6 +156,16 @@ class DossiersViewModel @Inject constructor(
                 summaryMessage = "Aucune app pour envoyer. Réessayez.",
                 summaryMessageError = true
             )
+        }
+    }
+
+    /** Retire un courrier saisi par erreur (pas encore converti en accord). */
+    fun discardPendingLetter(id: String) {
+        viewModelScope.launch {
+            mutatingRepository.mutate(rescheduleReminders = false) {
+                pendingLetterDao.deleteById(id)
+            }
+            refresh()
         }
     }
 }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,10 +25,12 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Ligne hub 7.13 : carte soft + well tonal leading + titre + › , cible ≥ 48 dp.
+ * Ligne hub 7.13 : carte soft + well tonal leading + titre + chevron, cible ≥ 48 dp.
  * Même rythme Menu Accueil / hub Réglages.
  */
 @Composable
@@ -68,7 +69,7 @@ fun CarnetHubRow(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(RoundedCornerShape(14.dp))
+                    .clip(HomeTokens.wellRadius)
                     .background(A11yTokens.PaperWarm)
             ) {
                 Icon(
@@ -91,10 +92,11 @@ fun CarnetHubRow(
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
-        Text(
-            text = "›",
-            style = MaterialTheme.typography.titleLarge,
-            color = chevronColor
+        Icon(
+            painter = painterResource(R.drawable.ic_chevron_right),
+            contentDescription = null,
+            tint = chevronColor,
+            modifier = Modifier.size(22.dp)
         )
     }
 }

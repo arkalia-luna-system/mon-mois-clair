@@ -127,8 +127,9 @@ fun UpcomingScreen(
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .shadow(2.dp, introShape, clip = false)
                     .clip(introShape)
-                    .background(A11yTokens.PaperCard)
+                    .background(A11yTokens.PaperWarm)
                     .padding(horizontal = 18.dp, vertical = 22.dp)
             )
             return@PinnedBackScaffold

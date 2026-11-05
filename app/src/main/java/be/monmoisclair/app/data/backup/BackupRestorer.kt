@@ -235,6 +235,9 @@ class BackupRestorer @Inject constructor(
                     db.appMetaDao().upsert(
                         AppMetaEntity(AppMetaKeys.SAF_TREE_URI, preservedSafUri)
                     )
+                } else {
+                    // URI d’un autre appareil = pas de grant SAF local → backups cassés.
+                    db.appMetaDao().delete(AppMetaKeys.SAF_TREE_URI)
                 }
                 db.appMetaDao().upsert(
                     AppMetaEntity(

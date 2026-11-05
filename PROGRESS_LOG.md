@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.27** IAU Immediate cold start (versionCode 133) |
+| Dernière étape terminée | **7.28** finition bugs + polish (versionCode 134) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.27) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.27` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.28) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.28` via IAU Immediate |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,29 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.28 finition complète (bugs + polish + ménage)
+
+**Contexte :** Athalia — finition complète (fonc / UI / tests / ménage / ship). Base `6d0e615` / 7.27.
+
+**Bugs corrigés (VÉRIFIÉ code + tests) :**
+- **B1** Delete « ce mois seulement » d’une ligne liée à un modèle : tombstone `app_meta.suppressedInstanceIds` → plus de résurrection via `syncMissingTemplates` (test `delete_thisMonthOnly_thenEnsureMonth_doesNotResurrect`)
+- **B2** Alarmes orphelines : `cancelFor` après delete / retrait épargne ; `ReminderReceiver` ignore FIRE si ligne absente ou déjà FAIT
+- **B3** Épargne : libellé verrouillé + Accueil retrouve le forfait par `SAVINGS_TEMPLATE_ID` (plus par label seul)
+- **B5** Biométrie ON/OFF → `rescheduleReminders = true` (masque montants dans payloads déjà armés)
+- **B7** Restore sans SAF local : ne réimporte plus l’URI d’un autre appareil
+- **B9** Courrier sans plan : « Retirer ce courrier » + confirmation
+- **B12** Courses `ReducedToZero` → message informatif (plus bandeau erreur rouge)
+
+**UI :** chevron icône hubs · empty « À venir » soft PaperWarm · consts mortes retirées (`FUTURE_PREVIEW_*`, `LEGACY_ZIP_NAME`)
+
+**Ménage :** screenshots 7.07–7.13 (20) · AppleDouble source · AAB doublon 7.18 local. Conservés : charte, PROGRESS, README, PLAY/IAU, privacy, keystore, audits vivants, 7.14/7.15.
+
+**Évité :** Production · claim smoke S26 · features majeures (revenus rétroactifs B6, sync templates futurs B4/B8 — hors passe sûre) · poll CI.
+
+**Tests :** **417** exécutés / 418 (1 skipped), 94 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.28` · `versionCode` **134**.  
+**Ship :** `develop` + ff `main` → Publish Play Internal.
 
 ### 2026-11-05 — 7.27 IAU Immediate (auto à l’ouverture)
 

@@ -59,7 +59,8 @@ class MonthCycleEngine @Inject constructor(
                     ledgerId = ledgerId,
                     yearMonth = yearMonth,
                     templateDao = templateDao,
-                    instanceDao = instanceDao
+                    instanceDao = instanceDao,
+                    suppressedIds = SuppressedInstances.read(appMetaDao)
                 )
                 return@mutate EnsureMonthResult.AlreadyExists(
                     ledgerId = ledgerId,
@@ -112,7 +113,8 @@ class MonthCycleEngine @Inject constructor(
         ledgerId: String,
         yearMonth: YearMonth,
         templateDao: TemplateDao,
-        instanceDao: InstanceDao
+        instanceDao: InstanceDao,
+        suppressedIds: Set<String>
     ): Pair<Int, Int> {
         val now = AppClock.nowEpochMs()
         val missingIncomes = buildIncomeInstances(
@@ -120,14 +122,18 @@ class MonthCycleEngine @Inject constructor(
             yearMonth,
             now,
             templateDao.activeIncomeTemplates()
-        ).filter { instanceDao.getIncomeById(it.id) == null }
+        ).filter {
+            instanceDao.getIncomeById(it.id) == null && it.id !in suppressedIds
+        }
         val missingExpenses = buildExpenseInstances(
             ledgerId,
             yearMonth,
             now,
             templateDao.activeExpenseTemplates(),
             instanceDao
-        ).filter { instanceDao.getExpenseById(it.id) == null }
+        ).filter {
+            instanceDao.getExpenseById(it.id) == null && it.id !in suppressedIds
+        }
         if (missingIncomes.isNotEmpty()) {
             instanceDao.insertIncomes(missingIncomes)
         }

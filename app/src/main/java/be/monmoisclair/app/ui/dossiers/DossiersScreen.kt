@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +48,9 @@ import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetSectionTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.CarnetTitleTokens
+import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
+import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -266,13 +269,54 @@ fun DossiersScreen(
                     )
             )
         } else {
+            var confirmDiscardId by remember { mutableStateOf<String?>(null) }
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                 pending.forEach { letter ->
                     PendingLetterRow(
                         letter = letter,
-                        onClick = { onConvertPending(letter.id) }
+                        onClick = { onConvertPending(letter.id) },
+                        onDiscard = { confirmDiscardId = letter.id }
                     )
                 }
+            }
+            confirmDiscardId?.let { id ->
+                val who = pending.firstOrNull { it.id == id }?.who?.trim().orEmpty()
+                    .ifBlank { "ce courrier" }
+                AlertDialog(
+                    onDismissRequest = { confirmDiscardId = null },
+                    shape = MaterialTheme.shapes.extraLarge,
+                    containerColor = A11yTokens.PaperCard,
+                    title = {
+                        Text("Retirer $who ?", color = A11yTokens.Ink)
+                    },
+                    text = {
+                        Text(
+                            text = "Le courrier disparaîtra de la liste. " +
+                                "Vous pourrez en garder un autre ensuite.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = A11yTokens.Ink
+                        )
+                    },
+                    confirmButton = {
+                        DangerA11yButton(
+                            text = "Retirer",
+                            onClick = {
+                                confirmDiscardId = null
+                                viewModel.discardPendingLetter(id)
+                            },
+                            fillMaxWidth = false,
+                            modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                        )
+                    },
+                    dismissButton = {
+                        SecondaryA11yButton(
+                            text = "Annuler",
+                            onClick = { confirmDiscardId = null },
+                            fillMaxWidth = false,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                )
             }
         }
         Spacer(modifier = Modifier.height(sectionGap))
@@ -418,7 +462,8 @@ private fun DossierRow(
 @Composable
 private fun PendingLetterRow(
     letter: PendingLetterEntity,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onDiscard: () -> Unit
 ) {
     val fit = rememberDisplayFit()
     val rowPad = if (fit.compactHomeChrome) 12.dp else 14.dp
@@ -469,6 +514,11 @@ private fun PendingLetterRow(
             style = MaterialTheme.typography.labelLarge,
             color = A11yTokens.Link,
             modifier = Modifier.padding(top = if (fit.compactHomeChrome) 2.dp else 4.dp)
+        )
+        QuietLinkA11y(
+            text = "Retirer ce courrier",
+            onClick = onDiscard,
+            onClickLabel = "Retirer ce courrier sans plan"
         )
     }
 }

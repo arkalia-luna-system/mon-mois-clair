@@ -1,8 +1,10 @@
 package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.SuppressedInstances
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,7 +17,8 @@ sealed class DeleteInstanceResult {
 @Singleton
 class DeleteInstanceUseCase @Inject constructor(
     private val instanceDao: InstanceDao,
-    private val mutatingRepository: MutatingRepository
+    private val mutatingRepository: MutatingRepository,
+    private val reminderScheduler: ReminderScheduler
 ) {
 
     /**
@@ -27,7 +30,7 @@ class DeleteInstanceUseCase @Inject constructor(
         isExpense: Boolean,
         applyToFollowingMonths: Boolean
     ): DeleteInstanceResult {
-        return mutatingRepository.mutate(
+        val result = mutatingRepository.mutate(
             sideEffectsWhen = { it is DeleteInstanceResult.Success }
         ) {
             if (isExpense) {
@@ -53,6 +56,9 @@ class DeleteInstanceUseCase @Inject constructor(
                             it.status == ExpenseStatus.TODO
                     }
                     others.forEach { instanceDao.deleteExpense(it) }
+                } else if (!applyToFollowingMonths && current.templateId != null) {
+                    // Ce mois seulement : empêcher syncMissingTemplates de réinjecter.
+                    SuppressedInstances.add(appMetaDao, current.id)
                 }
             } else {
                 val current = instanceDao.getIncomeById(id)
@@ -73,9 +79,16 @@ class DeleteInstanceUseCase @Inject constructor(
                         current.ledgerId
                     ).filter { it.id != current.id && it.ledgerId > current.ledgerId }
                     others.forEach { instanceDao.deleteIncome(it) }
+                } else if (!applyToFollowingMonths && current.templateId != null) {
+                    SuppressedInstances.add(appMetaDao, current.id)
                 }
             }
             DeleteInstanceResult.Success
         }
+        // reconcileAll ne voit plus la ligne : annuler les alarmes orphelines.
+        if (result is DeleteInstanceResult.Success && isExpense) {
+            runCatching { reminderScheduler.cancelFor(id) }
+        }
+        return result
     }
 }

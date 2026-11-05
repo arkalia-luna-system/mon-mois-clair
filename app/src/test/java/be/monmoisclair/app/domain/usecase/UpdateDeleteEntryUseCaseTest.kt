@@ -12,10 +12,12 @@ import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.data.widget.CarnetWidgetSink
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.MonthCycleEngine
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import com.google.common.truth.Truth.assertThat
 import java.time.Clock
 import java.time.Instant
+import java.time.YearMonth
 import java.time.ZoneId
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -28,6 +30,7 @@ import org.robolectric.RobolectricTestRunner
 class UpdateDeleteEntryUseCaseTest {
 
     private lateinit var db: AppDatabase
+    private lateinit var repo: MutatingRepository
     private lateinit var update: UpdateInstanceUseCase
     private lateinit var delete: DeleteInstanceUseCase
     private lateinit var add: AddEntryUseCase
@@ -40,7 +43,7 @@ class UpdateDeleteEntryUseCaseTest {
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        val repo = MutatingRepository(
+        repo = MutatingRepository(
             db = db,
             backupScheduler = BackupScheduler {},
             reminderScheduler = object : ReminderScheduler {
@@ -50,7 +53,14 @@ class UpdateDeleteEntryUseCaseTest {
             widgetSink = CarnetWidgetSink.Noop
         )
         update = UpdateInstanceUseCase(db.instanceDao(), repo)
-        delete = DeleteInstanceUseCase(db.instanceDao(), repo)
+        delete = DeleteInstanceUseCase(
+            instanceDao = db.instanceDao(),
+            mutatingRepository = repo,
+            reminderScheduler = object : ReminderScheduler {
+                override suspend fun reconcileAll() = Unit
+                override suspend fun cancelFor(expenseId: String) = Unit
+            }
+        )
         // AddEntry needs MonthCycleEngine - tested indirectly via seed
     }
 
@@ -435,6 +445,41 @@ class UpdateDeleteEntryUseCaseTest {
         )
         assertThat(result).isEqualTo(DeleteInstanceResult.Success)
         assertThat(db.instanceDao().getExpenseById("exp:2027-04:once")).isNull()
+    }
+
+    /** B1 7.28 : delete « ce mois seulement » + ensureMonth ne doit pas ressusciter. */
+    @Test
+    fun delete_thisMonthOnly_thenEnsureMonth_doesNotResurrect() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-loyer",
+                label = "Loyer",
+                amountCents = 800_00L,
+                dayOfMonth = 1,
+                active = true,
+                intervalMonths = 1,
+                anchorYearMonth = "2026-11",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense(
+            ledger = "2026-11",
+            id = "exp:2026-11:tpl-loyer",
+            templateId = "tpl-loyer",
+            amount = 800_00L
+        )
+        val deleted = delete(
+            id = "exp:2026-11:tpl-loyer",
+            isExpense = true,
+            applyToFollowingMonths = false
+        )
+        assertThat(deleted).isEqualTo(DeleteInstanceResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-loyer")).isNull()
+
+        val engine = MonthCycleEngine(db.monthLedgerDao(), repo)
+        engine.ensureMonthExists(YearMonth.parse("2026-11"))
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-loyer")).isNull()
     }
 
     private suspend fun seedLinkedExpense(

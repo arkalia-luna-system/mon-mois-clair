@@ -233,7 +233,10 @@ class EditEntryViewModel @Inject constructor(
         }
     }
 
-    fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
+    fun setLabel(v: String) {
+        if (_state.value.isSavingsLine) return
+        _state.update { it.copy(label = v, error = null) }
+    }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
     fun setDay(v: String) = _state.update { it.copy(dayText = v, error = null) }
     fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v) }
@@ -653,11 +656,16 @@ class EditEntryViewModel @Inject constructor(
                 )
             }
             val syncCreditor = s.isExpense && (s.isAgreement || s.dossierExpanded)
+            val labelToSave = if (s.isSavingsLine) {
+                ConfigureSavingsUseCase.LABEL
+            } else {
+                s.label
+            }
             when (
                 val result = updateInstance(
                     id = s.id,
                     isExpense = s.isExpense,
-                    label = s.label,
+                    label = labelToSave,
                     amountCents = cents,
                     dayOfMonth = day,
                     applyToFollowingMonths = s.applyToFollowing || s.isSavingsLine,

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
+import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.model.ReminderKind
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneResult
@@ -31,6 +32,9 @@ class ReminderReceiver : BroadcastReceiver() {
     @Inject
     lateinit var toggleDone: ToggleExpenseDoneUseCase
 
+    @Inject
+    lateinit var instanceDao: InstanceDao
+
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return
         when (action) {
@@ -50,6 +54,12 @@ class ReminderReceiver : BroadcastReceiver() {
                 val body = intent.getStringExtra(EXTRA_BODY) ?: return@launch
                 val kind = runCatching { ReminderKind.valueOf(kindName) }.getOrNull()
                     ?: return@launch
+                val expense = instanceDao.getExpenseById(expenseId)
+                if (expense == null || expense.status != ExpenseStatus.TODO) {
+                    reminderScheduler.cancelFor(expenseId)
+                    reminderScheduler.reconcileAll()
+                    return@launch
+                }
                 val notificationId = ReminderRequestCodes.of(expenseId, kind)
                 notifications.showPaymentReminder(
                     notificationId = notificationId,

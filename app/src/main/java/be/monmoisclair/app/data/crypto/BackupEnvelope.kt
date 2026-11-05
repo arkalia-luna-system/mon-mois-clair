@@ -17,9 +17,6 @@ object BackupEnvelope {
     const val TEXT_PREFIX = "MMC1B64:"
     const val SHARE_MMC_NAME = "mon-mois-clair-copie.mmc"
 
-    /** Ancien nom ZIP (grace restore). */
-    const val LEGACY_ZIP_NAME = "mon-mois-clair-securite.zip"
-
     fun looksLikeBinary(bytes: ByteArray): Boolean =
         bytes.size >= 4 + 1 + AesGcmBox.SALT_BYTES + AesGcmBox.IV_BYTES + 16 &&
             bytes[0] == MAGIC[0] &&

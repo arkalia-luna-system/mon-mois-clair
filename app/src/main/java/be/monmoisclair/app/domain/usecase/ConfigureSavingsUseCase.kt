@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
+import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.ExpenseOverdue
@@ -49,7 +50,8 @@ class ConfigureSavingsUseCase @Inject constructor(
     private val mutatingRepository: MutatingRepository,
     private val instanceDao: InstanceDao,
     private val templateDao: TemplateDao,
-    private val appMetaDao: AppMetaDao
+    private val appMetaDao: AppMetaDao,
+    private val reminderScheduler: ReminderScheduler
 ) {
     suspend fun read(): SavingsAsideState {
         val tpl = activeTemplate() ?: return SavingsAsideState(
@@ -180,6 +182,7 @@ class ConfigureSavingsUseCase @Inject constructor(
 
     suspend fun remove(): ConfigureSavingsResult {
         val existing = activeTemplate() ?: return ConfigureSavingsResult.Removed
+        val removedIds = mutableListOf<String>()
         mutatingRepository.mutate {
             templateDao.updateExpense(
                 existing.copy(active = false, archivedAtEpochMs = AppClock.nowEpochMs())
@@ -189,9 +192,13 @@ class ConfigureSavingsUseCase @Inject constructor(
             for (item in rows) {
                 if (item.status == ExpenseStatus.TODO) {
                     instanceDao.deleteExpense(item)
+                    removedIds += item.id
                 }
             }
             appMetaDao.upsert(AppMetaEntity(AppMetaKeys.SAVINGS_TEMPLATE_ID, ""))
+        }
+        removedIds.forEach { id ->
+            runCatching { reminderScheduler.cancelFor(id) }
         }
         return ConfigureSavingsResult.Removed
     }

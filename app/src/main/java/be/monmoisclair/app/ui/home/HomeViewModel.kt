@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.MonthLedgerDao
 import be.monmoisclair.app.data.db.dao.PendingLetterDao
@@ -23,6 +24,7 @@ import be.monmoisclair.app.domain.MonthSummary
 import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.SupportMailComposer
+import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.AdjustDiversResult
 import be.monmoisclair.app.domain.usecase.AdjustDiversUseCase
@@ -93,6 +95,7 @@ class HomeViewModel @Inject constructor(
     private val monthLedgerDao: MonthLedgerDao,
     private val instanceDao: InstanceDao,
     private val templateDao: TemplateDao,
+    private val appMetaDao: AppMetaDao,
     private val pendingLetterDao: PendingLetterDao,
     private val toggleDone: ToggleExpenseDoneUseCase,
     private val adjustDivers: AdjustDiversUseCase,
@@ -132,9 +135,13 @@ class HomeViewModel @Inject constructor(
                 instanceDao.observeExpenses(ledgerId),
                 templateDao.observeExpenseTemplates(),
                 monthLedgerDao.observeAll(),
-                combine(highlightExpenseId, pendingPastToggleId) { h, p -> h to p }
-            ) { incomes, expenses, templates, ledgers, highlightPair ->
-                val (highlight, pendingToggle) = highlightPair
+                combine(
+                    highlightExpenseId,
+                    pendingPastToggleId,
+                    appMetaDao.observeValue(AppMetaKeys.SAVINGS_TEMPLATE_ID)
+                ) { h, p, savingsId -> Triple(h, p, savingsId) }
+            ) { incomes, expenses, templates, ledgers, highlightTriple ->
+                val (highlight, pendingToggle, savingsMetaId) = highlightTriple
                 val tplById = templates.associateBy { it.id }
                 val summary = MonthSummaryCalculator.compute(incomes, expenses)
                 val divers = ledgers.firstOrNull { it.id == ledgerId }?.diversSpentCents ?: 0L
@@ -153,6 +160,8 @@ class HomeViewModel @Inject constructor(
                     }
                     expenses.forEach { exp ->
                         val tpl = exp.templateId?.let { tplById[it] }
+                        val savingsLine = !savingsMetaId.isNullOrBlank() &&
+                            exp.templateId == savingsMetaId
                         add(
                             TimelineItem.Expense(
                                 id = exp.id,
@@ -165,7 +174,12 @@ class HomeViewModel @Inject constructor(
                                     ledgerId = exp.ledgerId,
                                     dayOfMonth = exp.dayOfMonth,
                                     status = exp.status,
-                                    label = exp.label
+                                    // Épargne = jamais « en retard », même si libellé abîmé.
+                                    label = if (savingsLine) {
+                                        ConfigureSavingsUseCase.LABEL
+                                    } else {
+                                        exp.label
+                                    }
                                 ),
                                 isAutoDebit = exp.isAutoDebit,
                                 paymentNote = exp.paymentNote,
@@ -191,8 +205,13 @@ class HomeViewModel @Inject constructor(
                 val hasDossiers = templates.any {
                     it.active && DossierRemaining.isDossier(it.openingRemainingCents)
                 }
-                val savingsTpl = templates.firstOrNull {
-                    it.active && it.label == ConfigureSavingsUseCase.LABEL
+                val savingsId = savingsMetaId?.trim().orEmpty()
+                val savingsTpl = when {
+                    savingsId.isNotEmpty() ->
+                        templates.firstOrNull { it.active && it.id == savingsId }
+                    else -> templates.firstOrNull {
+                        it.active && it.label == ConfigureSavingsUseCase.LABEL
+                    }
                 }
                 HomeUiState(
                     loading = false,
@@ -435,12 +454,16 @@ class HomeViewModel @Inject constructor(
                         _diversFieldCleared.tryEmit(Unit)
                     }
                     is AdjustDiversResult.ReducedToZero -> {
-                        _diversError.value = if (result.previousCents <= 0L) {
-                            "Il n’y a pas de courses notées."
-                        } else {
-                            "Il n’y a que ${MoneyFormat.formatCents(result.previousCents)} en courses. Tout a été retiré."
-                        }
+                        // Succès (clamp à 0) — message informatif, pas canal erreur rouge.
+                        _diversError.value = null
                         _diversFieldCleared.tryEmit(Unit)
+                        _userMessages.tryEmit(
+                            if (result.previousCents <= 0L) {
+                                "Il n’y a pas de courses notées."
+                            } else {
+                                "Il n’y a que ${MoneyFormat.formatCents(result.previousCents)} en courses. Tout a été retiré."
+                            }
+                        )
                     }
                     is AdjustDiversResult.Failed -> _diversError.value = result.message
                 }

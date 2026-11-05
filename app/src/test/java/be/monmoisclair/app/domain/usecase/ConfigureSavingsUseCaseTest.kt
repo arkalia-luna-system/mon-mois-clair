@@ -55,7 +55,11 @@ class ConfigureSavingsUseCaseTest {
             mutatingRepository = repo,
             instanceDao = db.instanceDao(),
             templateDao = db.templateDao(),
-            appMetaDao = db.appMetaDao()
+            appMetaDao = db.appMetaDao(),
+            reminderScheduler = object : ReminderScheduler {
+                override suspend fun reconcileAll() = Unit
+                override suspend fun cancelFor(expenseId: String) = Unit
+            }
         )
         AppClock.clock = Clock.fixed(Instant.parse("2026-10-15T10:00:00Z"), brussels)
     }

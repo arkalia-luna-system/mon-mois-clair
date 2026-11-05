@@ -13,5 +13,11 @@ object AppMetaKeys {
     /** Lot E — id du modèle « Mettre de côté ». Vide = pas activé. */
     const val SAVINGS_TEMPLATE_ID = "savingsTemplateId"
 
+    /**
+     * Ids d’instances volontairement retirées « ce mois seulement »
+     * (évite la résurrection via syncMissingTemplates). Séparateur `\n`.
+     */
+    const val SUPPRESSED_INSTANCE_IDS = "suppressedInstanceIds"
+
     const val CURRENT_SCHEMA_VERSION = "8"
 }

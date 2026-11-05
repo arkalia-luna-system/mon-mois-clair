@@ -239,6 +239,8 @@ internal fun EntryFormScaffold(
                     .then(nameBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
+                readOnly = isSavingsLine,
+                enabled = !isSavingsLine,
                 shape = MaterialTheme.shapes.medium,
                 colors = carnetOutlinedTextFieldColors(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),

@@ -27,7 +27,8 @@ class BiometricPreferenceUseCase @Inject constructor(
     }
 
     /**
-     * Persiste le choix et déclenche un backup (sans reprogrammer les rappels).
+     * Persiste le choix et déclenche un backup.
+     * Reprogramme les rappels pour figer `hideAmounts` dans les payloads déjà armés.
      * Active : provisionne la clé Keystore [KeystoreAesKey.UNLOCK_ALIAS] pour CryptoObject.
      */
     suspend fun setEnabled(enabled: Boolean) {
@@ -35,7 +36,7 @@ class BiometricPreferenceUseCase @Inject constructor(
             KeystoreAesKey.getOrCreateUnlockKey()
         }
         BiometricFlagCache.write(appContext, enabled)
-        mutatingRepository.mutate(rescheduleReminders = false) {
+        mutatingRepository.mutate(rescheduleReminders = true) {
             appMetaDao.upsert(
                 AppMetaEntity(
                     AppMetaKeys.BIOMETRIC_ENABLED,
