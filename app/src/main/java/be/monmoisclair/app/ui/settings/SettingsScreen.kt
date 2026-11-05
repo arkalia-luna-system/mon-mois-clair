@@ -143,7 +143,8 @@ fun SettingsAccountGroupScreen(
         CarnetHubRow(
             label = SettingsHubCopy.SAVINGS_ROW,
             onClick = onOpenSavings,
-            leadingIconRes = R.drawable.ic_piggy
+            leadingIconRes = R.drawable.ic_piggy,
+            leadingColoredIcon = true
         )
         CarnetHubRow(
             label = SettingsHubCopy.PRIVACY,

@@ -1,15 +1,22 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.domain.model.BackupHealth
@@ -20,6 +27,7 @@ import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 /**
@@ -36,6 +44,7 @@ fun SettingsBackupScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
     val tipPad = fit.tipPad
+    val introShape = HomeTokens.cardRadius
 
     SettingsResumeRefresh(viewModel)
     SettingsShareEffect(viewModel)
@@ -64,11 +73,16 @@ fun SettingsBackupScreen(
                     }
             )
         }
+        // 7.23 : intro en carte mist (rythme Accueil), pas mur plat.
         Text(
             text = "Trois étapes : 1) noter le code · 2) choisir le dossier · 3) envoyer une copie.",
             style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(introShape)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 12.dp)
         )
         if (state.backupHealth != BackupHealth.NOT_CONFIGURED) {
             Text(
@@ -82,16 +96,22 @@ fun SettingsBackupScreen(
         state.shareCopyCode?.let { code ->
             Text(
                 text = "1. Code à noter une fois",
-                style = MaterialTheme.typography.bodyMedium,
-                color = A11yTokens.InkMuted,
+                style = MaterialTheme.typography.titleMedium,
+                color = A11yTokens.Ink,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = code,
                 style = MaterialTheme.typography.headlineMedium,
                 color = A11yTokens.Ink,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .shadow(HomeTokens.cardElevation, introShape, clip = false)
+                    .clip(introShape)
+                    .background(A11yTokens.PaperCard)
+                    .border(1.5.dp, A11yTokens.AccentAuto, introShape)
+                    .padding(horizontal = 16.dp, vertical = 18.dp)
                     .semantics { contentDescription = "Code de copie $code" }
             )
             Text(

@@ -22,6 +22,11 @@ class HomeTokensContrastTest {
         // Badge Menu « ! » (dangerFill) + pastille Accord or champagne.
         assertThat(WcagContrast.ratio(A11yTokens.Day.buttonText, d.dangerFill)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(A11yTokens.Day.onGold, A11yTokens.Day.accentAuto)).isAtLeast(7.0)
+        // Wells Courses / Épargne + code backup (or sur carte).
+        assertThat(WcagContrast.ratio(d.ink, d.coursesChip)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(d.ink, d.savingsChip)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(d.link, d.coursesChip)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(d.okInk, d.savingsChip)).isAtLeast(7.0)
     }
 
     @Test
@@ -37,5 +42,9 @@ class HomeTokensContrastTest {
         assertThat(WcagContrast.ratio(A11yTokens.Night.buttonText, n.okFill)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(A11yTokens.Night.buttonText, n.dangerFill)).isAtLeast(7.0)
         assertThat(WcagContrast.ratio(A11yTokens.Night.onGold, A11yTokens.Night.accentAuto)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(n.ink, n.coursesChip)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(n.ink, n.savingsChip)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(n.link, n.coursesChip)).isAtLeast(7.0)
+        assertThat(WcagContrast.ratio(n.okInk, n.savingsChip)).isAtLeast(7.0)
     }
 }

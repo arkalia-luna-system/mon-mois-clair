@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.22** polish UI craft (versionCode 128) |
+| Dernière étape terminée | **7.23** polish UI craft suite (versionCode 129) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt / S26 / restore — **pas** claimés ici · confirmer MAJ Play Galaxy = `0.1.0-7.22` |
+| Prochaine sous-étape | Smoke doigt / S26 / restore — **pas** claimés ici · confirmer MAJ Play Galaxy = `0.1.0-7.23` |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,24 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.23 polish UI craft suite
+
+**Contexte :** Athalia — continuer craft après 7.22 ; pas de poll CI / Play.
+
+**Corrigé (craft code) :**
+- Icônes Courses / Épargne : drawables brand multi-couches teal `#0A5254` + or `#D4B06A` + forêt (sticky Unspecified + hub Compte piggy colored)
+- Aide : tip PaperWarm · cartes radius Accueil + filet · titres titleMedium
+- Backup : intro carte mist · code dans carte bordure or
+- Dossiers / échéances / Aide hub : empty states en carte soft PaperWarm
+- Alertes : tip mist · gap cardGap · HealthStatusRow titleMedium + filet
+
+**Évité :** refonte cream→autre · purple AI · claim smoke S26 · PendingLetter pin CTA · Production · poll CI
+
+**Tests :** **415** exécutés / 416 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.23` · `versionCode` **129**.  
+**Ship :** `develop` + ff `main` → Publish Play Internal (Athalia suit CI ; pas de poll agent).  
+**Note :** polish UI craft — **pas** « validé famille ».
 
 ### 2026-11-05 — 7.22 polish UI craft
 

@@ -32,6 +32,7 @@ fun HealthStatusRow(label: String, ok: Boolean) {
             .shadow(2.dp, shape, clip = false)
             .clip(shape)
             .background(A11yTokens.PaperCard)
+            .border(0.5.dp, A11yTokens.PaperBorder, shape)
             .heightIn(min = A11yTokens.minTouchHeight)
             .padding(horizontal = 14.dp, vertical = 12.dp)
             .semantics(mergeDescendants = true) {
@@ -43,7 +44,7 @@ fun HealthStatusRow(label: String, ok: Boolean) {
         // FR scan : libellé d’abord, pastille statut à droite.
         Text(
             text = label,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = A11yTokens.Ink,
             modifier = Modifier.weight(1f)
         )

@@ -1,5 +1,6 @@
 package be.monmoisclair.app.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -82,7 +84,11 @@ fun SettingsDeadlinesScreen(
                 text = "Aucune pour l’instant.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(A11yTokens.PaperWarm)
+                    .padding(horizontal = 14.dp, vertical = 12.dp)
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
@@ -192,6 +198,16 @@ fun SettingsHelpScreen(
 
     PinnedBackScaffold(onBack = onBack, backEnabled = !state.busy) {
         SettingsPageTitle(SettingsHubCopy.HELP)
+        Text(
+            text = "Mode d’emploi court — le contact Arkalia reste dans le Menu Accueil.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 10.dp)
+        )
         SecondaryA11yButton(
             text = "Comment ça marche",
             onClick = onOpenHowItWorks,

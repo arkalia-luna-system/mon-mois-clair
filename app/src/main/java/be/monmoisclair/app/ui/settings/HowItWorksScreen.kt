@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
+import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
@@ -49,25 +51,31 @@ fun HowItWorksScreen(
     PinnedBackScaffold(onBack = onBack) {
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 2.dp else 4.dp))
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
-        // PageTitle ≠ titres de section (titleLarge Ink, tappables).
+        // PageTitle ≠ titres de section (titleMedium Ink, tappables).
         CarnetPageTitle(HowItWorksCopy.TITLE, withTopSpacer = false)
         Text(
             text = "Touchez un titre pour lire.",
             style = MaterialTheme.typography.bodyMedium,
-            color = A11yTokens.InkMuted
+            color = A11yTokens.InkMuted,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(HomeTokens.chipRadius)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 10.dp)
         )
-        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
-        // 7.13 AID : cartes soft + padding aéré + fade/slide.
+        Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 6.dp else 10.dp))
+        // 7.23 AID : cartes Accueil (radius 20 + filet) + titreMedium.
         HowItWorksCopy.sections.forEachIndexed { index, section ->
             val expanded = openIndex == index
-            val shape = MaterialTheme.shapes.large
+            val shape = HomeTokens.cardRadius
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(2.dp, shape, clip = false)
+                    .shadow(HomeTokens.cardElevation, shape, clip = false)
                     .clip(shape)
                     .background(A11yTokens.PaperCard)
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                    .border(HomeTokens.hairline, A11yTokens.PaperBorder, shape)
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
             ) {
                 Row(
                     modifier = Modifier
@@ -88,7 +96,7 @@ fun HowItWorksScreen(
                 ) {
                     Text(
                         text = section.title,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         color = A11yTokens.Ink,
                         modifier = Modifier.weight(1f)
                     )
@@ -98,7 +106,7 @@ fun HowItWorksScreen(
                             else R.drawable.ic_expand_more
                         ),
                         contentDescription = null,
-                        tint = A11yTokens.Link,
+                        tint = if (expanded) A11yTokens.Link else A11yTokens.InkMuted,
                         modifier = Modifier.size(22.dp)
                     )
                 }

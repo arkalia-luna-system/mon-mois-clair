@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Chariot Courses — Material Symbols filled. -->
+<!-- Courses — chariot brand mist/teal/or (pas Material plat). Tint = Unspecified. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- Panier teal kit -->
     <path
-        android:fillColor="#121A24"
-        android:pathData="M7,18c-1.1,0 -1.99,0.9 -1.99,2S5.9,22 7,22s2,-0.9 2,-2 -0.9,-2 -2,-2zM1,2v2h2l3.6,7.59 -1.35,2.45C5.1,14.37 5,14.68 5,15c0,1.1 0.9,2 2,2h12v-2H7.42c-0.14,0 -0.25,-0.11 -0.25,-0.25l0.03,-0.12 0.9,-1.63h7.45c0.75,0 1.41,-0.41 1.75,-1.03l3.58,-6.49C20.96,5.33 21,5.16 21,5c0,-0.55 -0.45,-1 -1,-1H5.21L4.27,2H1zM17,18c-1.1,0 -1.99,0.9 -1.99,2s0.89,2 1.99,2 2,-0.9 2,-2 -0.9,-2 -2,-2z" />
+        android:fillColor="#0A5254"
+        android:pathData="M7.2,7h12.1c0.55,0 0.97,0.5 0.87,1.04l-1.35,7.2c-0.12,0.66 -0.7,1.16 -1.37,1.16H8.55c-0.67,0 -1.25,-0.5 -1.37,-1.16L5.55,5.5H3.25C2.84,5.5 2.5,5.16 2.5,4.75S2.84,4 3.25,4h2.85c0.55,0 1.03,0.38 1.16,0.92L7.5,7zM9.1,9.1l0.85,4.55h7.55l0.95,-4.55H9.1z" />
+    <!-- Roues or champagne -->
+    <path
+        android:fillColor="#D4B06A"
+        android:pathData="M8.25,19.75c0,1.1 -0.9,2 -2,2s-2,-0.9 -2,-2 0.9,-2 2,-2 2,0.9 2,2zM18.75,19.75c0,1.1 -0.9,2 -2,2s-2,-0.9 -2,-2 0.9,-2 2,-2 2,0.9 2,2z" />
 </vector>

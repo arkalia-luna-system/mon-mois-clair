@@ -31,7 +31,7 @@ import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.HomeTokens
 
 /**
- * Chip outil Accueil 7.13 — well tonal + icône filled ≥26 dp + libellé, ≥48 dp.
+ * Chip outil Accueil 7.13 — well tonal + icône brand ≥26 dp + libellé, ≥48 dp.
  */
 @Composable
 internal fun StickyIconTool(
@@ -42,7 +42,12 @@ internal fun StickyIconTool(
     contentDescription: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    /** Teal courses / forêt épargne — pas d’encre plate. */
+    /**
+     * true = drawable brand multi-couches (teal/or/forêt) — pas de tint mono.
+     * false = mono teinté [iconTint].
+     */
+    brandColoredIcon: Boolean = true,
+    /** Teal courses / forêt épargne — ignoré si [brandColoredIcon]. */
     iconTint: Color = HomeTokens.Link
 ) {
     Row(
@@ -67,7 +72,7 @@ internal fun StickyIconTool(
             Icon(
                 painter = painterResource(iconRes),
                 contentDescription = null,
-                tint = iconTint,
+                tint = if (brandColoredIcon) Color.Unspecified else iconTint,
                 modifier = Modifier.size(26.dp)
             )
         }

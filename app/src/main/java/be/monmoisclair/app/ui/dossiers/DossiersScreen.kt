@@ -126,20 +126,31 @@ fun DossiersScreen(
         }
 
         if (snap.items.isEmpty() && pending.isEmpty()) {
-            // Empty = Tip/Body InkMuted (pas titleLarge Ink type HubRow).
-            Text(
-                text = "Aucun accord pour le moment.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = "Sur une facture : « Retard ou accord », puis le reste dû. " +
-                    "Sans montant : « Garder le courrier (sans montant) ».",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.InkMuted,
-                modifier = Modifier.fillMaxWidth()
-            )
+            // 7.23 : empty premium — même carte soft Accueil (pas texte plat).
+            val emptyShape = MaterialTheme.shapes.large
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(2.dp, emptyShape, clip = false)
+                    .clip(emptyShape)
+                    .background(A11yTokens.PaperWarm)
+                    .padding(horizontal = 18.dp, vertical = if (fit.compactHomeChrome) 18.dp else 24.dp),
+                verticalArrangement = Arrangement.spacedBy(if (fit.compactHomeChrome) 8.dp else 10.dp)
+            ) {
+                Text(
+                    text = "Aucun accord pour le moment.",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = A11yTokens.Ink,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "Sur une facture : « Retard ou accord », puis le reste dû. " +
+                        "Sans montant : « Garder le courrier (sans montant) ».",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             SecondaryA11yButton(
                 text = "Garder un courrier",
                 onClick = onAddPending
@@ -233,7 +244,12 @@ fun DossiersScreen(
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = if (fit.compactHomeChrome) 6.dp else 8.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(A11yTokens.PaperWarm)
+                    .padding(
+                        horizontal = 14.dp,
+                        vertical = if (fit.compactHomeChrome) 10.dp else 12.dp
+                    )
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {

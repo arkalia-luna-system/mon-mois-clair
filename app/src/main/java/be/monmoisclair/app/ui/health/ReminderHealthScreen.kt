@@ -16,6 +16,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
@@ -57,9 +58,13 @@ fun ReminderHealthScreen(
         CarnetPageTitle(SettingsHubCopy.ALERTS)
         Text(
             text = "Pastilles : le téléphone laisse-t-il sonner ?",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 10.dp)
         )
 
         val r = report
@@ -87,7 +92,7 @@ fun ReminderHealthScreen(
                 )
             }
         } else {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                 HealthStatusRow("Notifications", r.notificationsGranted)
                 HealthStatusRow("Réveil à l’heure", r.exactAlarmGranted)
                 HealthStatusRow("Batterie non limitée", r.batteryOptimizationIgnored)
