@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.31** aperçu B8/B6 + bandeaux (versionCode 137) |
+| Dernière étape terminée | **7.32** peigne extrême + alarmes delete (versionCode 138) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.31) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.31` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.32) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.32` via IAU Immediate |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,25 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.32 peigne extrême (alarmes + propreté)
+
+**Contexte :** dernier tour affichage/fonc/code/propreté · base 7.31 `e743504`.
+
+**Preuves audit :**
+- CI 7.31 develop+main+Play Internal **verts** · 0 Dependabot · 0 FIXME code
+- Drawables/strings référencés · Direct Boot off volontaire · empty/tips premium volontaires
+- Nettoyage local : AppleDouble `.gradle` · `dist/*.aab|apk` gitignorés (hors verify)
+
+**Corrigé :**
+- Delete « aussi mois suivants » : `cancelFor` sur **toutes** les dépenses retirées (reconcileAll ne voit plus les absentes → alarmes orphelines)
+- Scan caméra refusée → `CarnetStateBanner` Warn
+
+**Finition extrême close** hors smoke appareil.
+
+**Tests :** **424** exécutés / 425 (1 skipped).  
+**Version :** `0.1.0-7.32` · `versionCode` **138**.  
+**Ship :** `develop` + ff `main`.
 
 ### 2026-11-05 — 7.31 aperçu B8/B6 + bandeaux restants
 

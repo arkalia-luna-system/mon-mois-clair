@@ -22,7 +22,7 @@ class DeleteInstanceUseCase @Inject constructor(
 ) {
 
     /**
-     * @param applyToFollowingMonths si true et template lié : désactive le template
+     * @param applyToFollowingMonths si true et template lié : désactive le modèle
      * et supprime les occurrences futures (ledgerId > courant) encore TODO (dépenses).
      */
     suspend operator fun invoke(
@@ -30,6 +30,7 @@ class DeleteInstanceUseCase @Inject constructor(
         isExpense: Boolean,
         applyToFollowingMonths: Boolean
     ): DeleteInstanceResult {
+        val cancelledExpenseIds = mutableListOf<String>()
         val result = mutatingRepository.mutate(
             sideEffectsWhen = { it is DeleteInstanceResult.Success }
         ) {
@@ -37,6 +38,7 @@ class DeleteInstanceUseCase @Inject constructor(
                 val current = instanceDao.getExpenseById(id)
                     ?: return@mutate DeleteInstanceResult.NotFound
                 instanceDao.deleteExpense(current)
+                cancelledExpenseIds += current.id
                 if (applyToFollowingMonths && current.templateId != null) {
                     val templateId = current.templateId
                     templateDao.getExpenseById(templateId)?.let { tpl ->
@@ -55,7 +57,10 @@ class DeleteInstanceUseCase @Inject constructor(
                             it.ledgerId > current.ledgerId &&
                             it.status == ExpenseStatus.TODO
                     }
-                    others.forEach { instanceDao.deleteExpense(it) }
+                    others.forEach { item ->
+                        instanceDao.deleteExpense(item)
+                        cancelledExpenseIds += item.id
+                    }
                 } else if (!applyToFollowingMonths && current.templateId != null) {
                     // Ce mois seulement : empêcher syncMissingTemplates de réinjecter.
                     SuppressedInstances.add(appMetaDao, current.id)
@@ -85,9 +90,11 @@ class DeleteInstanceUseCase @Inject constructor(
             }
             DeleteInstanceResult.Success
         }
-        // reconcileAll ne voit plus la ligne : annuler les alarmes orphelines.
-        if (result is DeleteInstanceResult.Success && isExpense) {
-            runCatching { reminderScheduler.cancelFor(id) }
+        // reconcileAll ne voit plus les lignes absentes : annuler chaque alarme orpheline.
+        if (result is DeleteInstanceResult.Success) {
+            cancelledExpenseIds.forEach { expenseId ->
+                runCatching { reminderScheduler.cancelFor(expenseId) }
+            }
         }
         return result
     }

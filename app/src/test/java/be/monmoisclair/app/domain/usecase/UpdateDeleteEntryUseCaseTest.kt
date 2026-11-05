@@ -447,6 +447,67 @@ class UpdateDeleteEntryUseCaseTest {
         assertThat(db.instanceDao().getExpenseById("exp:2027-04:once")).isNull()
     }
 
+    /** 7.32 : delete « aussi mois suivants » annule les alarmes de toutes les lignes retirées. */
+    @Test
+    fun delete_following_cancelsRemindersForAllRemovedTodos() = runBlocking {
+        val cancelled = mutableListOf<String>()
+        val localDelete = DeleteInstanceUseCase(
+            instanceDao = db.instanceDao(),
+            mutatingRepository = repo,
+            reminderScheduler = object : ReminderScheduler {
+                override suspend fun reconcileAll() = Unit
+                override suspend fun cancelFor(expenseId: String) {
+                    cancelled += expenseId
+                }
+            }
+        )
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-loyer",
+                label = "Loyer",
+                amountCents = 800_00L,
+                dayOfMonth = 1,
+                active = true,
+                intervalMonths = 1,
+                anchorYearMonth = "2026-11",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense(
+            ledger = "2026-11",
+            id = "exp:2026-11:tpl-loyer",
+            templateId = "tpl-loyer",
+            amount = 800_00L
+        )
+        seedLinkedExpense(
+            ledger = "2026-12",
+            id = "exp:2026-12:tpl-loyer",
+            templateId = "tpl-loyer",
+            amount = 800_00L
+        )
+        seedLinkedExpense(
+            ledger = "2027-01",
+            id = "exp:2027-01:tpl-loyer",
+            templateId = "tpl-loyer",
+            amount = 800_00L
+        )
+        assertThat(
+            localDelete(
+                id = "exp:2026-11:tpl-loyer",
+                isExpense = true,
+                applyToFollowingMonths = true
+            )
+        ).isEqualTo(DeleteInstanceResult.Success)
+        assertThat(cancelled).containsExactly(
+            "exp:2026-11:tpl-loyer",
+            "exp:2026-12:tpl-loyer",
+            "exp:2027-01:tpl-loyer"
+        )
+        assertThat(db.instanceDao().getExpenseById("exp:2026-12:tpl-loyer")).isNull()
+        assertThat(db.templateDao().getExpenseById("tpl-loyer")!!.active).isFalse()
+    }
+
     /** B1 7.28 : delete « ce mois seulement » + ensureMonth ne doit pas ressusciter. */
     @Test
     fun delete_thisMonthOnly_thenEnsureMonth_doesNotResurrect() = runBlocking {

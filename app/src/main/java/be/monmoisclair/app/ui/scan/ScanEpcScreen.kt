@@ -54,7 +54,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import be.monmoisclair.app.domain.EpcQrParser
+import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
+import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -310,16 +312,10 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
         } else {
             Spacer(Modifier.weight(1f))
             if (permanentlyDenied) {
-                val denyShape = MaterialTheme.shapes.medium
-                Text(
+                CarnetStateBanner(
                     text = "Caméra refusée — ouvrez les réglages du téléphone.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = A11yTokens.AccentWarn,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), denyShape)
-                        .background(A11yTokens.PaperWarm, denyShape)
-                        .padding(tipPad)
+                    kind = CarnetBannerKind.Warn,
+                    pad = tipPad
                 )
             } else {
                 Text(
