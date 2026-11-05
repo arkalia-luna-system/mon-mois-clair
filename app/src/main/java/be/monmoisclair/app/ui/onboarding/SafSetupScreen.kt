@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -56,13 +57,17 @@ fun SafSetupScreen(
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 4.dp else 8.dp))
         AppWordmark(width = if (fit.compactHomeChrome) 200.dp else 240.dp)
         CarnetPageTitle("Dossier de sauvegarde", withTopSpacer = false)
-        // ONB01 : 2 phrases.
+        // ONB01 : 2 phrases — tip mist (rythme Aide / Backup).
         Text(
             text = "Choisissez un dossier dans Documents (pas Téléchargements). " +
                 "Trois copies y seront écrites à chaque changement.",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 12.dp)
         )
         if (state.saving) {
             Text(

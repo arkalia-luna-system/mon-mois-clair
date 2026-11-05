@@ -2,7 +2,7 @@
 
 **Statut :** à faire sur appareil · **NON VÉRIFIÉ** ici · ne pas claimer « 10/10 dans la main » sans cette passe.
 
-Cible : Galaxy One UI (S26 / S25) · build `0.1.0-7.24` / `versionCode` 130 via Play Internal.
+Cible : Galaxy One UI (S26 / S25) · build `0.1.0-7.25` / `versionCode` 131 via Play Internal.
 
 ## Accueil
 1. Sticky Reste lisible · Courses + Mettre de côté (icônes teal/or/forêt) · 1-tap ouvre le sheet.

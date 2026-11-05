@@ -53,7 +53,8 @@ fun SettingsScreen(
             label = SettingsHubCopy.BACKUP_SHORTCUT,
             onClick = onOpenBackup,
             showDivider = false,
-            leadingIconRes = R.drawable.ic_backup
+            leadingIconRes = R.drawable.ic_backup,
+            leadingColoredIcon = true
         )
         CarnetSectionTitle("Groupes")
         CarnetHubRow(
@@ -65,12 +66,14 @@ fun SettingsScreen(
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_COMFORT,
             onClick = onOpenComfortGroup,
-            leadingIconRes = R.drawable.ic_comfort
+            leadingIconRes = R.drawable.ic_comfort,
+            leadingColoredIcon = true
         )
         CarnetHubRow(
             label = SettingsHubCopy.GROUP_HELP,
             onClick = onOpenHelp,
-            leadingIconRes = R.drawable.ic_help
+            leadingIconRes = R.drawable.ic_help,
+            leadingColoredIcon = true
         )
 
         val versionName = try {
@@ -133,12 +136,14 @@ fun SettingsAccountGroupScreen(
             label = SettingsHubCopy.BACKUP,
             onClick = onOpenBackup,
             showDivider = false,
-            leadingIconRes = R.drawable.ic_backup
+            leadingIconRes = R.drawable.ic_backup,
+            leadingColoredIcon = true
         )
         CarnetHubRow(
             label = SettingsHubCopy.DEADLINES,
             onClick = onOpenDeadlines,
-            leadingIconRes = R.drawable.ic_upcoming
+            leadingIconRes = R.drawable.ic_upcoming,
+            leadingColoredIcon = true
         )
         CarnetHubRow(
             label = SettingsHubCopy.SAVINGS_ROW,
@@ -149,13 +154,15 @@ fun SettingsAccountGroupScreen(
         CarnetHubRow(
             label = SettingsHubCopy.PRIVACY,
             onClick = onOpenPrivacy,
-            leadingIconRes = R.drawable.ic_privacy
+            leadingIconRes = R.drawable.ic_privacy,
+            leadingColoredIcon = true
         )
         if (state.showSummaryButton) {
             CarnetHubRow(
                 label = SettingsHubCopy.SUMMARY,
                 onClick = onOpenSummary,
-                leadingIconRes = R.drawable.ic_data
+                leadingIconRes = R.drawable.ic_data,
+                leadingColoredIcon = true
             )
         }
     }
@@ -176,18 +183,19 @@ fun SettingsComfortGroupScreen(
             label = SettingsHubCopy.APPEARANCE,
             onClick = onOpenAppearance,
             showDivider = false,
-            leadingIconRes = R.drawable.ic_comfort
+            leadingIconRes = R.drawable.ic_comfort,
+            leadingColoredIcon = true
         )
         CarnetHubRow(
             label = SettingsHubCopy.ALERTS,
             onClick = onOpenHealth,
             leadingIconRes = R.drawable.ic_alerts,
+            leadingColoredIcon = true,
             labelColor = if (state.remindersBlocked) {
                 A11yTokens.AccentWarn
             } else {
                 A11yTokens.Ink
-            },
-            leadingIconTint = if (state.remindersBlocked) A11yTokens.AccentWarn else null
+            }
         )
     }
 }

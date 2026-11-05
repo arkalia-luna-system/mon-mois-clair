@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.MonMoisClair" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Crème dès le splash : évite le flash blanc Material. -->
+        <!-- Mist cool dès le splash : évite le flash blanc Material. -->
         <item name="android:windowBackground">@color/paper_cream</item>
-        <!-- Statut crème = même papier que l’app (pas de bandeau blanc). -->
+        <!-- Statut mist = même papier que l’app (pas de bandeau blanc). -->
         <item name="android:statusBarColor">@color/paper_cream</item>
         <item name="android:navigationBarColor">@color/paper_cream</item>
         <item name="android:windowLightStatusBar">true</item>

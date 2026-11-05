@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.24** polish UI craft suite (versionCode 130) |
+| Dernière étape terminée | **7.25** UI totale craft + CI retry (versionCode 131) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.24` |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.25) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.25` |
 | Audit | [`passage-final.md`](docs/audits/2026-11-02-passage-final.md) · [`fin-journee-qa.md`](docs/audits/2026-11-02-fin-journee-qa.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,24 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-05 — 7.25 UI totale craft + CI retry
+
+**Contexte :** Athalia — « toute l’UI 10/10 » puis vérifier/corriger CI.
+
+**Corrigé (craft) :**
+- Hub Menu/Réglages : icônes brand teal+or (folder, alerts, backup, help, settings, upcoming, privacy, comfort, data) + `leadingColoredIcon`
+- Cleanup assets morts : `book_*.webp`, `ic_menu`, `ic_calendar_month`, `ic_check`
+- Onboarding SAF / Alertes fiables : tips mist + warns bordurés ; À venir détail tip mist
+- Launcher/splash/notif : inchangés (kit PNG navy + glyph — cohérents)
+- CI : retry ×3 tests unitaires (flake Robolectric Maven 429) · doc `docs/CI.md`
+
+**Évité :** PNG photoréal cart/piggy (pas d’assets) · claim smoke S26 · Production
+
+**Tests :** **415** exécutés / 416 (1 skipped), 93 XML, 0 failure (`--rerun-tasks`).  
+**Version :** `0.1.0-7.25` · `versionCode` **131**.  
+**Ship :** `develop` + ff `main` → CI + Publish Play Internal.  
+**Note :** craft UI code/visuel — **pas** « 10/10 dans la main » sans smoke Athalia.
 
 ### 2026-11-05 — 7.24 polish UI craft suite
 

@@ -66,8 +66,23 @@ jobs:
       # Pas d’assembleDebug ici : packaging APK (dex/strip/so) = minutes pour peu
       # de signal. testDebugUnitTest compile déjà debug + ressources + exécute les tests.
       # assembleDebug reste la commande locale / release (charte, PROGRESS_LOG).
+      # Retry : flake Robolectric MavenArtifactFetcher / Maven Central 429
+      # (PaymentNotificationIconsTest classMethod IOException) — pas un bug app.
       - name: Unit tests
-        run: ./gradlew :app:testDebugUnitTest --stacktrace --no-daemon
+        run: |
+          set +e
+          for attempt in 1 2 3; do
+            ./gradlew :app:testDebugUnitTest --stacktrace --no-daemon
+            code=$?
+            if [ "$code" -eq 0 ]; then
+              exit 0
+            fi
+            echo "::warning::Unit tests attempt ${attempt}/3 failed (exit ${code})"
+            if [ "$attempt" -lt 3 ]; then
+              sleep $((15 * attempt))
+            fi
+          done
+          exit 1
 
       # Phase 2 soft : rapport Lint sans faire échouer le job (on durcit plus tard).
       # 2ᵉ invoc Gradle : build-cache chaud → nettement plus court que le 1er run.

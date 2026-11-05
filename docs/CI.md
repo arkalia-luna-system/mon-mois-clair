@@ -10,6 +10,9 @@ Workflow : [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 À chaque push / PR sur **`develop`** (et `main` si merge explicite) :
 
 - exécute `:app:testDebugUnitTest` (compile debug + ressources + tests — **bloquant**)
+  avec **retry ×3** (pause 15/30 s) — mitige le flake Robolectric
+  `MavenArtifactFetcher` / Maven Central **429** (ex. `PaymentNotificationIconsTest`
+  `classMethod` IOException) ; ce n’est **pas** un bug app
 - `:app:lintDebug` soft (`continue-on-error`)
 - **pas** d’`assembleDebug` en CI (APK/dex/strip trop lent pour le signal quotidien ; à lancer en local / release)
 - accélération : `gradle/actions/setup-gradle` (cache) + `org.gradle.caching` / `parallel` **en env CI seulement**

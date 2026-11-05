@@ -163,9 +163,13 @@ private fun UpcomingMonthDetail(month: UpcomingMonth) {
     CarnetPageTitle(month.monthLabel)
     Text(
         text = "Lecture seule — pas de FAIT ici.",
-        style = MaterialTheme.typography.bodyLarge,
+        style = MaterialTheme.typography.bodyMedium,
         color = A11yTokens.InkMuted,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .background(A11yTokens.PaperWarm)
+            .padding(horizontal = 14.dp, vertical = 10.dp)
     )
     Spacer(modifier = Modifier.height(if (compact) 8.dp else 12.dp))
     Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {

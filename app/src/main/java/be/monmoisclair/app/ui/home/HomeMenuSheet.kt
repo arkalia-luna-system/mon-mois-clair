@@ -99,7 +99,7 @@ fun HomeMenuSheet(
                     labelColor = A11yTokens.AccentWarn,
                     showDivider = false,
                     leadingIconRes = R.drawable.ic_alerts,
-                    leadingIconTint = A11yTokens.AccentWarn
+                    leadingColoredIcon = true
                 )
             }
 
@@ -110,7 +110,8 @@ fun HomeMenuSheet(
                     onOpenSettings()
                 },
                 showDivider = !remindersBlocked,
-                leadingIconRes = R.drawable.ic_settings
+                leadingIconRes = R.drawable.ic_settings,
+                leadingColoredIcon = true
             )
             if (showDossiers) {
                 CarnetHubRow(
@@ -119,7 +120,8 @@ fun HomeMenuSheet(
                         onDismiss()
                         onOpenDossiers()
                     },
-                    leadingIconRes = R.drawable.ic_folder
+                    leadingIconRes = R.drawable.ic_folder,
+                    leadingColoredIcon = true
                 )
             }
             CarnetHubRow(
@@ -128,7 +130,8 @@ fun HomeMenuSheet(
                     onDismiss()
                     onOpenUpcoming()
                 },
-                leadingIconRes = R.drawable.ic_upcoming
+                leadingIconRes = R.drawable.ic_upcoming,
+                leadingColoredIcon = true
             )
             CarnetHubRow(
                 label = "Choisir un mois",

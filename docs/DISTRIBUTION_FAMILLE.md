@@ -34,7 +34,7 @@ COPYFILE_DISABLE=1 ./gradlew :app:assembleRelease
 - Toujours l’APK **release** signé (jamais debug).
 - **Même keystore** qu’avant = mise à jour sideload sans perdre les données Room.
 - Vérifier : `aapt dump badging dist/MonMoisClair-release.apk | head -1`  
-  (ex. `versionName='0.1.0-7.24'` — lire le journal).
+  (ex. `versionName='0.1.0-7.25'` — lire le journal).
 
 ### 2. Envoyer (sans USB) — uniquement si Play Internal ne convient pas
 

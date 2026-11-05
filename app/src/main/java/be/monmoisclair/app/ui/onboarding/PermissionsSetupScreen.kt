@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
@@ -86,9 +87,13 @@ fun PermissionsSetupScreen(
         Text(
             text = "Pour que les rappels sonnent à l’heure : autorisez les notifications, " +
                 "le réveil à l’heure, et laissez la batterie non limitée pour cette application.",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = A11yTokens.InkMuted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+                .background(A11yTokens.PaperWarm)
+                .padding(horizontal = 14.dp, vertical = 12.dp)
         )
 
         if (report != null) {
@@ -170,7 +175,11 @@ fun PermissionsSetupScreen(
                 text = DeviceCareCopy.HINT,
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.AccentWarn,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), MaterialTheme.shapes.medium)
+                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
             )
         }
 
@@ -182,6 +191,9 @@ fun PermissionsSetupScreen(
                 color = A11yTokens.AccentWarn,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .border(1.dp, A11yTokens.AccentWarn.copy(alpha = 0.45f), MaterialTheme.shapes.medium)
+                    .background(A11yTokens.PaperWarm, MaterialTheme.shapes.medium)
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
                     .semantics {
                         liveRegion = LiveRegionMode.Polite
                         contentDescription =
@@ -194,7 +206,7 @@ fun PermissionsSetupScreen(
 
 @Composable
 private fun HealthChecklist(report: ReminderHealthReport) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
         HealthStatusRow("Notifications", report.notificationsGranted)
         HealthStatusRow("Réveil à l’heure", report.exactAlarmGranted)
         HealthStatusRow("Batterie non limitée", report.batteryOptimizationIgnored)
