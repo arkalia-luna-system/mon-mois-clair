@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.37** audit expert complet + clarté dettes + feedback erreurs sheets (versionCode 143) |
+| Dernière étape terminée | **7.38** audit expert micro a11y/copy/UX — 457 pass / 458 exécutés, versionCode 144 |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — tester au doigt sur S25 Ultra / S26 les corrections 7.37 |
+| Prochaine sous-étape | Smoke doigt Athalia |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,23 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-09 — 7.38 audit expert micro a11y / copy / UX
+
+**Contexte :** reprise (3e) — micro-passe Accueil / Dossiers / sheets / empty / a11y / copy (sans device smoke).
+
+**Findings corrigés :**
+- F-A11Y-01 : barre **+ Ajouter** — TalkBack ne répète plus « + » (doublon visuel)
+- F-A11Y-02 : badge **jour** — « Échéance » + libellé en minuscule (ex. « Échéance lun. »)
+- F-A11Y-03 : tip **prélèvement** — ligne FAIT explicitée pour lecteur d’écran
+- F-A11Y-04 : **À venir** — carte ligne fusionnée (`clearAndSetSemantics`)
+- F-A11Y-05 : **Dossiers** — KPI + ligne « en retard ce mois » + courrier « Fixer un versement »
+- F-COPY-01 : sheet **Courses** — statut aligné sticky (« il reste X » même reste positif)
+- F-COPY-02 : sheet **Épargne** — TalkBack = texte visible (`savingsSheetStatusLine`)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **457** pass, **1** skipped, **0** failure (101 XML).  
+**Version :** `0.1.0-7.38` · `versionCode` **144**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-09 — 7.37 audit expert complet + clarté dettes + feedback erreurs sheets
 

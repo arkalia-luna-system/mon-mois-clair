@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -175,6 +176,7 @@ private fun UpcomingLineCard(line: UpcomingLine, compact: Boolean) {
         if (line.cadenceHint.isNotBlank()) append(" · ${line.cadenceHint}")
         append(" · le ${line.dayOfMonth}")
     }
+    val cardA11y = "${line.label}, $signed. $hint"
     val shape = MaterialTheme.shapes.medium
     val rowPad = if (compact) 12.dp else 16.dp
     // 7.13 : carte soft ombre (plus filet carnet seul).
@@ -184,6 +186,7 @@ private fun UpcomingLineCard(line: UpcomingLine, compact: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .shadow(2.dp, shape, clip = false)
+            .clearAndSetSemantics { contentDescription = cardA11y }
     ) {
         Column(
             modifier = Modifier

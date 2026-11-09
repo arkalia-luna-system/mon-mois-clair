@@ -32,4 +32,25 @@ class StickyCoursesLabelTest {
         ).isEqualTo("45 €")
         assertThat(stickyCoursesChipLabel(1L, futurePreview = true)).isNull()
     }
+
+    // --- Sheet status line (7.38) ---
+
+    @Test
+    fun sheet_zero_shows_hors_reste() {
+        assertThat(coursesSheetStatusLine(0L, 50_000L)).isEqualTo("Hors du reste du mois")
+    }
+
+    @Test
+    fun sheet_spent_positive_remaining_shows_il_reste() {
+        assertThat(
+            coursesSheetStatusLine(4_500L, 40_500L) { c -> "${c / 100} €" }
+        ).isEqualTo("Noté 45 € · il reste 405 €")
+    }
+
+    @Test
+    fun sheet_spent_negative_remaining_shows_il_reste() {
+        assertThat(
+            coursesSheetStatusLine(4_500L, -500L) { c -> "${c / 100} €" }
+        ).isEqualTo("Noté 45 € · il reste -5 €")
+    }
 }

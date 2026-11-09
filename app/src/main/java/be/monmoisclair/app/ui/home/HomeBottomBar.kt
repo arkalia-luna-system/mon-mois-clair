@@ -133,7 +133,7 @@ private fun BottomBarFilled(
         },
         modifier = modifier
             .heightIn(min = HomeTokens.minTouch)
-            .semantics { contentDescription = "+ $text" },
+            .semantics { contentDescription = text },
         // Même rayon que Menu (buttonRadius 16) — barre homogène.
         shape = HomeTokens.buttonRadius,
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 0.dp),

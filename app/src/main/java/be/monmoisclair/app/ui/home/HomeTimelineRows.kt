@@ -56,7 +56,9 @@ internal fun DayBadge(label: String, compact: Boolean = false) {
                 horizontal = if (compact) 6.dp else 8.dp,
                 vertical = if (compact) 4.dp else 5.dp
             )
-            .semantics { contentDescription = "Échéance $label" }
+            .semantics {
+                contentDescription = "Échéance ${label.replaceFirstChar { it.lowercase() }}"
+            }
     )
 }
 
@@ -407,7 +409,10 @@ internal fun ExpenseStatusLine(
                 style = MaterialTheme.typography.bodyMedium,
                 color = HomeTokens.InkMuted,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.semantics {
+                    contentDescription = "Cochez FAIT quand le débit apparaît."
+                }
             )
         }
     }

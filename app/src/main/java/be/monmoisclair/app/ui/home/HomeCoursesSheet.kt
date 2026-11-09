@@ -42,6 +42,21 @@ import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
 /**
+ * Ligne d'état de la sheet Courses — alignée sur [stickyCoursesLabel].
+ * Toujours « il reste X » quand courses > 0 (même si positif).
+ */
+fun coursesSheetStatusLine(
+    diversSpentCents: Long,
+    afterDiversCents: Long,
+    formatCents: (Long) -> String = MoneyFormat::formatCents
+): String = when {
+    diversSpentCents > 0L ->
+        "Not\u00e9 ${formatCents(diversSpentCents)} \u00b7 il reste " +
+            formatCents(afterDiversCents)
+    else -> "Hors du reste du mois"
+}
+
+/**
  * Unique UI d'édition Courses / divers — ouverte depuis la bannière sticky.
  * Le Reste après factures ne change pas (hors ledger factures).
  */
@@ -83,14 +98,7 @@ fun HomeCoursesSheet(
             verticalArrangement = Arrangement.spacedBy(gap)
         ) {
             CarnetPageTitle("Courses", withTopSpacer = false, shortSheet = true)
-            val statusLine = when {
-                diversSpentCents > 0L && afterDiversCents < 0L ->
-                    "Not\u00e9 ${MoneyFormat.formatCents(diversSpentCents)} \u00b7 il reste " +
-                        "${MoneyFormat.formatCents(afterDiversCents)}"
-                diversSpentCents > 0L ->
-                    "Not\u00e9 ${MoneyFormat.formatCents(diversSpentCents)} \u00b7 hors du reste du mois"
-                else -> "Hors du reste du mois"
-            }
+            val statusLine = coursesSheetStatusLine(diversSpentCents, afterDiversCents)
             Text(
                 text = statusLine,
                 style = MaterialTheme.typography.bodyMedium,

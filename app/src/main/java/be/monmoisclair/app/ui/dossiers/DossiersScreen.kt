@@ -54,6 +54,7 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.format.MoneyFormat
+import androidx.compose.ui.text.style.TextOverflow
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.StampShape
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -407,6 +408,7 @@ private fun DossierRow(
         if (item.what.isNotBlank()) append(", ${item.what}")
         if (item.isSettled) append(", soldé")
         else {
+            if (item.isOverdueThisMonth) append(", en retard ce mois")
             append(", déjà versé ${MoneyFormat.formatCents(item.paidCents)}")
             append(", reste ${MoneyFormat.formatCents(item.remainingCents)}")
             if (item.pacePhrase != null) append(". ${item.pacePhrase}")
@@ -495,7 +497,7 @@ private fun DossierRow(
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     maxLines = 2,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -516,6 +518,7 @@ private fun PendingLetterRow(
         if (letter.what.isNotBlank()) append(", ${letter.what}")
         append(", courrier sans plan")
         if (letter.receiptRelativePath.isNotBlank()) append(", avec photo")
+        append(". Fixer un versement")
     }
     Column(
         modifier = Modifier

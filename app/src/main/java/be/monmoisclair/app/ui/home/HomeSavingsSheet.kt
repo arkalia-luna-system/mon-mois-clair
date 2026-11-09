@@ -41,6 +41,16 @@ import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
+/** Ligne d'état sheet Épargne — texte = TalkBack. */
+fun savingsSheetStatusLine(
+    monthlyCents: Long,
+    formatCents: (Long) -> String = MoneyFormat::formatCents
+): String = if (monthlyCents > 0L) {
+    "Not\u00e9 ${formatCents(monthlyCents)} / mois \u00b7 d\u00e9j\u00e0 retir\u00e9 du reste"
+} else {
+    "Vers un autre compte \u2014 ce montant est retir\u00e9 du reste du mois."
+}
+
 /**
  * \u00c9dition rapide du forfait \u00ab Mettre de c\u00f4t\u00e9 \u00bb depuis le sticky Accueil.
  * Jour / retrait / historique : R\u00e9glages (lien discret).
@@ -83,12 +93,9 @@ fun HomeSavingsSheet(
             verticalArrangement = Arrangement.spacedBy(gap)
         ) {
             CarnetPageTitle("Mettre de c\u00f4t\u00e9", withTopSpacer = false, shortSheet = true)
+            val statusLine = savingsSheetStatusLine(monthlyCents)
             Text(
-                text = if (active) {
-                    "Not\u00e9 ${MoneyFormat.formatCents(monthlyCents)} / mois \u00b7 d\u00e9j\u00e0 retir\u00e9 du reste"
-                } else {
-                    "Vers un autre compte \u2014 ce montant est retir\u00e9 du reste du mois."
-                },
+                text = statusLine,
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
@@ -96,13 +103,7 @@ fun HomeSavingsSheet(
                     .clip(HomeTokens.chipRadius)
                     .background(HomeTokens.SavingsChip)
                     .padding(horizontal = 14.dp, vertical = 10.dp)
-                    .semantics {
-                        contentDescription = if (active) {
-                            "Not\u00e9 ${MoneyFormat.formatCents(monthlyCents)} par mois"
-                        } else {
-                            "Mettre de c\u00f4t\u00e9 vers un autre compte"
-                        }
-                    }
+                    .semantics { contentDescription = statusLine }
             )
             OutlinedTextField(
                 value = input,

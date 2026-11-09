@@ -1,6 +1,6 @@
 # Charte & Architecture — Mon Mois Clair
 
-Mise à jour : 2026-11-05 (lot **7.34** — audit expert craft 10/10).
+Mise à jour : 2026-11-09 (lot **7.38** — audit expert micro a11y/copy/UX).
 
 ## 1. Vision
 
