@@ -48,6 +48,10 @@ class PendingLetterFormViewModel @Inject constructor(
         it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
     }
 
+    fun setCameraError(message: String) = _state.update {
+        it.copy(error = message)
+    }
+
     fun save() {
         if (_state.value.saving || _state.value.saved) return
         _state.update { it.copy(saving = true, error = null) }

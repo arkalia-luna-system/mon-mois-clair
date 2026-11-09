@@ -218,6 +218,7 @@ internal fun HomeStickyHeader(
             val hasStickyExtras = afterFaitLabel != null ||
                 needIncomeTip ||
                 state.nextMonthWarning != null ||
+                state.dossierCount > 0 ||
                 state.pendingLetterCount > 0 ||
                 showGoCurrent
             if (hasStickyExtras) {
@@ -291,6 +292,45 @@ internal fun HomeStickyHeader(
                                 .semantics {
                                     liveRegion = LiveRegionMode.Polite
                                     contentDescription = warning
+                                }
+                        )
+                    }
+                    if (state.dossierCount > 0) {
+                        val accordLabel = buildString {
+                            append(
+                                if (state.dossierCount == 1) {
+                                    "1 accord · Voir le rythme"
+                                } else {
+                                    "${state.dossierCount} accords · Voir le rythme"
+                                }
+                            )
+                            if (state.overdueAccordCount > 0) {
+                                append(" · ")
+                                append(
+                                    if (state.overdueAccordCount == 1) {
+                                        "1 en retard"
+                                    } else {
+                                        "${state.overdueAccordCount} en retard"
+                                    }
+                                )
+                            }
+                        }
+                        Text(
+                            text = accordLabel,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = HomeTokens.InkMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = HomeTokens.minTouch)
+                                .clickable(
+                                    role = Role.Button,
+                                    onClickLabel = "Ouvrir Dossiers"
+                                ) { onOpenDossiers() }
+                                .semantics {
+                                    liveRegion = LiveRegionMode.Polite
+                                    contentDescription = accordLabel
                                 }
                         )
                     }

@@ -54,7 +54,27 @@ object DossierRemaining {
     }
 
     /**
-     * Estimation honnête : « encore N … si … » + « Vers mois année ».
+     * Nombre de versements restants (estimation, ceil). Null si non estimable.
+     */
+    fun remainingPaymentCount(
+        forfaitCents: Long,
+        remainingCents: Long
+    ): Int? {
+        if (forfaitCents <= 0L || remainingCents <= 0L) return null
+        val payments = (remainingCents + forfaitCents - 1) / forfaitCents
+        if (payments <= 0L || payments > 1_200L) return null
+        return payments.toInt()
+    }
+
+    /** Chip courte Accueil (compact) : « encore ~N » — jamais les €. */
+    fun shortPaceChip(remainingPayments: Int?): String? {
+        val n = remainingPayments ?: return null
+        if (n <= 0) return null
+        return "encore ~$n"
+    }
+
+    /**
+     * Estimation honnête : « Environ N mensualités » + « Dernière estimée : mois année ».
      * Jamais « fin prévue » certaine. Recalcule même si un FAIT ≠ forfait
      * (reste actuel ÷ forfait du modèle).
      */
@@ -65,24 +85,21 @@ object DossierRemaining {
         doneAmounts: List<Long> = emptyList(),
         fromYearMonth: YearMonth = AppClock.currentYearMonth()
     ): String? {
-        if (forfaitCents <= 0L || remainingCents <= 0L) return null
-        val payments = (remainingCents + forfaitCents - 1) / forfaitCents
-        if (payments <= 0L || payments > 1_200L) return null
-        val n = payments.toInt()
+        val n = remainingPaymentCount(forfaitCents, remainingCents) ?: return null
         val interval = intervalMonths.coerceAtLeast(1)
         val monthly = interval == 1
         val unit = if (monthly) {
-            if (n == 1) "1 mois" else "$n mois"
+            if (n == 1) "1 mensualité restante" else "$n mensualités restantes"
         } else {
-            if (n == 1) "1 versement" else "$n versements"
+            if (n == 1) "1 versement restant" else "$n versements restants"
         }
         val money = EuroFormat.formatCents(
             if (remainingCents < forfaitCents) remainingCents else forfaitCents
         )
         val head = if (remainingCents < forfaitCents) {
-            "Encore environ $unit si le prochain versement est le reste, $money."
+            "Environ $unit (reste $money)."
         } else {
-            "Encore environ $unit si le versement reste de $money."
+            "Environ $unit."
         }
         val end = projectedEndYearMonth(remainingCents, forfaitCents, interval, fromYearMonth)
             ?: return head
@@ -94,7 +111,7 @@ object DossierRemaining {
         } else {
             ""
         }
-        return "$head Vers $whenLabel.$recalc"
+        return "$head Dernière estimée : $whenLabel.$recalc"
     }
 
     /**

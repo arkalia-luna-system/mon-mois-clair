@@ -157,7 +157,7 @@ fun DossiersScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
-                    text = "Sur une facture : « Retard ou accord », puis le reste dû. " +
+                    text = "Sur une facture : « Plan de remboursement », puis le reste dû. " +
                         "Sans montant : « Garder le courrier (sans montant) ».",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.InkMuted,
@@ -168,10 +168,37 @@ fun DossiersScreen(
         }
 
         if (snap.items.isNotEmpty()) {
-            // DOS02 : pas de bandeau KPI — titre page + liste (soldé = pastille ligne).
             val openItems = snap.items.filter { !it.isSettled }
             val settledItems = snap.items.filter { it.isSettled }
             if (openItems.isNotEmpty()) {
+                val kpi = buildString {
+                    append(
+                        if (openItems.size == 1) "1 accord" else "${openItems.size} accords"
+                    )
+                    if (snap.monthTotalCents > 0L) {
+                        append(" · ")
+                        append(MoneyFormat.formatCents(snap.monthTotalCents))
+                        append(" ce mois")
+                    }
+                    if (snap.overdueOpenCount > 0) {
+                        append(" · ")
+                        append(
+                            if (snap.overdueOpenCount == 1) {
+                                "1 en retard"
+                            } else {
+                                "${snap.overdueOpenCount} en retard"
+                            }
+                        )
+                    }
+                }
+                Text(
+                    text = kpi,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = A11yTokens.InkMuted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentDescription = kpi }
+                )
                 DossierSectionHeader("En cours")
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                     openItems.forEach { item ->
@@ -415,11 +442,43 @@ private fun DossierRow(
             )
         } else {
             // DOS01 : reste commande — pas de barre de progression.
-            Text(
-                text = "Reste ${MoneyFormat.formatCents(item.remainingCents)}",
-                style = MaterialTheme.typography.titleLarge,
-                color = A11yTokens.Ink
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Reste ${MoneyFormat.formatCents(item.remainingCents)}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.Ink,
+                    modifier = Modifier.weight(1f)
+                )
+                val monthChip = when {
+                    item.isOverdueThisMonth -> "En retard"
+                    item.dueThisMonth -> "Ce mois"
+                    else -> "Pas ce mois"
+                }
+                Text(
+                    text = monthChip,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (item.isOverdueThisMonth) {
+                        A11yTokens.AccentDanger
+                    } else {
+                        A11yTokens.InkMuted
+                    },
+                    modifier = Modifier
+                        .background(A11yTokens.PaperWarm, StampShape)
+                        .border(
+                            1.dp,
+                            if (item.isOverdueThisMonth) {
+                                A11yTokens.AccentDanger.copy(alpha = 0.35f)
+                            } else {
+                                A11yTokens.PaperBorder
+                            },
+                            StampShape
+                        )
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                )
+            }
             Text(
                 text = "Déjà versé ${MoneyFormat.formatCents(item.paidCents)}" +
                     if (item.cadenceLabel.isNotBlank()) " · ${item.cadenceLabel}" else "",
@@ -431,7 +490,7 @@ private fun DossierRow(
                     text = item.pacePhrase,
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
-                    maxLines = 3,
+                    maxLines = 2,
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
             }

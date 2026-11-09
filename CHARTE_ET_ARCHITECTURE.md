@@ -66,7 +66,7 @@ Chiffrement local (6.81+) : DB SQLCipher + Keystore ; copies SAF/WhatsApp AES-GC
 
 ## 3. Données
 
-Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expense_fee_events` (frais datés). Reste dû = départ + cumul frais − FAIT ; pas stocké. Accueil : pastille **Accord** + « pour quoi », jamais le reste en euros ; bandeau « courrier sans plan · Voir » seulement s’il y en a. Sur la fiche d’un accord : Copier l’IBAN, Écrire (brouillon mail), ajouter/voir/enlever des courriers, **liste datée des frais**.
+Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expense_fee_events` (frais datés). Reste dû = départ + cumul frais − FAIT ; pas stocké. Accueil : pastille **Accord** + chip « encore ~N » + « pour quoi » (confort), **jamais le reste en euros** ; sticky Détails « N accords · Voir le rythme » (sans €) + bandeau « courrier sans plan · Voir » s’il y en a. Sur la fiche : section **Plan de remboursement** ; Copier l’IBAN, Écrire, courriers, **frais datés**.
 
 ## 4. Plan (étapes)
 

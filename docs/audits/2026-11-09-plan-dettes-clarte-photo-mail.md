@@ -6,7 +6,7 @@
 | **Branche** | `develop` |
 | **Nature** | Synthèse d’inspections lecture seule (3 audits) |
 | **Smoke device** | Non — runtime **NON VÉRIFIÉ** |
-| **Modifications code** | Aucune dans ces audits ni dans ce livrable |
+| **Modifications code** | Implémentées en **7.35** (Athalia ok) — voir matrice `2026-11-09-matrice-audits-7.35.md` |
 
 **Sources :**
 
@@ -142,20 +142,20 @@ Pas un bug de calcul de poche → **découverte + copy** (Retard vs Accord) + su
 
 ## E. Décisions Athalia
 
-Cases à cocher avant tout fix code :
+Athalia **ok** 2026-11-09 → fixes **7.35**. Cases :
 
-- [ ] Afficher le rythme (`pacePhrase` / « encore ~N ») sur **Accueil** ?
-- [ ] Afficher le **reste €** sur Accueil, ou seulement le rythme (charte actuelle) ?
-- [ ] Entrée permanente Accueil → **Mes dossiers** dès ≥1 accord ?
-- [ ] Renommer **« Retard ou accord »** → « Plan de remboursement » / « Accord de paiement » ?
-- [ ] Reformuler `pacePhrase` (« N mensualités » + « Dernière estimée ») ?
-- [ ] KPI douce en tête de **Mes dossiers** (DOS02 aujourd’hui = non) ?
-- [ ] Photo facture : **soft-warn** si absente ? ou hard-block ?
-- [ ] Cause : soft-warn si accord sans cause ?
-- [ ] IBAN / e-mail : soft-warn sur fiche accord ?
-- [ ] Ajouter `<queries>` Manifest pour **mailto** + fallback envoi ?
-- [ ] Caméra : permission au geste (recommandé) vs onboarding ?
-- [ ] Entité **Personne** (multi-dossiers liés) — maintenant / plus tard / non ?
+- [x] Afficher le rythme (`pacePhrase` / « encore ~N ») sur **Accueil** ? → chip + sticky (sans €)
+- [x] Afficher le **reste €** sur Accueil, ou seulement le rythme (charte actuelle) ? → **rythme seul**
+- [x] Entrée permanente Accueil → **Mes dossiers** dès ≥1 accord ? → sticky Détails
+- [x] Renommer **« Retard ou accord »** → « Plan de remboursement » / « Accord de paiement » ?
+- [x] Reformuler `pacePhrase` (« N mensualités » + « Dernière estimée ») ?
+- [x] KPI douce en tête de **Mes dossiers** (DOS02 aujourd’hui = non) ?
+- [x] Photo facture : **soft-warn** si absente ? ou hard-block ? → **soft-warn**
+- [x] Cause : soft-warn si accord sans cause ?
+- [x] IBAN / e-mail : soft-warn sur fiche accord ?
+- [x] Ajouter `<queries>` Manifest pour **mailto** + fallback envoi ?
+- [x] Caméra : permission au geste (recommandé) vs onboarding ? → **au geste**
+- [ ] Entité **Personne** (multi-dossiers liés) — maintenant / plus tard / non ? → **plus tard**
 
 ---
 

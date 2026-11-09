@@ -60,17 +60,20 @@ class DossierRemainingTest {
     }
 
     @Test
-    fun pacePhrase_monthly_usesSi_andProjectedDate() {
+    fun pacePhrase_monthly_usesMensualites_andDerniereEstimee() {
         val steady = DossierRemaining.pacePhrase(
             forfaitCents = 5_000L,
             remainingCents = 45_000L,
             doneAmounts = listOf(5_000L, 5_000L),
             fromYearMonth = from
         )
-        assertThat(steady).startsWith("Encore environ 9 mois si le versement reste de 50 €.")
-        assertThat(steady).contains("Vers juin 2027.")
+        assertThat(steady).startsWith("Environ 9 mensualités restantes.")
+        assertThat(steady).contains("Dernière estimée : juin 2027.")
         assertThat(steady).doesNotContain("fin prévue")
         assertThat(steady).doesNotContain("recalculée")
+        assertThat(steady).doesNotContain("Vers ")
+        assertThat(DossierRemaining.remainingPaymentCount(5_000L, 45_000L)).isEqualTo(9)
+        assertThat(DossierRemaining.shortPaceChip(9)).isEqualTo("encore ~9")
     }
 
     @Test
@@ -83,8 +86,8 @@ class DossierRemainingTest {
             fromYearMonth = from
         )
         assertThat(diverged).isNotNull()
-        assertThat(diverged).contains("si le versement reste de 50 €")
-        assertThat(diverged).contains("Vers juin 2027.")
+        assertThat(diverged).contains("Environ 9 mensualités restantes.")
+        assertThat(diverged).contains("Dernière estimée : juin 2027.")
         assertThat(diverged).contains("recalculée")
     }
 
@@ -96,14 +99,14 @@ class DossierRemainingTest {
                 remainingCents = 2_000L,
                 fromYearMonth = from
             )
-        ).startsWith("Encore environ 1 mois si le prochain versement est le reste, 20 €.")
+        ).startsWith("Environ 1 mensualité restante (reste 20 €).")
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
                 remainingCents = 2_000L,
                 fromYearMonth = from
             )
-        )!!.contains("si")
+        )!!.contains("Dernière estimée")
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
@@ -111,7 +114,7 @@ class DossierRemainingTest {
                 doneAmounts = listOf(5_000L),
                 fromYearMonth = from
             )
-        ).contains("9 mois")
+        ).contains("9 mensualités")
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
@@ -119,7 +122,7 @@ class DossierRemainingTest {
                 intervalMonths = 3,
                 fromYearMonth = from
             )
-        ).contains("2 versements")
+        ).contains("2 versements restants")
         assertThat(
             DossierRemaining.pacePhrase(
                 forfaitCents = 5_000L,
@@ -127,12 +130,14 @@ class DossierRemainingTest {
                 doneAmounts = listOf(5_000L),
                 fromYearMonth = from
             )
-        ).contains("2 mois")
+        ).contains("2 mensualités")
         assertThat(DossierRemaining.cadenceSuffix(12)).isEqualTo("/ an")
         assertThat(DossierRemaining.cadenceSuffix(1)).isEqualTo("/ mois")
         assertThat(DossierRemaining.cadenceSuffix(6)).isEqualTo("/ semestre")
         assertThat(DossierRemaining.cadenceSuffix(2)).isEqualTo("/ 2 mois")
         assertThat(DossierRemaining.pacePhrase(5_000L, 0L, fromYearMonth = from)).isNull()
+        assertThat(DossierRemaining.shortPaceChip(null)).isNull()
+        assertThat(DossierRemaining.shortPaceChip(0)).isNull()
     }
 
     @Test

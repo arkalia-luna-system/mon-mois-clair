@@ -67,14 +67,21 @@ fun AddEntryScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
     var confirmLeave by remember { mutableStateOf(false) }
-    val takePhoto = rememberFullPhotoCapture(
+    val takePhotoRaw = rememberFullPhotoCapture(
         onBitmap = { bmp ->
             pendingPreview = bmp
             viewModel.attachPreviewBitmap(bmp)
         },
         onDecodeFailed = {
             viewModel.setPhotoDecodeError()
+        },
+        onCaptureCancelled = {
+            viewModel.setCameraCaptureError()
         }
+    )
+    val takePhoto = be.monmoisclair.app.ui.camera.rememberCameraGatedLaunch(
+        onGranted = takePhotoRaw,
+        onMessage = viewModel::setCameraCaptureError
     )
     val pickPdf = rememberPdfPicker(
         onBytes = { bytes ->
@@ -83,7 +90,7 @@ fun AddEntryScreen(
         onFailed = viewModel::setPdfReadError
     )
     var showReceiptDialog by remember { mutableStateOf(false) }
-    // Déplier « retard ou accord » sans rien saisir ≠ sale (C6 / Senior :
+    // Déplier « plan de remboursement » sans rien saisir ≠ sale (C6 / Senior :
     // curiosité puis Annuler ne doit pas ouvrir « quitter sans sauver »).
     val dirty = state.label.isNotBlank() ||
         state.amountText.isNotBlank() ||
@@ -441,12 +448,17 @@ fun EditEntryScreen(
     }
 
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
-    val takePhoto = rememberFullPhotoCapture(
+    val takePhotoRaw = rememberFullPhotoCapture(
         onBitmap = { bmp ->
             pendingPreview = bmp
             viewModel.attachPreviewBitmap(bmp)
         },
-        onDecodeFailed = { viewModel.setPhotoDecodeError() }
+        onDecodeFailed = { viewModel.setPhotoDecodeError() },
+        onCaptureCancelled = { viewModel.setCameraCaptureError() }
+    )
+    val takePhoto = be.monmoisclair.app.ui.camera.rememberCameraGatedLaunch(
+        onGranted = takePhotoRaw,
+        onMessage = viewModel::setCameraCaptureError
     )
     val pickPdf = rememberPdfPicker(
         onBytes = { bytes ->

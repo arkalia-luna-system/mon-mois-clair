@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.R
+import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.QuietLinkA11y
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
@@ -223,6 +224,15 @@ internal fun ExpenseRow(
                                 A11yTokens.OnGold,
                                 compact = true
                             )
+                            DossierRemaining.shortPaceChip(item.remainingPayments)?.let { chip ->
+                                StatusChip(
+                                    chip,
+                                    HomeTokens.Chip,
+                                    HomeTokens.InkMuted,
+                                    outlined = true,
+                                    compact = true
+                                )
+                            }
                         }
                     } else {
                         Text(
@@ -372,6 +382,11 @@ internal fun ExpenseStatusLine(
             }
             if (item.isAgreement && !hideAgreementChip && size < 2) {
                 add(Chip("Accord", A11yTokens.AccentAuto, A11yTokens.OnGold))
+            }
+            if (item.isAgreement && size < 2) {
+                DossierRemaining.shortPaceChip(item.remainingPayments)?.let { chip ->
+                    add(Chip(chip, HomeTokens.Chip, HomeTokens.InkMuted, outlined = true))
+                }
             }
         }
     }.take(2)

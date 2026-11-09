@@ -9,10 +9,10 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.34** audit expert craft 10/10 (versionCode 140) |
+| Dernière étape terminée | **7.35** dettes/clarté/photo/mail (versionCode 141) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.34) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.34` via IAU Immediate |
-| Audit | [`matrice-audits-7.33.md`](docs/audits/2026-11-05-matrice-audits-7.33.md) · [`visual-expert-10.md`](docs/audits/2026-11-02-visual-expert-10.md) · smoke-checklist |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.35) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.35` via IAU Immediate |
+| Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -20,6 +20,28 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-09 — 7.35 dettes / clarté / photo / mail
+
+**Contexte :** Athalia **ok** — implémenter tout le plan [`docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md). Base 7.34 + docs `38d33a6`.
+
+**Accords / clarté :**
+- Accueil : chip « encore ~N » (sans €) + sticky Détails « N accords · Voir le rythme » (+ agrégat en retard)
+- `pacePhrase` : « Environ N mensualités restantes » + « Dernière estimée : … »
+- Section / Aide / empty : « Plan de remboursement » / « Accord de paiement »
+- Dossiers : KPI douce + pastille Ce mois / En retard / Pas ce mois
+
+**Photo + mail :**
+- CAMERA gated (facture + courrier) aligné ScanEpc + message si échec/refus
+- Manifest `<queries>` mailto/SENDTO/SEND
+- Support : fallback ACTION_SEND + copie `arkalia.luna.system@gmail.com`
+
+**Signaux :** soft-warn cause / photo / contact — non bloquant.
+
+**Tests :** **432** exécutés / 433 (1 skipped), 97 XML, 0 failure — `--rerun-tasks` 2026-11-09.  
+**Version :** `0.1.0-7.35` · `versionCode` **141**.  
+**Ship :** `develop` + ff `main` (Play auto).  
+**Limites smoke :** caméra OEM / Outlook / sticky doigt = Athalia.
 
 ### 2026-11-05 — 7.34 audit expert craft 10/10
 

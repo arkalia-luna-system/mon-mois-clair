@@ -418,7 +418,14 @@ internal fun EntryFormScaffold(
                 onFeeNoteText = onFeeNoteText,
                 addedFeesCents = addedFeesCents,
                 feeEvents = feeEvents,
-                focusManager = focusManager
+                focusManager = focusManager,
+                softWarns = be.monmoisclair.app.domain.DossierSoftWarn.messages(
+                    isAgreementOrOpening = isAgreement || openingRemainingText.isNotBlank(),
+                    causeLabel = causeLabel,
+                    hasPhoto = hasReceiptPhoto || hasPendingPhoto || hasPendingPdf,
+                    iban = iban,
+                    creditorEmail = creditorEmail
+                )
             )
             if (showApplyFollowing && hasTemplate) {
                 CheckRow(

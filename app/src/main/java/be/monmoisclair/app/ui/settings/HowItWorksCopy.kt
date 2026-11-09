@@ -49,10 +49,10 @@ object HowItWorksCopy {
                 "« Mettre de côté » n’est jamais en retard — c’est un geste volontaire."
         ),
         Section(
-            title = "Retard ou accord",
-            body = "Ce n’est pas la pastille « En retard ». C’est un plan de remboursement " +
+            title = "Plan de remboursement",
+            body = "Ce n’est pas la pastille « En retard ». C’est un accord de paiement " +
                 "(à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +
-                "sans le total de la dette. Chaque FAIT baisse le reste. " +
+                "sans le total de la dette. Détails → Voir le rythme. " +
                 "Menu → Dossiers (quand un accord ou un courrier existe). " +
                 "Résumé texte/PDF pour créancier."
         ),

@@ -73,7 +73,12 @@ fun PendingLetterFormScreen(
     val takePicture = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { ok ->
-        if (!ok) return@rememberLauncherForActivityResult
+        if (!ok) {
+            viewModel.setCameraError(
+                be.monmoisclair.app.ui.camera.CameraCaptureMessages.CAPTURE_FAILED
+            )
+            return@rememberLauncherForActivityResult
+        }
         val uri = cameraUri ?: return@rememberLauncherForActivityResult
         val bmp = runCatching {
             if (Build.VERSION.SDK_INT >= 28) {
@@ -90,6 +95,19 @@ fun PendingLetterFormScreen(
         pendingPreview = bmp
         viewModel.attachPreviewBitmap(bmp)
     }
+    val launchCamera = be.monmoisclair.app.ui.camera.rememberCameraGatedLaunch(
+        onGranted = {
+            val file = File(cameraDir, "pending_${System.currentTimeMillis()}.jpg")
+            val uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file
+            )
+            cameraUri = uri
+            takePicture.launch(uri)
+        },
+        onMessage = viewModel::setCameraError
+    )
 
     // 7.24 : Ranger + Annuler épinglés (clavier / S26 — aligné Convert).
     PinnedActionScaffold(
@@ -132,16 +150,7 @@ fun PendingLetterFormScreen(
             SecondaryA11yButton(
                 text = if (pendingPreview != null) "Reprendre la photo" else "Photo du courrier",
                 enabled = !state.saving,
-                onClick = {
-                    val file = File(cameraDir, "pending_${System.currentTimeMillis()}.jpg")
-                    val uri = FileProvider.getUriForFile(
-                        context,
-                        "${context.packageName}.fileprovider",
-                        file
-                    )
-                    cameraUri = uri
-                    takePicture.launch(uri)
-                }
+                onClick = launchCamera
             )
             pendingPreview?.let { bmp ->
                 val okShape = MaterialTheme.shapes.medium

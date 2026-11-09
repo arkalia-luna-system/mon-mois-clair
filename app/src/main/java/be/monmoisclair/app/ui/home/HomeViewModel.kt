@@ -3,7 +3,6 @@ package be.monmoisclair.app.ui.home
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +23,7 @@ import be.monmoisclair.app.domain.MonthSummary
 import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.SupportMailComposer
+import be.monmoisclair.app.domain.SupportMailIntents
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.usecase.AdjustDiversResult
@@ -83,6 +83,8 @@ data class HomeUiState(
     val hasDossiers: Boolean = false,
     /** Lot D — bandeau accueil si > 0. */
     val pendingLetterCount: Int = 0,
+    /** Accords ouverts en retard (ligne du mois) — sticky soft. */
+    val overdueAccordCount: Int = 0,
     /** Lot E — forfait mensuel « Mettre de côté » (0 = inactif). */
     val savingsMonthlyCents: Long = 0L
 )
@@ -236,10 +238,20 @@ class HomeViewModel @Inject constructor(
             }.mapLatest { base ->
                 // Compteur Menu = En cours seulement (soldés exclus du chiffre).
                 val snap = listDossiers()
-                val openCount = snap.items.count { !it.isSettled }
+                val openCount = snap.openCount
+                val byOpenId = snap.items
+                    .mapNotNull { item -> item.openInstanceId?.let { it to item } }
+                    .toMap()
+                val timeline = base.timeline.map { row ->
+                    if (row !is TimelineItem.Expense || !row.isAgreement) return@map row
+                    val payments = byOpenId[row.id]?.remainingPayments
+                    if (payments == null) row else row.copy(remainingPayments = payments)
+                }
                 base.copy(
+                    timeline = timeline,
                     dossierCount = openCount,
-                    hasDossiers = snap.items.isNotEmpty() || base.hasDossiers
+                    hasDossiers = snap.items.isNotEmpty() || base.hasDossiers,
+                    overdueAccordCount = snap.overdueOpenCount
                 )
             }
         },
@@ -533,7 +545,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /** Contact Menu → Arkalia Système (mailto). */
+    /** Contact Menu → Arkalia Système (mailto + fallback SEND). */
     fun writeSupportMail() {
         viewModelScope.launch {
             val pm = appContext.packageManager
@@ -561,17 +573,35 @@ class HomeViewModel @Inject constructor(
                 deviceModel = Build.MODEL.orEmpty(),
                 monthLabel = DayLabelFormat.monthTitle(selectedMonth.value)
             )
-            val intent = Intent(
-                Intent.ACTION_SENDTO,
-                Uri.parse(SupportMailComposer.mailtoUri(draft))
-            )
+            lastSupportDraft = draft
             _shareIntents.emit(
-                Intent.createChooser(
-                    intent,
-                    "Écrire à ${SupportMailComposer.SUPPORT_DISPLAY_NAME}"
-                )
+                SupportMailIntents.sendToChooser(draft, SupportMailIntents.chooserTitle())
             )
         }
+    }
+
+    private var lastSupportDraft: SupportMailComposer.Draft? = null
+
+    /** Échec SENDTO → message + tentative ACTION_SEND + adresse copiable. */
+    fun reportSupportMailFailed() {
+        val draft = lastSupportDraft
+        lastSupportDraft = null
+        SensitiveClipboard.setPlainText(
+            appContext,
+            "Support",
+            SupportMailComposer.SUPPORT_EMAIL
+        )
+        if (draft != null) {
+            viewModelScope.launch {
+                _shareIntents.emit(
+                    SupportMailIntents.sendFallbackChooser(
+                        draft,
+                        SupportMailIntents.chooserTitle()
+                    )
+                )
+            }
+        }
+        _userMessages.tryEmit(SupportMailIntents.NO_MAIL_APP)
     }
 
     fun copyPaymentNote(note: String) {
@@ -586,6 +616,10 @@ class HomeViewModel @Inject constructor(
 
     /** Share / mail système indisponible. */
     fun reportShareIntentFailed() {
+        if (lastSupportDraft != null) {
+            reportSupportMailFailed()
+            return
+        }
         _userMessages.tryEmit("Aucune app pour envoyer. Réessayez.")
     }
 

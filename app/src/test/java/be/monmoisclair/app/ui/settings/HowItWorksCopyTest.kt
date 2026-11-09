@@ -15,7 +15,7 @@ class HowItWorksCopyTest {
         assertThat(titles).contains("En retard")
         assertThat(titles).contains("Facture papier")
         assertThat(titles).contains("Sur une année")
-        assertThat(titles).contains("Retard ou accord")
+        assertThat(titles).contains("Plan de remboursement")
         assertThat(titles).contains("Résumé du mois")
         // P1-U4 : FAIT + Sauvegarde en tête.
         assertThat(titles.indexOf("Marquer FAIT")).isEqualTo(0)
@@ -67,10 +67,11 @@ class HowItWorksCopyTest {
         }
         val papier = HowItWorksCopy.sections.first { it.title == "Facture papier" }.body
         assertThat(papier).doesNotContain("Voir la photo")
-        val accord = HowItWorksCopy.sections.first { it.title == "Retard ou accord" }.body
+        val accord = HowItWorksCopy.sections.first { it.title == "Plan de remboursement" }.body
         assertThat(accord).doesNotContain("IBAN")
         assertThat(accord).contains("pas la pastille")
-        assertThat(accord).contains("plan de remboursement")
+        assertThat(accord).contains("accord de paiement")
+        assertThat(accord).contains("Voir le rythme")
         val retard = HowItWorksCopy.sections.first { it.title == "En retard" }.body
         assertThat(retard).contains("Mettre de côté")
         val annee = HowItWorksCopy.sections.first { it.title == "Sur une année" }.body

@@ -32,6 +32,8 @@ sealed interface TimelineItem {
         val isAgreement: Boolean = false,
         /** Intervalle du modèle (1 = mensuel). Affiché seulement si ≠ 1. */
         val intervalMonths: Int = 1,
+        /** Estimation N versements restants — chip « encore ~N » (sans €). */
+        val remainingPayments: Int? = null,
         override val sortDay: Int,
         override val sortLabel: String
     ) : TimelineItem {

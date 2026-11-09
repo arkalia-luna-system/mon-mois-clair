@@ -21,7 +21,7 @@ import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 
-/** Section Retard ou accord (dossier BE). */
+/** Section Plan de remboursement (dossier BE). */
 @Composable
 internal fun EntryFormDossierSection(
     showDossierSection: Boolean,
@@ -48,15 +48,16 @@ internal fun EntryFormDossierSection(
     onFeeNoteText: (String) -> Unit,
     addedFeesCents: Long,
     feeEvents: List<FeeEventRow>,
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    softWarns: List<String> = emptyList()
 ) {
     if (showDossierSection) {
         // FORM04 / FORM01 : Accord après Paiement — filet + repli.
         HorizontalDivider(color = A11yTokens.PaperBorder)
         FormSectionToggle(
-            title = "Retard ou accord",
+            title = EntryFormMessages.DOSSIER_SECTION_TITLE,
             expanded = dossierExpanded,
-            closedHint = "Reste dû à rembourser — pas la pastille En retard",
+            closedHint = "Accord de paiement — pas la pastille En retard",
             onToggle = { onDossierExpanded(!dossierExpanded) }
         )
         if (dossierExpanded) {
@@ -67,10 +68,18 @@ internal fun EntryFormDossierSection(
             ) {
             if (!isAgreement) {
                 Text(
-                    text = "Plan de remboursement (reste dû). " +
+                    text = "Accord de paiement (reste dû). " +
                         "Pas la pastille « En retard » de l’accueil.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            softWarns.forEach { warn ->
+                Text(
+                    text = warn,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = A11yTokens.AccentWarn,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

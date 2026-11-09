@@ -6,6 +6,7 @@ import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.EuroFormat
+import be.monmoisclair.app.domain.ExpenseOverdue
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import java.time.YearMonth
 import javax.inject.Inject
@@ -25,18 +26,25 @@ data class DossierListItem(
     val openInstanceId: String?,
     /** Ligne vraiment dans le mois courant. */
     val dueThisMonth: Boolean = false,
+    /** Échéance du mois passée et pas FAIT. */
+    val isOverdueThisMonth: Boolean = false,
     /** Forfait + rythme (« 50 € / an »), pas le versement partiel du mois. */
     val cadenceLabel: String = "",
     /** Null si un mois a divergé, ou si ce n’est pas estimable. */
-    val pacePhrase: String? = null
+    val pacePhrase: String? = null,
+    /** Estimation N versements — chip Accueil « encore ~N ». */
+    val remainingPayments: Int? = null
 )
 
 data class DossiersSnapshot(
     val items: List<DossierListItem>,
     /** Somme des versements du mois pour les dossiers encore ouverts. */
-    val monthTotalCents: Long
+    val monthTotalCents: Long,
+    /** Accords ouverts dont la ligne du mois est en retard. */
+    val overdueOpenCount: Int = 0
 ) {
     val count: Int get() = items.size
+    val openCount: Int get() = items.count { !it.isSettled }
 }
 
 /**
@@ -52,6 +60,7 @@ class ListDossiersUseCase @Inject constructor(
         val currentYm = AppClock.currentYearMonth().toString()
         val items = mutableListOf<DossierListItem>()
         var monthTotal = 0L
+        var overdueOpen = 0
         for (tpl in templateDao.activeExpenseTemplates()) {
             if (!DossierRemaining.isDossier(tpl.openingRemainingCents)) continue
             val paid = instanceDao.sumAmountCentsByTemplateAndStatus(
@@ -77,9 +86,22 @@ class ListDossiersUseCase @Inject constructor(
             }
             // « Ce mois » = une ligne vraiment dans le mois, pas le forfait d’une échéance lointaine.
             if (!settled && thisMonth != null) monthTotal += thisMonth.amountCents
+            val overdueThisMonth = !settled && thisMonth != null &&
+                ExpenseOverdue.isOverdue(
+                    ledgerId = thisMonth.ledgerId,
+                    dayOfMonth = thisMonth.dayOfMonth,
+                    status = thisMonth.status,
+                    label = tpl.label
+                )
+            if (overdueThisMonth) overdueOpen++
             val doneAmounts = instances
                 .filter { it.status == ExpenseStatus.DONE }
                 .map { it.amountCents }
+            val payments = if (settled) {
+                null
+            } else {
+                DossierRemaining.remainingPaymentCount(tpl.amountCents, remaining)
+            }
             val pace = if (settled) {
                 null
             } else {
@@ -107,8 +129,10 @@ class ListDossiersUseCase @Inject constructor(
                 isSettled = settled,
                 openInstanceId = openId,
                 dueThisMonth = thisMonth != null,
+                isOverdueThisMonth = overdueThisMonth,
                 cadenceLabel = cadence,
-                pacePhrase = pace
+                pacePhrase = pace,
+                remainingPayments = payments
             )
         }
         // Ouverts d’abord, puis soldés ; alpha sur le nom.
@@ -116,7 +140,11 @@ class ListDossiersUseCase @Inject constructor(
             compareBy<DossierListItem> { it.isSettled }
                 .thenBy { it.who.lowercase() }
         )
-        return DossiersSnapshot(items = ordered, monthTotalCents = monthTotal)
+        return DossiersSnapshot(
+            items = ordered,
+            monthTotalCents = monthTotal,
+            overdueOpenCount = overdueOpen
+        )
     }
 
     /**

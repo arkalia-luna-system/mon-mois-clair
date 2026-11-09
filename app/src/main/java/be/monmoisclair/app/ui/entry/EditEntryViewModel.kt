@@ -76,7 +76,7 @@ data class EditEntryState(
     val remainingCents: Long? = null,
     val isSettled: Boolean = false,
     /**
-     * « Encore environ N mois si… » — null si un FAIT a divergé, si c’est soldé,
+     * « Environ N mensualités… Dernière estimée » — null si soldé / non estimable,
      * ou si ce n’est pas un accord. Jamais affiché sur l’accueil.
      */
     val pacePhrase: String? = null,
@@ -306,6 +306,9 @@ class EditEntryViewModel @Inject constructor(
     fun setPhotoDecodeError() = _state.update {
         it.copy(error = EntryFormDraftController.photoDecodeError())
     }
+
+    fun setCameraCaptureError(message: String = EntryFormMessages.CAMERA_CAPTURE_FAILED) =
+        _state.update { it.copy(error = message) }
 
     fun setPdfReadError(message: String = EntryFormMessages.PDF_READ_ERROR_DEFAULT) =
         _state.update { it.copy(error = EntryFormDraftController.pdfReadError(message)) }

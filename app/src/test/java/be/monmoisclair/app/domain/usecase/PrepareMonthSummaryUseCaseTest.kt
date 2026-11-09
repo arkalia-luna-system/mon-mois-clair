@@ -107,8 +107,9 @@ class PrepareMonthSummaryUseCaseTest {
         assertThat(text).contains("Pour quoi : Hôpital")
         assertThat(text).contains("Versement ce mois :")
         assertThat(text).contains("Reste :")
-        assertThat(text).contains("Encore environ")
-        assertThat(text).contains("si le versement reste de")
+        assertThat(text).contains("Environ")
+        assertThat(text).contains("mensualités restantes")
+        assertThat(text).contains("Dernière estimée")
         assertThat(text).doesNotContain("fin prévue")
         assertThat(text).contains("Référence : +++000/0000/00097+++")
         assertThat(text).contains("IBAN : BE68539007547034")
@@ -239,8 +240,8 @@ class PrepareMonthSummaryUseCaseTest {
         assertThat(text).contains("À qui : Taxe")
         assertThat(text).contains("Pas de versement ce mois.")
         assertThat(text).doesNotContain("Versement ce mois :")
-        assertThat(text).contains("Encore environ 1 versement si le versement reste de 120 €.")
-        assertThat(text).contains("Vers octobre 2026.")
+        assertThat(text).contains("Environ 1 versement restant.")
+        assertThat(text).contains("Dernière estimée : octobre 2026.")
         assertThat(text).doesNotContain("fin prévue")
     }
 

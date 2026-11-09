@@ -163,6 +163,9 @@ class AddEntryViewModel @Inject constructor(
         it.copy(error = EntryFormDraftController.photoDecodeError())
     }
 
+    fun setCameraCaptureError(message: String = EntryFormMessages.CAMERA_CAPTURE_FAILED) =
+        _state.update { it.copy(error = message) }
+
     fun setPdfReadError(message: String = EntryFormMessages.PDF_READ_ERROR_DEFAULT) =
         _state.update { it.copy(error = EntryFormDraftController.pdfReadError(message)) }
 

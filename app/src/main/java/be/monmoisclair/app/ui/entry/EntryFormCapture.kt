@@ -55,7 +55,8 @@ internal fun rememberPdfPicker(
 @Composable
 internal fun rememberFullPhotoCapture(
     onBitmap: (Bitmap) -> Unit,
-    onDecodeFailed: () -> Unit = {}
+    onDecodeFailed: () -> Unit = {},
+    onCaptureCancelled: () -> Unit = {}
 ): () -> Unit {
     val context = LocalContext.current
     var pendingFile by remember { mutableStateOf<File?>(null) }
@@ -65,11 +66,15 @@ internal fun rememberFullPhotoCapture(
         val file = pendingFile
         pendingFile = null
         if (!ok) {
-            // E08 : annulation → effacer le jpg temporaire.
+            // E08 : annulation / refus → effacer le jpg temporaire + message.
             file?.delete()
+            onCaptureCancelled()
             return@rememberLauncherForActivityResult
         }
-        if (file == null || !file.exists()) return@rememberLauncherForActivityResult
+        if (file == null || !file.exists()) {
+            onCaptureCancelled()
+            return@rememberLauncherForActivityResult
+        }
         val decoded = runCatching { decodeCameraJpegBounded(file) }.getOrNull()
         file.delete()
         if (decoded != null) onBitmap(decoded) else onDecodeFailed()
