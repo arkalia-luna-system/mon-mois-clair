@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.36** correctifs adversariaux Accueil + photo/mail/restore (versionCode 142) |
+| Dernière étape terminée | **7.37** audit expert complet + clarté dettes + feedback erreurs sheets (versionCode 143) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.36) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.36` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — tester au doigt sur S25 Ultra / S26 les corrections 7.37 |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,26 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-09 — 7.37 audit expert complet + clarté dettes + feedback erreurs sheets
+
+**Contexte :** audit fonctionnel exhaustif (228 fichiers source, 101 fichiers test, 4 axes), puis correction des findings fixables.
+
+**Findings corrigés :**
+- F-UX-01 : **Dossiers KPI — reste total dû** tous accords ouverts (ex. « 3 accords · reste total 3 500 €  · 150 € ce mois ») — crucial endettés multi-factures
+- F-UX-02 : **Courses / Épargne sheets — erreur remontée au-dessus des boutons** (avant : invisible derrière le clavier Samsung)
+- F-UX-03 : **Courses « Corriger » → « Retirer »** — libellé sans ambiguïté (retirer = soustraire, pas remplacer)
+- F-UX-04 : `DossiersSnapshot.totalRemainingCents` exposé dans le use-case (somme restes ouverts)
+- F-TEST-01 : test `totalRemainingCents_sumsAllOpenDossiers` — 3 dossiers dont 1 soldé → somme des 2 ouverts
+- F-TEST-02 : assertion `totalRemainingCents == 0` sur snapshot vide
+
+**Audit — findings non corrigés (honnêteté) :**
+- `catch (_: Exception)` dans BackupRestorer/SettingsViewModel : silencieux par design (graceful degradation, pas un bug)
+- `SupportMailIntentsTest` warnings `getParcelableExtra` deprecated : Robolectric shadowing oblige l'ancienne API, pas de fix pur sans un upgrade Robolectric
+- HomeViewModel large (~670 lignes) : wiring layer bien factorisé avec use-cases, pas de refacto critique
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **452/452 pass, 1 skipped, 0 failure**
+**Version :** `0.1.0-7.37` · `versionCode` 143
 
 ### 2026-11-09 — 7.36 correctifs adversariaux Accueil + photo/mail/restore
 

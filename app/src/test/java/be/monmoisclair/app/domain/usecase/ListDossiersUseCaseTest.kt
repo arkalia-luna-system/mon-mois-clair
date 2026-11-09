@@ -60,6 +60,7 @@ class ListDossiersUseCaseTest {
         val snap = list()
         assertThat(snap.count).isEqualTo(0)
         assertThat(snap.monthTotalCents).isEqualTo(0L)
+        assertThat(snap.totalRemainingCents).isEqualTo(0L)
     }
 
     @Test
@@ -203,6 +204,49 @@ class ListDossiersUseCaseTest {
         val item = list().items.single()
         assertThat(item.openInstanceId).isNull()
         assertThat(item.dueThisMonth).isFalse()
+    }
+
+    @Test
+    fun totalRemainingCents_sumsAllOpenDossiers() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-a", label = "Dette A", amountCents = 5_000L,
+                dayOfMonth = 10, active = true, causeLabel = "A",
+                openingRemainingCents = 20_000L, createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-b", label = "Dette B", amountCents = 3_000L,
+                dayOfMonth = 15, active = true, causeLabel = "B",
+                openingRemainingCents = 15_000L, createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-c", label = "Dette C", amountCents = 2_000L,
+                dayOfMonth = 20, active = true, causeLabel = "C",
+                openingRemainingCents = 5_000L, addedFeesCents = 0L,
+                createdAtEpochMs = 1L, archivedAtEpochMs = null
+            )
+        )
+        // Mark tpl-c as fully paid (settled) → excluded from totalRemaining.
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp:2026-10:tpl-c", ledgerId = "2026-10", templateId = "tpl-c",
+                label = "Dette C", amountCents = 5_000L, dayOfMonth = 20,
+                status = ExpenseStatus.DONE, doneAtEpochMs = 1L,
+                remindJ3 = true, remindJd = true,
+                alarmJ3RequestCode = null, alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val snap = list()
+        assertThat(snap.openCount).isEqualTo(2)
+        assertThat(snap.totalRemainingCents).isEqualTo(20_000L + 15_000L)
     }
 
     @Test

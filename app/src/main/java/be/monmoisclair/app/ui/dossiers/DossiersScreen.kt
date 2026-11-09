@@ -175,6 +175,10 @@ fun DossiersScreen(
                     append(
                         if (openItems.size == 1) "1 accord" else "${openItems.size} accords"
                     )
+                    if (snap.totalRemainingCents > 0L) {
+                        append(" · reste total ")
+                        append(MoneyFormat.formatCents(snap.totalRemainingCents))
+                    }
                     if (snap.monthTotalCents > 0L) {
                         append(" · ")
                         append(MoneyFormat.formatCents(snap.monthTotalCents))

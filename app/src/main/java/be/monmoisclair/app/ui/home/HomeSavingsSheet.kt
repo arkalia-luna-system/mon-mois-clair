@@ -42,8 +42,8 @@ import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
 /**
- * Édition rapide du forfait « Mettre de côté » depuis le sticky Accueil.
- * Jour / retrait / historique : Réglages (lien discret).
+ * \u00c9dition rapide du forfait \u00ab Mettre de c\u00f4t\u00e9 \u00bb depuis le sticky Accueil.
+ * Jour / retrait / historique : R\u00e9glages (lien discret).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,12 +82,12 @@ fun HomeSavingsSheet(
                 .padding(bottom = 8.dp),
             verticalArrangement = Arrangement.spacedBy(gap)
         ) {
-            CarnetPageTitle("Mettre de côté", withTopSpacer = false, shortSheet = true)
+            CarnetPageTitle("Mettre de c\u00f4t\u00e9", withTopSpacer = false, shortSheet = true)
             Text(
                 text = if (active) {
-                    "Noté ${MoneyFormat.formatCents(monthlyCents)} / mois · déjà retiré du reste"
+                    "Not\u00e9 ${MoneyFormat.formatCents(monthlyCents)} / mois \u00b7 d\u00e9j\u00e0 retir\u00e9 du reste"
                 } else {
-                    "Vers un autre compte — ce montant est retiré du reste du mois."
+                    "Vers un autre compte \u2014 ce montant est retir\u00e9 du reste du mois."
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
@@ -98,16 +98,16 @@ fun HomeSavingsSheet(
                     .padding(horizontal = 14.dp, vertical = 10.dp)
                     .semantics {
                         contentDescription = if (active) {
-                            "Noté ${MoneyFormat.formatCents(monthlyCents)} par mois"
+                            "Not\u00e9 ${MoneyFormat.formatCents(monthlyCents)} par mois"
                         } else {
-                            "Mettre de côté vers un autre compte"
+                            "Mettre de c\u00f4t\u00e9 vers un autre compte"
                         }
                     }
             )
             OutlinedTextField(
                 value = input,
                 onValueChange = onInputChange,
-                label = { Text("Montant (€)") },
+                label = { Text("Montant (\u20ac)") },
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
                 colors = carnetOutlinedTextFieldColors(),
@@ -121,24 +121,24 @@ fun HomeSavingsSheet(
                     .then(fieldBring),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
-            // Parité sticky Courses : CTA primaire teal (QuietLink = détail).
+            error?.let { err ->
+                CarnetStateBanner(text = err, kind = CarnetBannerKind.Error, pad = 12.dp)
+            }
+            // Parit\u00e9 sticky Courses : CTA primaire teal (QuietLink = d\u00e9tail).
             PrimaryA11yButton(
-                text = if (active) "Mettre à jour" else "Activer",
+                text = if (active) "Mettre \u00e0 jour" else "Activer",
                 onClick = onSave,
                 enabled = !busy,
                 modifier = Modifier.fillMaxWidth()
             )
             QuietLinkA11y(
-                text = "Jour et détail ›",
+                text = "Jour et d\u00e9tail \u203a",
                 onClick = {
                     onDismiss()
                     onOpenDetails()
                 },
-                onClickLabel = "Ouvrir le détail dans Réglages"
+                onClickLabel = "Ouvrir le d\u00e9tail dans R\u00e9glages"
             )
-            error?.let { err ->
-                CarnetStateBanner(text = err, kind = CarnetBannerKind.Error, pad = 12.dp)
-            }
             Spacer(modifier = Modifier.height(4.dp))
         }
     }

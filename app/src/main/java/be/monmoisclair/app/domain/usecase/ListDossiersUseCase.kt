@@ -41,7 +41,9 @@ data class DossiersSnapshot(
     /** Somme des versements du mois pour les dossiers encore ouverts. */
     val monthTotalCents: Long,
     /** Accords ouverts dont la ligne du mois est en retard. */
-    val overdueOpenCount: Int = 0
+    val overdueOpenCount: Int = 0,
+    /** Somme des restes dus de tous les accords encore ouverts. */
+    val totalRemainingCents: Long = 0L
 ) {
     val count: Int get() = items.size
     val openCount: Int get() = items.count { !it.isSettled }
@@ -140,10 +142,14 @@ class ListDossiersUseCase @Inject constructor(
             compareBy<DossierListItem> { it.isSettled }
                 .thenBy { it.who.lowercase() }
         )
+        val totalRemaining = ordered
+            .filter { !it.isSettled }
+            .sumOf { it.remainingCents }
         return DossiersSnapshot(
             items = ordered,
             monthTotalCents = monthTotal,
-            overdueOpenCount = overdueOpen
+            overdueOpenCount = overdueOpen,
+            totalRemainingCents = totalRemaining
         )
     }
 

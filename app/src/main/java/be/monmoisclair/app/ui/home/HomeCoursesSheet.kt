@@ -42,7 +42,7 @@ import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
 /**
- * Unique UI d’édition Courses / divers — ouverte depuis la bannière sticky.
+ * Unique UI d'édition Courses / divers — ouverte depuis la bannière sticky.
  * Le Reste après factures ne change pas (hors ledger factures).
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,10 +85,10 @@ fun HomeCoursesSheet(
             CarnetPageTitle("Courses", withTopSpacer = false, shortSheet = true)
             val statusLine = when {
                 diversSpentCents > 0L && afterDiversCents < 0L ->
-                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · il reste " +
+                    "Not\u00e9 ${MoneyFormat.formatCents(diversSpentCents)} \u00b7 il reste " +
                         "${MoneyFormat.formatCents(afterDiversCents)}"
                 diversSpentCents > 0L ->
-                    "Noté ${MoneyFormat.formatCents(diversSpentCents)} · hors du reste du mois"
+                    "Not\u00e9 ${MoneyFormat.formatCents(diversSpentCents)} \u00b7 hors du reste du mois"
                 else -> "Hors du reste du mois"
             }
             Text(
@@ -115,7 +115,7 @@ fun HomeCoursesSheet(
             OutlinedTextField(
                 value = input,
                 onValueChange = onInputChange,
-                label = { Text("Montant (€)") },
+                label = { Text("Montant (\u20ac)") },
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
                 colors = carnetOutlinedTextFieldColors(),
@@ -129,24 +129,24 @@ fun HomeCoursesSheet(
                     .then(fieldBring),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
-            // P1-H4 : 1 Primary carnet + QuietLink corriger (pas 2 Secondary outils).
+            error?.let { err ->
+                CarnetStateBanner(text = err, kind = CarnetBannerKind.Error, pad = 12.dp)
+            }
+            // P1-H4 : 1 Primary carnet + QuietLink retirer (pas 2 Secondary outils).
             PrimaryA11yButton(
-                text = "J’ai dépensé",
+                text = "J\u2019ai d\u00e9pens\u00e9",
                 onClick = onAdd,
                 enabled = !busy,
                 modifier = Modifier.fillMaxWidth()
             )
             QuietLinkA11y(
-                text = "Corriger",
+                text = "Retirer",
                 onClick = onRemove,
                 enabled = !busy,
                 fillMaxWidth = false,
                 modifier = Modifier.fillMaxWidth(),
-                onClickLabel = "Corriger le montant des courses"
+                onClickLabel = "Retirer un montant des courses"
             )
-            error?.let { err ->
-                CarnetStateBanner(text = err, kind = CarnetBannerKind.Error, pad = 12.dp)
-            }
             Spacer(modifier = Modifier.height(4.dp))
         }
     }
