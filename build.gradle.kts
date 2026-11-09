@@ -24,7 +24,7 @@ val patchedForces = arrayOf(
     "io.netty:netty-common:4.1.139.Final",
     "io.netty:netty-buffer:4.1.139.Final",
     "io.netty:netty-transport:4.1.139.Final",
-    "io.netty:netty-transport-native-unix-common:4.1.139.Final",
+    "io.netty:netty-transport-native-unix-common:4.2.20.Final",
     "io.netty:netty-handler-proxy:4.1.139.Final",
     "io.netty:netty-codec-socks:4.1.139.Final",
 )
