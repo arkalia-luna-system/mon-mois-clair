@@ -494,21 +494,18 @@ fun HomeScreen(
                                     )
                                 ) {
                                     Text(
-                                        text = if (state.isFuturePreview) {
-                                            "Rien de prévu ce mois-là"
-                                        } else {
-                                            "Rien encore ce mois"
-                                        },
+                                        text = HomeEmptyMonthCopy.title(
+                                            isPastMonth = state.isPastMonth,
+                                            isFuturePreview = state.isFuturePreview
+                                        ),
                                         style = MaterialTheme.typography.headlineSmall,
                                         color = HomeTokens.Ink
                                     )
                                     Text(
-                                        text = if (state.isFuturePreview) {
-                                            "Les lignes réapparaissent ici quand elles sont dues. " +
-                                                "Pour en ajouter, revenez au mois en cours."
-                                        } else {
-                                            "Ajoutez le salaire et les factures avec « + Ajouter » en bas."
-                                        },
+                                        text = HomeEmptyMonthCopy.body(
+                                            isPastMonth = state.isPastMonth,
+                                            isFuturePreview = state.isFuturePreview
+                                        ),
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = HomeTokens.InkMuted
                                     )
@@ -678,7 +675,10 @@ fun HomeScreen(
 
             if (!keyboardOpen) {
                 HomeBottomBar(
-                    isFuturePreview = state.isFuturePreview,
+                    showGoCurrentCta = HomeEmptyMonthCopy.showGoCurrentCta(
+                        isPastMonth = state.isPastMonth,
+                        isFuturePreview = state.isFuturePreview
+                    ),
                     remindersBlocked = remindersBlocked,
                     onMenu = { menuOpen = true },
                     onAdd = { onAdd(state.selectedYearMonth) },

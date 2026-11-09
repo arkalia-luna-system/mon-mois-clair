@@ -102,4 +102,14 @@ class RestoreMessagesTest {
         assertThat(msg).doesNotContain("6.81")
         assertThat(msg.lowercase()).doesNotContain(".mmc")
     }
+
+    @Test
+    fun notMmcBackup_dedicatedMessage() {
+        val msg = RestoreMessages.from(RestoreResult.NotMmcBackup)
+        assertThat(msg).isEqualTo(RestoreMessages.NOT_MMC_BACKUP)
+        assertThat(msg).contains("n’est pas une copie Mon Mois Clair")
+        assertThat(msg.lowercase()).contains("photo")
+        assertThat(msg).contains("n’a pas été modifié")
+        assertThat(msg.lowercase()).doesNotContain("non protégée")
+    }
 }

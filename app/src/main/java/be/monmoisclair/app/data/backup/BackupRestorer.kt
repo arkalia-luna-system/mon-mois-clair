@@ -74,10 +74,11 @@ class BackupRestorer @Inject constructor(
                 shareCode,
                 CleartextLegacyGrace.effectiveAllow(allowCleartextLegacy)
             ) ?: return RestoreResult.BadShareCode()
-            if (opened is OpenedIncoming.RejectedCleartext) {
-                return RestoreResult.CleartextRejected
+            val ok = when (opened) {
+                is OpenedIncoming.RejectedCleartext -> return RestoreResult.CleartextRejected
+                is OpenedIncoming.RejectedNotMmc -> return RestoreResult.NotMmcBackup
+                is OpenedIncoming.Ok -> opened
             }
-            val ok = opened as OpenedIncoming.Ok
             val document = codec.decodeAndVerify(ok.json)
             val applied = applyDocument(document)
             if (applied !is RestoreResult.Success) return applied
@@ -143,6 +144,10 @@ class BackupRestorer @Inject constructor(
                 }
             }
             else -> {
+                // JPEG / PDF / autre ≠ copie MMC et ≠ ZIP/JSON clair legacy.
+                if (!looksLikeCleartextBackup(bytes)) {
+                    return OpenedIncoming.RejectedNotMmc
+                }
                 // ZIP / JSON clair pré-6.81 — refuse sauf opt-in « ancien format ».
                 if (!allowCleartextLegacy) {
                     return OpenedIncoming.RejectedCleartext
@@ -172,6 +177,22 @@ class BackupRestorer @Inject constructor(
         ) : OpenedIncoming()
 
         data object RejectedCleartext : OpenedIncoming()
+        data object RejectedNotMmc : OpenedIncoming()
+    }
+
+    /** ZIP PK.. ou JSON objet `{…}` (éventuel BOM / espaces). */
+    internal fun looksLikeCleartextBackup(bytes: ByteArray): Boolean {
+        if (BackupSecurityArchive.looksLikeZip(bytes)) return true
+        var i = 0
+        if (bytes.size >= 3 &&
+            bytes[0] == 0xEF.toByte() &&
+            bytes[1] == 0xBB.toByte() &&
+            bytes[2] == 0xBF.toByte()
+        ) {
+            i = 3
+        }
+        while (i < bytes.size && bytes[i].toInt().toChar().isWhitespace()) i++
+        return i < bytes.size && bytes[i] == '{'.code.toByte()
     }
 
     private fun resolveShareSecret(shareCode: String?): CharArray? {

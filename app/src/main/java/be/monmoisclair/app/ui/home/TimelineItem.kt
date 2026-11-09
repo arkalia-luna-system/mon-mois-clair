@@ -30,6 +30,8 @@ sealed interface TimelineItem {
         val causeLabel: String = "",
         /** Lot B — pastille Accord (dossier avec reste de départ). */
         val isAgreement: Boolean = false,
+        /** Modèle récurrent (jointure dossiers / chip encore ~N hors mois courant). */
+        val templateId: String? = null,
         /** Intervalle du modèle (1 = mensuel). Affiché seulement si ≠ 1. */
         val intervalMonths: Int = 1,
         /** Estimation N versements restants — chip « encore ~N » (sans €). */

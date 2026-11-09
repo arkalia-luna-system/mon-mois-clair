@@ -11,8 +11,8 @@ Carnet familial belge (papier, QR EPC, communication structurée) — distributi
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/unit%20tests-432%20pass%20·%201%20skipped-success)](#statut)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.35-informational)](#statut)
+[![Tests](https://img.shields.io/badge/unit%20tests-451%20pass%20·%201%20skipped-success)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.36-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 <p align="center">
@@ -59,12 +59,12 @@ Play = **piste Internal familiale** seulement — pas une publication Store gran
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.35` (`versionCode` 141) |
-| Dernière étape | **7.35** — dettes/clarté/photo/mail (plan 2026-11-09) |
+| Version | `0.1.0-7.36` (`versionCode` 142) |
+| Dernière étape | **7.36** — correctifs adversariaux Accueil chips/sticky/empty + photo/mail/restore |
 | Device | Baseline Galaxy S25 Ultra (SM-S938B), install release **7.16** sans wipe |
 | Distribution | **Play Internal** + IAU Immediate — [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) · [`docs/IN_APP_UPDATES.md`](docs/IN_APP_UPDATES.md) · sideload [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | AAB | `dist/MonMoisClair-release.aab` (gitignoré ; `./gradlew :app:bundleRelease`) |
-| Tests unitaires | **432** passent, **1** `@Ignore` (migration 1→N), 0 failure — journal local `--rerun-tasks` 2026-11-09 |
+| Tests unitaires | **451** passent, **1** `@Ignore` (migration 1→N), 0 failure — journal local `--rerun-tasks` 2026-11-09 |
 | Schéma Room | **8** |
 
 Non claimé ici (volontaire) : smoke doigt « cadeau », restore famille en conditions réelles, compte Play Console déjà provisionné.

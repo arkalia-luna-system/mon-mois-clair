@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.35** dettes/clarté/photo/mail (versionCode 141) |
+| Dernière étape terminée | **7.36** correctifs adversariaux Accueil + photo/mail/restore (versionCode 142) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.35) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.35` via IAU Immediate |
+| Prochaine sous-étape | Smoke doigt Athalia — checklist [`docs/audits/2026-11-05-smoke-checklist-7.24.md`](docs/audits/2026-11-05-smoke-checklist-7.24.md) (cible 7.36) · **pas** claimé · confirmer MAJ Play = `0.1.0-7.36` via IAU Immediate |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,27 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-09 — 7.36 correctifs adversariaux Accueil + photo/mail/restore
+
+**Contexte :** Athalia **ok on continue** — corriger tous les bugs adversariaux listés (base 7.35 `d8dd3bf`).
+
+**Accueil chips / sticky / empty :**
+- F-UX-01 : pastilles max 2 — prioriser `encore ~N` (puis Accord) avant Prélèvement ; En retard + accord → En retard + encore ~N
+- F-UX-02 : jointure `remainingPayments` par `templateId` (M−1/M+1), repli `openInstanceId`
+- F-UX-03 : ligne « N accords · Voir le rythme » hors accordion Détails dès `dossierCount > 0`
+- F-UX-04 : empty mois passé = « Aucune ligne ce mois-là » + CTA « Mois en cours »
+
+**Photo / mail / restore :**
+- F1 : Annuler caméra → « Photo annulée. » (pas faux message autorisation)
+- F2/F3 : resolve SENDTO avant launch ; fallback ACTION_SEND + ADDRESS_COPIED (support + créancier)
+- F4 : JPEG/PDF → `NotMmcBackup` (« pas une copie Mon Mois Clair ») — DB inchangée
+- F5 : `onOpenSettings` branché sur `rememberCameraGatedLaunch` (EntryForm + PendingLetter)
+
+**Tests :** **451** exécutés / 452 (1 skipped), 101 XML, 0 failure — `--rerun-tasks` 2026-11-09.  
+**Version :** `0.1.0-7.36` · `versionCode` **142**.  
+**Ship :** `develop` + ff `main` (Play auto).  
+**Limites smoke :** caméra OEM / sticky doigt / Outlook = Athalia — **pas** claimé.
 
 ### 2026-11-09 — 7.35 dettes / clarté / photo / mail
 

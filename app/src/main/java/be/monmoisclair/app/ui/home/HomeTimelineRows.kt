@@ -356,40 +356,31 @@ internal fun ExpenseStatusLine(
     val compact = fit.compactHomeChrome
     // H06 / P0-C1 : max 2 pastilles. Compact = critique seulement (retard / FAIT).
     data class Chip(val text: String, val bg: Color, val fg: Color, val outlined: Boolean = false)
-    val chips = buildList {
+    val dangerFill = HomeTokens.DangerFill
+    val okFill = HomeTokens.OkFill
+    val chipBg = HomeTokens.Chip
+    val inkMuted = HomeTokens.InkMuted
+    val buttonText = A11yTokens.ButtonText
+    val accentAuto = A11yTokens.AccentAuto
+    val onGold = A11yTokens.OnGold
+    val chips = ExpenseStatusChips.labels(
+        isOverdue = item.isOverdue,
+        isDone = item.isDone,
+        doneLabel = item.doneLabel,
+        isAutoDebit = item.isAutoDebit,
+        isAgreement = item.isAgreement,
+        hideAgreementChip = hideAgreementChip,
+        remainingPayments = item.remainingPayments,
+        compact = compact
+    ).map { text ->
         when {
-            item.isOverdue && !item.isDone ->
-                add(Chip("En retard", HomeTokens.DangerFill, A11yTokens.ButtonText))
-            item.isDone ->
-                add(
-                    Chip(
-                        item.doneLabel ?: "FAIT ✓",
-                        HomeTokens.OkFill,
-                        A11yTokens.ButtonText
-                    )
-                )
+            text == "En retard" -> Chip(text, dangerFill, buttonText)
+            text == "Accord" -> Chip(text, accentAuto, onGold)
+            text == "Prélèvement" || text.startsWith("encore") ->
+                Chip(text, chipBg, inkMuted, outlined = true)
+            else -> Chip(text, okFill, buttonText)
         }
-        if (!compact) {
-            if (item.isAutoDebit) {
-                add(
-                    Chip(
-                        "Prélèvement",
-                        HomeTokens.Chip,
-                        HomeTokens.InkMuted,
-                        outlined = true
-                    )
-                )
-            }
-            if (item.isAgreement && !hideAgreementChip && size < 2) {
-                add(Chip("Accord", A11yTokens.AccentAuto, A11yTokens.OnGold))
-            }
-            if (item.isAgreement && size < 2) {
-                DossierRemaining.shortPaceChip(item.remainingPayments)?.let { chip ->
-                    add(Chip(chip, HomeTokens.Chip, HomeTokens.InkMuted, outlined = true))
-                }
-            }
-        }
-    }.take(2)
+    }
     val showDebitTip = item.isAutoDebit && !item.isDone
     if (chips.isEmpty() && !showDebitTip) return
     Column(verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 6.dp)) {

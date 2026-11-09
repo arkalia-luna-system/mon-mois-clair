@@ -197,6 +197,7 @@ class HomeViewModel @Inject constructor(
                                 receiptRelativePath = exp.receiptRelativePath,
                                 causeLabel = tpl?.causeLabel.orEmpty(),
                                 isAgreement = DossierRemaining.isDossier(tpl?.openingRemainingCents),
+                                templateId = exp.templateId,
                                 intervalMonths = tpl?.intervalMonths ?: 1,
                                 sortDay = exp.dayOfMonth,
                                 sortLabel = exp.label
@@ -239,12 +240,13 @@ class HomeViewModel @Inject constructor(
                 // Compteur Menu = En cours seulement (soldés exclus du chiffre).
                 val snap = listDossiers()
                 val openCount = snap.openCount
-                val byOpenId = snap.items
-                    .mapNotNull { item -> item.openInstanceId?.let { it to item } }
-                    .toMap()
                 val timeline = base.timeline.map { row ->
                     if (row !is TimelineItem.Expense || !row.isAgreement) return@map row
-                    val payments = byOpenId[row.id]?.remainingPayments
+                    val payments = HomeTimelineDossierJoin.remainingPaymentsFor(
+                        rowTemplateId = row.templateId,
+                        rowInstanceId = row.id,
+                        dossiers = snap.items
+                    )
                     if (payments == null) row else row.copy(remainingPayments = payments)
                 }
                 base.copy(
@@ -573,16 +575,27 @@ class HomeViewModel @Inject constructor(
                 deviceModel = Build.MODEL.orEmpty(),
                 monthLabel = DayLabelFormat.monthTitle(selectedMonth.value)
             )
-            lastSupportDraft = draft
-            _shareIntents.emit(
-                SupportMailIntents.sendToChooser(draft, SupportMailIntents.chooserTitle())
-            )
+            val title = SupportMailIntents.chooserTitle()
+            if (SupportMailIntents.canResolveSendTo(pm, draft)) {
+                lastSupportDraft = draft
+                _shareIntents.emit(SupportMailIntents.sendToChooser(draft, title))
+            } else {
+                // createChooser(SENDTO) masque ActivityNotFound — resolve d’abord.
+                lastSupportDraft = null
+                SensitiveClipboard.setPlainText(
+                    appContext,
+                    "Support",
+                    SupportMailComposer.SUPPORT_EMAIL
+                )
+                _shareIntents.emit(SupportMailIntents.sendFallbackChooser(draft, title))
+                _userMessages.tryEmit(SupportMailIntents.ADDRESS_COPIED)
+            }
         }
     }
 
     private var lastSupportDraft: SupportMailComposer.Draft? = null
 
-    /** Échec SENDTO → message + tentative ACTION_SEND + adresse copiable. */
+    /** Échec lancement SENDTO → ACTION_SEND + adresse copiée. */
     fun reportSupportMailFailed() {
         val draft = lastSupportDraft
         lastSupportDraft = null
@@ -601,7 +614,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
-        _userMessages.tryEmit(SupportMailIntents.NO_MAIL_APP)
+        _userMessages.tryEmit(SupportMailIntents.ADDRESS_COPIED)
     }
 
     fun copyPaymentNote(note: String) {

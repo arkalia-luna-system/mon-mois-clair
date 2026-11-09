@@ -75,7 +75,7 @@ fun PendingLetterFormScreen(
     ) { ok ->
         if (!ok) {
             viewModel.setCameraError(
-                be.monmoisclair.app.ui.camera.CameraCaptureMessages.CAPTURE_FAILED
+                be.monmoisclair.app.ui.camera.CameraCaptureMessages.CAPTURE_CANCELLED
             )
             return@rememberLauncherForActivityResult
         }
@@ -106,7 +106,10 @@ fun PendingLetterFormScreen(
             cameraUri = uri
             takePicture.launch(uri)
         },
-        onMessage = viewModel::setCameraError
+        onMessage = viewModel::setCameraError,
+        onOpenSettings = {
+            be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)
+        }
     )
 
     // 7.24 : Ranger + Annuler épinglés (clavier / S26 — aligné Convert).

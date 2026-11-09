@@ -470,10 +470,28 @@ class EditEntryViewModel @Inject constructor(
 
     fun consumeMailDraft() = _state.update { it.copy(mailDraft = null) }
 
-    fun mailLaunchFailed() = _state.update {
+    /** SENDTO introuvable → fallback SEND déjà lancé + e-mail créancier copié. */
+    fun mailLaunchUsedFallback() = _state.update {
         it.copy(
             mailDraft = null,
-            error = "Aucune application Mail trouvée sur ce téléphone."
+            error = null,
+            copyMessage = be.monmoisclair.app.domain.SupportMailIntents.ADDRESS_COPIED
+        )
+    }
+
+    fun mailLaunchFailed() = _state.update { s ->
+        val email = s.mailDraft?.to?.trim().orEmpty().ifBlank { s.creditorEmail.trim() }
+        if (email.isNotEmpty()) {
+            SensitiveClipboard.setPlainText(appContext, "E-mail", email)
+        }
+        s.copy(
+            mailDraft = null,
+            error = if (email.isNotEmpty()) {
+                be.monmoisclair.app.domain.SupportMailIntents.ADDRESS_COPIED
+            } else {
+                "Aucune application Mail trouvée sur ce téléphone."
+            },
+            copyMessage = null
         )
     }
 

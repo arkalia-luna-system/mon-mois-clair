@@ -16,6 +16,7 @@ object RestoreMessages {
             "Impossible de lire cette sauvegarde. Le mois en cours n’a pas été modifié."
         is RestoreResult.BadShareCode -> result.message
         is RestoreResult.CleartextRejected -> CLEARTEXT_REJECTED
+        is RestoreResult.NotMmcBackup -> NOT_MMC_BACKUP
     }
 
     private fun successMessage(result: RestoreResult.Success): String {
@@ -47,6 +48,12 @@ object RestoreMessages {
             "Elle n’est plus acceptée. Sur l’ancien téléphone, " +
             "faites une nouvelle copie (Réglages → Sauvegarde), notez le code à part, " +
             "puis restaurez cette copie ici. Le mois en cours n’a pas été modifié."
+
+    /** JPEG / PDF / autre fichier qui n’est pas une copie Mon Mois Clair. */
+    const val NOT_MMC_BACKUP =
+        "Ce fichier n’est pas une copie Mon Mois Clair. " +
+            "Choisissez le fichier de sauvegarde (Réglages → Sauvegarde), " +
+            "pas une photo ni un PDF. Le mois en cours n’a pas été modifié."
 
     /**
      * Warning résiduel si une restauration claire passait encore (tests / chemin interne).

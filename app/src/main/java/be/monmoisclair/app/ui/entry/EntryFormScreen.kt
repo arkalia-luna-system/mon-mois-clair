@@ -65,6 +65,7 @@ fun AddEntryScreen(
     viewModel: AddEntryViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
     var confirmLeave by remember { mutableStateOf(false) }
     val takePhotoRaw = rememberFullPhotoCapture(
@@ -76,12 +77,15 @@ fun AddEntryScreen(
             viewModel.setPhotoDecodeError()
         },
         onCaptureCancelled = {
-            viewModel.setCameraCaptureError()
+            viewModel.setCameraCaptureError(EntryFormMessages.CAMERA_CAPTURE_CANCELLED)
         }
     )
     val takePhoto = be.monmoisclair.app.ui.camera.rememberCameraGatedLaunch(
         onGranted = takePhotoRaw,
-        onMessage = viewModel::setCameraCaptureError
+        onMessage = viewModel::setCameraCaptureError,
+        onOpenSettings = {
+            be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)
+        }
     )
     val pickPdf = rememberPdfPicker(
         onBytes = { bytes ->
@@ -294,15 +298,28 @@ fun EditEntryScreen(
     val scope = rememberCoroutineScope()
     LaunchedEffect(state.mailDraft) {
         val draft = state.mailDraft ?: return@LaunchedEffect
-        // Gmail ignore souvent EXTRA_* sur SENDTO : tout va dans l’URI mailto.
-        val intent = Intent(
-            Intent.ACTION_SENDTO,
-            Uri.parse(CreditorMailComposer.mailtoUri(draft))
+        val mailto = CreditorMailComposer.mailtoUri(draft)
+        val title = be.monmoisclair.app.domain.SupportMailIntents.CREDITOR_CHOOSER_TITLE
+        val canSendTo = be.monmoisclair.app.domain.SupportMailIntents.canResolveSendTo(
+            context.packageManager,
+            draft
         )
-        val launched = runCatching {
-            context.startActivity(Intent.createChooser(intent, "Écrire"))
-        }.isSuccess
-        if (launched) viewModel.consumeMailDraft() else viewModel.mailLaunchFailed()
+        val intent = if (canSendTo) {
+            be.monmoisclair.app.domain.SupportMailIntents.sendToChooser(mailto, title)
+        } else {
+            be.monmoisclair.app.ui.clipboard.SensitiveClipboard.setPlainText(
+                context,
+                "E-mail",
+                draft.to
+            )
+            be.monmoisclair.app.domain.SupportMailIntents.sendFallbackChooser(draft, title)
+        }
+        val launched = runCatching { context.startActivity(intent) }.isSuccess
+        when {
+            !launched -> viewModel.mailLaunchFailed()
+            !canSendTo -> viewModel.mailLaunchUsedFallback()
+            else -> viewModel.consumeMailDraft()
+        }
     }
     val dirty = baseline?.let { b ->
         state.label != b.label ||
@@ -454,11 +471,16 @@ fun EditEntryScreen(
             viewModel.attachPreviewBitmap(bmp)
         },
         onDecodeFailed = { viewModel.setPhotoDecodeError() },
-        onCaptureCancelled = { viewModel.setCameraCaptureError() }
+        onCaptureCancelled = {
+            viewModel.setCameraCaptureError(EntryFormMessages.CAMERA_CAPTURE_CANCELLED)
+        }
     )
     val takePhoto = be.monmoisclair.app.ui.camera.rememberCameraGatedLaunch(
         onGranted = takePhotoRaw,
-        onMessage = viewModel::setCameraCaptureError
+        onMessage = viewModel::setCameraCaptureError,
+        onOpenSettings = {
+            be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)
+        }
     )
     val pickPdf = rememberPdfPicker(
         onBytes = { bytes ->

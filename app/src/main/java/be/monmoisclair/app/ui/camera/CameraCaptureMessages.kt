@@ -5,6 +5,8 @@ object CameraCaptureMessages {
     const val NEED_PERMISSION = "Autorisez la caméra pour prendre la photo."
     const val PERMANENTLY_DENIED =
         "Caméra refusée — ouvrez les réglages du téléphone."
+    /** Annulation utilisateur (bouton retour / Annuler) — pas un refus d’autorisation. */
+    const val CAPTURE_CANCELLED = "Photo annulée."
     const val CAPTURE_FAILED =
         "Caméra non ouverte. Vérifiez l’autorisation."
     const val OPEN_SETTINGS = "Ouvrir les réglages"

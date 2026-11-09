@@ -36,7 +36,7 @@ import be.monmoisclair.app.ui.theme.StampShape
 /** Socle Menu / + Ajouter (7.10 — icônes filled + surface Accueil). */
 @Composable
 internal fun HomeBottomBar(
-    isFuturePreview: Boolean,
+    showGoCurrentCta: Boolean,
     remindersBlocked: Boolean,
     onMenu: () -> Unit,
     onAdd: () -> Unit,
@@ -97,7 +97,7 @@ internal fun HomeBottomBar(
                 }
             }
             Box(modifier = Modifier.weight(1.2f)) {
-                if (isFuturePreview) {
+                if (showGoCurrentCta) {
                     BottomBarOutlined(
                         text = "Mois en cours",
                         iconRes = R.drawable.ic_kit_calendar,

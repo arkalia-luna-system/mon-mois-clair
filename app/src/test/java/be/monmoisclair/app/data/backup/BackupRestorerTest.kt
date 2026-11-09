@@ -351,6 +351,42 @@ class BackupRestorerTest {
     }
 
     @Test
+    fun restoreFromUri_jpeg_returnsNotMmcBackup_dbUnchanged() = runBlocking {
+        seedCurrentPhoneState("2026-01", "old", safUri = "content://tree/keep")
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val file = context.filesDir.resolve("restore-fake.jpg")
+        // SOI JPEG — pas une enveloppe MMC ni ZIP/JSON.
+        file.writeBytes(
+            byteArrayOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte(), 0xE0.toByte()) +
+                ByteArray(32) { 0x00 }
+        )
+        val uri = android.net.Uri.fromFile(file)
+        val rejected = restorer.restoreFromUri(uri)
+        assertThat(rejected).isEqualTo(RestoreResult.NotMmcBackup)
+        assertThat(db.monthLedgerDao().getById("2026-01")).isNotNull()
+        assertThat(db.appMetaDao().get(AppMetaKeys.SAF_TREE_URI)?.value)
+            .isEqualTo("content://tree/keep")
+    }
+
+    @Test
+    fun looksLikeCleartextBackup_jsonAndZipOnly() {
+        assertThat(restorer.looksLikeCleartextBackup("{ \"a\": 1 }".toByteArray())).isTrue()
+        assertThat(
+            restorer.looksLikeCleartextBackup(
+                byteArrayOf(0x50, 0x4B, 0x03, 0x04, 0x00)
+            )
+        ).isTrue()
+        assertThat(
+            restorer.looksLikeCleartextBackup(
+                byteArrayOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte())
+            )
+        ).isFalse()
+        assertThat(
+            restorer.looksLikeCleartextBackup("%PDF-1.4".toByteArray())
+        ).isFalse()
+    }
+
+    @Test
     fun restoreFromLatest_withoutSaf_returnsNotConfigured() = runBlocking {
         val result = restorer.restoreFromLatest()
         assertThat(result).isEqualTo(RestoreResult.NotConfigured)

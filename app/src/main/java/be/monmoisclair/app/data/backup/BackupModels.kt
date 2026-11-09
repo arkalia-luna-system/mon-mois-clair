@@ -74,6 +74,11 @@ sealed class RestoreResult {
      * Réessayer avec l’opt-in « ancien format » dans Restaurer.
      */
     data object CleartextRejected : RestoreResult()
+    /**
+     * Fichier choisi qui n’est pas une copie Mon Mois Clair
+     * (JPEG, PDF, autre) — DB inchangée.
+     */
+    data object NotMmcBackup : RestoreResult()
     data object NotConfigured : RestoreResult()
 
     companion object {
