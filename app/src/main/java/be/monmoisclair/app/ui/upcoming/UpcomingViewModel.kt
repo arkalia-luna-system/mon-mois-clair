@@ -33,13 +33,18 @@ class UpcomingViewModel @Inject constructor(
     fun refresh() {
         val loadId = refreshCoordinator.startLoad()
         viewModelScope.launch {
-            val previous = _state.value
-            if (previous.months.isEmpty()) {
-                _state.update { it.copy(loading = true) }
+            try {
+                val previous = _state.value
+                if (previous.months.isEmpty()) {
+                    _state.update { it.copy(loading = true) }
+                }
+                val months = listUpcoming()
+                if (refreshCoordinator.isStale(loadId)) return@launch
+                _state.update { it.copy(loading = false, months = months) }
+            } catch (_: Exception) {
+                if (refreshCoordinator.isStale(loadId)) return@launch
+                _state.update { it.copy(loading = false) }
             }
-            val months = listUpcoming()
-            if (refreshCoordinator.isStale(loadId)) return@launch
-            _state.update { it.copy(loading = false, months = months) }
         }
     }
 }
