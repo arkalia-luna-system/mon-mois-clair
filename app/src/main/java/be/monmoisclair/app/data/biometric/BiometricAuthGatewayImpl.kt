@@ -47,7 +47,7 @@ class BiometricAuthGatewayImpl @Inject constructor(
             BiometricAvailability.NoneEnrolled -> {
                 onResult(
                     BiometricAuthResult.Failed(
-                        "Aucune empreinte ni code d’écran configuré sur ce téléphone."
+                        BiometricMessages.NONE_ENROLLED
                     )
                 )
                 return
@@ -63,7 +63,7 @@ class BiometricAuthGatewayImpl @Inject constructor(
             BiometricAvailability.Unsupported -> {
                 onResult(
                     BiometricAuthResult.Failed(
-                        "Ce téléphone ne permet pas le verrouillage par empreinte ou code."
+                        BiometricMessages.UNSUPPORTED
                     )
                 )
                 return

@@ -123,7 +123,7 @@ class ConfigureSavingsUseCase @Inject constructor(
                     val templateId = resolveTemplateId(created.instanceId)
                     if (templateId.isNullOrBlank()) {
                         return ConfigureSavingsResult.InvalidInput(
-                            "La ligne n’a pas pu être créée. Réessayez."
+                            CREATE_LINE_FAILED
                         )
                     }
                     mutatingRepository.mutate(rescheduleReminders = false) {
@@ -218,5 +218,6 @@ class ConfigureSavingsUseCase @Inject constructor(
 
     companion object {
         const val LABEL = ExpenseOverdue.VOLUNTARY_SAVINGS_LABEL
+        const val CREATE_LINE_FAILED = "La ligne n’a pas pu être créée."
     }
 }

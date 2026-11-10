@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.biometric.BiometricAuthResult
 import be.monmoisclair.app.data.biometric.BiometricAvailability
+import be.monmoisclair.app.data.biometric.BiometricMessages
 import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.CarnetTipCard
@@ -225,7 +226,7 @@ fun SettingsPrivacyScreen(
             else -> {
                 viewModel.onEnableAuthResult(
                     BiometricAuthResult.Failed(
-                        "Pas d’empreinte ni de code sur ce téléphone."
+                        BiometricMessages.UNSUPPORTED
                     )
                 )
             }
@@ -288,11 +289,11 @@ fun SettingsPrivacyScreen(
             val availText = when (state.availability) {
                 BiometricAvailability.Ready -> null
                 BiometricAvailability.NoneEnrolled ->
-                    "Ajoutez une empreinte ou un code d’écran dans les réglages du téléphone."
+                    BiometricMessages.NONE_ENROLLED
                 BiometricAvailability.HardwareUnavailable ->
                     "Empreinte ou code temporairement indisponible."
                 BiometricAvailability.Unsupported ->
-                    "Pas d’empreinte ni de code sur ce téléphone."
+                    BiometricMessages.UNSUPPORTED
             }
             if (availText != null) {
                 CarnetStateBanner(text = availText, kind = CarnetBannerKind.Warn, pad = tipPad)

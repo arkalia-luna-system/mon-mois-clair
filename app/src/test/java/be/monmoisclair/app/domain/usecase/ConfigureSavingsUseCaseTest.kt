@@ -147,4 +147,11 @@ class ConfigureSavingsUseCaseTest {
         val r = configure.save(0L, 1)
         assertThat(r).isInstanceOf(ConfigureSavingsResult.InvalidInput::class.java)
     }
+
+    @Test
+    fun createLineFailed_copy_staysPlain() {
+        assertThat(ConfigureSavingsUseCase.CREATE_LINE_FAILED.lowercase())
+            .doesNotContain("réessayez")
+        assertThat(ConfigureSavingsUseCase.CREATE_LINE_FAILED).contains("créée")
+    }
 }
