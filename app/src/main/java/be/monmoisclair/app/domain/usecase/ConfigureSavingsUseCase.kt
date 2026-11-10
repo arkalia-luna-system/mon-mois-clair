@@ -1,11 +1,13 @@
 package be.monmoisclair.app.domain.usecase
 
+import android.content.Context
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.db.entity.AppMetaEntity
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
+import be.monmoisclair.app.data.receipt.ReceiptLocalFiles
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
@@ -16,6 +18,7 @@ import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.SavingsProjection
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,6 +49,7 @@ sealed class ConfigureSavingsResult {
  */
 @Singleton
 class ConfigureSavingsUseCase @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val addEntry: AddEntryUseCase,
     private val mutatingRepository: MutatingRepository,
     private val instanceDao: InstanceDao,
@@ -183,6 +187,7 @@ class ConfigureSavingsUseCase @Inject constructor(
     suspend fun remove(): ConfigureSavingsResult {
         val existing = activeTemplate() ?: return ConfigureSavingsResult.Removed
         val removedIds = mutableListOf<String>()
+        val localReceiptPathsToDelete = mutableListOf<String>()
         mutatingRepository.mutate {
             templateDao.updateExpense(
                 existing.copy(active = false, archivedAtEpochMs = AppClock.nowEpochMs())
@@ -193,12 +198,16 @@ class ConfigureSavingsUseCase @Inject constructor(
                 if (item.status == ExpenseStatus.TODO) {
                     instanceDao.deleteExpense(item)
                     removedIds += item.id
+                    localReceiptPathsToDelete += item.receiptRelativePath
                 }
             }
             appMetaDao.upsert(AppMetaEntity(AppMetaKeys.SAVINGS_TEMPLATE_ID, ""))
         }
         removedIds.forEach { id ->
             runCatching { reminderScheduler.cancelFor(id) }
+        }
+        localReceiptPathsToDelete.forEach { raw ->
+            ReceiptLocalFiles.deleteUnder(appContext.filesDir, raw)
         }
         return ConfigureSavingsResult.Removed
     }
