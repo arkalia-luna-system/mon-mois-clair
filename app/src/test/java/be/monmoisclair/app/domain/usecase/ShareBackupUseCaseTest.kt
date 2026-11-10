@@ -102,4 +102,33 @@ class ShareBackupUseCaseTest {
             packed.file.delete()
         }
     }
+
+    @Test
+    fun prepareShareDir_recreatesBlockedFile() {
+        val cache = tmp.newFolder("cache")
+        val blocked = java.io.File(cache, "share")
+        blocked.writeText("not-a-dir")
+
+        val dir = ShareBackupUseCase.prepareShareDir(cache)
+
+        assertThat(dir).isEqualTo(blocked)
+        assertThat(dir.isDirectory).isTrue()
+    }
+
+    @Test
+    fun prepareShareCopyFile_removesDirectoryCollision() {
+        val cache = tmp.newFolder("cache")
+        val out = java.io.File(
+            java.io.File(cache, "share"),
+            BackupEnvelope.SHARE_MMC_NAME
+        )
+        out.mkdirs()
+        java.io.File(out, "stale.txt").writeText("old")
+
+        val prepared = ShareBackupUseCase.prepareShareCopyFile(cache)
+
+        assertThat(prepared).isEqualTo(out)
+        assertThat(prepared.exists()).isFalse()
+        assertThat(out.isDirectory).isFalse()
+    }
 }

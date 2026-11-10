@@ -51,13 +51,12 @@ class ShareBackupUseCase @Inject constructor(
             }
             val json = safBackupStore.readLatestValidBackupUtf8()
             val receipts = safBackupStore.listReceiptBinaries()
-            val shareDir = File(context.cacheDir, "share").also { it.mkdirs() }
+            val shareDir = prepareShareDir(context.cacheDir)
             val zipTmp = File(shareDir, "pack-tmp.zip")
             val packed = BackupSecurityArchive.packToFile(zipTmp, json, receipts)
             val secret = shareSecretVault.getOrCreateSecretChars()
-            val mmcOut = File(shareDir, BackupEnvelope.SHARE_MMC_NAME)
+            val mmcOut = prepareShareCopyFile(context.cacheDir)
             try {
-                if (mmcOut.exists()) mmcOut.delete()
                 val sealed = BackupEnvelope.seal(packed.file.readBytes(), secret)
                 mmcOut.writeBytes(sealed)
             } finally {
@@ -98,5 +97,26 @@ class ShareBackupUseCase @Inject constructor(
 
     companion object {
         private const val TAG = "ShareBackup"
+
+        internal fun prepareShareDir(cacheDir: File): File {
+            val dir = File(cacheDir, "share")
+            if (dir.isFile) {
+                dir.delete()
+            }
+            if (!dir.isDirectory && !dir.mkdirs() && !dir.isDirectory) {
+                throw BackupFailure.Io("Impossible de préparer le dossier de partage.")
+            }
+            return dir
+        }
+
+        internal fun prepareShareCopyFile(cacheDir: File): File {
+            val out = File(prepareShareDir(cacheDir), BackupEnvelope.SHARE_MMC_NAME)
+            if (out.isDirectory) {
+                out.deleteRecursively()
+            } else if (out.exists()) {
+                out.delete()
+            }
+            return out
+        }
     }
 }
