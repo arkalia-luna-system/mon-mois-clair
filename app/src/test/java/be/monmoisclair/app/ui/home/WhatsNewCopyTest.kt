@@ -6,8 +6,17 @@ import java.io.File
 
 class WhatsNewCopyTest {
 
+    private fun repoOrModuleFile(pathFromRepoRoot: String, fallbackFromAppModule: String): File {
+        return listOf(File(pathFromRepoRoot), File(fallbackFromAppModule))
+            .firstOrNull { it.isFile }
+            ?: error("Fichier introuvable: $pathFromRepoRoot / $fallbackFromAppModule")
+    }
+
     private val catalog: WhatsNewCatalog.Catalog by lazy {
-        val file = File("src/main/assets/whats_new/catalog.json")
+        val file = repoOrModuleFile(
+            pathFromRepoRoot = "app/src/main/assets/whats_new/catalog.json",
+            fallbackFromAppModule = "src/main/assets/whats_new/catalog.json"
+        )
         WhatsNewCatalog.parse(file.readText())
     }
 
@@ -52,9 +61,10 @@ class WhatsNewCopyTest {
 
     @Test
     fun payload_genericFallbackWhenNoReleaseEntry() {
+        val missingVersionCode = releases.maxOf { it.versionCode } + 1
         val p = WhatsNewCopy.payloadForReleases(
-            157,
-            159,
+            releases.maxOf { it.versionCode },
+            missingVersionCode,
             releases,
             catalog.genericFallbackBullet,
         )
@@ -70,12 +80,25 @@ class WhatsNewCopyTest {
 
     @Test
     fun catalog_hasEntryForShippedVersionCode() {
-        assertThat(releases.map { it.versionCode }).contains(157)
+        val buildFile = repoOrModuleFile(
+            pathFromRepoRoot = "app/build.gradle.kts",
+            fallbackFromAppModule = "build.gradle.kts"
+        ).readText()
+        val shippedVersionCode = Regex("""versionCode\s*=\s*(\d+)""")
+            .find(buildFile)
+            ?.groupValues
+            ?.get(1)
+            ?.toInt()
+        requireNotNull(shippedVersionCode)
+        assertThat(releases.map { it.versionCode }).contains(shippedVersionCode)
     }
 
     @Test
     fun catalog_parseAssetFile() {
-        val file = File("src/main/assets/whats_new/catalog.json")
+        val file = repoOrModuleFile(
+            pathFromRepoRoot = "app/src/main/assets/whats_new/catalog.json",
+            fallbackFromAppModule = "src/main/assets/whats_new/catalog.json"
+        )
         assertThat(file.isFile).isTrue()
         val parsed = WhatsNewCatalog.parse(file.readText())
         assertThat(parsed.releases).isNotEmpty()

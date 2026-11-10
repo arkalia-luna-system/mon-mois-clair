@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.52** rappels discrets / collisions fichiers / copie IBAN — **523** pass, **1** skipped, versionCode **158** |
+| Dernière étape terminée | **7.52** rappels discrets / collisions fichiers / copie IBAN — **531** pass, **1** skipped, versionCode **158** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -32,7 +32,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 - `AddEntry` / `EditEntry` : copie IBAN unifiée avec mêmes messages de validation sur les deux formulaires
 - `ReceiptLocalFilesTest` + tests use cases : fix de la suite rouge post-refactor (`paymentNotifications`) et assertion de chemin invalide
 
-**Tests :** `./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **523** pass, **1** skipped, **0** failure (**122** XML).  
+**Tests :** `./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **531** pass, **1** skipped, **0** failure (**122** XML).  
 **Version :** `0.1.0-7.52` · `versionCode` **158**.  
 **Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
