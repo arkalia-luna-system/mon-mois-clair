@@ -124,8 +124,7 @@
       "bullets": [
         "Biométrie et épargne : messages d’échec relus pour dire quoi faire, sans jargon.",
         "Restauration : rappel plus clair — le dossier déjà choisi reste sur cet appareil.",
-        "Courrier en attente : photo et enregistrement signalent mieux ce qui a bloqué.",
-        "Le lot inclut aussi des filets de build pour éviter les faux fichiers parasites sur volume externe."
+        "Courrier en attente : photo et enregistrement signalent mieux ce qui a bloqué."
       ]
     },
     {
@@ -133,16 +132,15 @@
       "bullets": [
         "Actions sensibles : les boutons destructifs sont mieux annoncés pour TalkBack.",
         "Accueil / widget : certains rafraîchissements se rattrapent mieux après une erreur annexe.",
-        "Quelques textes techniques autour de l’épargne et de la restauration ont été clarifiés.",
-        "La chaîne locale de tests a aussi été réparée pour refléter le vrai comportement attendu."
+        "Épargne et restauration : plusieurs textes ont été clarifiés."
       ]
     },
     {
       "versionCode": 162,
       "bullets": [
         "Suppression, archivage et épargne : les anciens reçus inutiles sont mieux nettoyés.",
-        "Si une facture récurrente devient ponctuelle, ses justificatifs orphelins ne traînent plus.",
-        "Le ménage des photos et fichiers extra retirés a aussi été durci pour éviter les restes cachés."
+        "Si une facture mensuelle devient ponctuelle, ses anciennes photos ou PDF inutiles partent aussi.",
+        "Le ménage des fichiers liés a été renforcé pour éviter les restes cachés."
       ]
     }
   ]

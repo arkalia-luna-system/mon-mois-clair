@@ -1,6 +1,6 @@
 # Docs — Mon Mois Clair
 
-Index **actif** (~7.33). Historique : [`archive/`](archive/README.md) · audits figés : [`audits/archive/`](audits/archive/).
+Index **actif** (~7.56). Historique : [`archive/`](archive/README.md) · audits figés : [`audits/archive/`](audits/archive/).
 
 ## Vivant (à jour)
 

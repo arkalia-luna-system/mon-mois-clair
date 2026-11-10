@@ -88,6 +88,15 @@ data class SettingsUiState(
     val lastBackupAtEpochMs: Long? = null
 )
 
+internal const val SETTINGS_REFRESH_FAILED =
+    "Les réglages n’ont pas pu être relus."
+
+internal fun settingsRefreshFailedState(state: SettingsUiState): SettingsUiState = state.copy(
+    loading = false,
+    flashMessage = SETTINGS_REFRESH_FAILED,
+    flashMessageError = true
+)
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
@@ -129,68 +138,73 @@ class SettingsViewModel @Inject constructor(
         val loadId = refreshCoordinator.startLoad()
         val dirtyAtStart = savingsDraftDirty
         viewModelScope.launch {
-            val loaded = withContext(Dispatchers.IO) {
-                val savings = configureSavings.read()
-                val summary = prepareMonthSummary()
-                val dossierCount = listDossiers().count
-                val offMonth = listOffMonth()
-                val code = runCatching { shareSecretVault.peekDisplayCode() }.getOrNull()
-                val failed = runCatching { dbPassphraseVault.isMigrationFailedPresent() }
-                    .getOrDefault(false)
-                val alertsBlocked = reminderHealth.check().remindersBlocked
-                val backupHealth = healthStore.read()
-                val lastBackupAt = healthStore.readLastBackupAtEpochMs()
-                val theme = themePreference.read()
-                val biometricEnabled = preference.isEnabled()
-                RefreshBundle(
-                    savings,
-                    summary,
-                    dossierCount,
-                    offMonth,
-                    code,
-                    failed,
-                    alertsBlocked,
-                    backupHealth,
-                    lastBackupAt,
-                    theme,
-                    biometricEnabled,
-                )
-            }
-            if (refreshCoordinator.isStale(loadId)) return@launch
-            _uiState.update { cur ->
-                val dirtyNow = savingsDraftDirty
-                val keepDraft = dirtyNow || cur.savingsBusy || dirtyAtStart != dirtyNow
-                val savings = loaded.savings
-                val storedAmount = if (savings.active) {
-                    MoneyFormat.centsToEditable(savings.amountCents)
-                } else {
-                    ""
+            try {
+                val loaded = withContext(Dispatchers.IO) {
+                    val savings = configureSavings.read()
+                    val summary = prepareMonthSummary()
+                    val dossierCount = listDossiers().count
+                    val offMonth = listOffMonth()
+                    val code = runCatching { shareSecretVault.peekDisplayCode() }.getOrNull()
+                    val failed = runCatching { dbPassphraseVault.isMigrationFailedPresent() }
+                        .getOrDefault(false)
+                    val alertsBlocked = reminderHealth.check().remindersBlocked
+                    val backupHealth = healthStore.read()
+                    val lastBackupAt = healthStore.readLastBackupAtEpochMs()
+                    val theme = themePreference.read()
+                    val biometricEnabled = preference.isEnabled()
+                    RefreshBundle(
+                        savings,
+                        summary,
+                        dossierCount,
+                        offMonth,
+                        code,
+                        failed,
+                        alertsBlocked,
+                        backupHealth,
+                        lastBackupAt,
+                        theme,
+                        biometricEnabled,
+                    )
                 }
-                // Ne pas effacer message / backupMessage / flashMessage :
-                // ON_RESUME après le share sheet doit encore montrer « Choisissez l’app… ».
-                cur.copy(
-                    loading = false,
-                    themePreference = loaded.themePreference,
-                    biometricEnabled = loaded.biometricEnabled,
-                    availability = biometricAuth.availability(),
-                    backupHealth = loaded.backupHealth,
-                    offMonthPeriodics = loaded.offMonth,
-                    savingsActive = savings.active,
-                    savingsAmountText = if (keepDraft) cur.savingsAmountText else storedAmount,
-                    savingsDay = if (keepDraft) {
-                        cur.savingsDay
+                if (refreshCoordinator.isStale(loadId)) return@launch
+                _uiState.update { cur ->
+                    val dirtyNow = savingsDraftDirty
+                    val keepDraft = dirtyNow || cur.savingsBusy || dirtyAtStart != dirtyNow
+                    val savings = loaded.savings
+                    val storedAmount = if (savings.active) {
+                        MoneyFormat.centsToEditable(savings.amountCents)
                     } else {
-                        savings.dayOfMonth.coerceIn(1, 31)
-                    },
-                    savingsDeficit = if (keepDraft) cur.savingsDeficit else null,
-                    savingsNextMonthNote = if (keepDraft) cur.savingsNextMonthNote else null,
-                    showSummaryButton = loaded.summary.isDeficit || loaded.dossierCount > 0,
-                    showDossiersSummaryLink = loaded.dossierCount > 0,
-                    shareCopyCode = loaded.shareCode,
-                    dbMigrationFailed = loaded.migrationFailed,
-                    remindersBlocked = loaded.remindersBlocked,
-                    lastBackupAtEpochMs = loaded.lastBackupAtEpochMs,
-                )
+                        ""
+                    }
+                    // Ne pas effacer message / backupMessage / flashMessage :
+                    // ON_RESUME après le share sheet doit encore montrer « Choisissez l’app… ».
+                    cur.copy(
+                        loading = false,
+                        themePreference = loaded.themePreference,
+                        biometricEnabled = loaded.biometricEnabled,
+                        availability = biometricAuth.availability(),
+                        backupHealth = loaded.backupHealth,
+                        offMonthPeriodics = loaded.offMonth,
+                        savingsActive = savings.active,
+                        savingsAmountText = if (keepDraft) cur.savingsAmountText else storedAmount,
+                        savingsDay = if (keepDraft) {
+                            cur.savingsDay
+                        } else {
+                            savings.dayOfMonth.coerceIn(1, 31)
+                        },
+                        savingsDeficit = if (keepDraft) cur.savingsDeficit else null,
+                        savingsNextMonthNote = if (keepDraft) cur.savingsNextMonthNote else null,
+                        showSummaryButton = loaded.summary.isDeficit || loaded.dossierCount > 0,
+                        showDossiersSummaryLink = loaded.dossierCount > 0,
+                        shareCopyCode = loaded.shareCode,
+                        dbMigrationFailed = loaded.migrationFailed,
+                        remindersBlocked = loaded.remindersBlocked,
+                        lastBackupAtEpochMs = loaded.lastBackupAtEpochMs,
+                    )
+                }
+            } catch (_: Exception) {
+                if (refreshCoordinator.isStale(loadId)) return@launch
+                _uiState.update(::settingsRefreshFailedState)
             }
         }
     }
