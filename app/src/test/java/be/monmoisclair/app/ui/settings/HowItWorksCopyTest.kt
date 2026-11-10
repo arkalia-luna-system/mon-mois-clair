@@ -14,6 +14,7 @@ class HowItWorksCopyTest {
         assertThat(titles).contains("Courses")
         assertThat(titles).contains("En retard")
         assertThat(titles).contains("Pour aujourd’hui")
+        assertThat(titles).contains("Nouveautés")
         assertThat(titles).contains("Facture papier")
         assertThat(titles).contains("Sur une année")
         assertThat(titles).contains("Plan de remboursement")

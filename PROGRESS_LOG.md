@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.41** nouveautés à l’ouverture / Aide 7.40 / rappel sauvegarde — **477** pass, **1** skipped, versionCode **147** |
+| Dernière étape terminée | **7.42** catalogue Nouveautés auto + garde-fous dialogue — **481** pass, **1** skipped, versionCode **148** |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia (Nouveautés + Aide + sauvegarde douce) |
+| Prochaine sous-étape | Smoke doigt Athalia (Nouveautés auto + Aide section Nouveautés) |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.42 catalogue Nouveautés auto + UX seniors
+
+**Contexte :** après 7.41 — ne plus retaper les puces à la main à chaque bump ; clarifier l’écran pour 60+.
+
+**Ajouts :**
+- **Catalogue** `assets/whats_new/catalog.json` (source unique) + parse [WhatsNewCatalog]
+- **Fallback** générique si `versionCode` sans entrée ; tâche Gradle `verifyWhatsNewCatalog` (preBuild)
+- **Dialogue** : libellé version (ex. 7.42), fermeture **uniquement** via « J’ai compris »
+- **Aide** : section « Nouveautés » · doc Athalia [`docs/WHATS_NEW.md`](docs/WHATS_NEW.md)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **481** pass, **1** skipped, **0** failure (**107** XML).  
+**Version :** `0.1.0-7.42` · `versionCode` **148**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.41 nouveautés utilisateur + Aide + garde-fous doux
 

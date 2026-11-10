@@ -88,7 +88,7 @@ fun HomeScreen(
     val savingsError by viewModel.savingsError.collectAsStateWithLifecycle()
     val savingsBusy by viewModel.savingsBusy.collectAsStateWithLifecycle()
     val remindersBlocked by viewModel.remindersBlocked.collectAsStateWithLifecycle()
-    val whatsNewBullets by viewModel.whatsNewBullets.collectAsStateWithLifecycle()
+    val whatsNew by viewModel.whatsNew.collectAsStateWithLifecycle()
     val backupNudgeVisible by viewModel.backupNudgeVisible.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val listAlpha = remember { Animatable(1f) }
@@ -307,9 +307,10 @@ fun HomeScreen(
     }
 
 
-    whatsNewBullets?.let { bullets ->
+    whatsNew?.let { payload ->
         HomeWhatsNewDialog(
-            bullets = bullets,
+            bullets = payload.bullets,
+            versionLabel = payload.versionLabel,
             fit = fit,
             onDismiss = viewModel::dismissWhatsNew
         )

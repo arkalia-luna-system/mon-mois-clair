@@ -1,44 +1,62 @@
 package be.monmoisclair.app.ui.home
 
+import android.content.Context
+
 /**
- * Nouveautés à l’ouverture — une entrée par version visible (versionCode Play).
- * Langage simple ; 3–6 puces au total après fusion.
+ * Nouveautés à l’ouverture — contenu = [WhatsNewCatalog] ; logique de fusion ici.
  */
 object WhatsNewCopy {
     const val TITLE = "Nouveautés"
     const val DISMISS = "J’ai compris"
     const val MAX_BULLETS = 6
 
-    data class Release(val versionCode: Int, val bullets: List<String>)
-
-    /** Ordre croissant versionCode. */
-    val releases: List<Release> = listOf(
-        Release(
-            versionCode = 146,
-            bullets = listOf(
-                "Bandeau « Pour aujourd’hui » : retards et échéance du jour, avec « Voir » sur la ligne.",
-                "FAIT : un message vous laisse « Annuler » si vous vous êtes trompé·e.",
-                "Dossiers : filtres Tous, « À traiter » ou Ce mois pour ne pas vous noyer.",
-                "Résumé texte ou PDF : une rubrique « Aujourd’hui » pour partager avec la famille."
-            )
-        ),
-        Release(
-            versionCode = 147,
-            bullets = listOf(
-                "Cet écran résume les changements après chaque mise à jour — une seule fois.",
-                "Aide mise à jour : même case « Appliquer aussi aux mois suivants », anti-doublon, « Pour aujourd’hui ».",
-                "Petit rappel sauvegarde si vous n’en avez jamais fait — doux, sans insister."
-            )
-        )
+    data class Payload(
+        val bullets: List<String>,
+        /** Ex. « Version 7.42 » — affiché sous le titre. */
+        val versionLabel: String?,
     )
 
-    data class Payload(val bullets: List<String>)
+    fun versionLabelFromName(versionName: String?): String? {
+        val step = versionName?.substringAfterLast('-', missingDelimiterValue = "")?.trim().orEmpty()
+        return step.takeIf { it.isNotEmpty() }?.let { "Version $it" }
+    }
 
     /**
      * @param lastSeenVersionCode 0 = jamais vu (première ouverture ou ancienne install).
-     * @param currentVersionCode version installée (BuildConfig / PackageManager).
+     * @param currentVersionCode version installée.
+     * @param installedVersionName `PackageManager` versionName (ex. 0.1.0-7.42).
      */
-    fun payload(lastSeenVersionCode: Int, currentVersionCode: Int): Payload? {
+    fun payload(
+        context: Context,
+        lastSeenVersionCode: Int,
+        currentVersionCode: Int,
+        installedVersionName: String? = null,
+    ): Payload? {
+        if (currentVersionCode <= 0) return null
+        if (lastSeenVersionCode >= currentVersionCode) return null
+        val catalog = WhatsNewCatalog.load(context)
+        val bullets = catalog.releases
+            .filter { it.versionCode > lastSeenVersionCode && it.versionCode <= currentVersionCode }
+            .flatMap { it.bullets }
+            .distinct()
+            .take(MAX_BULLETS)
+        val resolved = bullets.ifEmpty {
+            listOf(catalog.genericFallbackBullet)
+        }
+        return Payload(
+            bullets = resolved,
+            versionLabel = versionLabelFromName(installedVersionName),
+        )
+    }
+
+    /** Tests JVM sans Context : releases + fallback injectés. */
+    fun payloadForReleases(
+        lastSeenVersionCode: Int,
+        currentVersionCode: Int,
+        releases: List<WhatsNewCatalog.Release>,
+        genericFallbackBullet: String,
+        installedVersionName: String? = null,
+    ): Payload? {
         if (currentVersionCode <= 0) return null
         if (lastSeenVersionCode >= currentVersionCode) return null
         val bullets = releases
@@ -46,8 +64,13 @@ object WhatsNewCopy {
             .flatMap { it.bullets }
             .distinct()
             .take(MAX_BULLETS)
-        if (bullets.isEmpty()) return null
-        return Payload(bullets)
+        val resolved = bullets.ifEmpty {
+            listOf(genericFallbackBullet)
+        }
+        return Payload(
+            bullets = resolved,
+            versionLabel = versionLabelFromName(installedVersionName),
+        )
     }
 
     const val POST_WHATS_NEW_HELP_TIP =

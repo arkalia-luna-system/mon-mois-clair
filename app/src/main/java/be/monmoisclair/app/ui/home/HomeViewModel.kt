@@ -132,8 +132,8 @@ class HomeViewModel @Inject constructor(
     val userMessages: SharedFlow<String> = _userMessages.asSharedFlow()
     private val _shareIntents = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
     val shareIntents: SharedFlow<Intent> = _shareIntents.asSharedFlow()
-    private val _whatsNewBullets = MutableStateFlow<List<String>?>(null)
-    val whatsNewBullets: StateFlow<List<String>?> = _whatsNewBullets.asStateFlow()
+    private val _whatsNew = MutableStateFlow<WhatsNewCopy.Payload?>(null)
+    val whatsNew: StateFlow<WhatsNewCopy.Payload?> = _whatsNew.asStateFlow()
     private val _backupNudgeVisible = MutableStateFlow(false)
     val backupNudgeVisible: StateFlow<Boolean> = _backupNudgeVisible.asStateFlow()
 
@@ -286,17 +286,21 @@ class HomeViewModel @Inject constructor(
         evaluateStartupPrompts()
     }
 
-    private fun installedVersionCode(): Int {
+    private fun installedPackageInfo(): android.content.pm.PackageInfo? {
         val pm = appContext.packageManager
         val pkg = appContext.packageName
-        val info = runCatching {
+        return runCatching {
             if (Build.VERSION.SDK_INT >= 33) {
                 pm.getPackageInfo(pkg, android.content.pm.PackageManager.PackageInfoFlags.of(0))
             } else {
                 @Suppress("DEPRECATION")
                 pm.getPackageInfo(pkg, 0)
             }
-        }.getOrNull() ?: return 0
+        }.getOrNull()
+    }
+
+    private fun installedVersionCode(): Int {
+        val info = installedPackageInfo() ?: return 0
         return if (Build.VERSION.SDK_INT >= 28) {
             info.longVersionCode.toInt()
         } else {
@@ -305,14 +309,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun installedVersionName(): String? = installedPackageInfo()?.versionName
+
     private fun evaluateStartupPrompts() {
         viewModelScope.launch {
             val current = installedVersionCode()
             if (current <= 0) return@launch
             val lastSeen = runCatching { LastSeenVersionCache.peek(appContext) }.getOrElse { 0 }
-            val payload = WhatsNewCopy.payload(lastSeen, current)
+            val payload = WhatsNewCopy.payload(
+                appContext,
+                lastSeen,
+                current,
+                installedVersionName(),
+            )
             if (payload != null) {
-                _whatsNewBullets.value = payload.bullets
+                _whatsNew.value = payload
             } else {
                 maybeOfferBackupNudge()
             }
@@ -329,7 +340,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun dismissWhatsNew() {
-        _whatsNewBullets.value = null
+        _whatsNew.value = null
         val current = installedVersionCode()
         if (current > 0) {
             runCatching { LastSeenVersionCache.write(appContext, current) }

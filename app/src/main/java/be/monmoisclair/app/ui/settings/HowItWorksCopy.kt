@@ -55,6 +55,12 @@ object HowItWorksCopy {
                 "« Voir » fait défiler jusqu’à la ligne. Le résumé texte ou PDF peut lister la même chose."
         ),
         Section(
+            title = "Nouveautés",
+            body = "Après une mise à jour sur le téléphone : un écran « Nouveautés » s’affiche une fois, " +
+                "avec la version en haut et des puces simples. Touchez « J’ai compris » pour continuer. " +
+                "Pas de pub, pas de compte — tout reste sur l’appareil."
+        ),
+        Section(
             title = "Plan de remboursement",
             body = "Ce n’est pas la pastille « En retard ». C’est un accord de paiement " +
                 "(à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +

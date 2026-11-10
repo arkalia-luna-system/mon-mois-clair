@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 147
-        versionName = "0.1.0-7.41"
+        versionCode = 148
+        versionName = "0.1.0-7.42"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -102,6 +102,28 @@ tasks.register("purgeAppleDouble") {
 tasks.matching { it.name.startsWith("compile") || it.name.startsWith("ksp") }.configureEach {
     dependsOn("purgeAppleDouble")
 }
+
+/** Vérifie [whats_new/catalog.json] — avertit si pas d’entrée pour le versionCode courant (fallback OK). */
+tasks.register("verifyWhatsNewCatalog") {
+    doLast {
+        val catalogFile = file("src/main/assets/whats_new/catalog.json")
+        require(catalogFile.isFile) { "Catalogue Nouveautés manquant : ${catalogFile.path}" }
+        val text = catalogFile.readText()
+        require(text.contains("genericFallbackBullet")) {
+            "catalog.json : champ genericFallbackBullet requis"
+        }
+        require(text.contains("\"releases\"")) { "catalog.json : tableau releases requis" }
+        val versionCode = android.defaultConfig.versionCode
+        if (!Regex(""""versionCode"\s*:\s*$versionCode\b""").containsMatchIn(text)) {
+            logger.warn(
+                "WhatsNew: pas d'entrée pour versionCode $versionCode — " +
+                    "les utilisateurs verront le message générique à l'ouverture."
+            )
+        }
+    }
+}
+
+tasks.named("preBuild").configure { dependsOn("verifyWhatsNewCatalog") }
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")

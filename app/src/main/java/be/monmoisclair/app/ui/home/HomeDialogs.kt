@@ -52,13 +52,18 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun HomeWhatsNewDialog(
     bullets: List<String>,
+    versionLabel: String?,
     fit: DisplayFit,
     onDismiss: () -> Unit
 ) {
     if (bullets.isEmpty()) return
     Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        onDismissRequest = { /* fermeture = bouton « J’ai compris » seulement */ },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+        )
     ) {
         Surface(
             color = HomeTokens.Card,
@@ -80,6 +85,13 @@ internal fun HomeWhatsNewDialog(
                     style = MaterialTheme.typography.titleLarge,
                     color = A11yTokens.Ink
                 )
+                if (!versionLabel.isNullOrBlank()) {
+                    Text(
+                        text = versionLabel,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = HomeTokens.Link
+                    )
+                }
                 bullets.forEach { line ->
                     Text(
                         text = "• $line",
