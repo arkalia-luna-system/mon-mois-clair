@@ -46,6 +46,8 @@ class ExactAlarmGatewayImpl @Inject constructor(
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "alarme exacte refusée code=$requestCode", e)
+            // Ne pas laisser une alarme périmée avec un ancien PendingIntent.
+            cancel(requestCode)
         }
     }
 

@@ -12,14 +12,14 @@ class EpcScanHandoffTest {
     }
 
     @Test
-    fun take_returnsOnceThenNull() {
-        EpcScanHandoff.offer("BCD\n2\n1\nBE68")
-        assertThat(EpcScanHandoff.take()).isEqualTo("BCD\n2\n1\nBE68")
+    fun take_clearsPending() {
+        EpcScanHandoff.offer("epc-raw")
+        assertThat(EpcScanHandoff.take()).isEqualTo("epc-raw")
         assertThat(EpcScanHandoff.take()).isNull()
     }
 
     @Test
-    fun offer_replacesPending() {
+    fun offer_overwritesPreviousUnconsumed() {
         EpcScanHandoff.offer("first")
         EpcScanHandoff.offer("second")
         assertThat(EpcScanHandoff.take()).isEqualTo("second")

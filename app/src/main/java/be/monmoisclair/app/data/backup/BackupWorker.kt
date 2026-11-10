@@ -12,11 +12,12 @@ import dagger.assisted.AssistedInject
 class BackupWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
-    private val coordinator: BackupCoordinator
+    private val coordinator: BackupCoordinator,
+    private val backupScheduler: WorkManagerBackupScheduler
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        return when (val outcome = coordinator.runAutoBackup()) {
+        val result = when (val outcome = coordinator.runAutoBackup()) {
             is BackupCoordinator.Result.Success -> Result.success()
             BackupCoordinator.Result.SkippedNotConfigured -> Result.success()
             is BackupCoordinator.Result.Failed -> {
@@ -25,6 +26,10 @@ class BackupWorker @AssistedInject constructor(
                 Result.failure()
             }
         }
+        if (result == Result.success()) {
+            backupScheduler.enqueueFollowUpIfCoalesced()
+        }
+        return result
     }
 
     companion object {

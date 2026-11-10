@@ -82,9 +82,9 @@ fun AppNavHost(
         }
         composable(AppRoute.Home) {
             HomeScreen(
-                onAdd = { ym -> navController.navigate(AppRoute.addEntry(ym)) },
+                onAdd = { ym -> navController.navigateSingleTop(AppRoute.addEntry(ym)) },
                 onEdit = { id, isExpense ->
-                    navController.navigate(AppRoute.editEntry(id, isExpense))
+                    navController.navigateSingleTop(AppRoute.editEntry(id, isExpense))
                 },
                 onOpenSettings = { navController.navigate(AppRoute.Settings) },
                 onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
@@ -101,16 +101,16 @@ fun AppNavHost(
             DossiersScreen(
                 onBack = { navController.popBackStack() },
                 onOpenInstance = { id ->
-                    navController.navigate(AppRoute.editEntry(id, isExpense = true))
+                    navController.navigateSingleTop(AppRoute.editEntry(id, isExpense = true))
                 },
                 onOpenTemplate = { id ->
-                    navController.navigate(AppRoute.editTemplate(id))
+                    navController.navigateSingleTop(AppRoute.editTemplate(id))
                 },
                 onConvertPending = { letterId ->
-                    navController.navigate(AppRoute.convertPendingLetter(letterId))
+                    navController.navigateSingleTop(AppRoute.convertPendingLetter(letterId))
                 },
                 onAddPending = {
-                    navController.navigate(AppRoute.PendingLetterForm)
+                    navController.navigateSingleTop(AppRoute.PendingLetterForm)
                 }
             )
         }
@@ -130,7 +130,7 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() },
                 onConverted = { instanceId ->
                     if (instanceId != null) {
-                        navController.navigate(AppRoute.editEntry(instanceId, isExpense = true)) {
+                        navController.navigateSingleTop(AppRoute.editEntry(instanceId, isExpense = true)) {
                             popUpTo(AppRoute.Dossiers) { inclusive = false }
                         }
                     } else {
@@ -202,7 +202,7 @@ fun AppNavHost(
             }
             SettingsDeadlinesScreen(
                 onBack = { navController.popBackStack() },
-                onEditTemplate = { id -> navController.navigate(AppRoute.editTemplate(id)) },
+                onEditTemplate = { id -> navController.navigateSingleTop(AppRoute.editTemplate(id)) },
                 viewModel = hiltViewModel(owner)
             )
         }
@@ -262,7 +262,7 @@ fun AppNavHost(
             AddEntryScreen(
                 onDone = { navController.popBackStack() },
                 onCancel = { navController.popBackStack() },
-                onScanEpc = { navController.navigate(AppRoute.ScanEpc) },
+                onScanEpc = { navController.navigateSingleTop(AppRoute.ScanEpc) },
                 epcRawResult = epcRaw,
                 onEpcRawConsumed = { epcRaw = null }
             )
@@ -305,7 +305,7 @@ fun AppNavHost(
             EditEntryScreen(
                 onDone = { navController.popBackStack() },
                 onCancel = { navController.popBackStack() },
-                onScanEpc = { navController.navigate(AppRoute.ScanEpc) },
+                onScanEpc = { navController.navigateSingleTop(AppRoute.ScanEpc) },
                 epcRawResult = epcRaw,
                 onEpcRawConsumed = { epcRaw = null }
             )

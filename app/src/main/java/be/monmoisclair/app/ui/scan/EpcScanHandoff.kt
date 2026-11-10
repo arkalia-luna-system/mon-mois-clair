@@ -6,17 +6,12 @@ package be.monmoisclair.app.ui.scan
  * (persistance / process death).
  */
 object EpcScanHandoff {
-    @Volatile
-    private var pendingRaw: String? = null
+    private val pendingRaw = java.util.concurrent.atomic.AtomicReference<String?>(null)
 
     fun offer(raw: String) {
-        pendingRaw = raw
+        pendingRaw.set(raw)
     }
 
-    /** Lit et efface en une fois. */
-    fun take(): String? {
-        val v = pendingRaw
-        pendingRaw = null
-        return v
-    }
+    /** Lit et efface en une fois (atomique). */
+    fun take(): String? = pendingRaw.getAndSet(null)
 }
