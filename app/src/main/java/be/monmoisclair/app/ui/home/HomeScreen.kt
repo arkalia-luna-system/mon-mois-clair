@@ -61,7 +61,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.format.MoneyFormat
+import be.monmoisclair.app.domain.CarnetListLimits
 import be.monmoisclair.app.domain.HomeTodayFocus
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
@@ -588,6 +590,11 @@ fun HomeScreen(
                                         .padding(horizontal = 12.dp, vertical = 10.dp)
                                         .semantics { contentDescription = label }
                                 )
+                            }
+                        }
+                        CarnetListLimits.hiddenListHint(state.timelineHiddenCount)?.let { hint ->
+                            item(key = "timeline-truncate") {
+                                CarnetTipCard(text = hint)
                             }
                         }
                         if (searchFieldVisible) {

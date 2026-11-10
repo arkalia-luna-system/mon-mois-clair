@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.48** angles morts seniors (7.43→7.48) — **495** pass, **1** skipped, versionCode **154** |
+| Dernière étape terminée | **7.49** oubliés volontaires (Direct Boot UI · listes · i18n socle · Play VIEW) — tests **à lancer** (agent build unique) |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt : Sauvegarde date · Restaurer · Copier IBAN ~30 s · bandeau Aujourd’hui |
+| Prochaine sous-étape | Gradle `--rerun-tasks` · smoke doigt 7.43–7.49 |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.49 oubliés volontaires (Direct Boot · perf listes · i18n · Play · recomposition légère)
+
+**Contexte :** clôturer les écarts hors scope listés en 7.48 — sans Gradle dans ce lot (agent build unique).
+
+**Codé :**
+- **Direct Boot** : `UserLockedScreen` · `CredentialStorageGate` · `MainViewModel.needsCredentialUnlock` · `UserUnlockedReceiver` · widget skip CE · doc [`docs/DIRECT_BOOT.md`](docs/DIRECT_BOOT.md)
+- **Perf listes** : `CarnetListLimits` (400 lignes Accueil · 80 dossiers soldés) · keys Compose Dossiers
+- **i18n** : `values-en/strings.xml` stubs · chargement / verrou CE en `strings.xml`
+- **Play deep link** : intent-filter `VIEW` fiche Store · `PlayStoreDeepLink.rejectsWrongPackage`
+- **Audit claims 7.42–7.48** : croisement code (voir livrable agent) — pas de rétrograde doc nécessaire sur le périmètre vérifié
+
+**Tests :** à lancer — `./gradlew :app:testDebugUnitTest --rerun-tasks` (agent build).  
+**Version :** `0.1.0-7.49` · `versionCode` **155**.  
+**Ship :** commit local `develop` · **pas de push** dans ce lot.
 
 ### 2026-11-10 — 7.43→7.48 angles morts expert (code, tests à valider)
 
@@ -31,7 +46,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 - **Expert sécu (lecture code, VÉRIFIÉ)** : `ShareFileIntents` + ClipData · FileProvider non exporté · `SensitiveClipboard` 30 s · restore sans jargon · manifeste sans INTERNET / `allowBackup=false`
 - **Catalogue** `whats_new` **149→154** · `versionCode` **154** / `0.1.0-7.48` dans `app/build.gradle.kts`
 
-**Hors scope volontaire (reste) :** Direct Boot · perf listes massives · i18n hors FR · deep links Store · audit recomposition Compose.
+**Hors scope volontaire (avant 7.49, clos en 7.49 sauf ci-dessous) :** ~~Direct Boot~~ · ~~perf listes massives~~ · i18n **partiel** (stubs EN, UI FR littéraux) · ~~deep links Store~~ · recomposition **ciblée** (keys Dossiers, `remember` Accueil déjà en place).
 
 **Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **495** pass, **1** skipped, **0** failure (**110** XML).  
 **Version :** `0.1.0-7.48` · `versionCode` **154**.  

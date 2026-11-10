@@ -14,6 +14,7 @@ import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.domain.AppClock
+import be.monmoisclair.app.domain.CarnetListLimits
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.ExpenseOverdue
@@ -72,6 +73,8 @@ data class HomeUiState(
     val diversSpentCents: Long = 0L,
     val afterDiversCents: Long = 0L,
     val timeline: List<TimelineItem> = emptyList(),
+    val timelineTruncated: Boolean = false,
+    val timelineHiddenCount: Int = 0,
     val highlightExpenseId: String? = null,
     /** Demande confirm FAIT sur mois passé (T4). */
     val pendingPastToggleId: String? = null,
@@ -211,6 +214,10 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                 }.sortedWith(compareBy({ it.sortDay }, { it.sortLabel }))
+                val truncated = CarnetListLimits.truncate(
+                    timeline,
+                    CarnetListLimits.MAX_HOME_TIMELINE_ITEMS
+                )
 
                 val current = AppClock.currentYearMonth()
                 val hasDossiers = templates.any {
@@ -236,7 +243,9 @@ class HomeViewModel @Inject constructor(
                     summary = summary,
                     diversSpentCents = divers,
                     afterDiversCents = summary.remainingCents - divers,
-                    timeline = timeline,
+                    timeline = truncated.visible,
+                    timelineTruncated = truncated.hiddenCount > 0,
+                    timelineHiddenCount = truncated.hiddenCount,
                     highlightExpenseId = highlight,
                     pendingPastToggleId = pendingToggle,
                     hasDossiers = hasDossiers,

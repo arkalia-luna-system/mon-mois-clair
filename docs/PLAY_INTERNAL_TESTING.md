@@ -7,6 +7,10 @@ Objectif : canal principal = **Play Internal Testing** (MAJ auto) · sideload = 
 Package : `be.monmoisclair.app` · AAB local : `dist/MonMoisClair-release.aab`  
 Dernier build documenté : **`0.1.0-7.27`** / `versionCode` **133** · targetSdk **36** · **~27 Mo** (lire le journal si plus récent).
 
+**Lien fiche app (tests internes) :**  
+`https://play.google.com/store/apps/details?id=be.monmoisclair.app`  
+→ intent `VIEW` accepté par l’app (même `applicationId`) ; autre `id=` = fermeture immédiate sans lecture de données.
+
 **MAJ auto = deux canaux Play (même prérequis : piste Internal Active + testeurs opt-in) :**
 1. **Oui — à l’ouverture** : In-App Updates **Immediate** (Play Core, IPC Store — **pas** d’`INTERNET` app) → écran de mise à jour plein écran, puis relance. **Pas besoin d’ouvrir Play Store à la main.**
 2. Secours : MAJ auto / « Mettre à jour » dans l’appli Play Store.

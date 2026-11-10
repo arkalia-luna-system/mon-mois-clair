@@ -6,6 +6,7 @@ import android.content.Context
 import android.util.Log
 import android.widget.RemoteViews
 import be.monmoisclair.app.R
+import be.monmoisclair.app.data.device.CredentialStorageGate
 import be.monmoisclair.app.domain.MonthCycleEngine
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +36,10 @@ class CarnetWidgetProvider : AppWidgetProvider() {
         val pending = goAsync()
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             try {
+                if (!CredentialStorageGate.isAvailable(context)) {
+                    Log.i(TAG, "widget: CE indisponible — coquille seulement")
+                    return@launch
+                }
                 monthCycleEngine.ensureCurrentMonthExists()
                 refresher.refresh()
             } catch (e: Exception) {

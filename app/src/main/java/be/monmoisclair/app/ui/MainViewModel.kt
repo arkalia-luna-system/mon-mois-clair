@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.biometric.BiometricAuthGateway
+import be.monmoisclair.app.data.device.CredentialStorageGate
 import be.monmoisclair.app.data.biometric.BiometricAvailability
 import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
@@ -26,6 +27,8 @@ import javax.inject.Inject
 
 data class MainUiState(
     val loading: Boolean = true,
+    /** Téléphone pas encore déverrouillé post-boot — pas d’accès DB CE (Direct Boot). */
+    val needsCredentialUnlock: Boolean = false,
     val startDestination: StartDestination = StartDestination.SafSetup,
     val biometricEnabled: Boolean = false,
     val biometricAvailability: BiometricAvailability = BiometricAvailability.Unsupported,
@@ -73,6 +76,17 @@ class MainViewModel @Inject constructor(
 
     fun refreshStart() {
         viewModelScope.launch {
+            if (!CredentialStorageGate.isAvailable(appContext)) {
+                _uiState.update {
+                    it.copy(
+                        loading = false,
+                        needsCredentialUnlock = true,
+                        lockMessage = null
+                    )
+                }
+                return@launch
+            }
+            _uiState.update { it.copy(needsCredentialUnlock = false) }
             val dest = observeOnboarding.startDestination()
             val enabled = biometricPreference.isEnabled()
             val availability = biometricAuth.availability()

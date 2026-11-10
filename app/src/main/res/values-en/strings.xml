@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- i18n socle — FR reste la locale produit ; EN = stubs pour futur switch. -->
+    <string name="app_name">Mon Mois Clair</string>
+    <string name="widget_description">Monthly balance and next bill</string>
+    <string name="notification_channel_payments_name">Bill reminders</string>
+    <string name="notification_channel_payments_desc">3 days before, on the day, then each morning until paid</string>
+    <string name="notification_action_done">Done ✓</string>
+    <string name="notification_action_undo">Undo</string>
+    <string name="direct_boot_locked_title">Unlock your phone</string>
+    <string name="direct_boot_locked_body">Mon Mois Clair keeps your ledger encrypted on this device. Open the app after you unlock the screen — no data is wiped.</string>
+    <string name="loading_app">Loading Mon Mois Clair</string>
+    <string name="loading_app_ellipsis">Loading…</string>
+    <string name="loading_month">Loading month</string>
+    <string name="loading_month_ellipsis">Loading month…</string>
+</resources>

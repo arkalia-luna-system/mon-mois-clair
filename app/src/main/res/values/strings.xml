@@ -6,4 +6,10 @@
     <string name="notification_channel_payments_desc">3 jours avant, le jour même, puis chaque matin tant que ce n’est pas payé</string>
     <string name="notification_action_done">FAIT ✓</string>
     <string name="notification_action_undo">Remettre</string>
+    <string name="direct_boot_locked_title">Déverrouillez le téléphone</string>
+    <string name="direct_boot_locked_body">Mon Mois Clair garde le carnet chiffré sur cet appareil. Ouvrez-le après avoir déverrouillé l’écran — aucune donnée n’est effacée.</string>
+    <string name="loading_app">Chargement de Mon Mois Clair</string>
+    <string name="loading_app_ellipsis">Chargement…</string>
+    <string name="loading_month">Chargement du mois</string>
+    <string name="loading_month_ellipsis">Chargement du mois…</string>
 </resources>

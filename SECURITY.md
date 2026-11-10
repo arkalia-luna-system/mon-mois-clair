@@ -22,7 +22,8 @@ Mon Mois Clair est une app **locale, hors ligne**, destinée à un usage familia
 - Pas de permission `INTERNET` / `ACCESS_NETWORK_STATE` (strip merge libs). `android:allowBackup="false"`. Release minifiée.
 - `FLAG_SECURE` seulement quand le verrouillage est activé. Sans verrou, l’aperçu des tâches peut montrer le mois.
 - IBAN et communication : presse-papiers marqué sensible (Android 13+) et vidé après **~30 s** (+ wipe immédiat ON_STOP ; API 26–27 = clip vide). Copie IBAN seulement si le contrôle international passe.
-- Exportés : activité lanceur, et `BootReceiver` pour les diffusions système. FileProvider et le receiver d’alarme ne le sont pas.
+- Exportés : activité lanceur, `BootReceiver`, `UserUnlockedReceiver` (alarmes après unlock). FileProvider et le receiver d’alarme ne le sont pas.
+- **Direct Boot :** pas `directBootAware` ; DB/vault en CE — écran d’attente si ouverture avant unlock · détail [`docs/DIRECT_BOOT.md`](docs/DIRECT_BOOT.md).
 - Le partage quitte l’app : le **fichier** `.mmc` reste chiffré ; le texte d’accompagnement ne contient **pas** le code.
 - `androidTest` smoke (package / PDF wipe / cleartext reject) assemblés ; connected device = Athalia (pas Compose UI). Le lint en CI ne bloque pas. Pas de scan CVE en garde.
 - Ne pas recopier le numéro de série d’un téléphone dans un markdown.

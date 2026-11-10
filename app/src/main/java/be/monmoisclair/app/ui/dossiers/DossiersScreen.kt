@@ -19,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,6 +47,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.data.db.entity.PendingLetterEntity
+import be.monmoisclair.app.domain.CarnetListLimits
 import be.monmoisclair.app.domain.usecase.DossierListItem
 import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
@@ -224,14 +226,16 @@ fun DossiersScreen(
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                     filteredOpen.forEach { item ->
-                        DossierRow(
-                            item = item,
-                            onClick = {
-                                val id = item.openInstanceId
-                                if (id != null) onOpenInstance(id)
-                                else onOpenTemplate(item.templateId)
-                            }
-                        )
+                        key(item.templateId, item.openInstanceId) {
+                            DossierRow(
+                                item = item,
+                                onClick = {
+                                    val id = item.openInstanceId
+                                    if (id != null) onOpenInstance(id)
+                                    else onOpenTemplate(item.templateId)
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -265,19 +269,28 @@ fun DossiersScreen(
                         .semantics { contentDescription = settledHeaderLabel }
                 )
                 if (settledExpanded) {
+                    val settledSlice = CarnetListLimits.truncate(
+                        settledItems,
+                        CarnetListLimits.MAX_DOSSIER_SETTLED_VISIBLE
+                    )
                     Column(
                         verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)
                     ) {
-                        settledItems.forEach { item ->
-                            DossierRow(
-                                item = item,
-                                onClick = {
-                                    val id = item.openInstanceId
-                                    if (id != null) onOpenInstance(id)
-                                    else onOpenTemplate(item.templateId)
-                                }
-                            )
+                        settledSlice.visible.forEach { item ->
+                            key(item.templateId, item.openInstanceId) {
+                                DossierRow(
+                                    item = item,
+                                    onClick = {
+                                        val id = item.openInstanceId
+                                        if (id != null) onOpenInstance(id)
+                                        else onOpenTemplate(item.templateId)
+                                    }
+                                )
+                            }
                         }
+                    }
+                    CarnetListLimits.hiddenDossiersHint(settledSlice.hiddenCount)?.let { hint ->
+                        CarnetTipCard(text = hint)
                     }
                 }
             }
@@ -304,11 +317,13 @@ fun DossiersScreen(
             var confirmDiscardId by remember { mutableStateOf<String?>(null) }
             Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
                 pending.forEach { letter ->
+                    key(letter.id) {
                     PendingLetterRow(
                         letter = letter,
                         onClick = { onConvertPending(letter.id) },
                         onDiscard = { confirmDiscardId = letter.id }
                     )
+                    }
                 }
             }
             confirmDiscardId?.let { id ->

@@ -75,6 +75,14 @@
         "Aide : textes des accords de paiement relus pour rester courts et lisibles.",
         "Anti-doublon : prêt pour l’édition sans se comparer à soi-même (filet technique)."
       ]
+    },
+    {
+      "versionCode": 155,
+      "bullets": [
+        "Téléphone verrouillé après allumage : message clair — le carnet attend le déverrouillage, sans effacer vos données.",
+        "Listes très longues : plafond d’affichage sur l’accueil et les dossiers soldés — les totaux en haut restent justes.",
+        "Liens Play vers l’app : ouverture sûre depuis la fiche tests internes."
+      ]
     }
   ]
 }

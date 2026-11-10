@@ -1,7 +1,11 @@
 package be.monmoisclair.app
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.SystemBarStyle
@@ -47,7 +51,9 @@ import androidx.navigation.compose.rememberNavController
 import be.monmoisclair.app.data.widget.CarnetWidgetSink
 import be.monmoisclair.app.domain.BiometricFlagCache
 import be.monmoisclair.app.ui.MainViewModel
+import be.monmoisclair.app.navigation.PlayStoreDeepLink
 import be.monmoisclair.app.ui.lock.BiometricLockScreen
+import be.monmoisclair.app.ui.lock.UserLockedScreen
 import be.monmoisclair.app.ui.navigation.AppNavHost
 import be.monmoisclair.app.ui.components.AppWordmark
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -72,6 +78,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        if (PlayStoreDeepLink.rejectsWrongPackage(intent, packageName)) {
+            finish()
+            return
+        }
         pendingHighlightExpenseId = intent?.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
         val systemDarkBoot = (resources.configuration.uiMode and
             android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
@@ -148,6 +158,22 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
+                DisposableEffect(Unit) {
+                    val filter = IntentFilter(Intent.ACTION_USER_UNLOCKED)
+                    val unlockReceiver = object : BroadcastReceiver() {
+                        override fun onReceive(context: Context?, intent: Intent?) {
+                            mainViewModel.refreshStart()
+                        }
+                    }
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        registerReceiver(unlockReceiver, filter, RECEIVER_NOT_EXPORTED)
+                    } else {
+                        @Suppress("UnspecifiedRegisterReceiverFlag")
+                        registerReceiver(unlockReceiver, filter)
+                    }
+                    onDispose { unregisterReceiver(unlockReceiver) }
+                }
+
                 DisposableEffect(lifecycleOwner) {
                     val observer = LifecycleEventObserver { _, event ->
                         when (event) {
@@ -186,6 +212,9 @@ class MainActivity : AppCompatActivity() {
                     .padding(bottom = A11yTokens.bottomSystemClearance)
 
                 when {
+                    state.needsCredentialUnlock -> {
+                        UserLockedScreen(modifier = rootModifier)
+                    }
                     state.loading -> {
                         Box(
                             modifier = rootModifier.semantics {
@@ -247,6 +276,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        if (PlayStoreDeepLink.rejectsWrongPackage(intent, packageName)) {
+            finish()
+            return
+        }
         setIntent(intent)
         pendingHighlightExpenseId = intent.getStringExtra(EXTRA_HIGHLIGHT_EXPENSE_ID)
     }
