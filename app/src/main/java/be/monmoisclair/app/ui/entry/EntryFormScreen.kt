@@ -465,7 +465,12 @@ fun EditEntryScreen(
                         viewModel.delete()
                     },
                     fillMaxWidth = false,
-                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                    onClickLabel = if (state.isSavingsLine) {
+                        "Retirer définitivement cette ligne"
+                    } else {
+                        "Supprimer définitivement cette ligne"
+                    }
                 )
             },
             dismissButton = {

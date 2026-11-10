@@ -104,7 +104,8 @@ fun EditTemplateScreen(
                         onCancel()
                     },
                     fillMaxWidth = false,
-                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                    onClickLabel = "Quitter sans enregistrer"
                 )
             },
             dismissButton = {
@@ -146,7 +147,8 @@ fun EditTemplateScreen(
                         viewModel.archive()
                     },
                     fillMaxWidth = false,
-                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                    onClickLabel = "Retirer définitivement cette échéance"
                 )
             },
             dismissButton = {
@@ -327,7 +329,8 @@ fun EditTemplateScreen(
                 DangerA11yButton(
                     text = "Retirer cette échéance",
                     onClick = { confirmArchive = true },
-                    enabled = !state.saving
+                    enabled = !state.saving,
+                    onClickLabel = "Demander le retrait de cette échéance"
                 )
             }
         }

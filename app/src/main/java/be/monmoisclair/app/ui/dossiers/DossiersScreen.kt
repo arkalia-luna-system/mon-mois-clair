@@ -352,7 +352,8 @@ fun DossiersScreen(
                                 viewModel.discardPendingLetter(id)
                             },
                             fillMaxWidth = false,
-                            modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                            modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                            onClickLabel = "Retirer définitivement ce courrier"
                         )
                     },
                     dismissButton = {

@@ -92,7 +92,8 @@ fun SettingsSavingsScreen(
                         viewModel.removeSavings()
                     },
                     fillMaxWidth = false,
-                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                    onClickLabel = "Retirer définitivement cette épargne"
                 )
             },
             dismissButton = {

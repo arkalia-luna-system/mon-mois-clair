@@ -36,7 +36,8 @@ fun DiscardChangesDialog(
                 text = "Quitter",
                 onClick = onLeave,
                 fillMaxWidth = false,
-                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp),
+                onClickLabel = "Quitter sans enregistrer"
             )
         },
         dismissButton = {

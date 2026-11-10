@@ -531,7 +531,8 @@ internal fun EntryFormScaffold(
                     DangerA11yButton(
                         text = deleteLabel,
                         onClick = onDelete,
-                        enabled = primaryEnabled
+                        enabled = primaryEnabled,
+                        onClickLabel = deleteLabel
                     )
                 }
             }

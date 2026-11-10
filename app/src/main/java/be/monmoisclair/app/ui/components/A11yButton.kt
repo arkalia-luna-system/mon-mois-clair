@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -192,7 +193,8 @@ fun DangerA11yButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    fillMaxWidth: Boolean = true
+    fillMaxWidth: Boolean = true,
+    onClickLabel: String? = null
 ) {
     val haptics = LocalHapticFeedback.current
     OutlinedButton(
@@ -204,7 +206,14 @@ fun DangerA11yButton(
         modifier = modifier
             .then(if (fillMaxWidth) Modifier.fillMaxWidth() else Modifier)
             .heightIn(min = A11yTokens.minTouchHeight)
-            .defaultMinSize(minHeight = A11yTokens.minTouchHeight),
+            .defaultMinSize(minHeight = A11yTokens.minTouchHeight)
+            .then(
+                if (onClickLabel != null) {
+                    Modifier.semantics { onClick(label = onClickLabel, action = null) }
+                } else {
+                    Modifier
+                }
+            ),
         shape = MaterialTheme.shapes.small,
         border = BorderStroke(
             1.dp,
