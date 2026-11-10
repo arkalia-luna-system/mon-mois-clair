@@ -30,6 +30,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class UpdateDeleteEntryUseCaseTest {
 
+    private lateinit var appContext: Context
     private lateinit var db: AppDatabase
     private lateinit var repo: MutatingRepository
     private lateinit var update: UpdateInstanceUseCase
@@ -40,8 +41,8 @@ class UpdateDeleteEntryUseCaseTest {
     @Before
     fun setUp() {
         AppClock.clock = Clock.fixed(Instant.parse("2026-11-05T10:00:00Z"), brussels)
-        val context: Context = ApplicationProvider.getApplicationContext()
-        db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
+        appContext = ApplicationProvider.getApplicationContext()
+        db = Room.inMemoryDatabaseBuilder(appContext, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         repo = MutatingRepository(
@@ -55,13 +56,14 @@ class UpdateDeleteEntryUseCaseTest {
         )
         update = UpdateInstanceUseCase(db.instanceDao(), repo)
         delete = DeleteInstanceUseCase(
+            appContext = appContext,
             instanceDao = db.instanceDao(),
             mutatingRepository = repo,
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
             },
-            paymentNotifications = PaymentNotificationHelper(context)
+            paymentNotifications = PaymentNotificationHelper(appContext)
         )
         // AddEntry needs MonthCycleEngine - tested indirectly via seed
     }
@@ -454,6 +456,7 @@ class UpdateDeleteEntryUseCaseTest {
     fun delete_following_cancelsRemindersForAllRemovedTodos() = runBlocking {
         val cancelled = mutableListOf<String>()
         val localDelete = DeleteInstanceUseCase(
+            appContext = appContext,
             instanceDao = db.instanceDao(),
             mutatingRepository = repo,
             reminderScheduler = object : ReminderScheduler {
@@ -462,9 +465,7 @@ class UpdateDeleteEntryUseCaseTest {
                     cancelled += expenseId
                 }
             },
-            paymentNotifications = PaymentNotificationHelper(
-                ApplicationProvider.getApplicationContext()
-            )
+            paymentNotifications = PaymentNotificationHelper(appContext)
         )
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(
@@ -511,6 +512,59 @@ class UpdateDeleteEntryUseCaseTest {
         )
         assertThat(db.instanceDao().getExpenseById("exp:2026-12:tpl-loyer")).isNull()
         assertThat(db.templateDao().getExpenseById("tpl-loyer")!!.active).isFalse()
+    }
+
+    @Test
+    fun delete_following_removesLocalReceiptFilesOfDeletedTodos() = runBlocking {
+        val localDelete = DeleteInstanceUseCase(
+            appContext = appContext,
+            instanceDao = db.instanceDao(),
+            mutatingRepository = repo,
+            reminderScheduler = object : ReminderScheduler {
+                override suspend fun reconcileAll() = Unit
+                override suspend fun cancelFor(expenseId: String) = Unit
+            },
+            paymentNotifications = PaymentNotificationHelper(appContext)
+        )
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-photo",
+                label = "Loyer",
+                amountCents = 800_00L,
+                dayOfMonth = 1,
+                active = true,
+                intervalMonths = 1,
+                anchorYearMonth = "2026-11",
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-11", "exp:2026-11:tpl-photo", "tpl-photo", 800_00L)
+        seedLinkedExpense("2026-12", "exp:2026-12:tpl-photo", "tpl-photo", 800_00L)
+        db.instanceDao().updateExpense(
+            db.instanceDao().getExpenseById("exp:2026-11:tpl-photo")!!.copy(
+                receiptRelativePath = "receipts/current.webp"
+            )
+        )
+        db.instanceDao().updateExpense(
+            db.instanceDao().getExpenseById("exp:2026-12:tpl-photo")!!.copy(
+                receiptRelativePath = "receipts/future.pdf"
+            )
+        )
+        val receiptsDir = java.io.File(appContext.filesDir, "receipts").apply { mkdirs() }
+        java.io.File(receiptsDir, "current.webp").writeText("current")
+        java.io.File(receiptsDir, "future.pdf").writeText("future")
+
+        assertThat(
+            localDelete(
+                id = "exp:2026-11:tpl-photo",
+                isExpense = true,
+                applyToFollowingMonths = true
+            )
+        ).isEqualTo(DeleteInstanceResult.Success)
+
+        assertThat(java.io.File(receiptsDir, "current.webp").exists()).isFalse()
+        assertThat(java.io.File(receiptsDir, "future.pdf").exists()).isFalse()
     }
 
     /** B1 7.28 : delete « ce mois seulement » + ensureMonth ne doit pas ressusciter. */

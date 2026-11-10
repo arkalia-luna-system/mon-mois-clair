@@ -1,12 +1,15 @@
 package be.monmoisclair.app.domain.usecase
 
+import android.content.Context
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.receipt.ReceiptLocalFiles
 import be.monmoisclair.app.data.reminder.PaymentNotificationHelper
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.SuppressedInstances
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,6 +20,7 @@ sealed class DeleteInstanceResult {
 
 @Singleton
 class DeleteInstanceUseCase @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val instanceDao: InstanceDao,
     private val mutatingRepository: MutatingRepository,
     private val reminderScheduler: ReminderScheduler,
@@ -33,6 +37,7 @@ class DeleteInstanceUseCase @Inject constructor(
         applyToFollowingMonths: Boolean
     ): DeleteInstanceResult {
         val cancelledExpenseIds = mutableListOf<String>()
+        val localReceiptPathsToDelete = mutableListOf<String>()
         val result = mutatingRepository.mutate(
             sideEffectsWhen = { it is DeleteInstanceResult.Success }
         ) {
@@ -41,6 +46,9 @@ class DeleteInstanceUseCase @Inject constructor(
                     ?: return@mutate DeleteInstanceResult.NotFound
                 instanceDao.deleteExpense(current)
                 cancelledExpenseIds += current.id
+                if (current.templateId == null || applyToFollowingMonths) {
+                    localReceiptPathsToDelete += current.receiptRelativePath
+                }
                 if (applyToFollowingMonths && current.templateId != null) {
                     val templateId = current.templateId
                     templateDao.getExpenseById(templateId)?.let { tpl ->
@@ -62,6 +70,7 @@ class DeleteInstanceUseCase @Inject constructor(
                     others.forEach { item ->
                         instanceDao.deleteExpense(item)
                         cancelledExpenseIds += item.id
+                        localReceiptPathsToDelete += item.receiptRelativePath
                     }
                 } else if (!applyToFollowingMonths && current.templateId != null) {
                     // Ce mois seulement : empêcher syncMissingTemplates de réinjecter.
@@ -97,6 +106,9 @@ class DeleteInstanceUseCase @Inject constructor(
             cancelledExpenseIds.forEach { expenseId ->
                 runCatching { paymentNotifications.cancelExpenseNotifications(expenseId) }
                 runCatching { reminderScheduler.cancelFor(expenseId) }
+            }
+            localReceiptPathsToDelete.forEach { raw ->
+                ReceiptLocalFiles.deleteUnder(appContext.filesDir, raw)
             }
         }
         return result
