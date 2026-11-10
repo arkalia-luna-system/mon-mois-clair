@@ -8,7 +8,6 @@ import android.content.Context
 object WhatsNewCopy {
     const val TITLE = "Nouveautés"
     const val DISMISS = "J’ai compris"
-    const val SKIP = "Passer"
     const val MAX_BULLETS = 6
 
     data class Payload(

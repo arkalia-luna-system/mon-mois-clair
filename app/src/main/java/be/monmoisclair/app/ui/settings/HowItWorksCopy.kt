@@ -112,7 +112,7 @@ object HowItWorksCopy {
         Section(
             title = "Nouveautés",
             body = "Après une mise à jour, « Nouveautés » peut s’ouvrir une seule fois. " +
-                "Touchez « J’ai compris » ou « Passer ». " +
+                "Touchez « J’ai compris ». " +
                 "Les anciennes nouveautés ne reviennent pas."
         ),
         Section(

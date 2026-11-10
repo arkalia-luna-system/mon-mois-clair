@@ -323,7 +323,6 @@ fun HomeScreen(
             versionLabel = payload.versionLabel,
             fit = fit,
             onDismiss = viewModel::dismissWhatsNew,
-            onSkip = viewModel::skipWhatsNew,
         )
     }
     if (backupNudgeVisible) {

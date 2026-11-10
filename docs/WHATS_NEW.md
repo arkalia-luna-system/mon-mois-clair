@@ -8,4 +8,4 @@ Règles de contenu :
 - Pas de détail interne (`tests`, `Hilt`, `gates`, `CE`, build, bump, etc.).
 - Si la version est purement technique : gardez l’entrée mais mettez `"userVisible": false` et `bullets: []`.
 
-**Ce que voient les utilisatrices :** à la première ouverture après la mise à jour, l’app regarde seulement l’entrée du `versionCode` installé. Elle montre l’écran « Nouveautés » une seule fois pour cette version, avec `J’ai compris` ou `Passer`. Les anciennes versions ne sont pas rejouées. S’il manque une entrée visible, une phrase générique s’affiche quand même. La CI vérifie le JSON à chaque build (`verifyWhatsNewCatalog`).
+**Ce que voient les utilisatrices :** à la première ouverture après la mise à jour, l’app regarde seulement l’entrée du `versionCode` installé. Elle montre l’écran « Nouveautés » une seule fois pour cette version, avec `J’ai compris`. Les anciennes versions ne sont pas rejouées. S’il manque une entrée visible, une phrase générique s’affiche quand même. La CI vérifie le JSON à chaque build (`verifyWhatsNewCatalog`).

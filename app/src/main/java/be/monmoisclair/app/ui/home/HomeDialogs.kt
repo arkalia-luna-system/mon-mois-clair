@@ -55,7 +55,6 @@ internal fun HomeWhatsNewDialog(
     versionLabel: String?,
     fit: DisplayFit,
     onDismiss: () -> Unit,
-    onSkip: () -> Unit,
 ) {
     if (bullets.isEmpty()) return
     Dialog(
@@ -100,10 +99,6 @@ internal fun HomeWhatsNewDialog(
                         color = A11yTokens.Ink
                     )
                 }
-                SecondaryA11yButton(
-                    text = WhatsNewCopy.SKIP,
-                    onClick = onSkip
-                )
                 PrimaryA11yButton(
                     text = WhatsNewCopy.DISMISS,
                     onClick = onDismiss

@@ -348,10 +348,6 @@ class HomeViewModel @Inject constructor(
         completeWhatsNew()
     }
 
-    fun skipWhatsNew() {
-        completeWhatsNew()
-    }
-
     private fun completeWhatsNew() {
         _whatsNew.value = null
         val current = installedVersionCode()
