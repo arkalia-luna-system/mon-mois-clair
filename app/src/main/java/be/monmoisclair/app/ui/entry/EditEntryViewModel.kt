@@ -484,7 +484,7 @@ class EditEntryViewModel @Inject constructor(
             error = if (email.isNotEmpty()) {
                 be.monmoisclair.app.domain.SupportMailIntents.ADDRESS_COPIED
             } else {
-                "Aucune application Mail trouvée sur ce téléphone."
+                be.monmoisclair.app.domain.SupportMailIntents.NO_MAIL_APP
             },
             copyMessage = null
         )

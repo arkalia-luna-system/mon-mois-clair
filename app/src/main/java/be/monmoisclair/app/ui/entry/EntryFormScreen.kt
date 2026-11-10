@@ -522,7 +522,7 @@ fun EditEntryScreen(
         val ok = runCatching {
             context.startActivity(Intent.createChooser(intent, "Voir le courrier"))
         }.isSuccess
-        if (!ok) viewModel.setPdfReadError("Aucune app pour ouvrir ce PDF.")
+        if (!ok) viewModel.setPdfReadError(be.monmoisclair.app.ui.ExternalIntentMessages.NO_PDF_VIEWER)
     }
     LaunchedEffect(state.receiptRelativePath, state.hasPendingPhoto, state.hasPendingPdf) {
         if (state.hasPendingPhoto || state.hasPendingPdf) return@LaunchedEffect

@@ -17,6 +17,7 @@ import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListPendingLettersUseCase
 import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
 import be.monmoisclair.app.ui.AsyncLoadCoordinator
+import be.monmoisclair.app.ui.ExternalIntentMessages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -159,7 +160,7 @@ class DossiersViewModel @Inject constructor(
     fun reportShareIntentFailed() {
         _state.update {
             it.copy(
-                summaryMessage = "Aucune app pour envoyer. Réessayez.",
+                summaryMessage = ExternalIntentMessages.NO_SHARE_APP,
                 summaryMessageError = true
             )
         }

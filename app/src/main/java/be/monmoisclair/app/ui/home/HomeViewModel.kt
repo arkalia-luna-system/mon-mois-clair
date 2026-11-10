@@ -37,6 +37,7 @@ import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneResult
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
 import be.monmoisclair.app.ui.AsyncLoadCoordinator
+import be.monmoisclair.app.ui.ExternalIntentMessages
 import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.DoneDateFormat
@@ -729,7 +730,7 @@ class HomeViewModel @Inject constructor(
             reportSupportMailFailed()
             return
         }
-        _userMessages.tryEmit("Aucune app pour envoyer. Réessayez.")
+        _userMessages.tryEmit(ExternalIntentMessages.NO_SHARE_APP)
     }
 
     /** Décode la photo **dans l’app** (S01) — pas via `ACTION_VIEW` externe. */

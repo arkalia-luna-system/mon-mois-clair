@@ -81,6 +81,7 @@ class SupportMailIntentsTest {
     @Test
     fun messages_areActionableFrench() {
         assertThat(SupportMailIntents.NO_MAIL_APP).contains("Copiez")
+        assertThat(SupportMailIntents.NO_MAIL_APP.lowercase()).doesNotContain("téléphone")
         assertThat(SupportMailIntents.ADDRESS_COPIED).contains("Adresse copiée")
         assertThat(SupportMailIntents.chooserTitle()).contains("Arkalia")
     }

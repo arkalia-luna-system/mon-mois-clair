@@ -720,7 +720,7 @@ fun HomeScreen(
                                                     }.isSuccess
                                                     if (!ok) {
                                                         snackbarHostState.showSnackbar(
-                                                            "Aucune app pour ouvrir ce PDF."
+                                                            be.monmoisclair.app.ui.ExternalIntentMessages.NO_PDF_VIEWER
                                                         )
                                                     }
                                                 }
