@@ -17,6 +17,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.Config
 import java.time.Clock
 import java.time.ZoneId
 
@@ -101,7 +103,10 @@ class ReminderSchedulerImplTest {
     }
 
     @Test
+    @Config(sdk = [32])
     fun cancelFor_clearsVisibleNotificationsToo() = runBlocking<Unit> {
+        val manager = context.getSystemService(NotificationManager::class.java)!!
+        shadowOf(manager).setNotificationsEnabled(true)
         val helper = PaymentNotificationHelper(context)
         helper.showPaymentReminder(
             notificationId = ReminderRequestCodes.of("exp-visible", ReminderKind.J3),
@@ -115,12 +120,11 @@ class ReminderSchedulerImplTest {
             body = "47,00 € — à payer aujourd’hui (le 5).",
             expenseInstanceId = "exp-visible"
         )
-        val manager = context.getSystemService(NotificationManager::class.java)!!
-        assertThat(manager.activeNotifications.map { it.id }).isNotEmpty()
+        assertThat(shadowOf(manager).activeNotifications.map { it.id }).isNotEmpty()
 
         scheduler.cancelFor("exp-visible")
 
-        assertThat(manager.activeNotifications.map { it.id }).isEmpty()
+        assertThat(shadowOf(manager).activeNotifications.map { it.id }).isEmpty()
     }
 
     @Test
