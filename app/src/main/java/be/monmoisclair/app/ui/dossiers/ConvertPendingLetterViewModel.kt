@@ -87,11 +87,11 @@ class ConvertPendingLetterViewModel @Inject constructor(
             val opening = MoneyFormat.parseToCents(s.openingRemainingText)
             val monthly = MoneyFormat.parseToCents(s.monthlyAmountText)
             val day = s.dayText.trim().toIntOrNull()
-            if (opening == null || monthly == null || day == null) {
+            if (opening == null || monthly == null || day == null || day !in 1..31) {
                 _state.update {
                     it.copy(
                         saving = false,
-                        error = "Vérifiez le reste dû, le versement et le jour."
+                        error = "Vérifiez le reste dû, le versement et le jour (1 à 31)."
                     )
                 }
                 return@launch

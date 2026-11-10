@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.51** courses UI (dossiers, save, récurrence, SingleFlight) — **507** pass, **1** skipped, versionCode **157** |
+| Dernière étape terminée | **7.52** chasse bugs passes 1–6 — **517** pass, **1** skipped, versionCode **158** |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
+| Prochaine sous-étape | Smoke : double Enregistrer · widget boot · jour 32 refusé |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -21,19 +21,23 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ## Journal
 
-### 2026-11-10 — 7.51 chasse bugs courses UI
+### 2026-11-10 — 7.52 chasse bugs (passes 1–6, après 7.50)
 
-**Contexte :** après 7.50 — fiabiliser Dossiers, création facture, case mois suivants, courses parallèles.
+**Contexte :** lot `656803d` → `1fee8ce` — courses UI, domaine, nav, alarmes, backup, formulaire, widget.
 
-**Corrigé :**
-- `AsyncLoadCoordinator` : refresh Dossiers ignore chargements obsolètes (ON_RESUME rapide)
-- `AddEntry` : garde atomique anti-double insert sur Enregistrer
-- `Edit` : `applyToFollowing` repasse à false si récurrence « une fois »
-- `SingleFlightGate` : save/delete, restore, courrier, template, pending letter ; refresh CE + À venir
+**Corrigé (synthèse) :**
+- Passes 1–3 : `AsyncLoadCoordinator` Dossiers · `SingleFlightGate` · anti-double save · `applyToFollowing` · Home/pending/dirty · OCR/back · `ReminderReceiver` UNDO · partages Réglages
+- Passes 4–5 : alarmes exactes · politique backup · `navigateSingleTop` / hubs · `ExactAlarmSchedulePolicy` · backup follow-up après échec
+- Passe 6 : `parseMoneyAndDay` jours hors 1–31 · widget `PendingIntent` shell au boot
+- Build : import `padding` `DiscardChangesDialog`
 
-**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **507** pass, **1** skipped, **0** failure (**114** XML).  
-**Version :** `0.1.0-7.51` · `versionCode` **157**.  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **517** pass, **1** skipped, **0** failure (**119** XML).  
+**Version :** `0.1.0-7.52` · `versionCode` **158**.  
 **Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
+
+### 2026-11-10 — 7.51 chasse bugs courses UI (pré-ship, intégré 7.52)
+
+**Note :** entrée catalogue **157** conservée ; livraison Play = **7.52** / **158**.
 
 ### 2026-11-10 — 7.50 chasse bugs CE / SQLCipher (filets 7.49)
 

@@ -196,6 +196,11 @@ class ReceiptPhotoStore @Inject constructor(
         return runCatching { decodeImageBytes(bytes) }.getOrNull()
     }
 
+    /** Courrier en attente retiré : effacer les copies locales (Documents/S AF inchangés). */
+    fun deleteLocalPaths(relativePathsRaw: String) {
+        ReceiptLocalFiles.deleteUnder(context.filesDir, relativePathsRaw)
+    }
+
     companion object {
         /** Plein cadre lisible (IBAN / communication) — pas la miniature système. */
         const val MAX_SIDE_PX = 2048

@@ -11,6 +11,7 @@ import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.data.summary.MonthSummaryPdfShare
 import be.monmoisclair.app.data.summary.MonthSummaryPdfWriter
 import be.monmoisclair.app.domain.ShareFileIntents
+import be.monmoisclair.app.domain.usecase.DiscardPendingLetterUseCase
 import be.monmoisclair.app.domain.usecase.DossiersSnapshot
 import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListPendingLettersUseCase
@@ -47,7 +48,8 @@ class DossiersViewModel @Inject constructor(
     private val prepareMonthSummary: PrepareMonthSummaryUseCase,
     private val summaryPdfWriter: MonthSummaryPdfWriter,
     private val pendingLetterDao: PendingLetterDao,
-    private val mutatingRepository: MutatingRepository
+    private val mutatingRepository: MutatingRepository,
+    private val discardPending: DiscardPendingLetterUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(DossiersUiState())
     val state: StateFlow<DossiersUiState> = _state.asStateFlow()
@@ -166,9 +168,7 @@ class DossiersViewModel @Inject constructor(
     /** Retire un courrier saisi par erreur (pas encore converti en accord). */
     fun discardPendingLetter(id: String) {
         viewModelScope.launch {
-            mutatingRepository.mutate(rescheduleReminders = false) {
-                pendingLetterDao.deleteById(id)
-            }
+            discardPending(id)
             refresh()
         }
     }

@@ -21,20 +21,21 @@ object SensitiveClipboard {
     private var clearRunnable: Runnable? = null
 
     fun setPlainText(context: Context, label: String, text: String) {
+        val app = context.applicationContext
         val clip = ClipData.newPlainText(label, text)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             clip.description.extras = PersistableBundle().apply {
                 putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
             }
         }
-        val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val cm = app.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cm.setPrimaryClip(clip)
         scheduleClear(cm)
     }
 
     /** Wipe immédiat (ON_STOP) — annule aussi le timer planifié. */
     fun clearNow(context: Context) {
-        val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val cm = context.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clearRunnable?.let { mainHandler.removeCallbacks(it) }
         clearRunnable = null
         clearPrimary(cm)
