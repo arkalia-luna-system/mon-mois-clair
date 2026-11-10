@@ -4,7 +4,10 @@ import android.content.Intent
 import android.provider.Settings
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class AppDetailsSettingsIntentTest {
 
     @Test

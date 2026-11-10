@@ -22,8 +22,8 @@ android {
         applicationId = "be.monmoisclair.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 158
-        versionName = "0.1.0-7.52"
+        versionCode = 159
+        versionName = "0.1.0-7.53"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -123,7 +123,10 @@ tasks.register("verifyWhatsNewCatalog") {
     }
 }
 
-tasks.named("preBuild").configure { dependsOn("verifyWhatsNewCatalog") }
+tasks.named("preBuild").configure {
+    dependsOn("verifyWhatsNewCatalog")
+    dependsOn("purgeAppleDouble")
+}
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")

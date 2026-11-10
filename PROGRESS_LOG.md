@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.52** rappels discrets / collisions fichiers / copie IBAN — **531** pass, **1** skipped, versionCode **158** |
+| Dernière étape terminée | **7.53** copies clarifiées / réglages externes / purge T7 — **539** pass, **1** skipped, versionCode **159** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.53 copies clarifiées / réglages externes / purge T7
+
+**Contexte :** après 7.52 poussé — fiabiliser les derniers textes utilisateur et rendre les reruns T7 moins fragiles.
+
+**Corrigé :**
+- états vides plus explicites sur accueil / widget / courses (`Aucune facture ce mois`, `Aucune course notée pour l’instant`)
+- messages caméra, courrier, mail et PDF relus pour éviter les faux messages d’autorisation ou d’échec trop vagues
+- ouverture des réglages app et liens d’aide testés / stabilisés (`AppDetailsSettingsIntentTest` sous Robolectric)
+- `purgeAppleDouble` branché dès `preBuild` pour nettoyer plus tôt les sidecars `._*` sur volume T7
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **539** pass, **1** skipped, **0** failure (**126** XML).  
+**Version :** `0.1.0-7.53` · `versionCode` **159**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.52 rappels discrets / collisions fichiers / copie IBAN
 

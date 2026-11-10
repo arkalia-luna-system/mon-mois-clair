@@ -109,6 +109,15 @@
         "Suppression / archivage : les anciennes notifications de cette facture sont bien retirées.",
         "Copier l’IBAN : même vérification sur ajout et modification ; fichiers temporaires plus robustes en cas de collision."
       ]
+    },
+    {
+      "versionCode": 159,
+      "bullets": [
+        "Accueil et widget : les écrans vides disent plus clairement quand il n’y a rien à payer ce mois-ci.",
+        "Photo, courrier et partage : messages d’aide et d’échec relus pour être plus directs.",
+        "Réglages de l’app : ouverture et textes associés mieux verrouillés côté tests.",
+        "Sur certains volumes externes, le nettoyage des fichiers parasites démarre plus tôt avant le build."
+      ]
     }
   ]
 }
