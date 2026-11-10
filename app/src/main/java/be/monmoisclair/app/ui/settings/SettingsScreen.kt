@@ -26,6 +26,11 @@ import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
+internal const val SETTINGS_LOCAL_ONLY_A11Y =
+    "Mon Mois Clair. Données sur cet appareil uniquement."
+internal const val SETTINGS_LOCAL_ONLY_BODY =
+    "Données locales — pas de compte, pas de cloud."
+
 /**
  * Hub Réglages : 3 groupes → sous-écrans sujet.
  * Alertes / Aide / Restaurer restent ici (pas dans le Menu Accueil).
@@ -104,7 +109,8 @@ fun SettingsScreen(
                     contentDescription = buildString {
                         append("Mon Mois Clair")
                         if (stepLabel != null) append(", étape $stepLabel")
-                        append(". Données sur ce téléphone uniquement.")
+                        append(". ")
+                        append(SETTINGS_LOCAL_ONLY_A11Y.removePrefix("Mon Mois Clair. "))
                     }
                 },
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -122,7 +128,7 @@ fun SettingsScreen(
                 )
             }
             Text(
-                text = "Données sur ce téléphone — pas de compte, pas de cloud.",
+                text = SETTINGS_LOCAL_ONLY_BODY,
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted
             )

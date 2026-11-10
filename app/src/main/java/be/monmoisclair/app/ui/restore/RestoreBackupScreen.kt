@@ -53,6 +53,9 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
+internal const val RESTORE_SELECTED_FOLDER_KEPT =
+    "Le dossier de sauvegarde déjà choisi sur cet appareil est conservé."
+
 private enum class PendingRestore {
     Latest,
     File
@@ -127,7 +130,7 @@ fun RestoreBackupScreen(
                 Text(
                     text = "La restauration remplace toutes les données de l’application " +
                         "(tous les mois) par le contenu de la sauvegarde. " +
-                        "Le dossier de sauvegarde choisi sur ce téléphone est conservé. " +
+                        "$RESTORE_SELECTED_FOLDER_KEPT " +
                         "Cette action ne peut pas être annulée.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = A11yTokens.Ink
