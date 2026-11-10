@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.domain.usecase.ListUpcomingMonthsUseCase
 import be.monmoisclair.app.domain.usecase.UpcomingMonth
+import be.monmoisclair.app.ui.AsyncLoadCoordinator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,18 +24,21 @@ class UpcomingViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state = MutableStateFlow(UpcomingUiState())
     val state: StateFlow<UpcomingUiState> = _state.asStateFlow()
+    private val refreshCoordinator = AsyncLoadCoordinator()
 
     init {
         refresh()
     }
 
     fun refresh() {
+        val loadId = refreshCoordinator.startLoad()
         viewModelScope.launch {
             val previous = _state.value
             if (previous.months.isEmpty()) {
                 _state.update { it.copy(loading = true) }
             }
             val months = listUpcoming()
+            if (refreshCoordinator.isStale(loadId)) return@launch
             _state.update { it.copy(loading = false, months = months) }
         }
     }

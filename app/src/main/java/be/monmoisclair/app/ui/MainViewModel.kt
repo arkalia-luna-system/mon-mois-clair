@@ -14,6 +14,7 @@ import be.monmoisclair.app.domain.usecase.BiometricPreferenceUseCase
 import be.monmoisclair.app.domain.usecase.ObserveOnboardingStateUseCase
 import be.monmoisclair.app.domain.usecase.StartDestination
 import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
+import be.monmoisclair.app.ui.AsyncLoadCoordinator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -61,6 +62,7 @@ class MainViewModel @Inject constructor(
         )
     )
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    private val startCoordinator = AsyncLoadCoordinator()
 
     init {
         viewModelScope.launch {
@@ -75,23 +77,28 @@ class MainViewModel @Inject constructor(
     }
 
     fun refreshStart() {
+        val loadId = startCoordinator.startLoad()
         viewModelScope.launch {
             if (!CredentialStorageGate.isAvailable(appContext)) {
-                _uiState.update {
-                    it.copy(
-                        loading = false,
-                        needsCredentialUnlock = true,
-                        lockMessage = null
-                    )
+                if (!startCoordinator.isStale(loadId)) {
+                    _uiState.update {
+                        it.copy(
+                            loading = false,
+                            needsCredentialUnlock = true,
+                            lockMessage = null
+                        )
+                    }
                 }
                 return@launch
             }
+            if (startCoordinator.isStale(loadId)) return@launch
             _uiState.update { it.copy(needsCredentialUnlock = false) }
             val dest = observeOnboarding.startDestination()
             val enabled = biometricPreference.isEnabled()
             val availability = biometricAuth.availability()
             // Si biométrie activée mais plus utilisable → ne pas bloquer l’accès (décision E).
             val mustLock = enabled && availability == BiometricAvailability.Ready
+            if (startCoordinator.isStale(loadId)) return@launch
             _uiState.update {
                 it.copy(
                     loading = false,

@@ -28,6 +28,7 @@ import be.monmoisclair.app.domain.usecase.DeleteInstanceUseCase
 import be.monmoisclair.app.domain.usecase.UpdateInstanceResult
 import be.monmoisclair.app.domain.usecase.UpdateInstanceUseCase
 import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
+import be.monmoisclair.app.ui.SingleFlightGate
 import be.monmoisclair.app.ui.format.FeeEventDateFormat
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -131,6 +132,7 @@ class EditEntryViewModel @Inject constructor(
     private val _state = MutableStateFlow(EditEntryState(id = entryId, isExpense = isExpenseArg))
     val state: StateFlow<EditEntryState> = _state.asStateFlow()
     private val receiptDraft = EntryFormReceiptDraft()
+    private val mutationGate = SingleFlightGate()
 
     init { viewModelScope.launch { load() } }
 
@@ -570,8 +572,10 @@ class EditEntryViewModel @Inject constructor(
 
     fun save() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
+        if (!mutationGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
+            try {
             val s = _state.value
             var path = s.receiptRelativePath
             var extraAppend = ""
@@ -733,13 +737,18 @@ class EditEntryViewModel @Inject constructor(
                 is UpdateInstanceResult.InvalidInput ->
                     _state.update { it.copy(saving = false, error = result.message) }
             }
+            } finally {
+                mutationGate.exit()
+            }
         }
     }
 
     fun delete() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
+        if (!mutationGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
+            try {
             if (_state.value.isSavingsLine) {
                 when (configureSavings.remove()) {
                     ConfigureSavingsResult.Removed ->
@@ -758,6 +767,9 @@ class EditEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, done = true) }
                 DeleteInstanceResult.NotFound ->
                     _state.update { it.copy(saving = false, error = "Cette ligne n’est plus là.") }
+            }
+            } finally {
+                mutationGate.exit()
             }
         }
     }

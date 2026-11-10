@@ -7,6 +7,7 @@ import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterResult
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterUseCase
+import be.monmoisclair.app.ui.SingleFlightGate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,7 @@ class PendingLetterFormViewModel @Inject constructor(
 
     @Volatile
     private var pendingBitmap: Bitmap? = null
+    private val saveGate = SingleFlightGate()
 
     fun setWho(v: String) = _state.update { it.copy(who = v, error = null) }
     fun setWhat(v: String) = _state.update { it.copy(what = v, error = null) }
@@ -54,8 +56,10 @@ class PendingLetterFormViewModel @Inject constructor(
 
     fun save() {
         if (_state.value.saving || _state.value.saved) return
+        if (!saveGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
+            try {
             val s = _state.value
             when (
                 val result = createPendingLetter(who = s.who, what = s.what)
@@ -78,6 +82,9 @@ class PendingLetterFormViewModel @Inject constructor(
                     }
                     _state.update { it.copy(saving = false, saved = true) }
                 }
+            }
+            } finally {
+                saveGate.exit()
             }
         }
     }

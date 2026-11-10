@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.YearMonth
-import java.util.concurrent.atomic.AtomicBoolean
+import be.monmoisclair.app.ui.SingleFlightGate
 import javax.inject.Inject
 
 data class EntryFormState(
@@ -93,7 +93,7 @@ class AddEntryViewModel @Inject constructor(
     /** Évite un 2ᵉ insert si la photo a échoué après un 1ᵉr enregistrement OK. */
     @Volatile private var createdInstanceId: String? = null
     /** Anti-course : double Enregistrer / confirm doublon en parallèle. */
-    private val saveGate = AtomicBoolean(false)
+    private val saveGate = SingleFlightGate()
 
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
@@ -307,7 +307,7 @@ class AddEntryViewModel @Inject constructor(
      */
     fun saveAsPendingLetter() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.saved)) return
-        if (!saveGate.compareAndSet(false, true)) return
+        if (!saveGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             try {
@@ -361,14 +361,14 @@ class AddEntryViewModel @Inject constructor(
                     }
                 }
             } finally {
-                saveGate.set(false)
+                saveGate.exit()
             }
         }
     }
 
     fun save(skipDuplicateCheck: Boolean = false) {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.saved)) return
-        if (!saveGate.compareAndSet(false, true)) return
+        if (!saveGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null, duplicateConfirm = null) }
         viewModelScope.launch {
             try {
@@ -482,7 +482,7 @@ class AddEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, error = result.message) }
             }
             } finally {
-                saveGate.set(false)
+                saveGate.exit()
             }
         }
     }

@@ -7,6 +7,7 @@ import be.monmoisclair.app.data.db.dao.PendingLetterDao
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.usecase.ConvertPendingLetterResult
 import be.monmoisclair.app.domain.usecase.ConvertPendingLetterToDossierUseCase
+import be.monmoisclair.app.ui.SingleFlightGate
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +40,7 @@ class ConvertPendingLetterViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(ConvertPendingLetterUiState())
     val state: StateFlow<ConvertPendingLetterUiState> = _state.asStateFlow()
+    private val convertGate = SingleFlightGate()
 
     init {
         viewModelScope.launch {
@@ -71,8 +73,10 @@ class ConvertPendingLetterViewModel @Inject constructor(
 
     fun convert() {
         if (_state.value.saving || _state.value.done || _state.value.loading) return
+        if (!convertGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
+            try {
             val s = _state.value
             if (MoneyFormat.tooManyFractionDigits(s.openingRemainingText) ||
                 MoneyFormat.tooManyFractionDigits(s.monthlyAmountText)
@@ -126,6 +130,9 @@ class ConvertPendingLetterViewModel @Inject constructor(
                     _state.update {
                         it.copy(saving = false, error = "Ce courrier n’est plus là.")
                     }
+            }
+            } finally {
+                convertGate.exit()
             }
         }
     }

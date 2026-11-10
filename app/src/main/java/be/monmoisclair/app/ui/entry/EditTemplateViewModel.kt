@@ -10,6 +10,7 @@ import be.monmoisclair.app.domain.usecase.ArchiveExpenseTemplateResult
 import be.monmoisclair.app.domain.usecase.ArchiveExpenseTemplateUseCase
 import be.monmoisclair.app.domain.usecase.UpdateExpenseTemplateResult
 import be.monmoisclair.app.domain.usecase.UpdateExpenseTemplateUseCase
+import be.monmoisclair.app.ui.SingleFlightGate
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,6 +58,7 @@ class EditTemplateViewModel @Inject constructor(
     private val templateId: String = checkNotNull(savedStateHandle["id"])
     private val _state = MutableStateFlow(EditTemplateState())
     val state: StateFlow<EditTemplateState> = _state.asStateFlow()
+    private val mutationGate = SingleFlightGate()
 
     init {
         viewModelScope.launch { load() }
@@ -98,8 +100,10 @@ class EditTemplateViewModel @Inject constructor(
 
     fun save() {
         if (_state.value.saving || _state.value.saved || _state.value.loading) return
+        if (!mutationGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
+            try {
             val s = _state.value
             if (MoneyFormat.tooManyFractionDigits(s.amountText)) {
                 _state.update { it.copy(saving = false, error = MoneyFormat.FRACTION_HINT) }
@@ -139,14 +143,19 @@ class EditTemplateViewModel @Inject constructor(
                 is UpdateExpenseTemplateResult.InvalidInput ->
                     _state.update { it.copy(saving = false, error = result.message) }
             }
+            } finally {
+                mutationGate.exit()
+            }
         }
     }
 
     /** E02 : retirer l’échéance hors mois (désactive le modèle). */
     fun archive() {
         if (_state.value.saving || _state.value.saved || _state.value.loading) return
+        if (!mutationGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
+            try {
             when (archiveTemplate(templateId)) {
                 ArchiveExpenseTemplateResult.Success ->
                     _state.update { it.copy(saving = false, archived = true, saved = true) }
@@ -154,6 +163,9 @@ class EditTemplateViewModel @Inject constructor(
                     _state.update {
                         it.copy(saving = false, error = "Cette échéance n’est plus là.")
                     }
+            }
+            } finally {
+                mutationGate.exit()
             }
         }
     }

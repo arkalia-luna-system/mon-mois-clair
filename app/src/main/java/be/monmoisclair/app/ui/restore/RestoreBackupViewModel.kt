@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.backup.BackupRestorer
 import be.monmoisclair.app.data.backup.RestoreResult
 import be.monmoisclair.app.domain.MonthCycleEngine
+import be.monmoisclair.app.ui.SingleFlightGate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +35,7 @@ class RestoreBackupViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(RestoreUiState())
     val uiState: StateFlow<RestoreUiState> = _uiState.asStateFlow()
+    private val restoreGate = SingleFlightGate()
 
     fun onShareCodeChange(value: String) {
         _uiState.update {
@@ -77,8 +79,10 @@ class RestoreBackupViewModel @Inject constructor(
 
     private fun runRestore(block: suspend () -> RestoreResult) {
         if (_uiState.value.busy) return
+        if (!restoreGate.tryEnter()) return
         _uiState.update { it.copy(busy = true, message = null, isError = false, success = false) }
         viewModelScope.launch {
+            try {
             val result = try {
                 block()
             } catch (e: Exception) {
@@ -99,6 +103,9 @@ class RestoreBackupViewModel @Inject constructor(
                     isError = !ok,
                     success = ok
                 )
+            }
+            } finally {
+                restoreGate.exit()
             }
         }
     }
