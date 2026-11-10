@@ -2,14 +2,6 @@
   "genericFallbackBullet": "Améliorations et corrections — l’app reste simple et entièrement hors ligne.",
   "releases": [
     {
-      "versionCode": 160,
-      "bullets": [
-        "Biométrie et épargne : messages d’échec relus pour dire quoi faire, sans jargon.",
-        "Restauration : rappel plus clair — le dossier déjà choisi reste sur cet appareil.",
-        "Courrier en attente : photo et enregistrement signalent mieux ce qui a bloqué."
-      ]
-    },
-    {
       "versionCode": 161,
       "bullets": [
         "Actions sensibles : les boutons destructifs sont mieux annoncés pour TalkBack.",
@@ -61,6 +53,14 @@
         "La saisie se dérègle moins quand le clavier est ouvert.",
         "Le menu, l’aide et le mode mois à venir sont plus faciles à comprendre.",
         "Quelques textes d’accueil et d’écran vide ont aussi été simplifiés."
+      ]
+    },
+    {
+      "versionCode": 168,
+      "bullets": [
+        "L’écran « Nouveautés » embarque moins de texte : il va droit au but.",
+        "L’app ne garde que les dernières mises à jour — l’ancien historique a été allégé.",
+        "Rien ne change pour vous : une seule fois « J’ai compris » par version installée."
       ]
     }
   ]

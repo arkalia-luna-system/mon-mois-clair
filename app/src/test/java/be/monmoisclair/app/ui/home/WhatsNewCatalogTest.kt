@@ -14,7 +14,7 @@ class WhatsNewCatalogTest {
         val ctx = ApplicationProvider.getApplicationContext<android.content.Context>()
         val loaded = WhatsNewCatalog.load(ctx)
         assertThat(loaded.releases.size).isAtMost(WhatsNewCatalog.MAX_EMBEDDED_RELEASES)
-        assertThat(loaded.releases.map { it.versionCode }).contains(167)
+        assertThat(loaded.releases.map { it.versionCode }).contains(168)
     }
 
     @Test

@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.61** post-smoke UX clarifié — **563** pass, **1** skipped, versionCode **167** |
+| Dernière étape terminée | **7.62** catalogue Nouveautés allégé — **563** pass, **1** skipped, versionCode **168** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · [`smoke-checklist`](docs/audits/2026-11-05-smoke-checklist-7.24.md) |
@@ -20,6 +20,19 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.62 catalogue Nouveautés allégé
+
+**Contexte :** limiter la taille du catalogue embarqué « Nouveautés » pour garder l’app légère, sans changer le geste utilisatrice (une fois par version installée).
+
+**Corrigé :**
+- `catalog.json` : conservation des **8** derniers `versionCode` ; plafond **5 120** octets UTF-8
+- `verifyWhatsNewCatalog` + `WhatsNewCatalog` : garde-fous Gradle et tests si dépassement ou entrée manquante
+- doc `WHATS_NEW.md` : règle de rétention documentée pour les prochains bumps
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **563** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** `0.1.0-7.62` · `versionCode` **168**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.61 post-smoke UX clarifié
 
