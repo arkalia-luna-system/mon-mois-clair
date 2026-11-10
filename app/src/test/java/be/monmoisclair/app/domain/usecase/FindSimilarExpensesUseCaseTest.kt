@@ -136,4 +136,38 @@ class FindSimilarExpensesUseCaseTest {
         )
         assertThat(hits).hasSize(1)
     }
+
+    @Test
+    fun findInLedger_excludeExpenseId_ignoresSelf() = runBlocking {
+        val ledgerId = AppClock.ledgerId(AppClock.currentYearMonth())
+        ensureLedger(ledgerId)
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp-self",
+                ledgerId = ledgerId,
+                templateId = null,
+                label = "Proximus",
+                amountCents = 4_500L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                isAutoDebit = false,
+                paymentNote = "",
+                receiptRelativePath = "",
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 0L
+            )
+        )
+        val hits = useCase.findInLedger(
+            ledgerId = ledgerId,
+            label = "Proximus",
+            amountCents = 4_500L,
+            dayOfMonth = 10,
+            excludeExpenseId = "exp-self"
+        )
+        assertThat(hits).isEmpty()
+    }
 }

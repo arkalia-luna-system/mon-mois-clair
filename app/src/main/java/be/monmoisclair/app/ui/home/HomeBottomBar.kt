@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.R
 import be.monmoisclair.app.ui.theme.A11yTokens
@@ -154,7 +155,9 @@ private fun BottomBarFilled(
         Text(
             text = text,
             style = MaterialTheme.typography.labelLarge,
-            maxLines = 1
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f, fill = false)
         )
     }
 }
@@ -193,7 +196,9 @@ private fun BottomBarOutlined(
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-            maxLines = 1
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f, fill = false)
         )
     }
 }

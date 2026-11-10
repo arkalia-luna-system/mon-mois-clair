@@ -20,4 +20,20 @@ class BackupHealthCopyTest {
         assertThat(BackupHealthCopy.statusLine(BackupHealth.OK)).contains("à jour")
         assertThat(BackupHealthCopy.statusLine(BackupHealth.BROKEN)).contains("dossier")
     }
+
+    @Test
+    fun ok_withEpoch_showsLastCopyDate() {
+        // 2026-11-10 12:00 Europe/Brussels (test JVM : AppClock.zone)
+        val epoch = 1_762_670_400_000L
+        val line = BackupHealthCopy.statusLine(BackupHealth.OK, epoch)
+        assertThat(line).contains("à jour")
+        assertThat(line).contains("Dernière copie")
+        assertThat(line).contains("/")
+    }
+
+    @Test
+    fun broken_ignoresEpoch() {
+        val line = BackupHealthCopy.statusLine(BackupHealth.BROKEN, 1_762_670_400_000L)
+        assertThat(line).doesNotContain("Dernière copie")
+    }
 }

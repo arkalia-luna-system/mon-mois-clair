@@ -16,7 +16,9 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.QuietLinkA11y
+import be.monmoisclair.app.ui.settings.PracticalContextTips
 import be.monmoisclair.app.ui.format.MoneyFormat
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
@@ -148,6 +150,7 @@ internal fun EntryFormDossierSection(
                 )
             )
             if (onCopyIban != null && iban.isNotBlank()) {
+                CarnetTipCard(text = PracticalContextTips.CLIPBOARD_IBAN)
                 QuietLinkA11y(text = "Copier l’IBAN", onClick = onCopyIban)
             }
             OutlinedTextField(

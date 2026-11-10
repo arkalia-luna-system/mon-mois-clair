@@ -78,8 +78,8 @@ object WhatsNewCopy {
 
     const val BACKUP_NUDGE_TITLE = "Pensez à une copie"
     const val BACKUP_NUDGE_BODY =
-        "Vous n’avez pas encore fait de sauvegarde. " +
-            "Réglages → Sauvegarde : notez le code sur papier, une fois."
+        "Vous n’avez pas encore fait de copie. Réglages → Sauvegarde : " +
+            "1) noter le code sur papier · 2) choisir le dossier · 3) envoyer une copie."
     const val BACKUP_NUDGE_LATER = "Plus tard"
     const val BACKUP_NUDGE_OPEN = "Ouvrir Sauvegarde"
 }

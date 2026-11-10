@@ -96,7 +96,7 @@ internal fun HomeWhatsNewDialog(
                     Text(
                         text = "• $line",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = A11yTokens.InkMuted
+                        color = A11yTokens.Ink
                     )
                 }
                 PrimaryA11yButton(

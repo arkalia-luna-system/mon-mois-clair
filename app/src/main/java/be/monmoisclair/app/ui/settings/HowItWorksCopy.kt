@@ -1,5 +1,7 @@
 package be.monmoisclair.app.ui.settings
 
+import be.monmoisclair.app.ui.clipboard.ClipboardSecurityCopy
+
 /**
  * Aide « Comment ça marche » — textes figés, testables, ton familial 60+.
  * Affiché depuis Réglages (contact = Menu Accueil uniquement).
@@ -21,9 +23,11 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Sauvegarde",
-            body = "Réglages → Sauvegarde (ou « Code et copie » en tête) : code une fois sur papier. " +
+            body = "Réglages → Sauvegarde : code une fois sur papier. " +
+                "Puis dossier, puis « Envoyer une copie » — la date s’affiche ici. " +
                 "N’envoyez jamais le code avec la copie. " +
                 "Nouveau téléphone : Restaurer, puis ce code. " +
+                "Mauvais fichier ou code : le carnet actuel ne change pas. " +
                 "Les vieilles copies non protégées ne s’ouvrent plus — à jeter."
         ),
         Section(
@@ -62,11 +66,10 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Plan de remboursement",
-            body = "Ce n’est pas la pastille « En retard ». C’est un accord de paiement " +
-                "(à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +
-                "sans le total de la dette. Détails → Voir le rythme. " +
+            body = "Ce n’est pas la pastille « En retard » : accord de paiement (créancier, reste dû). " +
+                "Pastille « Accord » à l’accueil — sans le total. Détails → Voir le rythme. " +
                 "Menu → Dossiers (quand un accord ou un courrier existe). " +
-                "Filtres Tous / À traiter / Ce mois. Résumé texte/PDF pour créancier."
+                "Filtres Tous / À traiter / Ce mois."
         ),
         Section(
             title = "Facture papier",
@@ -74,6 +77,10 @@ object HowItWorksCopy {
                 "Photo et PDF à côté. « Lire la communication sur la photo » = " +
                 "communication seulement — jamais le montant. Eau / énergie : souvent " +
                 "une nouvelle +++ chaque mois."
+        ),
+        Section(
+            title = "Copier pour la banque",
+            body = ClipboardSecurityCopy.HOW_IT_WORKS_BODY
         ),
         Section(
             title = "Sur une année",

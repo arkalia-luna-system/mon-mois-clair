@@ -40,7 +40,7 @@ fun CarnetStateBanner(
     }
     val bg = when (kind) {
         CarnetBannerKind.Ok -> A11yTokens.AccentOkSoft
-        CarnetBannerKind.Error -> A11yTokens.PaperCard
+        CarnetBannerKind.Error -> A11yTokens.PaperWarm
         CarnetBannerKind.Warn -> A11yTokens.PaperWarm
     }
     val assertive = kind == CarnetBannerKind.Error

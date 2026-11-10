@@ -63,6 +63,15 @@ fun ReminderHealthScreen(
         CarnetPageTitle(SettingsHubCopy.ALERTS)
         CarnetTipCard(text = "Pastilles : le téléphone laisse-t-il sonner ?")
         CarnetTipCard(text = PracticalContextTips.REMINDER_HEALTH)
+        report?.let { r ->
+            ReminderHealthCopy.topBanner(r)?.let { banner ->
+                CarnetStateBanner(
+                    text = banner,
+                    kind = ReminderHealthCopy.topBannerKind(r),
+                    pad = 12.dp
+                )
+            }
+        }
         errorMessage?.let { msg ->
             CarnetStateBanner(text = msg, kind = CarnetBannerKind.Error, pad = 12.dp)
         }

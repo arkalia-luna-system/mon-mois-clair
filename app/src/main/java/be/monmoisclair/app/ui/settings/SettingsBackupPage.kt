@@ -119,7 +119,10 @@ fun SettingsBackupScreen(
             )
         }
         run {
-            val healthLine = BackupHealthCopy.statusLine(state.backupHealth)
+            val healthLine = BackupHealthCopy.statusLine(
+                state.backupHealth,
+                state.lastBackupAtEpochMs,
+            )
             val healthOk = BackupHealthCopy.isOk(state.backupHealth)
             CarnetStateBanner(
                 text = healthLine,

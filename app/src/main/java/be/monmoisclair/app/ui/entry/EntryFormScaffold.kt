@@ -81,7 +81,7 @@ internal fun DuplicateExpenseDialog(
         },
         dismissButton = {
             SecondaryA11yButton(
-                text = "Annuler",
+                text = "Revenir modifier",
                 onClick = onDismiss,
                 fillMaxWidth = false,
                 modifier = Modifier.padding(bottom = 8.dp)

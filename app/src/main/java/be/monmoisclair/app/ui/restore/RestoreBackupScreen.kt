@@ -48,6 +48,7 @@ import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.PrimaryA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
+import be.monmoisclair.app.ui.settings.PracticalContextTips
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -177,6 +178,8 @@ fun RestoreBackupScreen(
                 "Cette action remplace tout le carnet. " +
                 "Si la copie vient d’un mail ou de WhatsApp, entrez le code noté à part."
         )
+        CarnetTipCard(text = RestoreMessages.RESTORE_FAIL_SAFE)
+        CarnetTipCard(text = PracticalContextTips.RESTORE_FAIL_SAFE)
 
         Column(
             modifier = Modifier

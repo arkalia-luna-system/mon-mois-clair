@@ -4,6 +4,10 @@ import be.monmoisclair.app.data.backup.RestoreResult
 
 /** Messages UI pour les résultats de restauration (testable sans Android). */
 object RestoreMessages {
+
+    /** Rassurance sur l’écran Restaurer (fichier ou code refusé). */
+    const val RESTORE_FAIL_SAFE =
+        "Fichier refusé ou code faux : le carnet déjà sur le téléphone reste inchangé."
     fun from(result: RestoreResult): String = when (result) {
         is RestoreResult.Success -> successMessage(result)
         is RestoreResult.NotConfigured ->

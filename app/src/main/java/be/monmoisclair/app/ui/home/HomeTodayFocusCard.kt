@@ -33,17 +33,15 @@ fun HomeTodayFocusCard(
 ) {
     if (!focus.hasAction) return
     val shape = HomeTokens.chipRadius
-    val bg = if (focus.overdue.isNotEmpty()) {
-        HomeTokens.OkSoft.copy(alpha = 0.55f)
-    } else {
-        HomeTokens.Chip
-    }
-    val border = if (focus.overdue.isNotEmpty()) HomeTokens.Danger else HomeTokens.CardBorder
+    val hasOverdue = focus.overdue.isNotEmpty()
+    val bg = HomeTokens.Chip
+    val border = if (hasOverdue) HomeTokens.DangerFill else HomeTokens.CardBorder
+    val borderWidth = HomeTodayFocusCardStyle.overdueBorderWidthDp(hasOverdue).dp
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .border(HomeTokens.hairline, border, shape)
+            .border(borderWidth, border, shape)
             .background(bg)
             .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)

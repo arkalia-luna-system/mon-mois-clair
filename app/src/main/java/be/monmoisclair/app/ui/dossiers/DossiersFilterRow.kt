@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -11,9 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.selected
@@ -37,10 +41,7 @@ fun DossiersFilterRow(
             val label = DossiersOpenFilterLogic.chipLabel(filter)
             val on = filter == selectedFilter
             val shape = StampShape
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleSmall,
-                color = if (on) A11yTokens.Ink else A11yTokens.InkMuted,
+            Box(
                 modifier = Modifier
                     .weight(1f)
                     .heightIn(min = A11yTokens.minTouchHeight)
@@ -54,12 +55,22 @@ fun DossiersFilterRow(
                         if (on) A11yTokens.PaperCard else A11yTokens.PaperWarm
                     )
                     .clickable(role = Role.Button) { onSelect(filter) }
-                    .padding(horizontal = 10.dp, vertical = 10.dp)
+                    .padding(horizontal = 8.dp, vertical = 10.dp)
                     .semantics {
                         contentDescription = "Filtre $label"
                         selected = on
-                    }
-            )
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = if (on) A11yTokens.Link else A11yTokens.InkMuted,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

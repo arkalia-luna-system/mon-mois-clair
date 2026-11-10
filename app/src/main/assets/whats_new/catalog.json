@@ -26,6 +26,55 @@
         "Cet écran montre la version (ex. 7.42) : touchez seulement « J’ai compris » pour fermer.",
         "Aide : rubrique « Nouveautés » pour savoir comment lire cet écran."
       ]
+    },
+    {
+      "versionCode": 149,
+      "bullets": [
+        "Sauvegarde : la date de la dernière copie s’affiche quand tout est à jour.",
+        "Restaurer : rappel clair — mauvais fichier ou code, le carnet actuel ne change pas.",
+        "Alertes : bandeau en tête si notifications ou réveil à l’heure manquent.",
+        "Doublon de facture : « Revenir modifier » et message plus explicite avant de créer quand même."
+      ]
+    },
+    {
+      "versionCode": 150,
+      "bullets": [
+        "Aide : rubrique « Copier pour la banque » — IBAN et communication effacés du presse-papiers après ~30 s.",
+        "Fiche dossier : rappel de coller vite après « Copier l’IBAN ».",
+        "Le reste : sauvegarde datée, restauration rassurante, alertes et anti-doublon (7.43)."
+      ]
+    },
+    {
+      "versionCode": 151,
+      "bullets": [
+        "Bandeau « Pour aujourd’hui » : en retard, filet rouge (plus de fond vert trompeur).",
+        "Dossiers : filtres centrés ; le filtre actif se lit en teal.",
+        "Conseils Aide : léger filet pour les distinguer du fond.",
+        "Écran Nouveautés : puces plus contrastées ; barre du bas mieux espacée."
+      ]
+    },
+    {
+      "versionCode": 152,
+      "bullets": [
+        "Doublon de facture : repère aussi le nom du créancier — moins de faux « presque pareil ».",
+        "Sauvegarde : message de date plus clair quand la copie est à jour."
+      ]
+    },
+    {
+      "versionCode": 153,
+      "bullets": [
+        "Alertes : bandeau orange pour batterie ou copie — rouge seulement si les rappels sont bloqués.",
+        "Copier IBAN / communication : inchangé côté sécurité (effacement ~30 s) — Aide et écrans alignés.",
+        "Restaurer : rappel visible si fichier ou code refusé — le carnet ne change pas."
+      ]
+    },
+    {
+      "versionCode": 154,
+      "bullets": [
+        "Après « Envoyer une copie », la date de sauvegarde se met à jour tout de suite.",
+        "Aide : textes des accords de paiement relus pour rester courts et lisibles.",
+        "Anti-doublon : prêt pour l’édition sans se comparer à soi-même (filet technique)."
+      ]
     }
   ]
 }

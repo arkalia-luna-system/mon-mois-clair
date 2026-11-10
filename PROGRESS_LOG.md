@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.42** catalogue Nouveautés auto + garde-fous dialogue — **481** pass, **1** skipped, versionCode **148** |
-| Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia (Nouveautés auto + Aide section Nouveautés) |
+| Dernière étape terminée | **7.42** catalogue Nouveautés (ship git) — lot **7.43→7.48** angles morts **en attente** Gradle / push |
+| Étape en cours | Validation build unique (tests + push `develop` + ff `main`) |
+| Prochaine sous-étape | Smoke : Sauvegarde date · Restaurer · Copier IBAN ~30 s · bandeau Aujourd’hui |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,35 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.43→7.48 angles morts expert (code, tests à valider)
+
+**Contexte :** trous hors liste Athalia — seniors, restore, clipboard, contrastes, doublons.
+
+**Codé (lot) :**
+- **7.43** : date dernière copie · restore fail-safe · `ReminderHealthCopy` · anti-doublon « Revenir modifier »
+- **7.44–7.48** : Aide « Copier pour la banque » + tips fiche IBAN/communication · bandeau Aujourd’hui (contraste retard) · filtres Dossiers · bannières alertes warn/erreur · doublon créancier · refresh date sauvegarde post-copie
+- **Catalogue** `whats_new` **149→154** · `versionCode` **154** / `0.1.0-7.48` dans `app/build.gradle.kts`
+
+**Hors scope volontaire (reste) :** Direct Boot · perf listes massives · i18n hors FR · deep links Store · audit recomposition Compose.
+
+**Tests :** à confirmer — `./gradlew :app:testDebugUnitTest --rerun-tasks` (agent build unique).  
+**Ship :** après verts → `develop` + ff `main`. **Pas** Production.
+
+### 2026-11-10 — 7.43 parcours sauvegarde / restore / alertes (hors Nouveautés auto)
+
+**Contexte :** après 7.42 — faciliter gestion financière seniors/endettés : confiance restore, visibilité copie, alertes actionnables.
+
+**Ajouts :**
+- **Sauvegarde** : date « Dernière copie : JJ/MM/AA » quand `BackupHealth.OK` + méta `lastBackupAt`
+- **Restaurer** : tips « carnet inchangé » si refus + `RestoreMessages.RESTORE_FAIL_SAFE`
+- **Alertes** : bandeau `ReminderHealthCopy` (notifs / alarme / batterie / copie)
+- **Anti-doublon** : dialogue plus clair ; bouton **Revenir modifier** ; rappel sauvegarde 3 étapes
+- **Aide** : section Sauvegarde alignée (date, échec restore)
+
+**Tests :** à compléter après Gradle `--rerun-tasks`.  
+**Version :** `0.1.0-7.43` · `versionCode` **149**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.42 catalogue Nouveautés auto + UX seniors
 

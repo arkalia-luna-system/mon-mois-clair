@@ -104,6 +104,12 @@ class RestoreMessagesTest {
     }
 
     @Test
+    fun restoreFailSafe_reassuresNoWipe() {
+        assertThat(RestoreMessages.RESTORE_FAIL_SAFE).contains("inchangé")
+        assertThat(RestoreMessages.RESTORE_FAIL_SAFE.lowercase()).contains("code")
+    }
+
+    @Test
     fun notMmcBackup_dedicatedMessage() {
         val msg = RestoreMessages.from(RestoreResult.NotMmcBackup)
         assertThat(msg).isEqualTo(RestoreMessages.NOT_MMC_BACKUP)

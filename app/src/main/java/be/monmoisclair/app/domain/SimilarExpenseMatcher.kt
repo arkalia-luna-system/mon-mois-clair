@@ -48,8 +48,9 @@ object SimilarExpenseMatcher {
 
     fun confirmDialogBody(match: Match): String {
         val money = EuroFormat.formatCents(match.amountCents)
-        return "Une ligne « ${match.existingLabel.trim()} » existe déjà " +
+        return "Vérifiez si c’est la même facture avant d’en créer une deuxième.\n\n" +
+            "Une ligne « ${match.existingLabel.trim()} » existe déjà " +
             "pour le jour ${match.dayOfMonth} · $money.\n\n" +
-            "Voulez-vous quand même enregistrer une nouvelle ligne ?"
+            "Créer quand même une nouvelle ligne ?"
     }
 }

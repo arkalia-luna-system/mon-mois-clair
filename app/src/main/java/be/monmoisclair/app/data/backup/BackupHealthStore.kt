@@ -40,4 +40,11 @@ class BackupHealthStore @Inject constructor(
     suspend fun markBroken() {
         mark(BackupHealth.BROKEN)
     }
+
+    /** Dernière copie réussie (epoch ms), ou null si jamais / inconnu. */
+    suspend fun readLastBackupAtEpochMs(): Long? {
+        val raw = appMetaDao.get(AppMetaKeys.LAST_BACKUP_AT_EPOCH_MS)?.value?.trim().orEmpty()
+        if (raw.isEmpty() || raw == "0") return null
+        return raw.toLongOrNull()?.takeIf { it > 0L }
+    }
 }

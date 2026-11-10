@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +28,7 @@ fun CarnetTipCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
+            .border(0.5.dp, A11yTokens.PaperBorder, MaterialTheme.shapes.medium)
             .background(A11yTokens.PaperWarm)
             .padding(horizontal = 14.dp, vertical = 12.dp)
     )

@@ -80,7 +80,9 @@ data class SettingsUiState(
     /** Migration SQLCipher Failed → DB claire temporaire (bannière confiance). */
     val dbMigrationFailed: Boolean = false,
     /** Aligné Menu Accueil : hub Alertes en warn si bloquées. */
-    val remindersBlocked: Boolean = false
+    val remindersBlocked: Boolean = false,
+    /** Dernière copie réussie (affichage date sur écran Sauvegarde). */
+    val lastBackupAtEpochMs: Long? = null
 )
 
 @HiltViewModel
@@ -130,7 +132,23 @@ class SettingsViewModel @Inject constructor(
                 val failed = runCatching { dbPassphraseVault.isMigrationFailedPresent() }
                     .getOrDefault(false)
                 val alertsBlocked = reminderHealth.check().remindersBlocked
-                RefreshBundle(savings, summary, dossierCount, offMonth, code, failed, alertsBlocked)
+                val backupHealth = healthStore.read()
+                val lastBackupAt = healthStore.readLastBackupAtEpochMs()
+                val theme = themePreference.read()
+                val biometricEnabled = preference.isEnabled()
+                RefreshBundle(
+                    savings,
+                    summary,
+                    dossierCount,
+                    offMonth,
+                    code,
+                    failed,
+                    alertsBlocked,
+                    backupHealth,
+                    lastBackupAt,
+                    theme,
+                    biometricEnabled,
+                )
             }
             _uiState.update { cur ->
                 val dirtyNow = savingsDraftDirty
@@ -145,10 +163,10 @@ class SettingsViewModel @Inject constructor(
                 // ON_RESUME après le share sheet doit encore montrer « Choisissez l’app… ».
                 cur.copy(
                     loading = false,
-                    themePreference = themePreference.read(),
-                    biometricEnabled = preference.isEnabled(),
+                    themePreference = loaded.themePreference,
+                    biometricEnabled = loaded.biometricEnabled,
                     availability = biometricAuth.availability(),
-                    backupHealth = healthStore.read(),
+                    backupHealth = loaded.backupHealth,
                     offMonthPeriodics = loaded.offMonth,
                     savingsActive = savings.active,
                     savingsAmountText = if (keepDraft) cur.savingsAmountText else storedAmount,
@@ -163,7 +181,8 @@ class SettingsViewModel @Inject constructor(
                     showDossiersSummaryLink = loaded.dossierCount > 0,
                     shareCopyCode = loaded.shareCode,
                     dbMigrationFailed = loaded.migrationFailed,
-                    remindersBlocked = loaded.remindersBlocked
+                    remindersBlocked = loaded.remindersBlocked,
+                    lastBackupAtEpochMs = loaded.lastBackupAtEpochMs,
                 )
             }
         }
@@ -420,10 +439,14 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = shareBackup()) {
                 is ShareBackupResult.Ready -> {
+                    val backupAt = healthStore.readLastBackupAtEpochMs()
+                    val backupHealth = healthStore.read()
                     _shareIntents.emit(result.intent)
                     _uiState.update {
                         it.copy(
                             busy = false,
+                            backupHealth = backupHealth,
+                            lastBackupAtEpochMs = backupAt,
                             backupMessage = "Choisissez l’app d’envoi. " +
                                 "Gardez le code ci-dessus sur papier — " +
                                 "ne l’envoyez pas dans le même message que la copie.",
@@ -538,6 +561,10 @@ class SettingsViewModel @Inject constructor(
         val offMonth: List<OffMonthPeriodic>,
         val shareCode: String?,
         val migrationFailed: Boolean,
-        val remindersBlocked: Boolean
+        val remindersBlocked: Boolean,
+        val backupHealth: BackupHealth,
+        val lastBackupAtEpochMs: Long?,
+        val themePreference: ThemePreference,
+        val biometricEnabled: Boolean,
     )
 }

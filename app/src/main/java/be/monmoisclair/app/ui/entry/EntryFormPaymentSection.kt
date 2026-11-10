@@ -33,7 +33,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.QuietLinkA11y
+import be.monmoisclair.app.ui.settings.PracticalContextTips
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
@@ -137,6 +139,7 @@ internal fun EntryFormPaymentSection(
                     )
                 }
                 if (onCopyPaymentNote != null && paymentNote.isNotBlank()) {
+                    CarnetTipCard(text = PracticalContextTips.CLIPBOARD_IBAN)
                     QuietLinkA11y(
                         text = "Copier la communication",
                         onClick = onCopyPaymentNote

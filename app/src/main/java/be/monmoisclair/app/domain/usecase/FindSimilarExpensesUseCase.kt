@@ -17,7 +17,9 @@ class FindSimilarExpensesUseCase @Inject constructor(
         label: String,
         amountCents: Long,
         dayOfMonth: Int,
-        causeLabel: String = ""
+        causeLabel: String = "",
+        /** Ligne en cours d’édition — ne pas compter comme doublon d’elle-même. */
+        excludeExpenseId: String? = null
     ): List<SimilarExpenseMatcher.Match> {
         val candidate = SimilarExpenseMatcher.Candidate(
             label = label,
@@ -26,6 +28,7 @@ class FindSimilarExpensesUseCase @Inject constructor(
             creditorHint = causeLabel
         )
         return instanceDao.getExpensesForLedger(ledgerId).mapNotNull { row ->
+            if (excludeExpenseId != null && row.id == excludeExpenseId) return@mapNotNull null
             val hint = row.templateId?.let { templateDao.getExpenseById(it)?.causeLabel }.orEmpty()
             val other = SimilarExpenseMatcher.Candidate(
                 label = row.label,

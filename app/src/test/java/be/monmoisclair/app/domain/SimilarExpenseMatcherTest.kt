@@ -48,6 +48,7 @@ class SimilarExpenseMatcherTest {
         val body = SimilarExpenseMatcher.confirmDialogBody(
             SimilarExpenseMatcher.Match("Loyer", 12, 80_000L)
         )
+        assertThat(body).contains("même facture")
         assertThat(body).contains("Loyer")
         assertThat(body).contains("jour 12")
         assertThat(body).contains("quand même")
