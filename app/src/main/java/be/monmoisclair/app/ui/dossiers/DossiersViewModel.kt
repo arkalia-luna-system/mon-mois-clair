@@ -41,6 +41,15 @@ data class DossiersUiState(
     val summaryMessageError: Boolean = false
 )
 
+internal const val DOSSIERS_REFRESH_FAILED =
+    "Les dossiers n’ont pas pu être relus."
+
+internal fun dossiersRefreshFailedState(state: DossiersUiState): DossiersUiState = state.copy(
+    loading = false,
+    summaryMessage = DOSSIERS_REFRESH_FAILED,
+    summaryMessageError = true
+)
+
 @HiltViewModel
 class DossiersViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
@@ -66,23 +75,28 @@ class DossiersViewModel @Inject constructor(
     fun refresh() {
         val loadId = refreshCoordinator.startLoad()
         viewModelScope.launch {
-            val previous = _state.value
-            val firstPaint =
-                previous.snapshot.items.isEmpty() && previous.pendingLetters.isEmpty()
-            // Ne pas vider la liste (spinner plein écran) à chaque ON_RESUME :
-            // sinon micro-saut quand on revient d’une fiche / du multitâche.
-            if (firstPaint) {
-                _state.update { it.copy(loading = true) }
-            }
-            val snap = listDossiers()
-            val pending = listPendingLetters()
-            if (refreshCoordinator.isStale(loadId)) return@launch
-            _state.update {
-                it.copy(
-                    loading = false,
-                    snapshot = snap,
-                    pendingLetters = pending
-                )
+            try {
+                val previous = _state.value
+                val firstPaint =
+                    previous.snapshot.items.isEmpty() && previous.pendingLetters.isEmpty()
+                // Ne pas vider la liste (spinner plein écran) à chaque ON_RESUME :
+                // sinon micro-saut quand on revient d’une fiche / du multitâche.
+                if (firstPaint) {
+                    _state.update { it.copy(loading = true) }
+                }
+                val snap = listDossiers()
+                val pending = listPendingLetters()
+                if (refreshCoordinator.isStale(loadId)) return@launch
+                _state.update {
+                    it.copy(
+                        loading = false,
+                        snapshot = snap,
+                        pendingLetters = pending
+                    )
+                }
+            } catch (_: Exception) {
+                if (refreshCoordinator.isStale(loadId)) return@launch
+                _state.update(::dossiersRefreshFailedState)
             }
         }
     }
