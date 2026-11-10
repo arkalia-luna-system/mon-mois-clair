@@ -86,12 +86,12 @@ fun AppNavHost(
                 onEdit = { id, isExpense ->
                     navController.navigateSingleTop(AppRoute.editEntry(id, isExpense))
                 },
-                onOpenSettings = { navController.navigate(AppRoute.Settings) },
-                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
-                onOpenDossiers = { navController.navigate(AppRoute.Dossiers) },
-                onOpenUpcoming = { navController.navigate(AppRoute.Upcoming) },
-                onOpenSavings = { navController.navigate(AppRoute.SettingsSavings) },
-                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) }
+                onOpenSettings = { navController.navigateSingleTop(AppRoute.Settings) },
+                onOpenHealth = { navController.navigateSingleTop(AppRoute.ReminderHealth) },
+                onOpenDossiers = { navController.navigateSingleTop(AppRoute.Dossiers) },
+                onOpenUpcoming = { navController.navigateSingleTop(AppRoute.Upcoming) },
+                onOpenSavings = { navController.navigateSingleTop(AppRoute.SettingsSavings) },
+                onOpenDeadlines = { navController.navigateSingleTop(AppRoute.SettingsDeadlines) }
             )
         }
         composable(AppRoute.Upcoming) {
@@ -142,22 +142,22 @@ fun AppNavHost(
         composable(AppRoute.Settings) {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
-                onOpenAccountGroup = { navController.navigate(AppRoute.SettingsAccountGroup) },
-                onOpenComfortGroup = { navController.navigate(AppRoute.SettingsComfortGroup) },
+                onOpenAccountGroup = { navController.navigateSingleTop(AppRoute.SettingsAccountGroup) },
+                onOpenComfortGroup = { navController.navigateSingleTop(AppRoute.SettingsComfortGroup) },
                 // Aide → Comment ça marche (contact support = Menu Accueil seul).
-                onOpenHelp = { navController.navigate(AppRoute.HowItWorks) },
-                onOpenBackup = { navController.navigate(AppRoute.SettingsBackup) }
+                onOpenHelp = { navController.navigateSingleTop(AppRoute.HowItWorks) },
+                onOpenBackup = { navController.navigateSingleTop(AppRoute.SettingsBackup) }
             )
         }
         composable(AppRoute.SettingsAccountGroup) { entry ->
             val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
             SettingsAccountGroupScreen(
                 onBack = { navController.popBackStack() },
-                onOpenSavings = { navController.navigate(AppRoute.SettingsSavings) },
-                onOpenPrivacy = { navController.navigate(AppRoute.SettingsPrivacy) },
-                onOpenSummary = { navController.navigate(AppRoute.SettingsSummary) },
-                onOpenBackup = { navController.navigate(AppRoute.SettingsBackup) },
-                onOpenDeadlines = { navController.navigate(AppRoute.SettingsDeadlines) },
+                onOpenSavings = { navController.navigateSingleTop(AppRoute.SettingsSavings) },
+                onOpenPrivacy = { navController.navigateSingleTop(AppRoute.SettingsPrivacy) },
+                onOpenSummary = { navController.navigateSingleTop(AppRoute.SettingsSummary) },
+                onOpenBackup = { navController.navigateSingleTop(AppRoute.SettingsBackup) },
+                onOpenDeadlines = { navController.navigateSingleTop(AppRoute.SettingsDeadlines) },
                 viewModel = hiltViewModel(parent)
             )
         }
@@ -165,8 +165,8 @@ fun AppNavHost(
             val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
             SettingsComfortGroupScreen(
                 onBack = { navController.popBackStack() },
-                onOpenAppearance = { navController.navigate(AppRoute.SettingsAppearance) },
-                onOpenHealth = { navController.navigate(AppRoute.ReminderHealth) },
+                onOpenAppearance = { navController.navigateSingleTop(AppRoute.SettingsAppearance) },
+                onOpenHealth = { navController.navigateSingleTop(AppRoute.ReminderHealth) },
                 viewModel = hiltViewModel(parent)
             )
         }
@@ -210,7 +210,7 @@ fun AppNavHost(
             val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
             SettingsSummaryScreen(
                 onBack = { navController.popBackStack() },
-                onOpenDossiers = { navController.navigate(AppRoute.Dossiers) },
+                onOpenDossiers = { navController.navigateSingleTop(AppRoute.Dossiers) },
                 viewModel = hiltViewModel(parent)
             )
         }
@@ -218,8 +218,8 @@ fun AppNavHost(
             val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
             SettingsBackupScreen(
                 onBack = { navController.popBackStack() },
-                onOpenSaf = { navController.navigate(AppRoute.SafSetup) },
-                onOpenRestore = { navController.navigate(AppRoute.RestoreBackup) },
+                onOpenSaf = { navController.navigateSingleTop(AppRoute.SafSetup) },
+                onOpenRestore = { navController.navigateSingleTop(AppRoute.RestoreBackup) },
                 viewModel = hiltViewModel(parent)
             )
         }
@@ -227,7 +227,7 @@ fun AppNavHost(
             val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
             SettingsHelpScreen(
                 onBack = { navController.popBackStack() },
-                onOpenHowItWorks = { navController.navigate(AppRoute.HowItWorks) },
+                onOpenHowItWorks = { navController.navigateSingleTop(AppRoute.HowItWorks) },
                 viewModel = hiltViewModel(parent)
             )
         }

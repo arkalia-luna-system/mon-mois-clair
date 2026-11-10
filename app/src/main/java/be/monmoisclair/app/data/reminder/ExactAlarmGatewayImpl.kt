@@ -27,7 +27,7 @@ class ExactAlarmGatewayImpl @Inject constructor(
     }
 
     override fun schedule(requestCode: Int, triggerAtEpochMs: Long, payload: ReminderPayload) {
-        if (!canScheduleExactAlarms()) {
+        if (ExactAlarmSchedulePolicy.shouldCancelWhenExactPermissionMissing(canScheduleExactAlarms())) {
             // P3-R01 : droit retiré → annuler sans SecurityException qui coupe reconcileAll.
             cancel(requestCode)
             return
@@ -46,8 +46,9 @@ class ExactAlarmGatewayImpl @Inject constructor(
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "alarme exacte refusée code=$requestCode", e)
-            // Ne pas laisser une alarme périmée avec un ancien PendingIntent.
-            cancel(requestCode)
+            if (ExactAlarmSchedulePolicy.shouldCancelAfterScheduleSecurityFailure()) {
+                cancel(requestCode)
+            }
         }
     }
 

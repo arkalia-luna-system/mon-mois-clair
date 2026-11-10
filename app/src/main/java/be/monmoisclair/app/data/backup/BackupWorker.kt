@@ -26,9 +26,8 @@ class BackupWorker @AssistedInject constructor(
                 Result.failure()
             }
         }
-        if (result == Result.success()) {
-            backupScheduler.enqueueFollowUpIfCoalesced()
-        }
+        // Mutations pendant un backup en cours : follow-up même si cette passe a échoué.
+        backupScheduler.enqueueFollowUpIfCoalesced()
         return result
     }
 

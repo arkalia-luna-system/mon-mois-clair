@@ -6,5 +6,6 @@ package be.monmoisclair.app.data.backup
 object BackupEnqueuePolicy {
     fun shouldDeferWhileWorkerRunning(workerRunning: Boolean): Boolean = workerRunning
 
+    /** Y compris après échec du worker : les mutations coalescées doivent encore être reflétées. */
     fun needsFollowUpAfterRun(coalescePending: Boolean): Boolean = coalescePending
 }
