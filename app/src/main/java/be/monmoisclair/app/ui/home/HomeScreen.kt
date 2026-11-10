@@ -61,6 +61,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import be.monmoisclair.app.ui.components.BrandMark
 import be.monmoisclair.app.ui.format.MoneyFormat
+import be.monmoisclair.app.domain.HomeTodayFocus
+import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.imeOpen
@@ -193,6 +195,22 @@ fun HomeScreen(
         // Garde le dialogue ouvert même si le fichier manque (message dans le dialogue).
     }
 
+    val todayFocus = remember(state.timeline, state.selectedYearMonth, state.isFuturePreview) {
+        if (state.isFuturePreview) {
+            HomeTodayFocus.Result(emptyList(), emptyList())
+        } else {
+            val inputs = state.timeline.filterIsInstance<TimelineItem.Expense>().map {
+                HomeTodayFocus.ExpenseInput(
+                    id = it.id,
+                    label = it.label,
+                    dayOfMonth = it.sortDay,
+                    status = if (it.isDone) ExpenseStatus.DONE else ExpenseStatus.TODO
+                )
+            }
+            HomeTodayFocus.compute(inputs, state.selectedYearMonth)
+        }
+    }
+
     val filteredTimeline = remember(state.timeline, searchQuery) {
         val q = searchQuery.trim()
         if (q.isEmpty()) state.timeline
@@ -225,6 +243,7 @@ fun HomeScreen(
             hasExpenses = state.timeline.any { it is TimelineItem.Expense },
             futurePreview = state.isFuturePreview
         ) != null
+        if (todayFocus.hasAction) index += 1
         if (hasStillToPay) index += 1
         if (searchFieldVisible) index += 1
         listState.animateScrollToItem(index)
@@ -267,7 +286,7 @@ fun HomeScreen(
                         .any { it.id == expenseId && it.isAgreement }
                 val result = snackbarHostState.showSnackbar(
                     message = when {
-                        markingDone -> "Noté FAIT"
+                        markingDone -> "Noté FAIT — touchez Annuler si erreur"
                         agreementRemettre ->
                             "Dossier rouvert — les mois suivants peuvent revenir"
                         else -> "Remis à payer"
@@ -514,6 +533,17 @@ fun HomeScreen(
                         }
                     }
                     else -> {
+                        if (todayFocus.hasAction) {
+                            item(key = "today-focus") {
+                                HomeTodayFocusCard(
+                                    focus = todayFocus,
+                                    onShowFirst = {
+                                        todayFocus.firstExpenseId?.let(viewModel::setHighlightExpenseId)
+                                    },
+                                    modifier = Modifier.padding(bottom = 10.dp)
+                                )
+                            }
+                        }
                         // 7.07 : statut factures hors sticky — tête de liste (scroll).
                         stickyStillToPayLabel(
                             stillToPayCents = state.summary.stillToPayCents,

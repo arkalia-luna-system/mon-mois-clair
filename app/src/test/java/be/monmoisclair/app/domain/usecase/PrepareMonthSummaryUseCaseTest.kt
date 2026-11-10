@@ -164,6 +164,49 @@ class PrepareMonthSummaryUseCaseTest {
     }
 
     @Test
+    fun todaySection_includesOverdueAndDueToday() = runBlocking {
+        db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "late",
+                ledgerId = "2026-10",
+                templateId = null,
+                label = "Retard",
+                amountCents = 10_000L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "today",
+                ledgerId = "2026-10",
+                templateId = null,
+                label = "Aujourd'hui",
+                amountCents = 5_000L,
+                dayOfMonth = 15,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val text = prepare(YearMonth.of(2026, 10)).text
+        assertThat(text).contains("Aujourd’hui")
+        assertThat(text).contains("En retard : Retard")
+        assertThat(text).contains("À payer ce jour : Aujourd'hui")
+    }
+
+    @Test
     fun nonDeficit_alwaysShowsResteAndAPayer() = runBlocking {
         db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
         db.instanceDao().insertIncome(

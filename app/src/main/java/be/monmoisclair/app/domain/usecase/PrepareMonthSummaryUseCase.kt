@@ -5,6 +5,7 @@ import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.dao.TemplateDao
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.EuroFormat
+import be.monmoisclair.app.domain.HomeTodayFocus
 import be.monmoisclair.app.domain.MonthSummaryCalculator
 import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
@@ -64,6 +65,30 @@ class PrepareMonthSummaryUseCase @Inject constructor(
             .sumOf { it.amountCents }
         if (doneCents > 0L) {
             sb.appendLine("FAIT : ${EuroFormat.formatCents(doneCents)}")
+        }
+        val today = AppClock.today()
+        if (HomeTodayFocus.forCurrentMonth(yearMonth, today)) {
+            val focusInputs = expenses
+                .asSequence()
+                .filter { exp ->
+                    val tid = exp.templateId
+                    tid == null || tid != savingsId
+                }
+                .map {
+                    HomeTodayFocus.ExpenseInput(
+                        id = it.id,
+                        label = it.label,
+                        dayOfMonth = it.dayOfMonth,
+                        status = it.status,
+                        amountCents = it.amountCents
+                    )
+                }
+                .toList()
+            val focus = HomeTodayFocus.compute(focusInputs, yearMonth, today, ledgerId)
+            if (focus.hasAction) {
+                sb.appendLine()
+                HomeTodayFocus.summarySectionLines(focus, today).forEach { sb.appendLine(it) }
+            }
         }
         sb.appendLine()
 

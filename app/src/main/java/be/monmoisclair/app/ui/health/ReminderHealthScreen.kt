@@ -35,6 +35,7 @@ import be.monmoisclair.app.ui.components.CarnetTipCard
 import be.monmoisclair.app.ui.components.PinnedBackScaffold
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.settings.DeviceCareCopy
+import be.monmoisclair.app.ui.settings.PracticalContextTips
 import be.monmoisclair.app.ui.settings.SettingsHubCopy
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
@@ -61,6 +62,7 @@ fun ReminderHealthScreen(
     PinnedBackScaffold(onBack = onBack) {
         CarnetPageTitle(SettingsHubCopy.ALERTS)
         CarnetTipCard(text = "Pastilles : le téléphone laisse-t-il sonner ?")
+        CarnetTipCard(text = PracticalContextTips.REMINDER_HEALTH)
         errorMessage?.let { msg ->
             CarnetStateBanner(text = msg, kind = CarnetBannerKind.Error, pad = 12.dp)
         }

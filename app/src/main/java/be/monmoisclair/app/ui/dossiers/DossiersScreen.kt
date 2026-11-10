@@ -24,7 +24,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import be.monmoisclair.app.domain.usecase.DossiersOpenFilter
+import be.monmoisclair.app.domain.usecase.DossiersOpenFilterLogic
+import be.monmoisclair.app.ui.settings.PracticalContextTips
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -169,9 +173,16 @@ fun DossiersScreen(
         }
 
         if (snap.items.isNotEmpty()) {
+            var openFilter by rememberSaveable { mutableStateOf(DossiersOpenFilter.ALL) }
             val openItems = snap.items.filter { !it.isSettled }
+            val filteredOpen = openItems.filter { DossiersOpenFilterLogic.matches(it, openFilter) }
             val settledItems = snap.items.filter { it.isSettled }
             if (openItems.isNotEmpty()) {
+                DossiersFilterRow(
+                    selectedFilter = openFilter,
+                    onSelect = { openFilter = it }
+                )
+                CarnetTipCard(text = PracticalContextTips.DOSSIERS_FILTER)
                 val kpi = buildString {
                     append(
                         if (openItems.size == 1) "1 accord" else "${openItems.size} accords"
@@ -205,8 +216,14 @@ fun DossiersScreen(
                         .semantics { contentDescription = kpi }
                 )
                 DossierSectionHeader("En cours")
+                if (filteredOpen.isEmpty() && openFilter != DossiersOpenFilter.ALL) {
+                    CarnetTipCard(
+                        text = "Rien dans « ${DossiersOpenFilterLogic.chipLabel(openFilter)} ». " +
+                            "Essayez Tous."
+                    )
+                }
                 Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
-                    openItems.forEach { item ->
+                    filteredOpen.forEach { item ->
                         DossierRow(
                             item = item,
                             onClick = {
@@ -278,6 +295,9 @@ fun DossiersScreen(
                 .fillMaxWidth()
                 .padding(bottom = if (fit.compactHomeChrome) 4.dp else 6.dp)
         )
+        if (pending.isNotEmpty()) {
+            CarnetTipCard(text = PracticalContextTips.PENDING_LETTERS)
+        }
         if (pending.isEmpty()) {
             CarnetTipCard(text = "Aucun pour le moment.")
         } else {

@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.39** retours testeur senior — 464 pass / 465 exécutés, versionCode 145 |
+| Dernière étape terminée | **7.40** praticité focus jour / Dossiers / résumé — **471** pass, **1** skipped, versionCode **146** |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia (7.39) |
+| Prochaine sous-étape | Smoke doigt Athalia (focus jour + filtre Dossiers) |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.40 praticité focus jour + Dossiers + résumé famille
+
+**Contexte :** agent parallèle — features additives (hors lot 7.39 EntryForm / doublons / mensualités).
+
+**Ajouts :**
+- **Accueil — Pour aujourd’hui** : bandeau retard + échéance du jour, lien **Voir** (scroll 1ʳᵉ ligne)
+- **FAIT** : snackbar « Noté FAIT — touchez Annuler si erreur »
+- **Dossiers** : filtre Tous / **À traiter** / Ce mois + tips courriers / filtres
+- **Résumé texte/PDF** : section « Aujourd’hui » (retard + à payer ce jour) pour partage famille
+- **Alertes** : tip 10 h / retard
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **471** pass, **1** skipped, **0** failure (**105** XML).  
+**Version :** `0.1.0-7.40` · `versionCode` **146**.  
+**Ship :** `develop` (agent parallèle). **Pas** Production.
 
 ### 2026-11-10 — 7.39 retours testeur senior (case mois suivants, doublons, mensualités)
 
