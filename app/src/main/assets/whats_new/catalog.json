@@ -142,6 +142,14 @@
         "Si une facture mensuelle devient ponctuelle, ses anciennes photos ou PDF inutiles partent aussi.",
         "Le ménage des fichiers liés a été renforcé pour éviter les restes cachés."
       ]
+    },
+    {
+      "versionCode": 163,
+      "bullets": [
+        "Réglages : le rafraîchissement se débloque mieux après un raté local.",
+        "L’écran « Nouveautés » a été relu pour aller plus vite au concret.",
+        "Le reste du lot est surtout une petite fiabilisation interne de fin de journée."
+      ]
     }
   ]
 }

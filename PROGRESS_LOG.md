@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.56** nettoyage reçus orphelins / chaîne locale verte — **557** pass, **1** skipped, versionCode **162** |
+| Dernière étape terminée | **7.57** refresh réglages débloqué / Nouveautés relues — **558** pass, **1** skipped, versionCode **163** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -20,6 +20,19 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.57 refresh réglages débloqué / Nouveautés relues
+
+**Contexte :** un dernier commit local au-dessus de `7.56` pour stopper un refresh réglages qui pouvait rester coincé et rendre l’écran « Nouveautés » plus direct côté utilisateur.
+
+**Corrigé :**
+- `SettingsViewModel` : le refresh retombe correctement même après un échec local au lieu de rester bloqué
+- `SettingsViewModelTest` : couverture ajoutée sur ce chemin pour verrouiller le comportement
+- `whats_new/catalog.json` : textes utilisateur relus / resserrés pour rester plus clairs à l’ouverture
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **558** pass, **1** skipped, **0** failure (**136** XML).  
+**Version :** `0.1.0-7.57` · `versionCode` **163**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.56 nettoyage reçus orphelins / chaîne locale verte
 
