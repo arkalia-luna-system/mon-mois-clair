@@ -1,6 +1,6 @@
 # Docs — Mon Mois Clair
 
-Index **actif** (~7.61). Les vieux audits/captures restent archivés localement si besoin, mais ne font plus partie du socle vivant.
+Index **actif** (7.61). Vieux audits détaillés : [`archive/README.md`](archive/README.md).
 
 ## Vivant (à jour)
 
@@ -19,7 +19,8 @@ Index **actif** (~7.61). Les vieux audits/captures restent archivés localement 
 | [`WHATS_NEW.md`](WHATS_NEW.md) | Catalogue Nouveautés (`catalog.json`) |
 | [`privacy.html`](privacy.html) | Politique HTTPS (GitHub Pages `/docs`) |
 | [`CI.md`](CI.md) | CI + Dependabot Security |
-| [`audits/2026-11-05-matrice-audits-7.33.md`](audits/2026-11-05-matrice-audits-7.33.md) | Matrice audits FAIT / PARTIEL / NON FAIT / OBSOLÈTE |
+| [`audits/2026-11-09-matrice-audits-7.35.md`](audits/2026-11-09-matrice-audits-7.35.md) | Matrice audits courante (7.35) |
+| [`audits/2026-11-09-plan-dettes-clarte-photo-mail.md`](audits/2026-11-09-plan-dettes-clarte-photo-mail.md) | Plan craft 7.35 (clos) |
 | [`audits/2026-11-05-smoke-checklist-7.24.md`](audits/2026-11-05-smoke-checklist-7.24.md) | Checklist smoke doigt Athalia |
 | [`audits/2026-11-02-visual-expert-10.md`](audits/2026-11-02-visual-expert-10.md) | Craft kit PNG · notes 7.15 |
 
@@ -28,7 +29,7 @@ Index **actif** (~7.61). Les vieux audits/captures restent archivés localement 
 | Fichier | Rôle |
 |---------|------|
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Play Internal + sideload secours |
-| [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy (checklist) |
+| [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy (checklist historique) |
 | [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème apps 2026 (suivre journal) |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) | Contrib courte |
@@ -39,11 +40,11 @@ Index **actif** (~7.61). Les vieux audits/captures restent archivés localement 
 |--------|------|
 | Règles produit / UI / étapes | **Charte** |
 | Ce qui a été codé aujourd’hui | **Journal** |
-| Inventaire audits (fait / reste) | **matrice-audits-7.33** |
+| Inventaire audits (fait / reste) | **matrice-audits-7.35** |
 | Craft brand / kit 7.15 | **visual-expert-10** |
 | Smoke téléphone | **AUDIT_STATUS** + **smoke-checklist** (NOTICE) |
 | Brief famille / Play / APK | **NOTICE** + **PLAY_INTERNAL** + **DISTRIBUTION** + **IN_APP_UPDATES** |
-| Audits thématiques / expert / premium | archives locales historiques (hors socle vivant) |
+| Traces datées résolues | **`archive/`** |
 
 ## Local (hors git utile)
 
@@ -52,9 +53,9 @@ Index **actif** (~7.61). Les vieux audits/captures restent archivés localement 
 | `dist/MonMoisClair-release.aab` | AAB Play Internal (gitignoré) |
 | `dist/MonMoisClair-release.apk` | APK sideload secours (gitignoré) |
 | `dist/verify/` | RESET + README tracked ; captures **locales** gitignorées |
-| `docs/audits/smoke/` | PNG/XML device **gitignorés** (PII) |
+| `docs/audits/smoke/` | PNG/XML device **gitignorés** (PII), dossier optionnel |
 | `docs/audits/assets/brand-7.15/` | Kit PNG/JPG versionné (vitrine README) |
 
 ## Archive
 
-Les anciens audits détaillés, captures de passage et campagnes ponctuelles peuvent être rangés ou supprimés quand ils ne servent plus au ship courant. Le socle vivant ci-dessus fait foi.
+Voir [`archive/README.md`](archive/README.md).

@@ -2,8 +2,8 @@
 
 **Version / tests vivants :** lire [`PROGRESS_LOG.md`](../PROGRESS_LOG.md) et le README (ne pas figer un `versionName` ici).  
 Lots visuels 6.16 → 6.28 **clos côté code**. Tables ci-dessous = historique smoke Galaxy (figé).  
-Dossiers / accords (figé) : [`archive/AUDIT_ALEX_MAMAN_2026-10-21.md`](archive/AUDIT_ALEX_MAMAN_2026-10-21.md) §8.  
-Punch list visuelle : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (figée).
+Dossiers / accords : lots A→F **clos** — charte §3–4 · journal 6.30–6.42.  
+Punch list visuelle 6.16→6.28 : **clos côté code** (table ci-dessous = historique smoke).
 
 **Contact support (6.75) :** Menu Accueil QuietLink « Un souci ? Écrire à Arkalia Système » — **pas** dans Réglages / Aide.
 
@@ -19,7 +19,7 @@ Punch list visuelle : [`archive/AUDIT_PREMIUM.md`](archive/AUDIT_PREMIUM.md) (fi
 | 6.36 + hauteur Accord / FAIT | ✅ smoke Ultra 2026-10-21 |
 | Hauteur courte type S26 | ✅ sim. 360×780 dp + texte 1,3 (2026-10-21) |
 | 6.43–6.55 | ✅ code. Smoke S25 du 2026-10-22 : accueil nuit, widget, OCR, PDF. Photo loyer3 : revalider après 6.54/6.55. S26 : pas encore |
-| 6.78 | ✅ code + smoke S25 **partiel** adb — [`archive/audits-2026-10-23/2026-10-23-smoke-device.md`](archive/audits-2026-10-23/2026-10-23-smoke-device.md). S26 / notif / widget doigt : ouverts |
+| 6.78 | ✅ code + smoke S25 **partiel** adb (synthèse journal 6.78). S26 / notif / widget doigt : ouverts |
 | 6.79 | ✅ P0 widget One UI — `View`→`ImageView` + serif système · validé SM-S938B (Reste visible) |
 | 6.80 | ✅ Dependabot force (netty/bc/jdom/jose4j/…) · widget polish · P1 H01/F01/D01 code |
 | 6.81 | ✅ Crypto local (SQLCipher · MMC1 · MRF1 · CryptoObject) — smoke doigt restore **ouvert** |

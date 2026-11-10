@@ -7,5 +7,4 @@
 **Ne pas committer :** APK, dumps png/xml/json, rapports bruts (`RAPPORT_*.md` ignorés).  
 Les conclusions utiles vont dans `docs/AUDIT_STATUS.md` / `PROGRESS_LOG.md`.
 
-Anciens rapports 2026-10-20 : [`docs/archive/campagnes-2026-10-20/`](../docs/archive/campagnes-2026-10-20/).  
-Checklist S25 du 19 oct : [`docs/archive/CHECKLIST_S25_2026-10-19.md`](../docs/archive/CHECKLIST_S25_2026-10-19.md).
+Anciennes campagnes / checklists archivées : hors dépôt git — conclusions dans [`docs/AUDIT_STATUS.md`](../docs/AUDIT_STATUS.md) et [`PROGRESS_LOG.md`](../PROGRESS_LOG.md).

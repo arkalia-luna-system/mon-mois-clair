@@ -70,7 +70,7 @@ Room / backup schéma **8** (étape 6.38) : … + `pending_letters` (7) + `expen
 
 ## 4. Plan (étapes)
 
-Détail lots A→F : [`docs/archive/PLAN_PRODUIT_FINI.md`](docs/archive/PLAN_PRODUIT_FINI.md). État vivant : [`docs/PLAN_PRODUIT_FINI.md`](docs/PLAN_PRODUIT_FINI.md). Journal : `PROGRESS_LOG.md`.
+Lots A→F **clos** (tableau ci-dessous) · journal détaillé : [`PROGRESS_LOG.md`](PROGRESS_LOG.md) · matrice audits : [`docs/audits/2026-11-09-matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md).
 
 | Étape | Contenu | État |
 |-------|---------|------|

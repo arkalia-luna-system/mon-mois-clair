@@ -1,3 +1,5 @@
+> **ARCHIVÉ** 2026-11-10 — remplacé par [`../audits/2026-11-09-matrice-audits-7.35.md`](../audits/2026-11-09-matrice-audits-7.35.md). Ne plus lire pour l’état courant.
+
 # Matrice audits → statut code (7.33)
 
 **Date :** 2026-11-05 · **Base :** `0.1.0-7.32` → ship `0.1.0-7.33`  

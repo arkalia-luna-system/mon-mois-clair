@@ -12,7 +12,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Dernière étape terminée | **7.61** post-smoke UX clarifié — **563** pass, **1** skipped, versionCode **167** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
-| Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
+| Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · [`smoke-checklist`](docs/audits/2026-11-05-smoke-checklist-7.24.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
 Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas contredire l’état global).
@@ -30,6 +30,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 - accueil et menu : `Epargne`, `Dossiers`, `Aide`, badges et états vides rendus plus explicites
 - mois futur / aide `FAIT` / copies seniors : textes simplifiés pour réduire la charge cognitive
 - backlog `post-smoke` clos puis archivé comme trace unique ; vieux docs non vivants laissés supprimés
+- ménage `docs/` : index + `archive/README` · matrice 7.33 archivée · liens vivants sans archives hors git
 
 **Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **563** pass, **1** skipped, **0** failure (**137** XML).  
 **Version :** `0.1.0-7.61` · `versionCode` **167**.  
@@ -403,7 +404,7 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Contexte :** Athalia — vérifier tous points audits · UI/fonc expert · nettoyer MD · base 7.32 `84a4f1d`.
 
-**Matrice :** [`docs/audits/2026-11-05-matrice-audits-7.33.md`](docs/audits/2026-11-05-matrice-audits-7.33.md) — lots craft **FAIT** ; smoke S26 / restore papier / notif **NON FAIT** (Athalia) ; brand-7.14 / passage-final **OBSOLÈTE** archivés.
+**Matrice :** [`docs/archive/2026-11-05-matrice-audits-7.33.md`](docs/archive/2026-11-05-matrice-audits-7.33.md) — lots craft **FAIT** ; smoke S26 / restore papier / notif **NON FAIT** (Athalia) ; brand-7.14 / passage-final **OBSOLÈTE** archivés.
 
 **Corrigé (expert) :**
 - Widget erreur lecture → `CarnetWidgetText.unavailable()` (« — » + ligne FR, pas faux verrou bio)

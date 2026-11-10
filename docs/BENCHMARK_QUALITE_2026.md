@@ -1,9 +1,9 @@
 # Benchmark qualité — Mon Mois Clair face aux apps 2026
 
-Date : 2026-10-26 (barème) · **état code vivant : lire `PROGRESS_LOG` (7.33+)**.  
-Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) · [`PRIVACY.md`](../PRIVACY.md).  
+Date : 2026-10-26 (barème) · **état code vivant : lire `PROGRESS_LOG` (7.61+)**.  
+Décisions vivantes : [`CHARTE_ET_ARCHITECTURE.md`](../CHARTE_ET_ARCHITECTURE.md) · [`PRIVACY.md`](../PRIVACY.md).  
 Smokes : [`AUDIT_STATUS.md`](AUDIT_STATUS.md) · checklist [`audits/2026-11-05-smoke-checklist-7.24.md`](audits/2026-11-05-smoke-checklist-7.24.md).  
-Matrice audits : [`audits/2026-11-05-matrice-audits-7.33.md`](audits/2026-11-05-matrice-audits-7.33.md). Lots A→F (archive) : [`archive/PLAN_PRODUIT_FINI.md`](archive/PLAN_PRODUIT_FINI.md).
+Matrice audits : [`audits/2026-11-09-matrice-audits-7.35.md`](audits/2026-11-09-matrice-audits-7.35.md).
 
 | Statut | Contenu |
 |--------|---------|
@@ -11,7 +11,7 @@ Matrice audits : [`audits/2026-11-05-matrice-audits-7.33.md`](audits/2026-11-05-
 | **Pas fait (doigt)** | S26 en main · restore code papier · notif réelle · TalkBack device · claim « 10/10 dans la main » |
 | **Fait (archi partielle)** | Scission Home/Entry · `EntryFormUiModel`s · DraftController OCR/EPC · SettingsPages — twin Add/Edit load volontairement séparés |
 
-Ce n’est pas un plan à coder. Feedback famille (figé) : [`archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md`](archive/FEEDBACK_TEST_FAMILLE_2026-10-21.md).
+Ce n’est pas un plan à coder. Retours famille : voir entrées 6.37–6.42 dans [`PROGRESS_LOG.md`](../PROGRESS_LOG.md).
 
 ---
 
@@ -60,7 +60,7 @@ Typo : voir charte **§4bis** (PageTitle InkMuted ≠ HubRow Ink).
 
 ## 4. Ce qui reste au doigt
 
-Prochain geste : [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md). Smoke : [`AUDIT_STATUS.md`](AUDIT_STATUS.md).
+Prochain geste : champ « Prochaine sous-étape » dans [`PROGRESS_LOG.md`](../PROGRESS_LOG.md). Smoke : [`AUDIT_STATUS.md`](AUDIT_STATUS.md).
 
 | Note technique | |
 |----------------|--|
