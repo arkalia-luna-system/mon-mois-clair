@@ -1,14 +1,17 @@
 package be.monmoisclair.app.domain.usecase
 
+import android.content.Context
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.data.db.entity.ExpenseFeeEventEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
+import be.monmoisclair.app.data.receipt.ReceiptLocalFiles
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.MonthDayClamp
 import be.monmoisclair.app.domain.PaymentNotePolicy
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.YearMonth
 import java.util.UUID
 import javax.inject.Inject
@@ -22,6 +25,7 @@ sealed class UpdateInstanceResult {
 
 @Singleton
 class UpdateInstanceUseCase @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val instanceDao: InstanceDao,
     private val mutatingRepository: MutatingRepository
 ) {
@@ -99,6 +103,7 @@ class UpdateInstanceUseCase @Inject constructor(
             sideEffectsWhen = { it is UpdateInstanceResult.Success }
         ) {
             if (isExpense) {
+                val localReceiptPathsToDelete = mutableListOf<String>()
                 var current = instanceDao.getExpenseById(id)
                     ?: return@mutate UpdateInstanceResult.NotFound
                 val ym = YearMonth.parse(current.ledgerId)
@@ -107,6 +112,9 @@ class UpdateInstanceUseCase @Inject constructor(
                 val freezeDone = keepDoneAmount && current.status == ExpenseStatus.DONE
                 val lineAmount = if (freezeDone) current.amountCents else amountCents
                 val lineDay = if (freezeDone) current.dayOfMonth else clamped
+                if (clearReceipt && current.templateId == null) {
+                    localReceiptPathsToDelete += current.receiptRelativePath
+                }
                 val receipt = when {
                     clearReceipt -> ""
                     receiptRelativePath.isBlank() -> current.receiptRelativePath
@@ -312,6 +320,9 @@ class UpdateInstanceUseCase @Inject constructor(
                             monthLedgerDao = monthLedgerDao
                         )
                     }
+                }
+                localReceiptPathsToDelete.forEach { raw ->
+                    ReceiptLocalFiles.deleteUnder(appContext.filesDir, raw)
                 }
             } else {
                 val current = instanceDao.getIncomeById(id)

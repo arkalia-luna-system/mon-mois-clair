@@ -54,7 +54,7 @@ class UpdateDeleteEntryUseCaseTest {
             },
             widgetSink = CarnetWidgetSink.Noop
         )
-        update = UpdateInstanceUseCase(db.instanceDao(), repo)
+        update = UpdateInstanceUseCase(appContext, db.instanceDao(), repo)
         delete = DeleteInstanceUseCase(
             appContext = appContext,
             instanceDao = db.instanceDao(),
@@ -386,6 +386,47 @@ class UpdateDeleteEntryUseCaseTest {
             .isEqualTo("")
         assertThat(db.templateDao().getExpenseById("tpl-photo")!!.receiptRelativePath)
             .isEqualTo("receipts/modele.webp")
+    }
+
+    @Test
+    fun update_clearReceipt_oneOffDeletesLocalReceiptFile() = runBlocking {
+        if (db.monthLedgerDao().getById("2026-10") == null) {
+            db.monthLedgerDao().insert(MonthLedgerEntity("2026-10", "2026-10", createdAtEpochMs = 1L))
+        }
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp-oneoff-photo",
+                ledgerId = "2026-10",
+                templateId = null,
+                label = "Taxe",
+                amountCents = 10_000L,
+                dayOfMonth = 15,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                receiptRelativePath = "receipts/oneoff.webp",
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+        val receiptsDir = java.io.File(appContext.filesDir, "receipts").apply { mkdirs() }
+        java.io.File(receiptsDir, "oneoff.webp").writeText("oneoff")
+
+        val result = update(
+            id = "exp-oneoff-photo",
+            isExpense = true,
+            label = "Taxe",
+            amountCents = 10_000L,
+            dayOfMonth = 15,
+            applyToFollowingMonths = false,
+            clearReceipt = true
+        )
+
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp-oneoff-photo")!!.receiptRelativePath).isEmpty()
+        assertThat(java.io.File(receiptsDir, "oneoff.webp").exists()).isFalse()
     }
 
     /** Lot C : remplacer / ajouter des courriers en plus sur le modèle. */
