@@ -42,6 +42,18 @@ class MonthSummaryPdfShareTest {
     }
 
     @Test
+    fun prepareTarget_recreatesShareDir_whenAFileBlocksIt() {
+        val cache = tmp.newFolder("cache")
+        val blocked = MonthSummaryPdfShare.shareDir(cache)
+        blocked.writeText("not-a-dir")
+
+        val out = MonthSummaryPdfShare.prepareTarget(cache)
+
+        assertThat(blocked.isDirectory).isTrue()
+        assertThat(out.parentFile).isEqualTo(blocked)
+    }
+
+    @Test
     fun wipeShareCache_removesPdfsAndMmc() {
         val cache = tmp.newFolder("cache")
         val dir = MonthSummaryPdfShare.shareDir(cache).also { it.mkdirs() }

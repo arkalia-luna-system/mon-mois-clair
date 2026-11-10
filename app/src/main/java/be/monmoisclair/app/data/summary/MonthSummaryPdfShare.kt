@@ -30,7 +30,13 @@ object MonthSummaryPdfShare {
      * N’écrit pas encore le PDF — l’appelant (session déjà unlock) appelle le writer.
      */
     fun prepareTarget(cacheDir: File, nowEpochMs: Long = System.currentTimeMillis()): File {
-        val dir = shareDir(cacheDir).also { it.mkdirs() }
+        val dir = shareDir(cacheDir)
+        if (dir.isFile) {
+            dir.delete()
+        }
+        if (!dir.isDirectory && !dir.mkdirs() && !dir.isDirectory) {
+            error("Impossible de préparer ${dir.absolutePath}")
+        }
         purgeStale(dir, nowEpochMs)
         val out = File(dir, FILE_NAME)
         if (out.isDirectory) {

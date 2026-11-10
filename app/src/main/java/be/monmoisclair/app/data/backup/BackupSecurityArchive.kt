@@ -35,7 +35,14 @@ object BackupSecurityArchive {
         jsonUtf8: String,
         receipts: Map<String, ByteArray>
     ): Packed {
-        outFile.parentFile?.mkdirs()
+        outFile.parentFile?.let { parent ->
+            if (parent.isFile) {
+                parent.delete()
+            }
+            if (!parent.isDirectory && !parent.mkdirs() && !parent.isDirectory) {
+                throw BackupFailure.Io("Impossible de préparer le dossier de partage.")
+            }
+        }
         if (outFile.isDirectory) {
             outFile.deleteRecursively()
         } else if (outFile.exists()) {

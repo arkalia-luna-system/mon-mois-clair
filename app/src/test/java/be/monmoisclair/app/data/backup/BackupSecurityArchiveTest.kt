@@ -97,6 +97,18 @@ class BackupSecurityArchiveTest {
     }
 
     @Test
+    fun packToFile_recreatesBlockedParentDirectory() {
+        val blockedParent = tmp.newFile("blocked-parent")
+        val out = java.io.File(blockedParent, "pack.zip")
+
+        val packed = BackupSecurityArchive.packToFile(out, """{"schemaVersion":8}""", emptyMap())
+
+        assertThat(blockedParent.isDirectory).isTrue()
+        assertThat(out.isFile).isTrue()
+        assertThat(packed.totalBytes).isGreaterThan(0L)
+    }
+
+    @Test
     fun readBounded_rejects_over_limit() {
         val input = ByteArrayInputStream(ByteArray(100) { 1 })
         assertThrows(BackupFailure.Io::class.java) {
