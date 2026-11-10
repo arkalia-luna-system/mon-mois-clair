@@ -53,7 +53,7 @@ class MutatingRepositoryTest {
                 override suspend fun cancelFor(expenseId: String) = Unit
             },
             widgetSink = object : CarnetWidgetSink {
-                override fun refresh() {
+                override suspend fun refresh() {
                     widgetRefreshCalls.incrementAndGet()
                 }
             }
@@ -208,7 +208,7 @@ class MutatingRepositoryTest {
                 override suspend fun cancelFor(expenseId: String) = Unit
             },
             widgetSink = object : CarnetWidgetSink {
-                override fun refresh() {
+                override suspend fun refresh() {
                     widgetRefreshCalls.incrementAndGet()
                 }
             }

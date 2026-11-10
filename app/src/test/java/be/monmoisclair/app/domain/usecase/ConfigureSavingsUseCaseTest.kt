@@ -154,6 +154,13 @@ class ConfigureSavingsUseCaseTest {
         seedMonthWithIncomeAndRent()
         assertThat(configure.save(5_000L, 10)).isEqualTo(ConfigureSavingsResult.Saved)
         val templateId = db.appMetaDao().get(AppMetaKeys.SAVINGS_TEMPLATE_ID)?.value.orEmpty()
+        db.monthLedgerDao().insert(
+            MonthLedgerEntity(
+                id = "bad-ledger",
+                yearMonth = "bad-ledger",
+                createdAtEpochMs = 1L
+            )
+        )
         db.instanceDao().insertExpense(
             ExpenseInstanceEntity(
                 id = "exp-bad-ledger",

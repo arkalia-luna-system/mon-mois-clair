@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.54** copies biométrie / restauration / pending letter — **547** pass, **1** skipped, versionCode **160** |
+| Dernière étape terminée | **7.55** a11y destructif / refresh widget / chaîne réparée — **550** pass, **1** skipped, versionCode **161** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.55 a11y destructif / refresh widget / chaîne réparée
+
+**Contexte :** après 7.54 poussé trop tôt — la chaîne locale a continué d’avancer et a exigé un re-bouclage build unique.
+
+**Corrigé :**
+- actions destructives : labels TalkBack ajoutés pour mieux annoncer le risque
+- refresh widget : relancé même après certains side-effects en échec
+- tests alignés sur les nouvelles signatures / copies (`MutatingRepositoryTest`, `ConfigureSavingsUseCaseTest`, restore copy)
+- chaîne Git T7 reprise jusqu’au `HEAD` réellement vert avant repush
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **550** pass, **1** skipped, **0** failure (**132** XML).  
+**Version :** `0.1.0-7.55` · `versionCode` **161**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.54 copies biométrie / restauration / pending letter
 

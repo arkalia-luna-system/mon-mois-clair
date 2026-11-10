@@ -127,6 +127,15 @@
         "Courrier en attente : photo et enregistrement signalent mieux ce qui a bloqué.",
         "Le lot inclut aussi des filets de build pour éviter les faux fichiers parasites sur volume externe."
       ]
+    },
+    {
+      "versionCode": 161,
+      "bullets": [
+        "Actions sensibles : les boutons destructifs sont mieux annoncés pour TalkBack.",
+        "Accueil / widget : certains rafraîchissements se rattrapent mieux après une erreur annexe.",
+        "Quelques textes techniques autour de l’épargne et de la restauration ont été clarifiés.",
+        "La chaîne locale de tests a aussi été réparée pour refléter le vrai comportement attendu."
+      ]
     }
   ]
 }
