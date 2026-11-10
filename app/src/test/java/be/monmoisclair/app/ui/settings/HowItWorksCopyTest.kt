@@ -23,7 +23,7 @@ class HowItWorksCopyTest {
         assertThat(titles.indexOf("Sauvegarde")).isLessThan(titles.indexOf("Courses"))
         val all = HowItWorksCopy.sections.joinToString("\n") { "${it.title}\n${it.body}" }
         assertThat(all).contains("Reste du mois passé")
-        assertThat(all).contains("Aussi les mois suivants")
+        assertThat(all).contains("Appliquer aussi aux mois suivants")
         assertThat(all).contains("il reste")
         assertThat(all).contains("Après les FAIT")
         assertThat(all).contains("Lire la communication sur la photo")

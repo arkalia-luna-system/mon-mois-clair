@@ -126,6 +126,14 @@ fun AddEntryScreen(
         )
     }
 
+    state.duplicateConfirm?.let { dup ->
+        DuplicateExpenseDialog(
+            body = be.monmoisclair.app.domain.SimilarExpenseMatcher.confirmDialogBody(dup),
+            onCreateAnyway = viewModel::confirmDuplicateAndSave,
+            onDismiss = viewModel::dismissDuplicateConfirm
+        )
+    }
+
     LaunchedEffect(state.saved) { if (state.saved) onDone() }
     // Revenu : plus de photo/PDF — vider aussi l’aperçu Compose local (le VM a déjà clear).
     LaunchedEffect(state.isExpense, state.hasPendingPhoto) {

@@ -68,7 +68,8 @@ internal fun StatusChip(
     container: Color,
     content: Color,
     outlined: Boolean = false,
-    compact: Boolean = false
+    compact: Boolean = false,
+    a11yLabel: String? = null
 ) {
     val shape = StampShape
     // H04 : air vertical pastille ≥ 4 dp même en compact (pas tampon écrasé).
@@ -79,7 +80,7 @@ internal fun StatusChip(
         color = content,
         style = MaterialTheme.typography.labelLarge,
         modifier = Modifier
-            .semantics { contentDescription = "Statut : $text" }
+            .semantics { contentDescription = "Statut : ${a11yLabel ?: text}" }
             .then(
                 if (outlined) {
                     Modifier.border(1.dp, HomeTokens.CardBorder, shape)
@@ -232,7 +233,10 @@ internal fun ExpenseRow(
                                     HomeTokens.Chip,
                                     HomeTokens.InkMuted,
                                     outlined = true,
-                                    compact = true
+                                    compact = true,
+                                    a11yLabel = DossierRemaining.shortPaceChipSpoken(
+                                        item.remainingPayments
+                                    )
                                 )
                             }
                         }

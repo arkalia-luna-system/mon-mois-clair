@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.38** audit expert micro a11y/copy/UX — 457 pass / 458 exécutés, versionCode 144 |
+| Dernière étape terminée | **7.39** retours testeur senior — 464 pass / 465 exécutés, versionCode 145 |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia |
+| Prochaine sous-étape | Smoke doigt Athalia (7.39) |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,24 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.39 retours testeur senior (case mois suivants, doublons, mensualités)
+
+**Contexte :** campagne testeur âgé — case « mois suivants » perçue comme réglage ; doublons de factures ; clarté mensualités.
+
+**Cause / diagnostic :**
+- **Case décochée au retour** : comportement voulu (`applyToFollowing` = choix **à l’enregistrement**, non persisté). La fréquence réelle reste sur le modèle (`Revient tous les mois`…).
+- **Doublons** : pas de bug cycle (`InstanceIds` déterministe) ; risque surtout **double saisie** (même libellé/montant/jour dans le mois).
+
+**Codé :**
+- Fiche édition : bandeau « Cette facture : … » + case renommée **Appliquer aussi aux mois suivants** + phrase explicite (case repart décochée).
+- **Avant création** : dialogue si ligne ressemblante dans le mois (`SimilarExpenseMatcher` / `FindSimilarExpensesUseCase`).
+- Accueil : pastille « encore ~N » — libellé TalkBack complet (« environ N mensualités… »). Décompte dossier inchangé (`pacePhrase` fiche/Dossiers).
+- Aide « Comment ça marche » alignée sur le nouveau libellé.
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **464** pass, **1** skipped, **0** failure (103 XML).  
+**Version :** `0.1.0-7.39` · `versionCode` **145**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-09 — 7.38 audit expert micro a11y / copy / UX
 

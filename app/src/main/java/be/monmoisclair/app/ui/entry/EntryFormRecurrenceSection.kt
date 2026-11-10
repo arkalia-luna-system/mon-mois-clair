@@ -38,7 +38,8 @@ internal fun EntryFormRecurrenceSection(
         CarnetSectionTitle("Fréquence")
         if (showFrequencyEdit) {
             Text(
-                text = "Mois déjà créés : cochez « Aussi les mois suivants ».",
+                text = "Mois déjà créés : cochez « Appliquer aussi aux mois suivants » " +
+                    "lors de l’enregistrement.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()

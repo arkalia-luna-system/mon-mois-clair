@@ -73,6 +73,17 @@ object DossierRemaining {
         return "encore ~$n"
     }
 
+    /** Texte complet pour lecteur d’écran (pastille courte « encore ~N »). */
+    fun shortPaceChipSpoken(remainingPayments: Int?): String? {
+        val n = remainingPayments ?: return null
+        if (n <= 0) return null
+        return if (n == 1) {
+            "environ une mensualité restante"
+        } else {
+            "environ $n mensualités restantes"
+        }
+    }
+
     /**
      * Estimation honnête : « Environ N mensualités » + « Dernière estimée : mois année ».
      * Jamais « fin prévue » certaine. Recalcule même si un FAIT ≠ forfait

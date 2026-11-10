@@ -16,10 +16,12 @@ import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.EpcPayment
 import be.monmoisclair.app.domain.ReceiptPathList
 import be.monmoisclair.app.domain.RecurrenceAnchor
+import be.monmoisclair.app.domain.SimilarExpenseMatcher
 import be.monmoisclair.app.domain.usecase.AddEntryResult
 import be.monmoisclair.app.domain.usecase.AddEntryUseCase
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterResult
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterUseCase
+import be.monmoisclair.app.domain.usecase.FindSimilarExpensesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +56,9 @@ data class EntryFormState(
     val saving: Boolean = false,
     val ocrBusy: Boolean = false,
     val formTitle: String = "Nouvelle facture ou revenu",
-    val targetYearMonth: YearMonth = AppClock.currentYearMonth()
+    val targetYearMonth: YearMonth = AppClock.currentYearMonth(),
+    /** Doublon probable dans ce mois — confirmation avant insert. */
+    val duplicateConfirm: SimilarExpenseMatcher.Match? = null
 ) {
     val needsNextDueMonth: Boolean
         get() = recurrence == RecurrenceChoice.Every3Months || recurrence == RecurrenceChoice.Yearly
@@ -65,6 +69,7 @@ class AddEntryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val appContext: Context,
     private val addEntry: AddEntryUseCase,
+    private val findSimilarExpenses: FindSimilarExpensesUseCase,
     private val createPendingLetter: CreatePendingLetterUseCase,
     private val receiptPhotos: ReceiptPhotoStore,
     private val receiptOcr: ReceiptCommunicationOcr,
@@ -107,6 +112,14 @@ class AddEntryViewModel @Inject constructor(
     fun setAutoDebit(v: Boolean) = _state.update { it.copy(isAutoDebit = v) }
     fun setPaymentNote(v: String) = _state.update {
         it.copy(paymentNote = v, error = null, copyMessage = null)
+    }
+
+    fun dismissDuplicateConfirm() =
+        _state.update { it.copy(duplicateConfirm = null, saving = false) }
+
+    fun confirmDuplicateAndSave() {
+        _state.update { it.copy(duplicateConfirm = null) }
+        save(skipDuplicateCheck = true)
     }
     /** Collapse = annuler : on efface cause / reste pour ne pas créer un dossier par erreur. */
     fun setDossierExpanded(v: Boolean) = _state.update {
@@ -345,9 +358,9 @@ class AddEntryViewModel @Inject constructor(
         }
     }
 
-    fun save() {
+    fun save(skipDuplicateCheck: Boolean = false) {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.saved)) return
-        _state.update { it.copy(saving = true, error = null) }
+        _state.update { it.copy(saving = true, error = null, duplicateConfirm = null) }
         viewModelScope.launch {
             val existingId = createdInstanceId
             if (existingId != null) {
@@ -377,6 +390,28 @@ class AddEntryViewModel @Inject constructor(
             val cents = validated.cents
             val day = validated.day
             val openingCents = validated.openingCents
+            if (
+                s.isExpense &&
+                !skipDuplicateCheck
+            ) {
+                val ledgerId = AppClock.ledgerId(s.targetYearMonth)
+                val similar = findSimilarExpenses.findInLedger(
+                    ledgerId = ledgerId,
+                    label = s.label,
+                    amountCents = cents,
+                    dayOfMonth = day,
+                    causeLabel = if (s.dossierExpanded) s.causeLabel else ""
+                )
+                if (similar.isNotEmpty()) {
+                    _state.update {
+                        it.copy(
+                            saving = false,
+                            duplicateConfirm = similar.first()
+                        )
+                    }
+                    return@launch
+                }
+            }
             val recurring = s.recurrence != RecurrenceChoice.Once
             val interval = EntryFormCore.intervalMonths(s.recurrence)
             val anchor = when {

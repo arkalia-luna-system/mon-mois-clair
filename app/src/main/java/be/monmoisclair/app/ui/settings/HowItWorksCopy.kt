@@ -16,7 +16,8 @@ object HowItWorksCopy {
             body = "Payé : « FAIT ✓ », puis « FAIT le … ». « Remettre » si erreur. " +
                 "Prélèvement : cochez quand vous voyez le débit, pas le jour prévu. " +
                 "Autre montant ce mois : ouvrez la ligne — seul ce mois change, " +
-                "sauf « Aussi les mois suivants »."
+                "sauf si vous cochez « Appliquer aussi aux mois suivants » à l’enregistrement " +
+                "(la case repart décochée à chaque ouverture)."
         ),
         Section(
             title = "Sauvegarde",

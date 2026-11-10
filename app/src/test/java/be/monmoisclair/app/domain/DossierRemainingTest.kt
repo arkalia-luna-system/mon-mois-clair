@@ -74,6 +74,10 @@ class DossierRemainingTest {
         assertThat(steady).doesNotContain("Vers ")
         assertThat(DossierRemaining.remainingPaymentCount(5_000L, 45_000L)).isEqualTo(9)
         assertThat(DossierRemaining.shortPaceChip(9)).isEqualTo("encore ~9")
+        assertThat(DossierRemaining.shortPaceChipSpoken(9))
+            .isEqualTo("environ 9 mensualités restantes")
+        assertThat(DossierRemaining.shortPaceChipSpoken(1))
+            .isEqualTo("environ une mensualité restante")
     }
 
     @Test

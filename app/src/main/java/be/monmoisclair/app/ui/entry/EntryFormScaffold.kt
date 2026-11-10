@@ -49,6 +49,48 @@ import be.monmoisclair.app.ui.theme.imeOpen
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
+internal fun DuplicateExpenseDialog(
+    body: String,
+    onCreateAnyway: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        shape = MaterialTheme.shapes.extraLarge,
+        containerColor = A11yTokens.PaperCard,
+        title = {
+            Text(
+                text = "Une ligne ressemblante existe déjà",
+                color = A11yTokens.Ink
+            )
+        },
+        text = {
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.Ink
+            )
+        },
+        confirmButton = {
+            PrimaryA11yButton(
+                text = "Créer quand même",
+                onClick = onCreateAnyway,
+                fillMaxWidth = false,
+                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+            )
+        },
+        dismissButton = {
+            SecondaryA11yButton(
+                text = "Annuler",
+                onClick = onDismiss,
+                fillMaxWidth = false,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+    )
+}
+
+@Composable
 internal fun DiscardChangesDialog(
     onStay: () -> Unit,
     onLeave: () -> Unit
@@ -428,13 +470,23 @@ internal fun EntryFormScaffold(
                 )
             )
             if (showApplyFollowing && hasTemplate) {
+                recurrenceInfo?.let { info ->
+                    Text(
+                        text = "Cette facture : $info",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.AccentOkInk,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 CheckRow(
                     checked = applyFollowing,
-                    label = "Aussi les mois suivants",
+                    label = "Appliquer aussi aux mois suivants",
                     onChecked = onApplyFollowing
                 )
                 Text(
-                    text = "Décoché = ce mois seulement (montant / photo).",
+                    text = "À cocher seulement pour changer le montant, la photo ou le jour " +
+                        "sur les prochains mois. La case repart décochée à chaque ouverture : " +
+                        "ce n’est pas un réglage enregistré.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()
