@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.58** WhatsNew version courante seule / Aide alignée — **561** pass, **1** skipped, versionCode **164** |
+| Dernière étape terminée | **7.59** aide seniors directe / copie simplifiée — **562** pass, **1** skipped, versionCode **165** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.59 aide seniors directe / copie simplifiée
+
+**Contexte :** rendre l’aide plus simple à trouver et plus simple à lire, sans détour Réglages ni jargon technique.
+
+**Corrigé :**
+- menu Accueil `!` : accès direct `Aide / Comment ça marche` au-dessus de `Un souci`
+- Réglages : `Comment ça marche` ouvre directement le contenu, sans double hub
+- aide seniors relue en parcours simple ; `HomeMenuCopy`, `HowItWorksCopy` et `SettingsHubCopy` alignés avec leurs tests
+- `HowItWorksCopyTest` ajusté pour refléter exactement la nouvelle formulation affichée
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **562** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** `0.1.0-7.59` · `versionCode` **165**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.58 WhatsNew version courante seule / Aide alignée
 

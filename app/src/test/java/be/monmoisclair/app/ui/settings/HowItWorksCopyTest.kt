@@ -31,7 +31,7 @@ class HowItWorksCopyTest {
         assertThat(titles.indexOf("Plan de remboursement"))
             .isLessThan(titles.indexOf("Résumé du mois"))
         val all = HowItWorksCopy.sections.joinToString("\n") { "${it.title}\n${it.body}" }
-        assertThat(all).contains("Choisissez un dossier dans Documents")
+        assertThat(all).contains("choisissez un dossier dans Documents")
         assertThat(all).contains("Depuis l’accueil, touchez +")
         assertThat(all).contains("Touchez Enregistrer")
         assertThat(all).contains("Appliquer aussi aux mois suivants")
@@ -53,7 +53,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Réglages → Confort → Alertes")
         assertThat(all).contains("À côté du Reste, touchez Courses")
         assertThat(all).contains("accord ou un courrier")
-        assertThat(all).contains("Pastille « Accord »")
+        assertThat(all).contains("pastille « Accord »")
         assertThat(all).contains("Mettre de côté")
         assertThat(all).contains("sous Courses")
         assertThat(all).contains("L’app ne garde pas d’argent")

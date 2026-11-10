@@ -150,6 +150,14 @@
         "Pour cette version, vous pouvez maintenant choisir « J’ai compris » ou « Passer ».",
         "L’aide explique mieux ce fonctionnement si vous voulez le relire plus tard."
       ]
+    },
+    {
+      "versionCode": 165,
+      "bullets": [
+        "L’aide « Comment ça marche » est plus facile à trouver depuis le menu.",
+        "Dans Réglages, un seul toucher suffit maintenant pour ouvrir l’aide.",
+        "Les explications ont été relues avec des phrases plus simples, sans jargon."
+      ]
     }
   ]
 }
