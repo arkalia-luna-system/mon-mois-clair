@@ -142,6 +142,14 @@
         "Réglages : le rafraîchissement se remet mieux après un petit raté.",
         "L’écran « Nouveautés » va plus vite à l’essentiel."
       ]
+    },
+    {
+      "versionCode": 164,
+      "bullets": [
+        "L’écran « Nouveautés » ne rejoue plus les anciennes mises à jour.",
+        "Pour cette version, vous pouvez maintenant choisir « J’ai compris » ou « Passer ».",
+        "L’aide explique mieux ce fonctionnement si vous voulez le relire plus tard."
+      ]
     }
   ]
 }
