@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.59** aide seniors directe / copie simplifiée — **562** pass, **1** skipped, versionCode **165** |
+| Dernière étape terminée | **7.60** nouveautés fermées par « J’ai compris » — **562** pass, **1** skipped, versionCode **166** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -20,6 +20,19 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.60 nouveautés fermées par « J’ai compris »
+
+**Contexte :** simplifier encore la fermeture de l’écran « Nouveautés » en retirant l’action secondaire pour ne garder qu’un seul geste clair.
+
+**Corrigé :**
+- dialogue `Nouveautés` : bouton `Passer` retiré ; fermeture via `J’ai compris` uniquement
+- `HomeViewModel`, aide intégrée et doc `WHATS_NEW` réalignés sur ce comportement
+- texte utilisateur du catalogue resserré pour rester simple et explicite
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **562** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** `0.1.0-7.60` · `versionCode` **166**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.59 aide seniors directe / copie simplifiée
 

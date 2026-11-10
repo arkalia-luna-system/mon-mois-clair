@@ -158,6 +158,13 @@
         "Dans Réglages, un seul toucher suffit maintenant pour ouvrir l’aide.",
         "Les explications ont été relues avec des phrases plus simples, sans jargon."
       ]
+    },
+    {
+      "versionCode": 166,
+      "bullets": [
+        "L’écran « Nouveautés » se ferme maintenant avec un seul bouton : « J’ai compris ».",
+        "Les explications associées ont été relues pour rester simples et directes."
+      ]
     }
   ]
 }
