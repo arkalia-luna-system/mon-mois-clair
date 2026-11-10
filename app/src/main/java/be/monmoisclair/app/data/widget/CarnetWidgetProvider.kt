@@ -4,9 +4,8 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.util.Log
-import android.widget.RemoteViews
-import be.monmoisclair.app.R
 import be.monmoisclair.app.data.device.CredentialStorageGate
+import be.monmoisclair.app.domain.CarnetWidgetText
 import be.monmoisclair.app.domain.MonthCycleEngine
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -64,7 +63,14 @@ class CarnetWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        val shell = RemoteViews(context.packageName, R.layout.widget_carnet)
+        val systemDark = (context.resources.configuration.uiMode and
+            android.content.res.Configuration.UI_MODE_NIGHT_MASK) ==
+            android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val shell = CarnetWidgetRefresher.render(
+            context,
+            CarnetWidgetText.unavailable(),
+            systemDark
+        )
         appWidgetManager.updateAppWidget(appWidgetIds, shell)
     }
 

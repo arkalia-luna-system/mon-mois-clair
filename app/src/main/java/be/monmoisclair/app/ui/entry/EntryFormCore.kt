@@ -39,7 +39,7 @@ object EntryFormCore {
         }
         val cents = MoneyFormat.parseToCents(amountText)
         val day = dayText.trim().toIntOrNull()
-        if (cents == null || day == null) {
+        if (cents == null || day == null || day !in 1..31) {
             return MoneyDay.Err(AMOUNT_DAY_HINT)
         }
         if (MoneyFormat.isOverLineMax(cents)) {

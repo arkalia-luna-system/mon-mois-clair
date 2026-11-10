@@ -31,6 +31,10 @@ class EntryFormCoreTest {
             .isEqualTo(EntryFormCore.MoneyDay.Err(EntryFormCore.AMOUNT_DAY_HINT))
         assertThat(EntryFormCore.parseMoneyAndDay("10", "x"))
             .isEqualTo(EntryFormCore.MoneyDay.Err(EntryFormCore.AMOUNT_DAY_HINT))
+        assertThat(EntryFormCore.parseMoneyAndDay("10", "0"))
+            .isEqualTo(EntryFormCore.MoneyDay.Err(EntryFormCore.AMOUNT_DAY_HINT))
+        assertThat(EntryFormCore.parseMoneyAndDay("10", "32"))
+            .isEqualTo(EntryFormCore.MoneyDay.Err(EntryFormCore.AMOUNT_DAY_HINT))
     }
 
     @Test
