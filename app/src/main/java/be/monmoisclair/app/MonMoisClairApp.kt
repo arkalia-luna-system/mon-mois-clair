@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.os.Build
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import be.monmoisclair.app.data.device.CredentialStorageGate
 import be.monmoisclair.app.data.reminder.PaymentNotificationHelper
 import be.monmoisclair.app.data.widget.CarnetWidgetRefresher
 import dagger.hilt.android.HiltAndroidApp
@@ -38,6 +39,7 @@ class MonMoisClairApp : Application(), Configuration.Provider {
     private val configReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (!::widgetRefresher.isInitialized) return
+            if (!CredentialStorageGate.isAvailable(context)) return
             // Samsung envoie CONFIGURATION_CHANGED en rafale (thème, fold, AOD) —
             // debounce pour éviter wake DB / batterie Device Care.
             val now = System.currentTimeMillis()

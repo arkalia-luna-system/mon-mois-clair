@@ -31,6 +31,7 @@ class DbPassphraseVault @Inject constructor(
     fun isDbEncryptedMarkerPresent(): Boolean = markerFile.isFile
 
     fun markDbEncrypted() {
+        requireCredentialStorage()
         markerFile.writeText("1")
         clearMigrationFailed()
     }
@@ -39,10 +40,12 @@ class DbPassphraseVault @Inject constructor(
     fun isMigrationFailedPresent(): Boolean = migrationFailedFile.isFile
 
     fun markMigrationFailed() {
+        requireCredentialStorage()
         migrationFailedFile.writeText("1")
     }
 
     fun clearMigrationFailed() {
+        requireCredentialStorage()
         if (migrationFailedFile.isFile) migrationFailedFile.delete()
     }
 

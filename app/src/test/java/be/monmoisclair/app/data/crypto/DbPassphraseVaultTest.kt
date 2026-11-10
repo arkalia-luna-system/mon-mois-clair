@@ -1,12 +1,14 @@
 package be.monmoisclair.app.data.crypto
 
 import android.content.Context
+import android.os.UserManager
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import java.io.File
 
 @RunWith(RobolectricTestRunner::class)
@@ -18,6 +20,8 @@ class DbPassphraseVaultTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
+        val um = context.getSystemService(UserManager::class.java)!!
+        shadowOf(um).setUserUnlocked(true)
         File(context.filesDir, DbPassphraseVault.DIR).deleteRecursively()
         vault = DbPassphraseVault(context)
     }
@@ -41,6 +45,23 @@ class DbPassphraseVaultTest {
         assertThat(vault.isDbEncryptedMarkerPresent()).isFalse()
         vault.markDbEncrypted()
         assertThat(vault.isDbEncryptedMarkerPresent()).isTrue()
+    }
+
+    @Test
+    fun ensureProvisioned_refusesWhenUserLocked() {
+        val um = context.getSystemService(UserManager::class.java)!!
+        shadowOf(um).setUserUnlocked(false)
+        val thrown = runCatching { vault.ensureProvisioned() }.exceptionOrNull()
+        assertThat(thrown).isInstanceOf(IllegalStateException::class.java)
+        assertThat(thrown?.message).contains("CE indisponible")
+    }
+
+    @Test
+    fun markDbEncrypted_refusesWhenUserLocked() {
+        val um = context.getSystemService(UserManager::class.java)!!
+        shadowOf(um).setUserUnlocked(false)
+        val thrown = runCatching { vault.markDbEncrypted() }.exceptionOrNull()
+        assertThat(thrown).isInstanceOf(IllegalStateException::class.java)
     }
 
     @Test

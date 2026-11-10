@@ -1,6 +1,7 @@
 package be.monmoisclair.app.data.crypto
 
 import android.content.Context
+import be.monmoisclair.app.data.device.CredentialStorageGate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.Base64
@@ -16,8 +17,11 @@ class ShareSecretVault @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
+    private val dir: File
+        get() = File(context.filesDir, DbPassphraseVault.DIR)
+
     private val file: File
-        get() = File(File(context.filesDir, DbPassphraseVault.DIR).also { it.mkdirs() }, FILE_NAME)
+        get() = File(ensureCryptoDir(), FILE_NAME)
 
     /** Garantit un code ; retourne les chars (à zero-fill après usage si besoin). */
     fun getOrCreateSecretChars(): CharArray {
@@ -31,6 +35,7 @@ class ShareSecretVault @Inject constructor(
     }
 
     fun ensureProvisioned() {
+        requireCredentialStorage()
         if (file.isFile && file.length() > 0L) return
         val code = generateNumericCode(8)
         val key = KeystoreAesKey.getOrCreateWrapKey()
@@ -39,11 +44,24 @@ class ShareSecretVault @Inject constructor(
     }
 
     private fun unwrap(): String {
+        requireCredentialStorage()
         val b64 = file.readText(Charsets.UTF_8).trim()
         val wrapped = Base64.getDecoder().decode(b64)
         val key = KeystoreAesKey.getOrCreateWrapKey()
         val plain = AesGcmBox.decrypt(key, wrapped)
         return plain.toString(Charsets.UTF_8).also { AesGcmBox.clear(plain) }
+    }
+
+    private fun ensureCryptoDir(): File {
+        val d = dir
+        if (!d.isDirectory && !d.mkdirs() && !d.isDirectory) {
+            error("Impossible de créer ${d.absolutePath} (CE / Direct Boot ?)")
+        }
+        return d
+    }
+
+    private fun requireCredentialStorage() {
+        CredentialStorageGate.requireAvailable(context)
     }
 
     companion object {

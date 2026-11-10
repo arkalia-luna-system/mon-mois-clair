@@ -1,12 +1,14 @@
 package be.monmoisclair.app.data.crypto
 
 import android.content.Context
+import android.os.UserManager
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import java.io.File
 
 @RunWith(RobolectricTestRunner::class)
@@ -18,6 +20,8 @@ class ShareSecretVaultTest {
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
+        val um = context.getSystemService(UserManager::class.java)!!
+        shadowOf(um).setUserUnlocked(true)
         File(context.filesDir, DbPassphraseVault.DIR).deleteRecursively()
         vault = ShareSecretVault(context)
     }
@@ -35,6 +39,15 @@ class ShareSecretVaultTest {
         } finally {
             chars.fill('\u0000')
         }
+    }
+
+    @Test
+    fun ensureProvisioned_refusesWhenUserLocked() {
+        val um = context.getSystemService(UserManager::class.java)!!
+        shadowOf(um).setUserUnlocked(false)
+        val thrown = runCatching { vault.peekDisplayCode() }.exceptionOrNull()
+        assertThat(thrown).isInstanceOf(IllegalStateException::class.java)
+        assertThat(thrown?.message).contains("CE indisponible")
     }
 
     @Test

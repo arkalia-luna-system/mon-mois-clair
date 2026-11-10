@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.RemoteViews
 import be.monmoisclair.app.MainActivity
 import be.monmoisclair.app.R
+import be.monmoisclair.app.data.device.CredentialStorageGate
 import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.domain.AppClock
@@ -30,6 +31,10 @@ class CarnetWidgetRefresher @Inject constructor(
 ) : CarnetWidgetSink {
 
     override suspend fun refresh() {
+        if (!CredentialStorageGate.isAvailable(context)) {
+            Log.i(TAG, "widget refresh : CE indisponible")
+            return
+        }
         val manager = AppWidgetManager.getInstance(context)
         val ids = manager.getAppWidgetIds(
             ComponentName(context, CarnetWidgetProvider::class.java)
