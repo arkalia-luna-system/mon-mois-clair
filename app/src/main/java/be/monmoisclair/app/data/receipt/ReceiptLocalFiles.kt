@@ -7,9 +7,17 @@ import java.io.File
 /** Suppression des copies chiffrées sous `filesDir` (courrier retiré, etc.). */
 object ReceiptLocalFiles {
     fun deleteUnder(filesDir: File, relativePathsRaw: String) {
+        var touchedReceiptsDir = false
         for (path in ReceiptPathList.parse(relativePathsRaw)) {
             val safe = BackupSecurityArchive.sanitizeReceiptPath(path) ?: continue
-            File(filesDir, safe).takeIf { it.exists() }?.delete()
+            val target = File(filesDir, safe)
+            if (target.exists()) {
+                touchedReceiptsDir = true
+                target.delete()
+            }
+        }
+        if (touchedReceiptsDir) {
+            File(filesDir, "receipts").takeIf { it.isDirectory && it.list().isNullOrEmpty() }?.delete()
         }
     }
 }

@@ -21,6 +21,7 @@ class ReceiptLocalFilesTest {
         ReceiptLocalFiles.deleteUnder(dir, "receipts/a.webp\nreceipts/b.pdf")
         assertThat(a.exists()).isFalse()
         assertThat(b.exists()).isFalse()
+        assertThat(File(dir, "receipts").exists()).isFalse()
     }
 
     @Test
@@ -28,5 +29,24 @@ class ReceiptLocalFilesTest {
         val dir = createTempDirectory().toFile()
         ReceiptLocalFiles.deleteUnder(dir, "../escape")
         assertThat(dir.listFiles().orEmpty()).isEmpty()
+    }
+
+    @Test
+    fun deleteUnder_keepsReceiptsDir_whenOtherFilesRemain() {
+        val dir = createTempDirectory().toFile()
+        val a = File(dir, "receipts/a.webp").apply {
+            parentFile!!.mkdirs()
+            writeBytes(byteArrayOf(1))
+        }
+        val keep = File(dir, "receipts/keep.pdf").apply {
+            parentFile!!.mkdirs()
+            writeBytes(byteArrayOf(2))
+        }
+
+        ReceiptLocalFiles.deleteUnder(dir, "receipts/a.webp")
+
+        assertThat(a.exists()).isFalse()
+        assertThat(keep.exists()).isTrue()
+        assertThat(File(dir, "receipts").isDirectory).isTrue()
     }
 }
