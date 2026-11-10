@@ -4,4 +4,6 @@ package be.monmoisclair.app.ui.settings
 object SystemSettingsMessages {
     const val OPEN_FAILED =
         "Impossible d’ouvrir les réglages. Ouvrez-les directement puis revenez."
+    const val SCREEN_OPEN_FAILED =
+        "Impossible d’ouvrir cet écran système. Ouvrez-le directement puis revenez."
 }

@@ -281,5 +281,8 @@ class EntryFormCoreTest {
             .isEqualTo(EntryFormCore.ATTACH_RETRY_PDF_FAIL)
         assertThat(EntryFormCore.attachRetryError(false, false))
             .isEqualTo(EntryFormCore.ATTACH_RETRY_BOTH_FAIL)
+        assertThat(EntryFormCore.ATTACH_RETRY_PHOTO_FAIL.lowercase()).doesNotContain("réessayez")
+        assertThat(EntryFormCore.ATTACH_RETRY_PDF_FAIL.lowercase()).doesNotContain("réessayez")
+        assertThat(EntryFormCore.ATTACH_RETRY_BOTH_FAIL.lowercase()).doesNotContain("réessayez")
     }
 }

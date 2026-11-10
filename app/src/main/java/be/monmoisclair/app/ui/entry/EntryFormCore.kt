@@ -246,11 +246,11 @@ object EntryFormCore {
     const val ATTACH_RETRY_NEED =
         "Reprenez une photo ou un PDF, puis Enregistrer."
     const val ATTACH_RETRY_BOTH_FAIL =
-        "Photo et PDF n’ont pas pu être enregistrés. Réessayez."
+        "Photo et PDF n’ont pas pu être enregistrés."
     const val ATTACH_RETRY_PHOTO_FAIL =
-        "La photo n’a pas pu être enregistrée. Réessayez."
+        "La photo n’a pas pu être enregistrée."
     const val ATTACH_RETRY_PDF_FAIL =
-        "Le PDF n’a pas pu être enregistré. Réessayez."
+        "Le PDF n’a pas pu être enregistré."
 
     fun attachRetryError(photoOk: Boolean, pdfOk: Boolean): String? = when {
         photoOk && pdfOk -> null

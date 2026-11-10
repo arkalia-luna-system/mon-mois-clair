@@ -7,6 +7,7 @@ import be.monmoisclair.app.data.receipt.ReceiptPhotoStore
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterResult
 import be.monmoisclair.app.domain.usecase.CreatePendingLetterUseCase
+import be.monmoisclair.app.ui.entry.EntryFormMessages
 import be.monmoisclair.app.ui.SingleFlightGate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,7 @@ class PendingLetterFormViewModel @Inject constructor(
     }
 
     fun setPhotoError() = _state.update {
-        it.copy(error = "La photo n’a pas pu être lue. Réessayez.")
+        it.copy(error = EntryFormMessages.PHOTO_DECODE_ERROR)
     }
 
     fun setCameraError(message: String) = _state.update {

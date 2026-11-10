@@ -13,4 +13,13 @@ class SystemSettingsMessagesTest {
         assertThat(msg).contains("revenez")
         assertThat(msg.lowercase()).doesNotContain("téléphone")
     }
+
+    @Test
+    fun screenOpenFailed_staysActionable() {
+        val msg = SystemSettingsMessages.SCREEN_OPEN_FAILED
+
+        assertThat(msg).contains("écran système")
+        assertThat(msg).contains("revenez")
+        assertThat(msg.lowercase()).doesNotContain("réessayez")
+    }
 }

@@ -43,7 +43,7 @@ internal fun rememberPdfPicker(
             val shown = if (raw.contains("trop lourde") || raw.contains("trop lourd")) {
                 "Ce courrier est trop lourd."
             } else {
-                raw.ifBlank { "Ce PDF n’a pas pu être lu. Réessayez." }
+                raw.ifBlank { EntryFormMessages.PDF_READ_ERROR_DEFAULT }
             }
             onFailed(shown)
         }

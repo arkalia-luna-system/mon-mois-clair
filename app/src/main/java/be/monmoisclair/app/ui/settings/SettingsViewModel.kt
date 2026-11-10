@@ -545,7 +545,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun reportExternalIntentFailed() {
-        val msg = "Impossible d’ouvrir l’écran système. Réessayez."
+        val msg = SystemSettingsMessages.SCREEN_OPEN_FAILED
         when (pendingShareKind) {
             PendingShareKind.Backup -> {
                 _uiState.update {
