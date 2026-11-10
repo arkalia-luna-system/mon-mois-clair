@@ -9,5 +9,7 @@ object CameraCaptureMessages {
     const val CAPTURE_CANCELLED = "Photo annulée."
     const val CAPTURE_FAILED =
         "La photo n’a pas pu être prise. Réessayez, ou vérifiez les réglages du téléphone."
+    const val SETTINGS_OPEN_FAILED =
+        "Impossible d’ouvrir les réglages. Ouvrez ceux du téléphone puis autorisez la caméra."
     const val OPEN_SETTINGS = "Ouvrir les réglages"
 }

@@ -26,5 +26,7 @@ class CameraCaptureMessagesTest {
             .doesNotContain("autorisation")
         assertThat(CameraCaptureMessages.CAPTURE_FAILED.lowercase())
             .contains("réglages")
+        assertThat(CameraCaptureMessages.SETTINGS_OPEN_FAILED.lowercase())
+            .contains("impossible")
     }
 }

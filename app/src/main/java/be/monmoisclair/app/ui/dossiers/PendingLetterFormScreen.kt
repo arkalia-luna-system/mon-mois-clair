@@ -135,7 +135,11 @@ fun PendingLetterFormScreen(
         },
         onMessage = viewModel::setCameraError,
         onOpenSettings = {
-            be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)
+            if (!be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)) {
+                viewModel.setCameraError(
+                    be.monmoisclair.app.ui.camera.CameraCaptureMessages.SETTINGS_OPEN_FAILED
+                )
+            }
         }
     )
 

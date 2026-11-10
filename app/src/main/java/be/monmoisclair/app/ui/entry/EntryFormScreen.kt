@@ -85,7 +85,11 @@ fun AddEntryScreen(
         onGranted = takePhotoRaw,
         onMessage = viewModel::setCameraCaptureError,
         onOpenSettings = {
-            be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)
+            if (!be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)) {
+                viewModel.setCameraCaptureError(
+                    be.monmoisclair.app.ui.camera.CameraCaptureMessages.SETTINGS_OPEN_FAILED
+                )
+            }
         }
     )
     val pickPdf = rememberPdfPicker(
@@ -490,7 +494,11 @@ fun EditEntryScreen(
         onGranted = takePhotoRaw,
         onMessage = viewModel::setCameraCaptureError,
         onOpenSettings = {
-            be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)
+            if (!be.monmoisclair.app.ui.camera.openAppDetailsSettings(context)) {
+                viewModel.setCameraCaptureError(
+                    be.monmoisclair.app.ui.camera.CameraCaptureMessages.SETTINGS_OPEN_FAILED
+                )
+            }
         }
     )
     val pickPdf = rememberPdfPicker(

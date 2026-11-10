@@ -17,6 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
+private const val APP_DETAILS_SETTINGS_ACTION =
+    Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+
 /**
  * Lance [onGranted] seulement si CAMERA est accordée.
  * Sinon : demande permission ; refus permanent → message + deep-link réglages optionnel.
@@ -69,13 +72,19 @@ fun rememberCameraGatedLaunch(
     }
 }
 
-fun openAppDetailsSettings(context: android.content.Context) {
-    runCatching {
-        context.startActivity(
-            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.fromParts("package", context.packageName, null)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-        )
+fun appDetailsSettingsIntent(packageName: String): Intent =
+    Intent(APP_DETAILS_SETTINGS_ACTION).apply {
+        data = Uri.fromParts("package", packageName, null)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
+
+fun openAppDetailsSettings(
+    packageName: String,
+    launchIntent: (Intent) -> Unit
+): Boolean = runCatching {
+    launchIntent(appDetailsSettingsIntent(packageName))
+}.isSuccess
+
+fun openAppDetailsSettings(context: android.content.Context): Boolean {
+    return openAppDetailsSettings(context.packageName, context::startActivity)
 }
