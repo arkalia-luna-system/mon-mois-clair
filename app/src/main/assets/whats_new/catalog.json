@@ -100,16 +100,6 @@
         "Édition : la case « mois suivants » se recoche toute seule si la facture ne revient qu’une fois.",
         "Sauvegardes et écrans sensibles : moins de courses parallèles qui se gênent."
       ]
-    },
-    {
-      "versionCode": 158,
-      "bullets": [
-        "Dossiers et factures : listes stables, un seul Enregistrer, case « mois suivants » plus claire.",
-        "Quitter une fiche : alerte si vous avez modifié sans enregistrer.",
-        "Rappels, sauvegardes et écrans : moins d’actions qui se gênent en parallèle.",
-        "Jour d’échéance : seulement 1 à 31 — plus de saisie 0 ou 32 par erreur.",
-        "Widget : touchez pour ouvrir l’app — plus fiable juste après allumage."
-      ]
     }
   ]
 }
