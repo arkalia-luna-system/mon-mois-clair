@@ -142,6 +142,15 @@ internal fun IncomeRow(
                     color = HomeTokens.Ink,
                     style = MaterialTheme.typography.titleLarge
                 )
+                item.cadenceChip?.let { cadence ->
+                    StatusChip(
+                        text = cadence,
+                        container = HomeTokens.Chip,
+                        content = HomeTokens.InkMuted,
+                        outlined = true,
+                        compact = compact
+                    )
+                }
             }
         }
     }

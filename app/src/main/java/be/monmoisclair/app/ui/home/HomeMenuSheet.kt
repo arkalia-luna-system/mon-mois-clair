@@ -52,7 +52,6 @@ fun HomeMenuSheet(
     onOpenHelp: () -> Unit = {},
     onOpenSupport: () -> Unit = {}
 ) {
-    val showDossiers = hasDossiers || dossierCount > 0 || pendingLetterCount > 0
     // Libellé court « Dossiers » (= PageTitle / Aide « Menu → Dossiers »).
     val menuDossierLabel = when {
         dossierCount > 0 && pendingLetterCount > 0 ->
@@ -114,17 +113,15 @@ fun HomeMenuSheet(
                 leadingIconRes = R.drawable.ic_settings,
                 leadingColoredIcon = true
             )
-            if (showDossiers) {
-                CarnetHubRow(
-                    label = menuDossierLabel,
-                    onClick = {
-                        onDismiss()
-                        onOpenDossiers()
-                    },
-                    leadingIconRes = R.drawable.ic_folder,
-                    leadingColoredIcon = true
-                )
-            }
+            CarnetHubRow(
+                label = menuDossierLabel,
+                onClick = {
+                    onDismiss()
+                    onOpenDossiers()
+                },
+                leadingIconRes = R.drawable.ic_folder,
+                leadingColoredIcon = true
+            )
             CarnetHubRow(
                 label = HomeMenuCopy.UPCOMING,
                 onClick = {

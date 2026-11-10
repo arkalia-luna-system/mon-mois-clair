@@ -46,7 +46,8 @@ fun DayOfMonthGrid(
     selectedDay: Int?,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    onInteract: () -> Unit = {}
 ) {
     val fit = rememberDisplayFit()
     val fontScale = LocalDensity.current.fontScale
@@ -80,7 +81,10 @@ fun DayOfMonthGrid(
                         enabled = enabled,
                         role = Role.Button,
                         onClickLabel = "Changer le jour du mois"
-                    ) { expanded = true }
+                    ) {
+                        onInteract()
+                        expanded = true
+                    }
                     .semantics {
                         contentDescription = "Jour $selectedDay sélectionné. Toucher pour changer."
                     }
@@ -124,6 +128,7 @@ fun DayOfMonthGrid(
                                 indication = null,
                                 interactionSource = null,
                                 onClick = {
+                                    onInteract()
                                     onSelect(day)
                                     expanded = false
                                 }
@@ -149,7 +154,10 @@ fun DayOfMonthGrid(
                         .clickable(
                             role = Role.Button,
                             onClickLabel = "Replier la grille des jours"
-                        ) { expanded = false }
+                        ) {
+                            onInteract()
+                            expanded = false
+                        }
                 )
             }
         }

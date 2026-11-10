@@ -168,6 +168,7 @@ class HomeViewModel @Inject constructor(
                                 dayLabel = DayLabelFormat.dayOfMonthLabel(inc.dayOfMonth),
                                 label = inc.label,
                                 amountLabel = MoneyFormat.formatSignedCents(inc.amountCents, isExpense = false),
+                                isRecurring = !inc.templateId.isNullOrBlank(),
                                 sortDay = inc.dayOfMonth,
                                 sortLabel = inc.label
                             )

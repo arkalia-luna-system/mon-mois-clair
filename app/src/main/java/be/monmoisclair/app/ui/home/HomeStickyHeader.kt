@@ -196,7 +196,7 @@ internal fun HomeStickyHeader(
             }
             if (state.isFuturePreview) {
                 // Chrome contextuel court (pas de liveRegion : évite une « notif » TalkBack permanente).
-                val previewLabel = "Mois à venir — modification OK · pas de FAIT ni d’ajout"
+                val previewLabel = "Mois à venir — modification OK, pas de FAIT."
                 Text(
                     text = previewLabel,
                     style = MaterialTheme.typography.bodyMedium,
@@ -262,7 +262,7 @@ internal fun HomeStickyHeader(
                 showGoCurrent
             if (hasStickyExtras) {
                 val detailsLabel =
-                    if (stickyDetailsOpen) "Masquer" else "Détails"
+                    if (stickyDetailsOpen) "Masquer le détail" else "Voir le détail"
                 Text(
                     text = detailsLabel,
                     style = MaterialTheme.typography.bodyMedium,

@@ -16,4 +16,10 @@ class HomeTodayFocusCardStyleTest {
         assertThat(HomeTodayFocusCardStyle.usesOverdueBorder(true)).isTrue()
         assertThat(HomeTodayFocusCardStyle.usesOverdueBorder(false)).isFalse()
     }
+
+    @Test
+    fun actionLabel_matchesContext() {
+        assertThat(HomeTodayFocusCardStyle.actionLabel(true)).isEqualTo("Voir les retards")
+        assertThat(HomeTodayFocusCardStyle.actionLabel(false)).isEqualTo("Voir l’échéance")
+    }
 }

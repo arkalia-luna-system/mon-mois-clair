@@ -31,9 +31,8 @@ object HowItWorksCopy {
         Section(
             title = "Marquer FAIT",
             body = "Quand c’est payé, touchez FAIT. " +
-                "Pour un prélèvement, attendez de voir le débit. " +
-                "Si vous vous trompez, utilisez Annuler ou Remettre. " +
-                "Un doublon ressemblant dans le mois est signalé."
+                "Pour un prélèvement, attendez le débit. " +
+                "Si besoin, utilisez Annuler ou Remettre."
         ),
         Section(
             title = "Sauvegarde",
@@ -73,7 +72,7 @@ object HowItWorksCopy {
         Section(
             title = "Sur une année",
             body = "« 1× par an » ou « tous les 3 mois » revient le bon mois. " +
-                "Pour voir plus loin, ouvrez À venir ou Choisir un mois. " +
+                "Pour voir plus loin, ouvrez Mois à venir ou Choisir un mois. " +
                 "Les lignes hors ce mois se règlent dans " +
                 "Réglages → Données & sauvegarde → Échéances hors ce mois."
         ),
@@ -107,7 +106,7 @@ object HowItWorksCopy {
             title = "Pour aujourd’hui",
             body = "Sur le mois en cours, le bandeau « Pour aujourd’hui » montre les retards " +
                 "et l’échéance du jour. " +
-                "Touchez « Voir » pour aller à la ligne."
+                "Touchez le lien pour aller à la ligne."
         ),
         Section(
             title = "Nouveautés",

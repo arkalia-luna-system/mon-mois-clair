@@ -96,7 +96,7 @@ internal fun EntryFormPaymentSection(
             expanded = paymentExpanded,
             closedHint = when {
                 hasPaymentContent -> "Noté — touchez pour voir"
-                else -> "QR, +++ , photo, PDF"
+                else -> "QR, communication, photo, PDF"
             },
             onToggle = { paymentExpanded = !paymentExpanded }
         )
@@ -132,7 +132,7 @@ internal fun EntryFormPaymentSection(
                 )
                 if (!isAgreement) {
                     Text(
-                        text = "Eau, énergie, télécom : souvent une nouvelle +++ chaque mois.",
+                        text = "Eau, énergie, télécom : la communication change souvent chaque mois.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = A11yTokens.InkMuted,
                         modifier = Modifier.fillMaxWidth()

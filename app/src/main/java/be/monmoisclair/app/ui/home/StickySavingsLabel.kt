@@ -20,7 +20,7 @@ fun stickySavingsLabel(
 }
 
 /**
- * Chip 7.09 (icône tirelire) : montant si saisi, sinon « Côté ».
+ * Chip 7.09 (icône tirelire) : montant si saisi, sinon « Épargne ».
  * TalkBack = [stickySavingsLabel] (« Mettre de côté »).
  */
 fun stickySavingsChipLabel(
@@ -29,5 +29,5 @@ fun stickySavingsChipLabel(
     formatCents: (Long) -> String = MoneyFormat::formatCents
 ): String? {
     if (futurePreview) return null
-    return if (savingsMonthlyCents > 0L) formatCents(savingsMonthlyCents) else "Côté"
+    return if (savingsMonthlyCents > 0L) formatCents(savingsMonthlyCents) else "Épargne"
 }

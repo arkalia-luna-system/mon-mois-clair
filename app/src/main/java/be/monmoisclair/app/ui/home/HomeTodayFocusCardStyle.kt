@@ -9,4 +9,7 @@ object HomeTodayFocusCardStyle {
         if (hasOverdue) 1.5f else 0.5f
 
     fun usesOverdueBorder(hasOverdue: Boolean): Boolean = hasOverdue
+
+    fun actionLabel(hasOverdue: Boolean): String =
+        if (hasOverdue) "Voir les retards" else "Voir l’échéance"
 }

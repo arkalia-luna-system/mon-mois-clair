@@ -24,7 +24,8 @@ internal fun EntryFormRecurrenceSection(
     onNextDueMonth: (Int) -> Unit,
     showNextDueMonth: Boolean,
     recurring: Boolean,
-    onRecurring: (Boolean) -> Unit
+    onRecurring: (Boolean) -> Unit,
+    onInteract: () -> Unit = {}
 ) {
     // Édition ponctuelle (sans modèle) : info seule.
     if (!showRecurring && !showFrequencyEdit) {
@@ -38,8 +39,7 @@ internal fun EntryFormRecurrenceSection(
         CarnetSectionTitle("Fréquence")
         if (showFrequencyEdit) {
             Text(
-                text = "Mois déjà créés : cochez « Appliquer aussi aux mois suivants » " +
-                    "lors de l’enregistrement.",
+                text = "Pour changer aussi les prochains mois, cochez « Appliquer aussi aux mois suivants ».",
                 style = MaterialTheme.typography.bodyMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier.fillMaxWidth()
@@ -51,18 +51,22 @@ internal fun EntryFormRecurrenceSection(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             TypeChip(RecurrenceLabel.chipOnce(), selected = recurrence == RecurrenceChoice.Once) {
+                onInteract()
                 onRecurrence(RecurrenceChoice.Once)
             }
             TypeChip(RecurrenceLabel.chipMonthly(), selected = recurrence == RecurrenceChoice.Monthly) {
+                onInteract()
                 onRecurrence(RecurrenceChoice.Monthly)
             }
             TypeChip(
                 RecurrenceLabel.chipEvery3Months(),
                 selected = recurrence == RecurrenceChoice.Every3Months
             ) {
+                onInteract()
                 onRecurrence(RecurrenceChoice.Every3Months)
             }
             TypeChip(RecurrenceLabel.chipYearly(), selected = recurrence == RecurrenceChoice.Yearly) {
+                onInteract()
                 onRecurrence(RecurrenceChoice.Yearly)
             }
         }
@@ -78,6 +82,7 @@ internal fun EntryFormRecurrenceSection(
                         text = be.monmoisclair.app.domain.RecurrenceAnchor.frenchMonthLabel(m),
                         selected = nextDueMonth == m
                     ) {
+                        onInteract()
                         onNextDueMonth(m)
                     }
                 }

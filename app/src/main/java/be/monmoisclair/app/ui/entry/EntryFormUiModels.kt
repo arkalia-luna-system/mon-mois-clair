@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.entry
 
 import android.graphics.Bitmap
+import androidx.compose.ui.Modifier
 
 /**
  * Modèles UI immuables pour [EntryFormScaffold] — remplace la liste plate ~82 params (A-P0-1).
@@ -75,15 +76,19 @@ data class EntryFormDossierUi(
     val isSettled: Boolean = false,
     val pacePhrase: String? = null,
     val iban: String = "",
+    val ibanBring: Modifier = Modifier,
     val onIban: (String) -> Unit = {},
     val onCopyIban: (() -> Unit)? = null,
     val creditorEmail: String = "",
+    val creditorEmailBring: Modifier = Modifier,
     val onCreditorEmail: (String) -> Unit = {},
     val onWriteMail: (() -> Unit)? = null,
     val onSaveAsPendingLetter: (() -> Unit)? = null,
     val feeAddText: String = "",
+    val feeAddBring: Modifier = Modifier,
     val onFeeAddText: (String) -> Unit = {},
     val feeNoteText: String = "",
+    val feeNoteBring: Modifier = Modifier,
     val onFeeNoteText: (String) -> Unit = {},
     val addedFeesCents: Long = 0L,
     val feeEvents: List<FeeEventRow> = emptyList()

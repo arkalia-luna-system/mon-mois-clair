@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -189,12 +190,17 @@ internal fun EntryFormScaffold(
     val onDelete = chrome.onDelete
 
     val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     val keyboardOpen = imeOpen()
     val nameBring = rememberFocusKeepsVisible()
     val amountBring = rememberFocusKeepsVisible()
     val noteBring = rememberFocusKeepsVisible()
     val causeBring = rememberFocusKeepsVisible()
     val remainingBring = rememberFocusKeepsVisible()
+    val ibanBring = rememberFocusKeepsVisible()
+    val emailBring = rememberFocusKeepsVisible()
+    val feeAddBring = rememberFocusKeepsVisible()
+    val feeNoteBring = rememberFocusKeepsVisible()
     val nameFieldLabel = if (showDossierSection && dossierExpanded) {
         "À qui (ex. Étude Leroy)"
     } else {
@@ -204,6 +210,13 @@ internal fun EntryFormScaffold(
     // P1-F1 : plus d’air entre sections fiche.
     val formGap = if (fit.compactHomeChrome) 14.dp else 18.dp
     val tipPad = fit.tipPad
+    val clearSelectionFocus = {
+        focusManager.clearFocus(force = true)
+        keyboardController?.hide()
+    }
+    val footerSafety = A11yTokens.minTouchHeight * (if (onDelete != null) 3 else 2) +
+        A11yTokens.bottomSystemClearance +
+        if (showDossierSection) 40.dp else 24.dp
     // Champs scrollables. Au clavier : un seul bouton, le champ actif reste visible.
     Column(
         modifier = Modifier
@@ -347,7 +360,8 @@ internal fun EntryFormScaffold(
             DayOfMonthGrid(
                 selectedDay = dayText.trim().toIntOrNull()?.takeIf { it in 1..31 },
                 onSelect = { onDay(it.toString()) },
-                enabled = !lockAmountAndDay
+                enabled = !lockAmountAndDay,
+                onInteract = clearSelectionFocus
             )
             // 7.07 : plus de spacer mort ~172 dp entre grille et Fréquence
             // (clearance sticky = Spacer bas unique, plus bas).
@@ -362,7 +376,8 @@ internal fun EntryFormScaffold(
                 onNextDueMonth = onNextDueMonth,
                 showNextDueMonth = showNextDueMonth,
                 recurring = recurring,
-                onRecurring = onRecurring
+                onRecurring = onRecurring,
+                onInteract = clearSelectionFocus
             )
             EntryFormPaymentSection(
                 showPaymentAssist = showPaymentAssist,
@@ -409,14 +424,18 @@ internal fun EntryFormScaffold(
                 primaryEnabled = primaryEnabled,
                 onSaveAsPendingLetter = onSaveAsPendingLetter,
                 iban = iban,
+                ibanBring = ibanBring,
                 onIban = onIban,
                 onCopyIban = onCopyIban,
                 creditorEmail = creditorEmail,
+                creditorEmailBring = emailBring,
                 onCreditorEmail = onCreditorEmail,
                 onWriteMail = onWriteMail,
                 feeAddText = feeAddText,
+                feeAddBring = feeAddBring,
                 onFeeAddText = onFeeAddText,
                 feeNoteText = feeNoteText,
+                feeNoteBring = feeNoteBring,
                 onFeeNoteText = onFeeNoteText,
                 addedFeesCents = addedFeesCents,
                 feeEvents = feeEvents,
@@ -445,8 +464,7 @@ internal fun EntryFormScaffold(
                 )
                 Text(
                     text = "À cocher seulement pour changer le montant, la photo ou le jour " +
-                        "sur les prochains mois. La case repart décochée à chaque ouverture : " +
-                        "ce n’est pas un réglage enregistré.",
+                        "sur les prochains mois. La case repart décochée à l’ouverture.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()
@@ -495,8 +513,7 @@ internal fun EntryFormScaffold(
             // Marge basse : Primary + Annuler (+ Delete) + clearance — dernier QuietLink hors sticky.
             Spacer(
                 modifier = Modifier.height(
-                    A11yTokens.minTouchHeight * (if (onDelete != null) 3 else 2) +
-                        A11yTokens.bottomSystemClearance
+                    footerSafety
                 )
             )
         }

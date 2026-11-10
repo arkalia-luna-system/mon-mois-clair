@@ -16,5 +16,6 @@ class HomeMenuCopyTest {
         assertThat(HomeMenuCopy.HELP).contains("Aide")
         assertThat(HomeMenuCopy.HELP).contains("Comment ça marche")
         assertThat(HomeMenuCopy.SUPPORT).contains("Un souci")
+        assertThat(HomeMenuCopy.UPCOMING).isEqualTo("Mois à venir")
     }
 }

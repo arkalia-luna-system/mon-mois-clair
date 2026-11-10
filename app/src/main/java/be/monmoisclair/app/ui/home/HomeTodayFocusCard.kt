@@ -37,6 +37,7 @@ fun HomeTodayFocusCard(
     val bg = HomeTokens.Chip
     val border = if (hasOverdue) HomeTokens.DangerFill else HomeTokens.CardBorder
     val borderWidth = HomeTodayFocusCardStyle.overdueBorderWidthDp(hasOverdue).dp
+    val actionLabel = HomeTodayFocusCardStyle.actionLabel(hasOverdue)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -69,7 +70,7 @@ fun HomeTodayFocusCard(
                     }
             )
             QuietLinkA11y(
-                text = "Voir",
+                text = actionLabel,
                 onClick = onShowFirst,
                 fillMaxWidth = false,
                 onClickLabel = "Aller à la première facture à traiter",

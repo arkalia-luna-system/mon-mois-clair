@@ -84,11 +84,10 @@ fun UpcomingScreen(
             return@PinnedBackScaffold
         }
 
-        CarnetPageTitle("À venir")
+        CarnetPageTitle("Mois à venir")
         val introShape = MaterialTheme.shapes.large
         CarnetTipCard(
-            text = "Aperçu des mois suivants (sans FAIT). Pour un mois précis, " +
-                "ouvrez le calendrier sur l’accueil."
+            text = "Aperçu simple des prochains mois. Pour agir, revenez au mois en cours."
         )
         Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 10.dp else 14.dp))
 
@@ -117,7 +116,7 @@ fun UpcomingScreen(
         }
         if (state.months.isEmpty()) {
             Text(
-                text = "Rien de prévu sur les prochains mois.",
+                text = "Rien de prévu bientôt.",
                 style = MaterialTheme.typography.titleMedium,
                 color = A11yTokens.InkMuted,
                 modifier = Modifier
@@ -157,7 +156,7 @@ private fun UpcomingMonthDetail(month: UpcomingMonth) {
     val fit = rememberDisplayFit()
     val compact = fit.compactHomeChrome
     CarnetPageTitle(month.monthLabel)
-    CarnetTipCard(text = "Lecture seule — pas de FAIT ici.")
+    CarnetTipCard(text = "Lecture seule.")
     Spacer(modifier = Modifier.height(if (compact) 8.dp else 12.dp))
     Column(verticalArrangement = Arrangement.spacedBy(A11yTokens.cardGap)) {
         month.lines.forEach { line ->

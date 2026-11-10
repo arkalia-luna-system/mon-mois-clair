@@ -485,7 +485,7 @@ fun HomeScreen(
                 contentPadding = PaddingValues(
                     start = fit.screenPadding,
                     end = fit.screenPadding,
-                    top = 8.dp,
+                    top = if (fit.compactHomeChrome) 12.dp else 16.dp,
                     bottom = if (fit.compactHomeChrome) 8.dp else 12.dp
                 ),
                 // 7.09 : air cartes Accueil (HomeTokens).

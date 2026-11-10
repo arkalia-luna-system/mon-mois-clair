@@ -9,9 +9,13 @@ sealed interface TimelineItem {
         val dayLabel: String,
         val label: String,
         val amountLabel: String,
+        val isRecurring: Boolean = false,
         override val sortDay: Int,
         override val sortLabel: String
-    ) : TimelineItem
+    ) : TimelineItem {
+        val cadenceChip: String?
+            get() = if (isRecurring) "Mensuel" else null
+    }
 
     data class Expense(
         val id: String,

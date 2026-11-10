@@ -39,14 +39,18 @@ internal fun EntryFormDossierSection(
     primaryEnabled: Boolean,
     onSaveAsPendingLetter: (() -> Unit)?,
     iban: String,
+    ibanBring: Modifier,
     onIban: (String) -> Unit,
     onCopyIban: (() -> Unit)?,
     creditorEmail: String,
+    creditorEmailBring: Modifier,
     onCreditorEmail: (String) -> Unit,
     onWriteMail: (() -> Unit)?,
     feeAddText: String,
+    feeAddBring: Modifier,
     onFeeAddText: (String) -> Unit,
     feeNoteText: String,
+    feeNoteBring: Modifier,
     onFeeNoteText: (String) -> Unit,
     addedFeesCents: Long,
     feeEvents: List<FeeEventRow>,
@@ -59,7 +63,7 @@ internal fun EntryFormDossierSection(
         FormSectionToggle(
             title = EntryFormMessages.DOSSIER_SECTION_TITLE,
             expanded = dossierExpanded,
-            closedHint = "Accord de paiement — pas la pastille En retard",
+            closedHint = "Plan de remboursement et courrier",
             onToggle = { onDossierExpanded(!dossierExpanded) }
         )
         if (dossierExpanded) {
@@ -70,8 +74,8 @@ internal fun EntryFormDossierSection(
             ) {
             if (!isAgreement) {
                 Text(
-                    text = "Accord de paiement (reste dû). " +
-                        "Pas la pastille « En retard » de l’accueil.",
+                    text = "Notez ce qu’il reste à payer ici. " +
+                        "Le badge « En retard » de l’accueil reste séparé.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()
@@ -88,7 +92,7 @@ internal fun EntryFormDossierSection(
             OutlinedTextField(
                 value = causeLabel,
                 onValueChange = onCauseLabel,
-                label = { Text("Pour quoi (ex. Hôpital 2025)") },
+                label = { Text("Objet de l’accord (ex. Hôpital 2025)") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = A11yTokens.minTouchHeight)
@@ -102,7 +106,7 @@ internal fun EntryFormDossierSection(
                 OutlinedTextField(
                     value = openingRemainingText,
                     onValueChange = onOpeningRemainingText,
-                    label = { Text("Combien reste-t-il aujourd’hui ?") },
+                    label = { Text("Montant restant aujourd’hui (€)") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = A11yTokens.minTouchHeight)
@@ -114,7 +118,8 @@ internal fun EntryFormDossierSection(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Text(
-                    text = "Vide = pas d’accord. En haut = le versement de ce mois.",
+                    text = "Laissez vide pour garder seulement le courrier. " +
+                        "Le montant du haut = versement prévu ce mois.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = A11yTokens.InkMuted,
                     modifier = Modifier.fillMaxWidth()
@@ -123,7 +128,7 @@ internal fun EntryFormDossierSection(
                     openingRemainingText.isBlank()
                 ) {
                     QuietLinkA11y(
-                        text = "Garder le courrier (sans montant)",
+                        text = "Garder le courrier sans montant",
                         onClick = onSaveAsPendingLetter,
                         enabled = primaryEnabled
                     )
@@ -136,7 +141,8 @@ internal fun EntryFormDossierSection(
                 label = { Text("IBAN") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = A11yTokens.minTouchHeight),
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .then(ibanBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
@@ -159,7 +165,8 @@ internal fun EntryFormDossierSection(
                 label = { Text("E-mail (pour Écrire)") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = A11yTokens.minTouchHeight),
+                    .heightIn(min = A11yTokens.minTouchHeight)
+                    .then(creditorEmailBring),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,
@@ -210,7 +217,8 @@ internal fun EntryFormDossierSection(
                     label = { Text("Ils ont ajouté un montant (€)") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = A11yTokens.minTouchHeight),
+                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .then(feeAddBring),
                     textStyle = MaterialTheme.typography.bodyLarge,
                     singleLine = true,
                     shape = MaterialTheme.shapes.medium,
@@ -226,7 +234,8 @@ internal fun EntryFormDossierSection(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = A11yTokens.minTouchHeight),
+                        .heightIn(min = A11yTokens.minTouchHeight)
+                        .then(feeNoteBring),
                     textStyle = MaterialTheme.typography.bodyLarge,
                     singleLine = true,
                     shape = MaterialTheme.shapes.medium,
