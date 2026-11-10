@@ -2,6 +2,7 @@ package be.monmoisclair.app.domain
 
 /**
  * Plafonds d’affichage pour listes potentiellement très longues (perf + mémoire Compose).
+ * Accueil : appliquer **après** le filtre recherche (timeline complète dans le ViewModel).
  * Les totaux sticky / KPI restent calculés sur la liste complète en amont.
  */
 object CarnetListLimits {

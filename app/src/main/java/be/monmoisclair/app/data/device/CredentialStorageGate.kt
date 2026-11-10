@@ -9,12 +9,12 @@ import be.monmoisclair.app.data.reminder.BootReceiver
  */
 object CredentialStorageGate {
 
-  /** Vrai si le stockage chiffré « credential-encrypted » est disponible. */
-  fun isAvailable(context: Context): Boolean = BootReceiver.isCredentialStorageAvailable(context)
+    /** Vrai si le stockage chiffré « credential-encrypted » est disponible. */
+    fun isAvailable(context: Context): Boolean = BootReceiver.isCredentialStorageAvailable(context)
 
-  fun requireAvailable(context: Context) {
-    check(isAvailable(context)) {
-      "Stockage CE indisponible (téléphone verrouillé)"
+    fun requireAvailable(context: Context) {
+        check(isAvailable(context)) {
+            "Stockage CE indisponible (utilisateur verrouillé) — pas de vault Direct Boot"
+        }
     }
-  }
 }

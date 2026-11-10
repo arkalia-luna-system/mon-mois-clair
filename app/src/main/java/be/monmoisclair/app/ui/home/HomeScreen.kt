@@ -228,12 +228,19 @@ fun HomeScreen(
             }
         }
     }
+    /** Plafond d’affichage LazyColumn — la recherche s’applique sur la liste complète avant la coupe. */
+    val listTimeline = remember(filteredTimeline) {
+        CarnetListLimits.truncate(
+            filteredTimeline,
+            CarnetListLimits.MAX_HOME_TIMELINE_ITEMS
+        )
+    }
     val searchFieldVisible = !state.loading && state.timeline.size >= 4
 
     // P3-F02 : scroller dans la liste filtrée (+ offset du champ recherche).
-    LaunchedEffect(state.highlightExpenseId, filteredTimeline, searchQuery, searchFieldVisible) {
+    LaunchedEffect(state.highlightExpenseId, listTimeline, searchQuery, searchFieldVisible) {
         val id = state.highlightExpenseId ?: return@LaunchedEffect
-        var index = filteredTimeline.indexOfFirst {
+        var index = listTimeline.visible.indexOfFirst {
             it is TimelineItem.Expense && it.id == id
         }
         if (index < 0 && searchQuery.isNotBlank()) {
@@ -592,7 +599,7 @@ fun HomeScreen(
                                 )
                             }
                         }
-                        CarnetListLimits.hiddenListHint(state.timelineHiddenCount)?.let { hint ->
+                        CarnetListLimits.hiddenListHint(listTimeline.hiddenCount)?.let { hint ->
                             item(key = "timeline-truncate") {
                                 CarnetTipCard(text = hint)
                             }
@@ -660,7 +667,7 @@ fun HomeScreen(
                                 }
                             }
                         }
-                        items(filteredTimeline, key = { item ->
+                        items(listTimeline.visible, key = { item ->
                             when (item) {
                                 is TimelineItem.Income -> "i-${item.id}"
                                 is TimelineItem.Expense -> "e-${item.id}"

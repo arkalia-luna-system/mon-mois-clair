@@ -14,6 +14,9 @@ Index **actif** (~7.33). Historique : [`archive/`](archive/README.md) · audits 
 | [`NOTICE_FAMILLE_2MIN.md`](NOTICE_FAMILLE_2MIN.md) | Brief oral cadeau (code papier · Arkalia) |
 | [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) | Checklist Play Internal + CI auto-deploy (secrets, compte de service) |
 | [`IN_APP_UPDATES.md`](IN_APP_UPDATES.md) | MAJ auto Immediate (cold start, écran Play, limites sideload) |
+| [`DIRECT_BOOT.md`](DIRECT_BOOT.md) | CE / unlock — pas de DB avant déverrouillage |
+| [`I18N.md`](I18N.md) | Socle strings FR + stubs EN |
+| [`WHATS_NEW.md`](WHATS_NEW.md) | Catalogue Nouveautés (`catalog.json`) |
 | [`privacy.html`](privacy.html) | Politique HTTPS (GitHub Pages `/docs`) |
 | [`CI.md`](CI.md) | CI + Dependabot Security |
 | [`audits/2026-11-05-matrice-audits-7.33.md`](audits/2026-11-05-matrice-audits-7.33.md) | Matrice audits FAIT / PARTIEL / NON FAIT / OBSOLÈTE |

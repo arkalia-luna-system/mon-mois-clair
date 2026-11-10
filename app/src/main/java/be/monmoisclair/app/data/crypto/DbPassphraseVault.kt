@@ -1,7 +1,7 @@
 package be.monmoisclair.app.data.crypto
 
 import android.content.Context
-import android.os.UserManager
+import be.monmoisclair.app.data.device.CredentialStorageGate
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.Base64
@@ -96,10 +96,7 @@ class DbPassphraseVault @Inject constructor(
     }
 
     private fun requireCredentialStorage() {
-        val um = context.getSystemService(UserManager::class.java) ?: return
-        if (!um.isUserUnlocked) {
-            error("Stockage CE indisponible (utilisateur verrouillé) — pas de vault Direct Boot")
-        }
+        CredentialStorageGate.requireAvailable(context)
     }
 
     companion object {
