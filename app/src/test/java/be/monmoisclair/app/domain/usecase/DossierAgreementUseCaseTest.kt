@@ -30,6 +30,7 @@ import be.monmoisclair.app.data.widget.CarnetWidgetSink
 @RunWith(RobolectricTestRunner::class)
 class DossierAgreementUseCaseTest {
 
+    private lateinit var appContext: Context
     private lateinit var db: AppDatabase
     private lateinit var add: AddEntryUseCase
     private lateinit var engine: MonthCycleEngine
@@ -38,8 +39,8 @@ class DossierAgreementUseCaseTest {
 
     @Before
     fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
-        db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
+        appContext = ApplicationProvider.getApplicationContext()
+        db = Room.inMemoryDatabaseBuilder(appContext, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         repo = MutatingRepository(
@@ -289,7 +290,7 @@ class DossierAgreementUseCaseTest {
                 createdAtEpochMs = 1L
             )
         )
-        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        val update = UpdateInstanceUseCase(appContext, db.instanceDao(), mutatingRepo())
         val result = update(
             id = "exp:2026-10:tpl-cause",
             isExpense = true,
@@ -470,7 +471,7 @@ class DossierAgreementUseCaseTest {
     @Test
     fun update_loweringSettlingAmount_recreatesNextMonth() = runBlocking {
         freezeAt("2026-10-05T12:00:00+02:00")
-        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        val update = UpdateInstanceUseCase(appContext, db.instanceDao(), mutatingRepo())
         val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), mutatingRepo())
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(
@@ -543,7 +544,7 @@ class DossierAgreementUseCaseTest {
     @Test
     fun update_addFeesWhileDone_recreatesNextMonth() = runBlocking {
         freezeAt("2026-10-05T12:00:00+02:00")
-        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        val update = UpdateInstanceUseCase(appContext, db.instanceDao(), mutatingRepo())
         val toggle = ToggleExpenseDoneUseCase(db.instanceDao(), mutatingRepo())
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(
@@ -623,7 +624,7 @@ class DossierAgreementUseCaseTest {
     @Test
     fun update_twoFeeLetters_keepsDatedHistory() = runBlocking {
         freezeAt("2026-10-05T12:00:00+02:00")
-        val update = UpdateInstanceUseCase(db.instanceDao(), mutatingRepo())
+        val update = UpdateInstanceUseCase(appContext, db.instanceDao(), mutatingRepo())
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(
                 id = "tpl-fees2",

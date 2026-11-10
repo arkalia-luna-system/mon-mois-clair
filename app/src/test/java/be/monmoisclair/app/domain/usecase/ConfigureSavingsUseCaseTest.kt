@@ -52,6 +52,7 @@ class ConfigureSavingsUseCaseTest {
         val engine = MonthCycleEngine(db.monthLedgerDao(), repo)
         add = AddEntryUseCase(engine, repo)
         configure = ConfigureSavingsUseCase(
+            context,
             addEntry = add,
             mutatingRepository = repo,
             instanceDao = db.instanceDao(),

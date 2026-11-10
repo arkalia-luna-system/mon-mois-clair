@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.55** a11y destructif / refresh widget / chaîne réparée — **550** pass, **1** skipped, versionCode **161** |
+| Dernière étape terminée | **7.56** nettoyage reçus orphelins / chaîne locale verte — **557** pass, **1** skipped, versionCode **162** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -21,8 +21,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ## Journal
 
-### 2026-11-10 — 7.55 a11y destructif / refresh widget / chaîne réparée
+### 2026-11-10 — 7.56 nettoyage reçus orphelins / chaîne locale verte
 
+**Contexte :** reprendre la chaîne locale au-dessus de `7.55` avec le lot reçu/orphelins, corriger la suite rouge restante puis revalider un build unique jusqu’au bout.
+
+**Corrigé :**
+- archivage / suppression : les reçus orphelins sont retirés quand un modèle, une epargne ou un extra disparaît
+- bascule récurrent -> ponctuel : les justificatifs devenus hors sujet sont nettoyés au bon moment
+- tests JVM réalignés sur les nouvelles signatures (`ConfigureSavings*`, `UpdateDeleteEntry*`, `DossierAgreement*`)
+- `UpcomingViewModelTest` rendu déterministe sur le chemin d’erreur pour refléter le comportement attendu sans faux rouge
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **557** pass, **1** skipped, **0** failure (**135** XML).  
+**Version :** `0.1.0-7.56` · `versionCode` **162**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
+
+### 2026-11-10 — 7.55 a11y destructif / refresh widget / chaîne réparée
 **Contexte :** après 7.54 poussé trop tôt — la chaîne locale a continué d’avancer et a exigé un re-bouclage build unique.
 
 **Corrigé :**

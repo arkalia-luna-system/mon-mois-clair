@@ -54,7 +54,11 @@ class UpdateDeleteEntryUseCaseTest {
             },
             widgetSink = CarnetWidgetSink.Noop
         )
-        update = UpdateInstanceUseCase(appContext, db.instanceDao(), repo)
+        update = UpdateInstanceUseCase(
+            appContext = appContext,
+            instanceDao = db.instanceDao(),
+            mutatingRepository = repo
+        )
         delete = DeleteInstanceUseCase(
             appContext = appContext,
             instanceDao = db.instanceDao(),

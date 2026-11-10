@@ -136,6 +136,14 @@
         "Quelques textes techniques autour de l’épargne et de la restauration ont été clarifiés.",
         "La chaîne locale de tests a aussi été réparée pour refléter le vrai comportement attendu."
       ]
+    },
+    {
+      "versionCode": 162,
+      "bullets": [
+        "Suppression, archivage et épargne : les anciens reçus inutiles sont mieux nettoyés.",
+        "Si une facture récurrente devient ponctuelle, ses justificatifs orphelins ne traînent plus.",
+        "Le ménage des photos et fichiers extra retirés a aussi été durci pour éviter les restes cachés."
+      ]
     }
   ]
 }

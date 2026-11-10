@@ -19,9 +19,14 @@ data class UpcomingUiState(
 )
 
 @HiltViewModel
-class UpcomingViewModel @Inject constructor(
-    private val listUpcoming: ListUpcomingMonthsUseCase
+class UpcomingViewModel internal constructor(
+    private val loadUpcoming: suspend () -> List<UpcomingMonth>
 ) : ViewModel() {
+    @Inject
+    constructor(listUpcoming: ListUpcomingMonthsUseCase) : this(
+        loadUpcoming = { listUpcoming() }
+    )
+
     private val _state = MutableStateFlow(UpcomingUiState())
     val state: StateFlow<UpcomingUiState> = _state.asStateFlow()
     private val refreshCoordinator = AsyncLoadCoordinator()
@@ -38,7 +43,7 @@ class UpcomingViewModel @Inject constructor(
                 if (previous.months.isEmpty()) {
                     _state.update { it.copy(loading = true) }
                 }
-                val months = listUpcoming()
+                val months = loadUpcoming()
                 if (refreshCoordinator.isStale(loadId)) return@launch
                 _state.update { it.copy(loading = false, months = months) }
             } catch (_: Exception) {

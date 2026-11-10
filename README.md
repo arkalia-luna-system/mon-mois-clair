@@ -11,8 +11,8 @@ Carnet familial belge (papier, QR EPC, communication structurée) — distributi
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/unit%20tests-550%20pass%20·%201%20skipped-success)](#statut)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.55-informational)](#statut)
+[![Tests](https://img.shields.io/badge/unit%20tests-557%20pass%20·%201%20skipped-success)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.56-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 <p align="center">
@@ -59,12 +59,12 @@ Play = **piste Internal familiale** seulement — pas une publication Store gran
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.55` (`versionCode` 161) |
-| Dernière étape | **7.55** — a11y destructif, refresh widget, chaîne locale réparée |
+| Version | `0.1.0-7.56` (`versionCode` 162) |
+| Dernière étape | **7.56** — nettoyage des reçus orphelins, epargne et "A venir" fiabilises |
 | Device | Baseline Galaxy S25 Ultra (SM-S938B), install release **7.16** sans wipe |
 | Distribution | **Play Internal** + IAU Immediate — [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) · [`docs/IN_APP_UPDATES.md`](docs/IN_APP_UPDATES.md) · sideload [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | AAB | `dist/MonMoisClair-release.aab` (gitignoré ; `./gradlew :app:bundleRelease`) |
-| Tests unitaires | **550** passent, **1** skipped, 0 failure (**132** XML) — journal local `--rerun-tasks` 2026-11-10 |
+| Tests unitaires | **557** passent, **1** skipped, 0 failure (**135** XML) — journal local `--rerun-tasks` 2026-11-10 |
 | Schéma Room | **8** |
 
 Non claimé ici (volontaire) : smoke doigt « cadeau », restore famille en conditions réelles, compte Play Console déjà provisionné.

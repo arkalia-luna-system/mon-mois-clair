@@ -54,7 +54,7 @@ class ConfigureSavingsReceiptCleanupTest {
             mutatingRepository = repo
         )
         useCase = ConfigureSavingsUseCase(
-            appContext = appContext,
+            appContext,
             addEntry = addEntry,
             mutatingRepository = repo,
             instanceDao = db.instanceDao(),
