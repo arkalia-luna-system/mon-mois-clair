@@ -31,6 +31,7 @@ class MutatingRepositoryTest {
     private lateinit var repo: MutatingRepository
     private val backupCalls = AtomicInteger(0)
     private val reconcileCalls = AtomicInteger(0)
+    private val widgetRefreshCalls = AtomicInteger(0)
 
     @Before
     fun setUp() {
@@ -40,6 +41,7 @@ class MutatingRepositoryTest {
             .build()
         backupCalls.set(0)
         reconcileCalls.set(0)
+        widgetRefreshCalls.set(0)
         repo = MutatingRepository(
             db = db,
             backupScheduler = BackupScheduler { backupCalls.incrementAndGet() },
@@ -50,7 +52,11 @@ class MutatingRepositoryTest {
 
                 override suspend fun cancelFor(expenseId: String) = Unit
             },
-            widgetSink = CarnetWidgetSink.Noop
+            widgetSink = object : CarnetWidgetSink {
+                override fun refresh() {
+                    widgetRefreshCalls.incrementAndGet()
+                }
+            }
         )
     }
 
@@ -105,6 +111,7 @@ class MutatingRepositoryTest {
 
         assertThat(backupCalls.get()).isEqualTo(1)
         assertThat(reconcileCalls.get()).isEqualTo(1)
+        assertThat(widgetRefreshCalls.get()).isEqualTo(1)
     }
 
     @Test
@@ -125,6 +132,7 @@ class MutatingRepositoryTest {
         assertThat(db.monthLedgerDao().getById("2026-10")).isNull()
         assertThat(backupCalls.get()).isEqualTo(0)
         assertThat(reconcileCalls.get()).isEqualTo(0)
+        assertThat(widgetRefreshCalls.get()).isEqualTo(0)
     }
 
     @Test
@@ -136,6 +144,7 @@ class MutatingRepositoryTest {
         }
         assertThat(backupCalls.get()).isEqualTo(1)
         assertThat(reconcileCalls.get()).isEqualTo(0)
+        assertThat(widgetRefreshCalls.get()).isEqualTo(1)
     }
 
     @Test
@@ -151,6 +160,7 @@ class MutatingRepositoryTest {
             .isEqualTo(AppMetaKeys.CURRENT_SCHEMA_VERSION)
         assertThat(backupCalls.get()).isEqualTo(0)
         assertThat(reconcileCalls.get()).isEqualTo(0)
+        assertThat(widgetRefreshCalls.get()).isEqualTo(1)
     }
 
     @Test
@@ -182,5 +192,39 @@ class MutatingRepositoryTest {
         assertThat(loaded!!.status).isEqualTo(ExpenseStatus.DONE)
         assertThat(db.instanceDao().expensesByStatus("2026-03", ExpenseStatus.DONE)).hasSize(1)
         assertThat(db.instanceDao().expensesByStatus("2026-03", ExpenseStatus.TODO)).isEmpty()
+    }
+
+    @Test
+    fun mutate_refreshesWidget_evenWhenReminderReconcileFails() = runBlocking {
+        val failingRepo = MutatingRepository(
+            db = db,
+            backupScheduler = BackupScheduler { backupCalls.incrementAndGet() },
+            reminderScheduler = object : ReminderScheduler {
+                override suspend fun reconcileAll() {
+                    reconcileCalls.incrementAndGet()
+                    error("boom")
+                }
+
+                override suspend fun cancelFor(expenseId: String) = Unit
+            },
+            widgetSink = object : CarnetWidgetSink {
+                override fun refresh() {
+                    widgetRefreshCalls.incrementAndGet()
+                }
+            }
+        )
+
+        val failure = runCatching {
+            failingRepo.mutate {
+                appMetaDao.upsert(
+                    AppMetaEntity(AppMetaKeys.SCHEMA_VERSION, AppMetaKeys.CURRENT_SCHEMA_VERSION)
+                )
+            }
+        }.exceptionOrNull()
+
+        assertThat(failure).isNotNull()
+        assertThat(backupCalls.get()).isEqualTo(1)
+        assertThat(reconcileCalls.get()).isEqualTo(1)
+        assertThat(widgetRefreshCalls.get()).isEqualTo(1)
     }
 }

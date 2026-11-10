@@ -51,16 +51,23 @@ class MutatingRepository @Inject constructor(
             )
             context.block()
         }
+        var sideEffectFailure: Throwable? = null
         if (sideEffectsWhen(result)) {
-            backupScheduler.enqueueImmediate()
-            if (rescheduleReminders) {
-                reminderScheduler.reconcileAll()
-            }
+            runCatching {
+                backupScheduler.enqueueImmediate()
+                if (rescheduleReminders) {
+                    reminderScheduler.reconcileAll()
+                }
+            }.onFailure { sideEffectFailure = it }
         }
         try {
             widgetSink.refresh()
         } catch (e: Exception) {
             Log.e("MutatingRepository", "widget non rafraîchi", e)
+        }
+        sideEffectFailure?.let {
+            if (it is Exception) throw it
+            throw RuntimeException(it)
         }
         return result
     }
