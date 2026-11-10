@@ -144,8 +144,8 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() },
                 onOpenAccountGroup = { navController.navigateSingleTop(AppRoute.SettingsAccountGroup) },
                 onOpenComfortGroup = { navController.navigateSingleTop(AppRoute.SettingsComfortGroup) },
-                // Aide → Comment ça marche (contact support = Menu Accueil seul).
-                onOpenHelp = { navController.navigateSingleTop(AppRoute.HowItWorks) },
+                // Aide ouvre d'abord la page dédiée, puis « Comment ça marche ».
+                onOpenHelp = { navController.navigateSingleTop(AppRoute.SettingsHelp) },
                 onOpenBackup = { navController.navigateSingleTop(AppRoute.SettingsBackup) }
             )
         }

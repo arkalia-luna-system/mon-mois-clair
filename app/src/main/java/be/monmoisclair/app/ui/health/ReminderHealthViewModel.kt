@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.data.reminder.ReminderHealthReport
 import be.monmoisclair.app.ui.AsyncLoadCoordinator
+import be.monmoisclair.app.ui.settings.SystemSettingsMessages
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,7 +46,6 @@ class ReminderHealthViewModel @Inject constructor(
 
     /** Réglages système inaccessibles (ROM / ActivityNotFound). */
     fun reportSettingsIntentFailed() {
-        _errorMessage.value =
-            "Impossible d’ouvrir les réglages. Réessayez depuis le téléphone."
+        _errorMessage.value = SystemSettingsMessages.OPEN_FAILED
     }
 }

@@ -339,7 +339,7 @@ fun ScanEpcScreen(onResult: (String) -> Unit, onCancel: () -> Unit) {
                             )
                         }.isSuccess
                         if (!opened) {
-                            status = "Impossible d’ouvrir les réglages. Réessayez depuis le téléphone."
+                            status = be.monmoisclair.app.ui.settings.SystemSettingsMessages.OPEN_FAILED
                         }
                     }
                 )
