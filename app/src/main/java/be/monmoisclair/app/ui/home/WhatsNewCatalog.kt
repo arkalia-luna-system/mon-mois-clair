@@ -11,7 +11,12 @@ import org.json.JSONObject
 object WhatsNewCatalog {
     private const val ASSET_PATH = "whats_new/catalog.json"
 
-    data class Release(val versionCode: Int, val bullets: List<String>)
+    data class Release(
+        val versionCode: Int,
+        val bullets: List<String>,
+        /** `false` = entrée technique, jamais montrée à l’utilisatrice. */
+        val userVisible: Boolean = true,
+    )
 
     data class Catalog(
         val genericFallbackBullet: String,
@@ -42,7 +47,11 @@ object WhatsNewCatalog {
         }
         require(releases.isNotEmpty()) { "releases vide" }
         releases.sortBy { it.versionCode }
-        releases.forEach { require(it.bullets.isNotEmpty()) { "bullets vides pour ${it.versionCode}" } }
+        releases.forEach {
+            require(it.bullets.isNotEmpty() || !it.userVisible) {
+                "bullets vides pour ${it.versionCode}"
+            }
+        }
         val codes = releases.map { it.versionCode }
         require(codes.distinct().size == codes.size) { "versionCode dupliqué dans le catalogue" }
         return Catalog(fallback, releases)
@@ -50,8 +59,13 @@ object WhatsNewCatalog {
 
     private fun parseRelease(obj: JSONObject): Release {
         val code = obj.getInt("versionCode")
+        val userVisible = obj.optBoolean("userVisible", true)
         val bullets = obj.getJSONArray("bullets").toStringList()
-        return Release(code, bullets)
+        return Release(
+            versionCode = code,
+            bullets = bullets,
+            userVisible = userVisible,
+        )
     }
 
     private fun JSONArray.toStringList(): List<String> =

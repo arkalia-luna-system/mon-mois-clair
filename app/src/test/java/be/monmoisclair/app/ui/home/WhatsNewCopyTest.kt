@@ -43,20 +43,35 @@ class WhatsNewCopyTest {
     }
 
     @Test
-    fun payload_mergesReleases_upToSixBullets() {
+    fun payload_showsOnlyCurrentVersion_evenWhenOlderWereUnseen() {
         val p = WhatsNewCopy.payloadForReleases(145, 147, releases, catalog.genericFallbackBullet)
         requireNotNull(p)
-        assertThat(p.bullets).hasSize(WhatsNewCopy.MAX_BULLETS)
-        assertThat(p.bullets.joinToString(" ")).contains("Pour aujourd’hui")
-        assertThat(p.bullets.joinToString(" ")).contains("Appliquer aussi aux mois suivants")
+        assertThat(p.bullets).containsExactly(
+            "Cet écran résume les changements après chaque mise à jour — une seule fois.",
+            "Aide mise à jour : case « Appliquer aussi aux mois suivants », anti-doublon et « Pour aujourd’hui ».",
+            "Petit rappel sauvegarde si vous n’en avez jamais fait — doux, sans insister."
+        ).inOrder()
     }
 
     @Test
-    fun payload_onlyNewerThanLastSeen() {
+    fun payload_doesNotReplayOlderVersions() {
         val p = WhatsNewCopy.payloadForReleases(146, 147, releases, catalog.genericFallbackBullet)
         requireNotNull(p)
         assertThat(p.bullets.joinToString(" ")).contains("mise à jour")
         assertThat(p.bullets.joinToString(" ")).doesNotContain("filtres Tous")
+    }
+
+    @Test
+    fun payload_limitsCurrentReleaseToSixBullets() {
+        val custom = listOf(
+            WhatsNewCatalog.Release(
+                versionCode = 200,
+                bullets = listOf("1", "2", "3", "4", "5", "6", "7")
+            )
+        )
+        val p = WhatsNewCopy.payloadForReleases(199, 200, custom, catalog.genericFallbackBullet)
+        requireNotNull(p)
+        assertThat(p.bullets).containsExactly("1", "2", "3", "4", "5", "6").inOrder()
     }
 
     @Test
@@ -70,6 +85,19 @@ class WhatsNewCopyTest {
         )
         requireNotNull(p)
         assertThat(p.bullets).containsExactly(catalog.genericFallbackBullet)
+    }
+
+    @Test
+    fun payload_hiddenTechnicalReleaseStaysSilent() {
+        val custom = listOf(
+            WhatsNewCatalog.Release(
+                versionCode = 210,
+                bullets = emptyList(),
+                userVisible = false
+            )
+        )
+        val p = WhatsNewCopy.payloadForReleases(209, 210, custom, catalog.genericFallbackBullet)
+        assertThat(p).isNull()
     }
 
     @Test

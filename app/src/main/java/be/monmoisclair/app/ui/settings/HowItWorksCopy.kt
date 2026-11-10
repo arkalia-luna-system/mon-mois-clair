@@ -60,9 +60,9 @@ object HowItWorksCopy {
         ),
         Section(
             title = "Nouveautés",
-            body = "Après une mise à jour sur le téléphone : un écran « Nouveautés » s’affiche une fois, " +
-                "avec la version en haut et des puces simples. Touchez « J’ai compris » pour continuer. " +
-                "Pas de pub, pas de compte — tout reste sur l’appareil."
+            body = "Après une mise à jour : un écran « Nouveautés » peut s’ouvrir une seule fois pour " +
+                "cette version, avec quelques puces simples. Touchez « J’ai compris » ou « Passer ». " +
+                "Les anciennes nouveautés ne reviennent pas à la mise à jour suivante."
         ),
         Section(
             title = "Plan de remboursement",

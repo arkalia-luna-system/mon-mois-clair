@@ -16,4 +16,26 @@ class WhatsNewCatalogTest {
         assertThat(loaded.releases.map { it.versionCode }).contains(146)
         assertThat(loaded.releases.map { it.versionCode }).contains(148)
     }
+
+    @Test
+    fun parse_allowsTechnicalOnlyReleaseWithoutBullets() {
+        val parsed = WhatsNewCatalog.parse(
+            """
+            {
+              "genericFallbackBullet": "Fallback",
+              "releases": [
+                { "versionCode": 200, "userVisible": false, "bullets": [] }
+              ]
+            }
+            """.trimIndent()
+        )
+
+        assertThat(parsed.releases).containsExactly(
+            WhatsNewCatalog.Release(
+                versionCode = 200,
+                bullets = emptyList(),
+                userVisible = false
+            )
+        )
+    }
 }

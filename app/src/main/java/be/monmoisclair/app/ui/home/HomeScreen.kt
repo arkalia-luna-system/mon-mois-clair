@@ -321,7 +321,8 @@ fun HomeScreen(
             bullets = payload.bullets,
             versionLabel = payload.versionLabel,
             fit = fit,
-            onDismiss = viewModel::dismissWhatsNew
+            onDismiss = viewModel::dismissWhatsNew,
+            onSkip = viewModel::skipWhatsNew,
         )
     }
     if (backupNudgeVisible) {

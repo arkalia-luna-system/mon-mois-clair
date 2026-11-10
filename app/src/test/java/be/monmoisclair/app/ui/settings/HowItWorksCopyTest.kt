@@ -32,6 +32,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("À traiter")
         assertThat(all).contains("il reste")
         assertThat(all).contains("Après les FAIT")
+        assertThat(all).contains("Passer")
         assertThat(all).contains("Lire la communication sur la photo")
         assertThat(all).contains("jamais le montant")
         assertThat(all).contains("Prélèvement : cochez quand vous voyez le débit")

@@ -10,7 +10,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 | Champ | Valeur |
 |-------|--------|
 | Dernière étape terminée | **7.57** refresh réglages débloqué / Nouveautés relues — **558** pass, **1** skipped, versionCode **163** |
-| Étape en cours | — |
+| Étape en cours | **WhatsNew / Aide** fin de journée local — build unique en attente |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
@@ -20,6 +20,18 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — local fin de journée WhatsNew / Aide (build unique en attente)
+
+**Contexte :** revoir complètement le flux « Nouveautés » + le menu Aide, sans relancer Gradle dans ce lot.
+
+**Corrigé :**
+- `WhatsNewCopy` / `HomeViewModel` / dialogue : l’écran ne rejoue plus les anciennes versions ; il ne regarde que le `versionCode` installé, puis marque la version comme traitée après **J’ai compris** ou **Passer**
+- `catalog.json` + `WhatsNewCatalog` : textes resserrés côté utilisatrice ; les versions purement techniques peuvent rester au catalogue avec `userVisible=false` sans rien afficher
+- `HowItWorksCopy` : rubrique « Nouveautés » réalignée sur le comportement réel ; tests unitaires ciblés ajustés sur ce contrat
+
+**Tests :** non relancés ici (consigne : **pas de Gradle** dans ce lot). Diagnostics IDE/lints propres.  
+**Version :** inchangée `0.1.0-7.57` · `versionCode` **163**.
 
 ### 2026-11-10 — 7.57 refresh réglages débloqué / Nouveautés relues
 

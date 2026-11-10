@@ -2,7 +2,7 @@ package be.monmoisclair.app.domain
 
 import android.content.Context
 
-/** Dernière version (versionCode) pour laquelle l’écran « Nouveautés » a été vu. */
+/** Dernière version (versionCode) déjà traitée par l’utilisatrice (lue ou passée). */
 object LastSeenVersionCache {
     private const val PREFS = "last_seen_version_cache"
     private const val KEY = "lastSeenVersionCode"

@@ -14,16 +14,15 @@
       "versionCode": 147,
       "bullets": [
         "Cet écran résume les changements après chaque mise à jour — une seule fois.",
-        "Aide mise à jour : même case « Appliquer aussi aux mois suivants », anti-doublon, « Pour aujourd’hui ».",
+        "Aide mise à jour : case « Appliquer aussi aux mois suivants », anti-doublon et « Pour aujourd’hui ».",
         "Petit rappel sauvegarde si vous n’en avez jamais fait — doux, sans insister."
       ]
     },
     {
       "versionCode": 148,
       "bullets": [
-        "Les textes « Nouveautés » viennent d’un catalogue dans l’app — plus besoin de tout retaper à la main.",
-        "Si une mise à jour n’a pas encore de texte détaillé, un message simple s’affiche quand même.",
-        "Cet écran montre la version (ex. 7.42) : touchez seulement « J’ai compris » pour fermer.",
+        "L’écran « Nouveautés » montre la version en haut pour mieux se repérer.",
+        "Quand il y a peu à dire, un message court suffit.",
         "Aide : rubrique « Nouveautés » pour savoir comment lire cet écran."
       ]
     },
@@ -39,9 +38,8 @@
     {
       "versionCode": 150,
       "bullets": [
-        "Aide : rubrique « Copier pour la banque » — IBAN et communication effacés du presse-papiers après ~30 s.",
-        "Fiche dossier : rappel de coller vite après « Copier l’IBAN ».",
-        "Le reste : sauvegarde datée, restauration rassurante, alertes et anti-doublon (7.43)."
+        "Aide : rubrique « Copier pour la banque » — IBAN et communication s’effacent du presse-papiers après ~30 s.",
+        "Fiche dossier : rappel de coller vite après « Copier l’IBAN »."
       ]
     },
     {
@@ -64,7 +62,6 @@
       "versionCode": 153,
       "bullets": [
         "Alertes : bandeau orange pour batterie ou copie — rouge seulement si les rappels sont bloqués.",
-        "Copier IBAN / communication : inchangé côté sécurité (effacement ~30 s) — Aide et écrans alignés.",
         "Restaurer : rappel visible si fichier ou code refusé — le carnet ne change pas."
       ]
     },
@@ -72,8 +69,7 @@
       "versionCode": 154,
       "bullets": [
         "Après « Envoyer une copie », la date de sauvegarde se met à jour tout de suite.",
-        "Aide : textes des accords de paiement relus pour rester courts et lisibles.",
-        "Anti-doublon : prêt pour l’édition sans se comparer à soi-même (filet technique)."
+        "Aide : textes des accords de paiement relus pour rester courts et lisibles."
       ]
     },
     {
@@ -87,9 +83,7 @@
     {
       "versionCode": 156,
       "bullets": [
-        "Téléphone verrouillé au démarrage : plus d’écriture crypto ni d’accès base avant déverrouillage.",
-        "Widget et rotation d’écran : plus de lecture base tant que l’appareil n’est pas déverrouillé.",
-        "Lecture des marqueurs SQLCipher : ne crée plus de dossier à la volée avant l’heure."
+        "Après un redémarrage, l’app attend mieux le déverrouillage du téléphone avant d’ouvrir le carnet."
       ]
     },
     {
@@ -115,8 +109,7 @@
       "bullets": [
         "Accueil et widget : les écrans vides disent plus clairement quand il n’y a rien à payer ce mois-ci.",
         "Photo, courrier et partage : messages d’aide et d’échec relus pour être plus directs.",
-        "Réglages de l’app : ouverture et textes associés mieux verrouillés côté tests.",
-        "Sur certains volumes externes, le nettoyage des fichiers parasites démarre plus tôt avant le build."
+        "Réglages de l’app : ouverture et messages associés mieux relus."
       ]
     },
     {
@@ -146,9 +139,8 @@
     {
       "versionCode": 163,
       "bullets": [
-        "Réglages : le rafraîchissement se débloque mieux après un raté local.",
-        "L’écran « Nouveautés » a été relu pour aller plus vite au concret.",
-        "Le reste du lot est surtout une petite fiabilisation interne de fin de journée."
+        "Réglages : le rafraîchissement se remet mieux après un petit raté.",
+        "L’écran « Nouveautés » va plus vite à l’essentiel."
       ]
     }
   ]

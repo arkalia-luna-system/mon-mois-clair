@@ -48,13 +48,14 @@ import be.monmoisclair.app.ui.theme.HomeTokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-/** Nouveautés après mise à jour (une fois par versionCode). */
+/** Nouveautés après mise à jour (au plus une fois par version montrée). */
 @Composable
 internal fun HomeWhatsNewDialog(
     bullets: List<String>,
     versionLabel: String?,
     fit: DisplayFit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onSkip: () -> Unit,
 ) {
     if (bullets.isEmpty()) return
     Dialog(
@@ -99,6 +100,10 @@ internal fun HomeWhatsNewDialog(
                         color = A11yTokens.Ink
                     )
                 }
+                SecondaryA11yButton(
+                    text = WhatsNewCopy.SKIP,
+                    onClick = onSkip
+                )
                 PrimaryA11yButton(
                     text = WhatsNewCopy.DISMISS,
                     onClick = onDismiss

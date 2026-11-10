@@ -3,11 +3,12 @@ package be.monmoisclair.app.ui.home
 import android.content.Context
 
 /**
- * Nouveautés à l’ouverture — contenu = [WhatsNewCatalog] ; logique de fusion ici.
+ * Nouveautés à l’ouverture — contenu = [WhatsNewCatalog] ; logique de sélection ici.
  */
 object WhatsNewCopy {
     const val TITLE = "Nouveautés"
     const val DISMISS = "J’ai compris"
+    const val SKIP = "Passer"
     const val MAX_BULLETS = 6
 
     data class Payload(
@@ -35,9 +36,11 @@ object WhatsNewCopy {
         if (currentVersionCode <= 0) return null
         if (lastSeenVersionCode >= currentVersionCode) return null
         val catalog = WhatsNewCatalog.load(context)
-        val bullets = catalog.releases
-            .filter { it.versionCode > lastSeenVersionCode && it.versionCode <= currentVersionCode }
-            .flatMap { it.bullets }
+        val release = catalog.releases.lastOrNull { it.versionCode == currentVersionCode }
+        if (release != null && !release.userVisible) return null
+        val bullets = release
+            ?.bullets
+            .orEmpty()
             .distinct()
             .take(MAX_BULLETS)
         val resolved = bullets.ifEmpty {
@@ -59,9 +62,11 @@ object WhatsNewCopy {
     ): Payload? {
         if (currentVersionCode <= 0) return null
         if (lastSeenVersionCode >= currentVersionCode) return null
-        val bullets = releases
-            .filter { it.versionCode > lastSeenVersionCode && it.versionCode <= currentVersionCode }
-            .flatMap { it.bullets }
+        val release = releases.lastOrNull { it.versionCode == currentVersionCode }
+        if (release != null && !release.userVisible) return null
+        val bullets = release
+            ?.bullets
+            .orEmpty()
             .distinct()
             .take(MAX_BULLETS)
         val resolved = bullets.ifEmpty {
@@ -74,7 +79,7 @@ object WhatsNewCopy {
     }
 
     const val POST_WHATS_NEW_HELP_TIP =
-        "Astuce : Menu → Réglages → Comment ça marche pour le mode d’emploi complet."
+        "Astuce : Réglages → Comment ça marche pour relire calmement plus tard."
 
     const val BACKUP_NUDGE_TITLE = "Pensez à une copie"
     const val BACKUP_NUDGE_BODY =
