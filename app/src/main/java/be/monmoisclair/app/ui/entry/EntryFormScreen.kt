@@ -264,6 +264,7 @@ fun AddEntryScreen(
         isSettled = false,
         iban = state.iban,
         onIban = viewModel::setIban,
+        onCopyIban = viewModel::copyIban,
         creditorEmail = state.creditorEmail,
         onCreditorEmail = viewModel::setCreditorEmail,
         onSaveAsPendingLetter = viewModel::saveAsPendingLetter

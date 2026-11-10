@@ -186,6 +186,16 @@ class AddEntryViewModel @Inject constructor(
     fun setPdfReadError(message: String = EntryFormMessages.PDF_READ_ERROR_DEFAULT) =
         _state.update { it.copy(error = EntryFormDraftController.pdfReadError(message)) }
 
+    fun copyIban() {
+        val outcome = EntryFormCreditorCopy.copyIban(appContext, _state.value.iban)
+        _state.update {
+            it.copy(
+                copyMessage = outcome.copyMessage,
+                error = outcome.error
+            )
+        }
+    }
+
     fun copyPaymentNote() {
         val result = EntryFormPaymentNoteCopy.copy(appContext, _state.value.paymentNote)
         if (!result.ok) {

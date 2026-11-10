@@ -33,7 +33,11 @@ object MonthSummaryPdfShare {
         val dir = shareDir(cacheDir).also { it.mkdirs() }
         purgeStale(dir, nowEpochMs)
         val out = File(dir, FILE_NAME)
-        if (out.exists()) out.delete()
+        if (out.isDirectory) {
+            out.deleteRecursively()
+        } else if (out.exists()) {
+            out.delete()
+        }
         return out
     }
 

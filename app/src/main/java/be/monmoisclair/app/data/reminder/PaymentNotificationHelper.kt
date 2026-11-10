@@ -40,11 +40,19 @@ class PaymentNotificationHelper @Inject constructor(
         manager.createNotificationChannel(channel)
     }
 
+    fun cancelExpenseNotifications(expenseInstanceId: String) {
+        val manager = NotificationManagerCompat.from(context)
+        PaymentNotificationCancel.notificationIdsForExpense(expenseInstanceId).forEach { id ->
+            manager.cancel(id)
+        }
+    }
+
     fun showPaymentReminder(
         notificationId: Int,
         title: String,
         body: String,
-        expenseInstanceId: String
+        expenseInstanceId: String,
+        lockScreenSensitive: Boolean = false
     ) {
         ensureChannel()
         val openApp = PendingIntent.getActivity(
@@ -68,7 +76,7 @@ class PaymentNotificationHelper @Inject constructor(
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val notification = baseBuilder(title, body)
+        val notification = baseBuilder(title, body, lockScreenSensitive)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
@@ -98,7 +106,8 @@ class PaymentNotificationHelper @Inject constructor(
         )
         val notification = baseBuilder(
             title = "$label — noté FAIT",
-            body = "Touchez Remettre si c’était une erreur."
+            body = "Touchez Remettre si c’était une erreur.",
+            lockScreenSensitive = false
         )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
@@ -117,12 +126,22 @@ class PaymentNotificationHelper @Inject constructor(
      * largeIcon = livre+coche couleur simplifiée (bannière Samsung collapsed) ;
      * setColor = accent teal brand.
      */
-    private fun baseBuilder(title: String, body: String): NotificationCompat.Builder {
+    private fun baseBuilder(
+        title: String,
+        body: String,
+        lockScreenSensitive: Boolean
+    ): NotificationCompat.Builder {
+        val visibility = if (lockScreenSensitive) {
+            NotificationCompat.VISIBILITY_SECRET
+        } else {
+            NotificationCompat.VISIBILITY_PRIVATE
+        }
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(CONTEXT_TEAL)
             .setContentTitle(title)
             .setContentText(body)
+            .setVisibility(visibility)
         decodeAppLargeIcon()?.let { builder.setLargeIcon(it) }
         return builder
     }

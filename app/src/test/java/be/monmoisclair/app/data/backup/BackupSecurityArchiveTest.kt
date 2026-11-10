@@ -85,6 +85,18 @@ class BackupSecurityArchiveTest {
     }
 
     @Test
+    fun packToFile_recreatesDirectoryCollision() {
+        val out = tmp.newFolder("collision")
+        java.io.File(out, "stale.txt").writeText("old")
+
+        val packed = BackupSecurityArchive.packToFile(out, """{"schemaVersion":8}""", emptyMap())
+
+        assertThat(out.isFile).isTrue()
+        assertThat(packed.totalBytes).isGreaterThan(0L)
+        assertThat(BackupSecurityArchive.looksLikeZip(out.readBytes())).isTrue()
+    }
+
+    @Test
     fun readBounded_rejects_over_limit() {
         val input = ByteArrayInputStream(ByteArray(100) { 1 })
         assertThrows(BackupFailure.Io::class.java) {

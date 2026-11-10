@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
+import be.monmoisclair.app.data.db.dao.AppMetaDao
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.domain.model.AppMetaKeys
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.model.ReminderKind
 import be.monmoisclair.app.domain.reminder.ReminderMarkUndoPolicy
@@ -37,6 +39,9 @@ class ReminderReceiver : BroadcastReceiver() {
     @Inject
     lateinit var instanceDao: InstanceDao
 
+    @Inject
+    lateinit var appMetaDao: AppMetaDao
+
     override fun onReceive(context: Context, intent: Intent?) {
         val action = intent?.action ?: return
         when (action) {
@@ -52,22 +57,32 @@ class ReminderReceiver : BroadcastReceiver() {
             try {
                 val expenseId = intent.getStringExtra(EXTRA_EXPENSE_ID) ?: return@launch
                 val kindName = intent.getStringExtra(EXTRA_KIND) ?: return@launch
-                val title = intent.getStringExtra(EXTRA_TITLE) ?: return@launch
-                val body = intent.getStringExtra(EXTRA_BODY) ?: return@launch
                 val kind = runCatching { ReminderKind.valueOf(kindName) }.getOrNull()
                     ?: return@launch
                 val expense = instanceDao.getExpenseById(expenseId)
                 if (expense == null || expense.status != ExpenseStatus.TODO) {
+                    notifications.cancelExpenseNotifications(expenseId)
                     reminderScheduler.cancelFor(expenseId)
                     reminderScheduler.reconcileAll()
                     return@launch
                 }
+                val hideAmounts =
+                    appMetaDao.get(AppMetaKeys.BIOMETRIC_ENABLED)?.value == "true"
+                val title = ReminderNotifCopy.title(kind, expense.label, hideAmounts = hideAmounts)
+                val body = ReminderNotifCopy.body(
+                    kind = kind,
+                    amountCents = expense.amountCents,
+                    dayOfMonth = expense.dayOfMonth,
+                    isAutoDebit = expense.isAutoDebit,
+                    hideAmounts = hideAmounts
+                )
                 val notificationId = ReminderRequestCodes.of(expenseId, kind)
                 notifications.showPaymentReminder(
                     notificationId = notificationId,
                     title = title,
                     body = body,
-                    expenseInstanceId = expenseId
+                    expenseInstanceId = expenseId,
+                    lockScreenSensitive = hideAmounts
                 )
                 reminderScheduler.reconcileAll()
             } catch (e: Exception) {

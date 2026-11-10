@@ -1,5 +1,6 @@
 package be.monmoisclair.app.data.reminder
 
+import android.app.NotificationManager
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -25,16 +26,22 @@ class ReminderSchedulerImplTest {
     private lateinit var db: AppDatabase
     private lateinit var gateway: RecordingExactAlarmGateway
     private lateinit var scheduler: ReminderSchedulerImpl
+    private lateinit var context: Context
     private val brussels = ZoneId.of("Europe/Brussels")
 
     @Before
     fun setUp() {
-        val context: Context = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         gateway = RecordingExactAlarmGateway()
-        scheduler = ReminderSchedulerImpl(db.instanceDao(), gateway, db.appMetaDao())
+        scheduler = ReminderSchedulerImpl(
+            db.instanceDao(),
+            gateway,
+            db.appMetaDao(),
+            PaymentNotificationHelper(context)
+        )
         // 1er octobre 2026 → J−3 et Jour J du 5 encore futurs
         val instant = java.time.OffsetDateTime.parse("2026-10-01T12:00:00+02:00").toInstant()
         AppClock.clock = Clock.fixed(instant, brussels)
@@ -91,6 +98,29 @@ class ReminderSchedulerImplTest {
             ReminderRequestCodes.of("exp-x", ReminderKind.JD),
             ReminderRequestCodes.of("exp-x", ReminderKind.OVERDUE)
         )
+    }
+
+    @Test
+    fun cancelFor_clearsVisibleNotificationsToo() = runBlocking<Unit> {
+        val helper = PaymentNotificationHelper(context)
+        helper.showPaymentReminder(
+            notificationId = ReminderRequestCodes.of("exp-visible", ReminderKind.J3),
+            title = "Dans 3 jours : Loyer",
+            body = "47,00 € — le 5. Pensez à payer.",
+            expenseInstanceId = "exp-visible"
+        )
+        helper.showPaymentReminder(
+            notificationId = ReminderRequestCodes.of("exp-visible", ReminderKind.JD),
+            title = "Aujourd’hui : Loyer",
+            body = "47,00 € — à payer aujourd’hui (le 5).",
+            expenseInstanceId = "exp-visible"
+        )
+        val manager = context.getSystemService(NotificationManager::class.java)!!
+        assertThat(manager.activeNotifications.map { it.id }).isNotEmpty()
+
+        scheduler.cancelFor("exp-visible")
+
+        assertThat(manager.activeNotifications.map { it.id }).isEmpty()
     }
 
     @Test

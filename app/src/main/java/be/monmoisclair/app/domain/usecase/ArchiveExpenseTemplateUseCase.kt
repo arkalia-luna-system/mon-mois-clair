@@ -1,5 +1,6 @@
 package be.monmoisclair.app.domain.usecase
 
+import be.monmoisclair.app.data.reminder.PaymentNotificationHelper
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
@@ -20,7 +21,8 @@ sealed class ArchiveExpenseTemplateResult {
 @Singleton
 class ArchiveExpenseTemplateUseCase @Inject constructor(
     private val mutatingRepository: MutatingRepository,
-    private val reminderScheduler: ReminderScheduler
+    private val reminderScheduler: ReminderScheduler,
+    private val paymentNotifications: PaymentNotificationHelper
 ) {
 
     suspend operator fun invoke(templateId: String): ArchiveExpenseTemplateResult {
@@ -53,6 +55,7 @@ class ArchiveExpenseTemplateUseCase @Inject constructor(
         }
         if (result is ArchiveExpenseTemplateResult.Success) {
             removedIds.forEach { id ->
+                runCatching { paymentNotifications.cancelExpenseNotifications(id) }
                 runCatching { reminderScheduler.cancelFor(id) }
             }
         }

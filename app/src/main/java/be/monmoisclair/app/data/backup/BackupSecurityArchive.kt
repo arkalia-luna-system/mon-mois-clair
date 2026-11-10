@@ -35,7 +35,12 @@ object BackupSecurityArchive {
         jsonUtf8: String,
         receipts: Map<String, ByteArray>
     ): Packed {
-        if (outFile.exists()) outFile.delete()
+        outFile.parentFile?.mkdirs()
+        if (outFile.isDirectory) {
+            outFile.deleteRecursively()
+        } else if (outFile.exists()) {
+            outFile.delete()
+        }
         var photoCount = 0
         var running = 0L
         val jsonBytes = jsonUtf8.toByteArray(Charsets.UTF_8)

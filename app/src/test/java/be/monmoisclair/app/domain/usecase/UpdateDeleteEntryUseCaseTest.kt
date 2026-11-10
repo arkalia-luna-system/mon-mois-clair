@@ -8,6 +8,7 @@ import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
+import be.monmoisclair.app.data.reminder.PaymentNotificationHelper
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.data.widget.CarnetWidgetSink
@@ -59,7 +60,8 @@ class UpdateDeleteEntryUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            paymentNotifications = PaymentNotificationHelper(context)
         )
         // AddEntry needs MonthCycleEngine - tested indirectly via seed
     }
@@ -459,7 +461,10 @@ class UpdateDeleteEntryUseCaseTest {
                 override suspend fun cancelFor(expenseId: String) {
                     cancelled += expenseId
                 }
-            }
+            },
+            paymentNotifications = PaymentNotificationHelper(
+                ApplicationProvider.getApplicationContext()
+            )
         )
         db.templateDao().insertExpense(
             ExpenseTemplateEntity(

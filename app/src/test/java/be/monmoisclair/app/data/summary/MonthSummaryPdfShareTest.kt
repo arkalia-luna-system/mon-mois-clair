@@ -28,6 +28,20 @@ class MonthSummaryPdfShareTest {
     }
 
     @Test
+    fun prepareTarget_removesDirectoryCollision() {
+        val cache = tmp.newFolder("cache")
+        val collision = MonthSummaryPdfShare.targetFile(cache)
+        collision.mkdirs()
+        File(collision, "stale.txt").writeText("old")
+
+        val out = MonthSummaryPdfShare.prepareTarget(cache)
+
+        assertThat(out).isEqualTo(collision)
+        assertThat(out.exists()).isFalse()
+        assertThat(collision.isDirectory).isFalse()
+    }
+
+    @Test
     fun wipeShareCache_removesPdfsAndMmc() {
         val cache = tmp.newFolder("cache")
         val dir = MonthSummaryPdfShare.shareDir(cache).also { it.mkdirs() }

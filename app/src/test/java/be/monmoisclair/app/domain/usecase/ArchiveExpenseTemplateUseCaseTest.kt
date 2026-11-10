@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import be.monmoisclair.app.data.backup.BackupScheduler
 import be.monmoisclair.app.data.db.AppDatabase
 import be.monmoisclair.app.data.db.entity.ExpenseTemplateEntity
+import be.monmoisclair.app.data.reminder.PaymentNotificationHelper
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import com.google.common.truth.Truth.assertThat
@@ -43,7 +44,8 @@ class ArchiveExpenseTemplateUseCaseTest {
             reminderScheduler = object : ReminderScheduler {
                 override suspend fun reconcileAll() = Unit
                 override suspend fun cancelFor(expenseId: String) = Unit
-            }
+            },
+            paymentNotifications = PaymentNotificationHelper(context)
         )
     }
 

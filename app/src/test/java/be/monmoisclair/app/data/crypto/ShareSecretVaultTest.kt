@@ -51,6 +51,19 @@ class ShareSecretVaultTest {
     }
 
     @Test
+    fun peekDisplayCode_recoversFromCorruptedWrappedFile() {
+        val wrapped = File(context.filesDir, "${DbPassphraseVault.DIR}/${ShareSecretVault.FILE_NAME}")
+        wrapped.parentFile!!.mkdirs()
+        wrapped.writeText("pas-du-base64")
+
+        val code = vault.peekDisplayCode()
+
+        assertThat(code).hasLength(8)
+        assertThat(code.all { it.isDigit() }).isTrue()
+        assertThat(vault.peekDisplayCode()).isEqualTo(code)
+    }
+
+    @Test
     fun generateNumericCode_respectsDigitCount() {
         val code = ShareSecretVault.generateNumericCode(8)
         assertThat(code).hasLength(8)

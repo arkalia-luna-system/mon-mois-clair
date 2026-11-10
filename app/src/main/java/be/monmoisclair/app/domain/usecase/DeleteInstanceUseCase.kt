@@ -1,6 +1,7 @@
 package be.monmoisclair.app.domain.usecase
 
 import be.monmoisclair.app.data.db.dao.InstanceDao
+import be.monmoisclair.app.data.reminder.PaymentNotificationHelper
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
@@ -18,7 +19,8 @@ sealed class DeleteInstanceResult {
 class DeleteInstanceUseCase @Inject constructor(
     private val instanceDao: InstanceDao,
     private val mutatingRepository: MutatingRepository,
-    private val reminderScheduler: ReminderScheduler
+    private val reminderScheduler: ReminderScheduler,
+    private val paymentNotifications: PaymentNotificationHelper
 ) {
 
     /**
@@ -93,6 +95,7 @@ class DeleteInstanceUseCase @Inject constructor(
         // reconcileAll ne voit plus les lignes absentes : annuler chaque alarme orpheline.
         if (result is DeleteInstanceResult.Success) {
             cancelledExpenseIds.forEach { expenseId ->
+                runCatching { paymentNotifications.cancelExpenseNotifications(expenseId) }
                 runCatching { reminderScheduler.cancelFor(expenseId) }
             }
         }

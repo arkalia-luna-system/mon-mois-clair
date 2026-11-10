@@ -25,27 +25,56 @@ class ShareSecretVault @Inject constructor(
 
     /** Garantit un code ; retourne les chars (à zero-fill après usage si besoin). */
     fun getOrCreateSecretChars(): CharArray {
-        ensureProvisioned()
-        return unwrap().toCharArray()
+        return readOrCreateSecret().toCharArray()
     }
 
     fun peekDisplayCode(): String {
-        ensureProvisioned()
-        return unwrap()
+        return readOrCreateSecret()
     }
 
     fun ensureProvisioned() {
         requireCredentialStorage()
-        if (file.isFile && file.length() > 0L) return
-        val code = generateNumericCode(8)
-        val key = KeystoreAesKey.getOrCreateWrapKey()
-        val wrapped = AesGcmBox.encrypt(key, code.toByteArray(Charsets.UTF_8))
-        file.writeText(Base64.getEncoder().encodeToString(wrapped))
+        readOrCreateSecret()
     }
 
-    private fun unwrap(): String {
+    private fun readOrCreateSecret(): String {
         requireCredentialStorage()
-        val b64 = file.readText(Charsets.UTF_8).trim()
+        readExistingSecretOrNull()?.let { return it }
+        val code = generateNumericCode(8)
+        writeWrapped(code)
+        return code
+    }
+
+    private fun readExistingSecretOrNull(): String? {
+        val current = file
+        if (!current.isFile || current.length() <= 0L) return null
+        return runCatching { unwrap(current) }
+            .getOrElse {
+                current.delete()
+                null
+            }
+    }
+
+    private fun writeWrapped(code: String) {
+        val current = file
+        val tmp = File(current.parentFile, "$FILE_NAME.tmp")
+        val key = KeystoreAesKey.getOrCreateWrapKey()
+        val wrapped = AesGcmBox.encrypt(key, code.toByteArray(Charsets.UTF_8))
+        val encoded = Base64.getEncoder().encodeToString(wrapped)
+        tmp.writeText(encoded, Charsets.UTF_8)
+        if (current.exists() && !current.delete()) {
+            tmp.delete()
+            error("Impossible d'écraser ${current.absolutePath}")
+        }
+        if (!tmp.renameTo(current)) {
+            current.writeText(encoded, Charsets.UTF_8)
+            tmp.delete()
+        }
+    }
+
+    private fun unwrap(source: File = file): String {
+        requireCredentialStorage()
+        val b64 = source.readText(Charsets.UTF_8).trim()
         val wrapped = Base64.getDecoder().decode(b64)
         val key = KeystoreAesKey.getOrCreateWrapKey()
         val plain = AesGcmBox.decrypt(key, wrapped)

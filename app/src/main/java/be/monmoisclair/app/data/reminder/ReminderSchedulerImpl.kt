@@ -15,7 +15,8 @@ import javax.inject.Singleton
 class ReminderSchedulerImpl @Inject constructor(
     private val instanceDao: InstanceDao,
     private val alarmGateway: ExactAlarmGateway,
-    private val appMetaDao: AppMetaDao
+    private val appMetaDao: AppMetaDao,
+    private val notifications: PaymentNotificationHelper
 ) : ReminderScheduler {
 
     override suspend fun reconcileAll() {
@@ -36,6 +37,7 @@ class ReminderSchedulerImpl @Inject constructor(
         alarmGateway.cancel(ReminderRequestCodes.of(expenseId, ReminderKind.J3))
         alarmGateway.cancel(ReminderRequestCodes.of(expenseId, ReminderKind.JD))
         alarmGateway.cancel(ReminderRequestCodes.of(expenseId, ReminderKind.OVERDUE))
+        notifications.cancelExpenseNotifications(expenseId)
     }
 
     private fun scheduleForTodo(expense: ExpenseInstanceEntity, hideAmounts: Boolean) {

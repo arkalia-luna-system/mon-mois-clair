@@ -433,23 +433,11 @@ class EditEntryViewModel @Inject constructor(
     fun setFeeNoteText(v: String) = _state.update { it.copy(feeNoteText = v, error = null) }
 
     fun copyIban() {
-        val iban = _state.value.iban.trim()
-        if (iban.isEmpty()) {
-            _state.update { it.copy(error = "Aucun IBAN à copier.", copyMessage = null) }
-            return
-        }
-        val compact = BelgianStructuredCommunication.ibanForClipboard(iban)
-        if (!BelgianStructuredCommunication.ibanChecksumOk(compact)) {
-            _state.update {
-                it.copy(error = "Vérifiez l’IBAN sur le courrier.", copyMessage = null)
-            }
-            return
-        }
-        SensitiveClipboard.setPlainText(appContext, "IBAN", compact)
+        val outcome = EntryFormCreditorCopy.copyIban(appContext, _state.value.iban)
         _state.update {
             it.copy(
-                copyMessage = BelgianStructuredCommunication.IBAN_COPIED_OK,
-                error = null
+                copyMessage = outcome.copyMessage,
+                error = outcome.error
             )
         }
     }

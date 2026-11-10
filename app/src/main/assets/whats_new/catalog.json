@@ -100,6 +100,15 @@
         "Édition : la case « mois suivants » se recoche toute seule si la facture ne revient qu’une fois.",
         "Sauvegardes et écrans sensibles : moins de courses parallèles qui se gênent."
       ]
+    },
+    {
+      "versionCode": 158,
+      "bullets": [
+        "Rappels de facture : le texte relit maintenant l’état réel du carnet juste avant l’alerte.",
+        "Téléphone verrouillé avec protection active : le rappel cache les montants sur l’écran verrouillé.",
+        "Suppression / archivage : les anciennes notifications de cette facture sont bien retirées.",
+        "Copier l’IBAN : même vérification sur ajout et modification ; fichiers temporaires plus robustes en cas de collision."
+      ]
     }
   ]
 }
