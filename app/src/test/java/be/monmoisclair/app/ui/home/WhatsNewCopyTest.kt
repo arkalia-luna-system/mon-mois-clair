@@ -53,8 +53,8 @@ class WhatsNewCopyTest {
     @Test
     fun payload_genericFallbackWhenNoReleaseEntry() {
         val p = WhatsNewCopy.payloadForReleases(
-            153,
             154,
+            155,
             releases,
             catalog.genericFallbackBullet,
         )
