@@ -8,6 +8,6 @@ object CameraCaptureMessages {
     /** Annulation utilisateur (bouton retour / Annuler) — pas un refus d’autorisation. */
     const val CAPTURE_CANCELLED = "Photo annulée."
     const val CAPTURE_FAILED =
-        "Caméra non ouverte. Vérifiez l’autorisation."
+        "La photo n’a pas pu être prise. Réessayez, ou vérifiez les réglages du téléphone."
     const val OPEN_SETTINGS = "Ouvrir les réglages"
 }

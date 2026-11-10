@@ -22,5 +22,9 @@ class CameraCaptureMessagesTest {
         assertThat(CameraCaptureMessages.OPEN_SETTINGS).isEqualTo("Ouvrir les réglages")
         assertThat(CameraCaptureMessages.CAPTURE_FAILED)
             .isNotEqualTo(CameraCaptureMessages.CAPTURE_CANCELLED)
+        assertThat(CameraCaptureMessages.CAPTURE_FAILED.lowercase())
+            .doesNotContain("autorisation")
+        assertThat(CameraCaptureMessages.CAPTURE_FAILED.lowercase())
+            .contains("réglages")
     }
 }
