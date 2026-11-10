@@ -27,7 +27,8 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Codé (lot) :**
 - **7.43** : date dernière copie · restore fail-safe · `ReminderHealthCopy` · anti-doublon « Revenir modifier »
-- **7.44–7.48** : Aide « Copier pour la banque » + tips fiche IBAN/communication · bandeau Aujourd’hui (contraste retard) · filtres Dossiers · bannières alertes warn/erreur · doublon créancier · refresh date sauvegarde post-copie
+- **7.44–7.48** : Aide « Copier pour la banque » + tips fiche IBAN/communication · bandeau Aujourd’hui (contraste retard) · filtres Dossiers · bannières alertes warn/erreur (`ReminderHealthCopy.topBannerKind`) · doublon créancier · refresh date sauvegarde post-copie
+- **Expert sécu (lecture code, VÉRIFIÉ)** : `ShareFileIntents` + ClipData · FileProvider non exporté · `SensitiveClipboard` 30 s · restore sans jargon · manifeste sans INTERNET / `allowBackup=false`
 - **Catalogue** `whats_new` **149→154** · `versionCode` **154** / `0.1.0-7.48` dans `app/build.gradle.kts`
 
 **Hors scope volontaire (reste) :** Direct Boot · perf listes massives · i18n hors FR · deep links Store · audit recomposition Compose.
