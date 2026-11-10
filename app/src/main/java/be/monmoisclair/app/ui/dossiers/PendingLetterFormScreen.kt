@@ -52,6 +52,9 @@ import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 import java.io.File
 
+internal fun pendingLetterCameraFailureMessage(saved: Boolean): String? =
+    if (saved) null else be.monmoisclair.app.ui.camera.CameraCaptureMessages.CAPTURE_FAILED
+
 @Composable
 fun PendingLetterFormScreen(
     onBack: () -> Unit,
@@ -99,9 +102,7 @@ fun PendingLetterFormScreen(
         if (!ok) {
             uri?.path?.let { path -> File(path).delete() }
             cameraUri = null
-            viewModel.setCameraError(
-                be.monmoisclair.app.ui.camera.CameraCaptureMessages.CAPTURE_CANCELLED
-            )
+            pendingLetterCameraFailureMessage(saved = false)?.let(viewModel::setCameraError)
             return@rememberLauncherForActivityResult
         }
         if (uri == null) return@rememberLauncherForActivityResult
