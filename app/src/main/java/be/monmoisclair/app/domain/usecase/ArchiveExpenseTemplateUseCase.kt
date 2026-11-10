@@ -1,10 +1,13 @@
 package be.monmoisclair.app.domain.usecase
 
+import android.content.Context
+import be.monmoisclair.app.data.receipt.ReceiptLocalFiles
 import be.monmoisclair.app.data.reminder.PaymentNotificationHelper
 import be.monmoisclair.app.data.reminder.ReminderScheduler
 import be.monmoisclair.app.data.repository.MutatingRepository
 import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.model.ExpenseStatus
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +23,7 @@ sealed class ArchiveExpenseTemplateResult {
  */
 @Singleton
 class ArchiveExpenseTemplateUseCase @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val mutatingRepository: MutatingRepository,
     private val reminderScheduler: ReminderScheduler,
     private val paymentNotifications: PaymentNotificationHelper
@@ -27,6 +31,7 @@ class ArchiveExpenseTemplateUseCase @Inject constructor(
 
     suspend operator fun invoke(templateId: String): ArchiveExpenseTemplateResult {
         val removedIds = mutableListOf<String>()
+        val localReceiptPathsToDelete = mutableListOf<String>()
         val result = mutatingRepository.mutate(
             sideEffectsWhen = { it is ArchiveExpenseTemplateResult.Success },
             rescheduleReminders = true
@@ -50,6 +55,7 @@ class ArchiveExpenseTemplateUseCase @Inject constructor(
             for (item in futures) {
                 instanceDao.deleteExpense(item)
                 removedIds += item.id
+                localReceiptPathsToDelete += item.receiptRelativePath
             }
             ArchiveExpenseTemplateResult.Success
         }
@@ -57,6 +63,9 @@ class ArchiveExpenseTemplateUseCase @Inject constructor(
             removedIds.forEach { id ->
                 runCatching { paymentNotifications.cancelExpenseNotifications(id) }
                 runCatching { reminderScheduler.cancelFor(id) }
+            }
+            localReceiptPathsToDelete.forEach { raw ->
+                ReceiptLocalFiles.deleteUnder(appContext.filesDir, raw)
             }
         }
         return result
