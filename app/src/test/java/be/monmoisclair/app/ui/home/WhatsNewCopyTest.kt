@@ -44,18 +44,37 @@ class WhatsNewCopyTest {
 
     @Test
     fun payload_showsOnlyCurrentVersion_evenWhenOlderWereUnseen() {
-        val p = WhatsNewCopy.payloadForReleases(145, 147, releases, catalog.genericFallbackBullet)
+        val sample = listOf(
+            WhatsNewCatalog.Release(
+                versionCode = 100,
+                bullets = listOf("Ancienne puce — ne doit pas apparaître."),
+            ),
+            WhatsNewCatalog.Release(
+                versionCode = 101,
+                bullets = listOf("Puce courante uniquement.", "Deuxième puce courante."),
+            ),
+        )
+        val p = WhatsNewCopy.payloadForReleases(99, 101, sample, catalog.genericFallbackBullet)
         requireNotNull(p)
         assertThat(p.bullets).containsExactly(
-            "Cet écran résume les changements après chaque mise à jour — une seule fois.",
-            "Aide mise à jour : case « Appliquer aussi aux mois suivants », anti-doublon et « Pour aujourd’hui ».",
-            "Petit rappel sauvegarde si vous n’en avez jamais fait — doux, sans insister."
+            "Puce courante uniquement.",
+            "Deuxième puce courante.",
         ).inOrder()
     }
 
     @Test
     fun payload_doesNotReplayOlderVersions() {
-        val p = WhatsNewCopy.payloadForReleases(146, 147, releases, catalog.genericFallbackBullet)
+        val sample = listOf(
+            WhatsNewCatalog.Release(
+                versionCode = 100,
+                bullets = listOf("filtres Tous", "ancien écran"),
+            ),
+            WhatsNewCatalog.Release(
+                versionCode = 101,
+                bullets = listOf("mise à jour", "nouveau texte"),
+            ),
+        )
+        val p = WhatsNewCopy.payloadForReleases(100, 101, sample, catalog.genericFallbackBullet)
         requireNotNull(p)
         assertThat(p.bullets.joinToString(" ")).contains("mise à jour")
         assertThat(p.bullets.joinToString(" ")).doesNotContain("filtres Tous")
@@ -119,6 +138,20 @@ class WhatsNewCopyTest {
             ?.toInt()
         requireNotNull(shippedVersionCode)
         assertThat(releases.map { it.versionCode }).contains(shippedVersionCode)
+    }
+
+    @Test
+    fun catalog_embeddedRetentionPolicy() {
+        val file = repoOrModuleFile(
+            pathFromRepoRoot = "app/src/main/assets/whats_new/catalog.json",
+            fallbackFromAppModule = "src/main/assets/whats_new/catalog.json"
+        )
+        val bytes = file.readBytes()
+        assertThat(bytes.size).isAtMost(WhatsNewCatalog.MAX_EMBEDDED_CATALOG_BYTES)
+        assertThat(releases.size).isAtMost(WhatsNewCatalog.MAX_EMBEDDED_RELEASES)
+        val codes = releases.map { it.versionCode }
+        assertThat(codes).isEqualTo(codes.sorted())
+        assertThat(codes.distinct().size).isEqualTo(codes.size)
     }
 
     @Test

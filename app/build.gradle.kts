@@ -103,22 +103,37 @@ tasks.matching { it.name.startsWith("compile") || it.name.startsWith("ksp") }.co
     dependsOn("purgeAppleDouble")
 }
 
-/** Vérifie [whats_new/catalog.json] — avertit si pas d’entrée pour le versionCode courant (fallback OK). */
+/** Aligné sur [WhatsNewCatalog.MAX_EMBEDDED_RELEASES] et [WhatsNewCatalog.MAX_EMBEDDED_CATALOG_BYTES]. */
+private val whatsNewMaxEmbeddedReleases = 8
+private val whatsNewMaxEmbeddedCatalogBytes = 5_120
+
+/** Vérifie [whats_new/catalog.json] (rétention, taille, entrée version courante). */
 tasks.register("verifyWhatsNewCatalog") {
     doLast {
         val catalogFile = file("src/main/assets/whats_new/catalog.json")
         require(catalogFile.isFile) { "Catalogue Nouveautés manquant : ${catalogFile.path}" }
-        val text = catalogFile.readText()
-        require(text.contains("genericFallbackBullet")) {
-            "catalog.json : champ genericFallbackBullet requis"
+        val bytes = catalogFile.readBytes()
+        require(bytes.size <= whatsNewMaxEmbeddedCatalogBytes) {
+            "catalog.json : ${bytes.size} octets > $whatsNewMaxEmbeddedCatalogBytes (rétention)"
         }
-        require(text.contains("\"releases\"")) { "catalog.json : tableau releases requis" }
+        val text = bytes.toString(Charsets.UTF_8)
+        @Suppress("UNCHECKED_CAST")
+        val root = groovy.json.JsonSlurper().parseText(text) as Map<String, Any?>
+        val fallback = root["genericFallbackBullet"] as? String
+        require(!fallback.isNullOrBlank()) { "catalog.json : genericFallbackBullet requis" }
+        @Suppress("UNCHECKED_CAST")
+        val releases = root["releases"] as? List<Map<String, Any?>>
+        require(!releases.isNullOrEmpty()) { "catalog.json : releases non vide requis" }
+        require(releases.size <= whatsNewMaxEmbeddedReleases) {
+            "catalog.json : ${releases.size} entrées > $whatsNewMaxEmbeddedReleases (rétention)"
+        }
+        val codes = releases.map { (it["versionCode"] as Number).toInt() }
+        require(codes.distinct().size == codes.size) { "catalog.json : versionCode dupliqué" }
+        val sorted = codes.sorted()
+        require(codes == sorted) { "catalog.json : releases non triées par versionCode" }
         val versionCode = android.defaultConfig.versionCode
-        if (!Regex(""""versionCode"\s*:\s*$versionCode\b""").containsMatchIn(text)) {
-            logger.warn(
-                "WhatsNew: pas d'entrée pour versionCode $versionCode — " +
-                    "les utilisateurs verront le message générique à l'ouverture."
-            )
+        require(versionCode in codes) {
+            "WhatsNew: pas d'entrée pour versionCode $versionCode — ajoutez une release ou baissez versionCode."
         }
     }
 }

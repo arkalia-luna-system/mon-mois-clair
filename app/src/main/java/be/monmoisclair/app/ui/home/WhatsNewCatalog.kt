@@ -11,6 +11,12 @@ import org.json.JSONObject
 object WhatsNewCatalog {
     private const val ASSET_PATH = "whats_new/catalog.json"
 
+    /** Entrées `releases` max dans l’asset embarqué (l’app ne montre que la version installée). */
+    const val MAX_EMBEDDED_RELEASES = 8
+
+    /** Plafond de taille du JSON embarqué (UTF-8), pour éviter la dérive du fichier. */
+    const val MAX_EMBEDDED_CATALOG_BYTES = 5_120
+
     data class Release(
         val versionCode: Int,
         val bullets: List<String>,
@@ -46,6 +52,9 @@ object WhatsNewCatalog {
             releases += parseRelease(releasesArray.getJSONObject(i))
         }
         require(releases.isNotEmpty()) { "releases vide" }
+        require(releases.size <= MAX_EMBEDDED_RELEASES) {
+            "catalog.json : max $MAX_EMBEDDED_RELEASES entrées releases (rétention embarquée)"
+        }
         releases.sortBy { it.versionCode }
         releases.forEach {
             require(it.bullets.isNotEmpty() || !it.userVisible) {

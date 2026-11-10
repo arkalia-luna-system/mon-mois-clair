@@ -13,8 +13,8 @@ class WhatsNewCatalogTest {
     fun load_fromAssets_matchesParse() {
         val ctx = ApplicationProvider.getApplicationContext<android.content.Context>()
         val loaded = WhatsNewCatalog.load(ctx)
-        assertThat(loaded.releases.map { it.versionCode }).contains(146)
-        assertThat(loaded.releases.map { it.versionCode }).contains(148)
+        assertThat(loaded.releases.size).isAtMost(WhatsNewCatalog.MAX_EMBEDDED_RELEASES)
+        assertThat(loaded.releases.map { it.versionCode }).contains(167)
     }
 
     @Test
