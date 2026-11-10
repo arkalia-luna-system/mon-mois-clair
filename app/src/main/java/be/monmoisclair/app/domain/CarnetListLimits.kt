@@ -17,7 +17,7 @@ object CarnetListLimits {
         val hiddenCount: Int
     )
 
-    fun truncate(
+    fun <T> truncate(
         items: List<T>,
         maxVisible: Int
     ): TruncateResult<T> {

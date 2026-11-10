@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.49** oubliés volontaires (Direct Boot UI · listes · i18n socle · Play VIEW) — tests **à lancer** (agent build unique) |
+| Dernière étape terminée | **7.49** Direct Boot UI · listes · i18n · Play VIEW — **500** pass, **1** skipped, versionCode **155** |
 | Étape en cours | — |
-| Prochaine sous-étape | Gradle `--rerun-tasks` · smoke doigt 7.43–7.49 |
+| Prochaine sous-étape | Smoke doigt : CE verrouillé · longues listes · lien Play |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -32,9 +32,9 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 - **Play deep link** : intent-filter `VIEW` fiche Store · `PlayStoreDeepLink.rejectsWrongPackage`
 - **Audit claims 7.42–7.48** : croisement code (voir livrable agent) — pas de rétrograde doc nécessaire sur le périmètre vérifié
 
-**Tests :** à lancer — `./gradlew :app:testDebugUnitTest --rerun-tasks` (agent build).  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **500** pass, **1** skipped, **0** failure (**112** XML).  
 **Version :** `0.1.0-7.49` · `versionCode` **155**.  
-**Ship :** commit local `develop` · **pas de push** dans ce lot.
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.43→7.48 angles morts expert (code, tests à valider)
 
