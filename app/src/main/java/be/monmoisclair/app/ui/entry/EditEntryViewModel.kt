@@ -132,7 +132,7 @@ class EditEntryViewModel @Inject constructor(
     private val _state = MutableStateFlow(EditEntryState(id = entryId, isExpense = isExpenseArg))
     val state: StateFlow<EditEntryState> = _state.asStateFlow()
     private val receiptDraft = EntryFormReceiptDraft()
-    private val mutationGate = SingleFlightGate()
+    private val saveGate = SingleFlightGate()
 
     init { viewModelScope.launch { load() } }
 
@@ -572,7 +572,7 @@ class EditEntryViewModel @Inject constructor(
 
     fun save() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
-        if (!mutationGate.tryEnter()) return
+        if (!saveGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             try {
@@ -738,14 +738,14 @@ class EditEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, error = result.message) }
             }
             } finally {
-                mutationGate.exit()
+                saveGate.exit()
             }
         }
     }
 
     fun delete() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.done)) return
-        if (!mutationGate.tryEnter()) return
+        if (!saveGate.tryEnter()) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
             try {
@@ -769,7 +769,7 @@ class EditEntryViewModel @Inject constructor(
                     _state.update { it.copy(saving = false, error = "Cette ligne n’est plus là.") }
             }
             } finally {
-                mutationGate.exit()
+                saveGate.exit()
             }
         }
     }

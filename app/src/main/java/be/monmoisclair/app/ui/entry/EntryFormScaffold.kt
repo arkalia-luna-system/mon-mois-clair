@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import be.monmoisclair.app.ui.components.CarnetBannerKind
+import be.monmoisclair.app.ui.components.DiscardChangesDialog
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.DangerA11yButton
@@ -83,47 +84,6 @@ internal fun DuplicateExpenseDialog(
             SecondaryA11yButton(
                 text = "Revenir modifier",
                 onClick = onDismiss,
-                fillMaxWidth = false,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
-    )
-}
-
-@Composable
-internal fun DiscardChangesDialog(
-    onStay: () -> Unit,
-    onLeave: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onStay,
-        shape = MaterialTheme.shapes.extraLarge,
-        containerColor = A11yTokens.PaperCard,
-        title = {
-            Text(
-                text = "Quitter sans enregistrer ?",
-                color = A11yTokens.Ink
-            )
-        },
-        text = {
-            Text(
-                text = "Les changements ne seront pas gardés.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = A11yTokens.Ink
-            )
-        },
-        confirmButton = {
-            DangerA11yButton(
-                text = "Quitter",
-                onClick = onLeave,
-                fillMaxWidth = false,
-                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
-            )
-        },
-        dismissButton = {
-            SecondaryA11yButton(
-                text = "Rester",
-                onClick = onStay,
                 fillMaxWidth = false,
                 modifier = Modifier.padding(bottom = 8.dp)
             )

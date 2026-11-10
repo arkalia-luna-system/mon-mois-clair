@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.backup.SafBackupStore
 import be.monmoisclair.app.domain.usecase.PersistSafFolderUseCase
+import be.monmoisclair.app.ui.SingleFlightGate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +28,7 @@ class SafSetupViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(SafSetupUiState())
     val uiState: StateFlow<SafSetupUiState> = _uiState.asStateFlow()
+    private val pickGate = SingleFlightGate()
 
     fun openDocumentTreeIntent() = safBackupStore.buildOpenDocumentTreeIntent()
 
@@ -37,7 +39,9 @@ class SafSetupViewModel @Inject constructor(
             }
             return
         }
+        if (!pickGate.tryEnter()) return
         viewModelScope.launch {
+            try {
             _uiState.update { it.copy(saving = true, errorMessage = null) }
             when (val result = persistSafFolder(uri)) {
                 PersistSafFolderUseCase.Result.Success ->
@@ -46,6 +50,9 @@ class SafSetupViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(saving = false, errorMessage = result.message)
                     }
+            }
+            } finally {
+                pickGate.exit()
             }
         }
     }

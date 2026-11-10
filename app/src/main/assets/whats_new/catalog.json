@@ -91,6 +91,15 @@
         "Widget et rotation d’écran : plus de lecture base tant que l’appareil n’est pas déverrouillé.",
         "Lecture des marqueurs SQLCipher : ne crée plus de dossier à la volée avant l’heure."
       ]
+    },
+    {
+      "versionCode": 157,
+      "bullets": [
+        "Mes dossiers : retour rapide sur l’écran — plus de liste qui clignote ou se vide par erreur.",
+        "Nouvelle facture : un seul Enregistrer à la fois — moins de doublons si on touche deux fois.",
+        "Édition : la case « mois suivants » se recoche toute seule si la facture ne revient qu’une fois.",
+        "Sauvegardes et écrans sensibles : moins de courses parallèles qui se gênent."
+      ]
     }
   ]
 }

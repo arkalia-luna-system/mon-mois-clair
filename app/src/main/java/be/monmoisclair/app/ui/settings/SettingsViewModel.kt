@@ -28,6 +28,7 @@ import be.monmoisclair.app.domain.usecase.SavingsAsideState
 import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
 import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
+import be.monmoisclair.app.ui.AsyncLoadCoordinator
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -115,12 +116,14 @@ class SettingsViewModel @Inject constructor(
     private var pendingShareKind: PendingShareKind = PendingShareKind.None
 
     private enum class PendingShareKind { None, Backup, Other }
+    private val refreshCoordinator = AsyncLoadCoordinator()
 
     init {
         refresh()
     }
 
     fun refresh() {
+        val loadId = refreshCoordinator.startLoad()
         val dirtyAtStart = savingsDraftDirty
         viewModelScope.launch {
             val loaded = withContext(Dispatchers.IO) {
@@ -150,6 +153,7 @@ class SettingsViewModel @Inject constructor(
                     biometricEnabled,
                 )
             }
+            if (refreshCoordinator.isStale(loadId)) return@launch
             _uiState.update { cur ->
                 val dirtyNow = savingsDraftDirty
                 val keepDraft = dirtyNow || cur.savingsBusy || dirtyAtStart != dirtyNow

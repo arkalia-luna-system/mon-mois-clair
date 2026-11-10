@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -39,6 +40,7 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.CarnetBannerKind
+import be.monmoisclair.app.ui.components.DiscardChangesDialog
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.CarnetTipCard
@@ -61,6 +63,26 @@ fun PendingLetterFormScreen(
     val fit = rememberDisplayFit()
     val tipPad = fit.tipPadLg
     var pendingPreview by remember { mutableStateOf<Bitmap?>(null) }
+    var confirmLeave by remember { mutableStateOf(false) }
+    val dirty = state.who.isNotBlank() ||
+        state.what.isNotBlank() ||
+        state.hasPendingPhoto ||
+        pendingPreview != null
+
+    fun requestLeave() {
+        if (dirty && !state.saved) confirmLeave = true else onBack()
+    }
+
+    BackHandler(enabled = !state.saved) { requestLeave() }
+    if (confirmLeave) {
+        DiscardChangesDialog(
+            onStay = { confirmLeave = false },
+            onLeave = {
+                confirmLeave = false
+                onBack()
+            }
+        )
+    }
 
     LaunchedEffect(state.saved) {
         if (state.saved) onSaved()
@@ -73,13 +95,16 @@ fun PendingLetterFormScreen(
     val takePicture = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { ok ->
+        val uri = cameraUri
         if (!ok) {
+            uri?.path?.let { path -> File(path).delete() }
+            cameraUri = null
             viewModel.setCameraError(
                 be.monmoisclair.app.ui.camera.CameraCaptureMessages.CAPTURE_CANCELLED
             )
             return@rememberLauncherForActivityResult
         }
-        val uri = cameraUri ?: return@rememberLauncherForActivityResult
+        if (uri == null) return@rememberLauncherForActivityResult
         val bmp = runCatching {
             if (Build.VERSION.SDK_INT >= 28) {
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, uri))
@@ -94,6 +119,8 @@ fun PendingLetterFormScreen(
         }
         pendingPreview = bmp
         viewModel.attachPreviewBitmap(bmp)
+        uri.path?.let { path -> File(path).delete() }
+        cameraUri = null
     }
     val launchCamera = be.monmoisclair.app.ui.camera.rememberCameraGatedLaunch(
         onGranted = {
@@ -118,7 +145,7 @@ fun PendingLetterFormScreen(
         onPrimary = viewModel::save,
         primaryEnabled = !state.saving,
         secondaryLabel = "Annuler",
-        onSecondary = onBack,
+        onSecondary = { requestLeave() },
         secondaryEnabled = !state.saving
     ) {
         CarnetPageTitle("Courrier sans plan", withTopSpacer = false)

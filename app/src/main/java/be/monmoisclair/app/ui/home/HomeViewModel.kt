@@ -36,6 +36,7 @@ import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListNextMonthPeriodicsUseCase
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneResult
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
+import be.monmoisclair.app.ui.AsyncLoadCoordinator
 import be.monmoisclair.app.ui.clipboard.SensitiveClipboard
 import be.monmoisclair.app.ui.format.DayLabelFormat
 import be.monmoisclair.app.ui.format.DoneDateFormat
@@ -113,6 +114,9 @@ class HomeViewModel @Inject constructor(
     private val selectedMonth = MutableStateFlow(AppClock.currentYearMonth())
     /** Calendrier vu au dernier resume — pour détecter un changement de mois (B10). */
     private var lastCalendarMonth: java.time.YearMonth = AppClock.currentYearMonth()
+    private val nextMonthWarningCoordinator = AsyncLoadCoordinator()
+    private val reminderGateCoordinator = AsyncLoadCoordinator()
+    private val monthRollCoordinator = AsyncLoadCoordinator()
     private val highlightExpenseId = MutableStateFlow<String?>(null)
     private val pendingPastToggleId = MutableStateFlow<String?>(null)
     private val nextMonthWarning = MutableStateFlow<String?>(null)
@@ -365,18 +369,26 @@ class HomeViewModel @Inject constructor(
 
     /** Pastille Menu : notifications ou alarmes exactes refusées. */
     fun refreshReminderGate() {
+        val loadId = reminderGateCoordinator.startLoad()
         viewModelScope.launch {
-            _remindersBlocked.value = reminderHealth.check().remindersBlocked
+            val blocked = reminderHealth.check().remindersBlocked
+            if (!reminderGateCoordinator.isStale(loadId)) {
+                _remindersBlocked.value = blocked
+            }
         }
     }
 
     fun refreshNextMonthWarning(ym: java.time.YearMonth = selectedMonth.value) {
+        val loadId = nextMonthWarningCoordinator.startLoad()
         viewModelScope.launch {
             if (ym != AppClock.currentYearMonth()) {
-                nextMonthWarning.value = null
+                if (!nextMonthWarningCoordinator.isStale(loadId)) {
+                    nextMonthWarning.value = null
+                }
                 return@launch
             }
             val items = listNextMonthPeriodics(ym)
+            if (nextMonthWarningCoordinator.isStale(loadId)) return@launch
             nextMonthWarning.value = when {
                 items.isEmpty() -> null
                 items.size == 1 -> {
@@ -739,9 +751,15 @@ class HomeViewModel @Inject constructor(
     }
 
     fun refreshCurrentMonth() {
+        val loadId = monthRollCoordinator.startLoad()
+        val before = selectedMonth.value
+        val calendar = AppClock.currentYearMonth()
         viewModelScope.launch {
             monthCycleEngine.ensureCurrentMonthExists()
-            selectedMonth.update { AppClock.currentYearMonth() }
+            if (monthRollCoordinator.isStale(loadId)) return@launch
+            selectedMonth.update { cur ->
+                HomeMonthRoll.monthAfterRollIfUnchanged(before, cur, calendar)
+            }
         }
     }
 

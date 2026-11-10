@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.monmoisclair.app.data.reminder.ReminderHealthChecker
 import be.monmoisclair.app.data.reminder.ReminderHealthReport
+import be.monmoisclair.app.ui.AsyncLoadCoordinator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,15 +23,19 @@ class ReminderHealthViewModel @Inject constructor(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    private val refreshCoordinator = AsyncLoadCoordinator()
 
     init {
         refresh()
     }
 
     fun refresh() {
+        val loadId = refreshCoordinator.startLoad()
         viewModelScope.launch {
             _errorMessage.value = null
-            _report.value = healthChecker.check()
+            val report = healthChecker.check()
+            if (refreshCoordinator.isStale(loadId)) return@launch
+            _report.value = report
         }
     }
 

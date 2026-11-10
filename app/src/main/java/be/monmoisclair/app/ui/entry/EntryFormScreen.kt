@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.CarnetBannerKind
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
+import be.monmoisclair.app.ui.components.DiscardChangesDialog
 import be.monmoisclair.app.ui.components.DangerA11yButton
 import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.domain.CreditorMailComposer
@@ -347,6 +348,7 @@ fun EditEntryScreen(
             state.feeNoteText != b.feeNoteText ||
             state.hasPendingPhoto ||
             state.hasPendingPdf ||
+            state.receiptCleared != b.receiptCleared ||
             state.receiptRelativePath != b.receiptRelativePath ||
             state.extraReceiptPaths != b.extraReceiptPaths
     } == true
