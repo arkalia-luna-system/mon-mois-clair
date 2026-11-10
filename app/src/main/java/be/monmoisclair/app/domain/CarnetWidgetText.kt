@@ -48,7 +48,7 @@ data class CarnetWidgetText(
                 next != null ->
                     "${next.label} · ${EuroFormat.formatCents(next.amountCents)}"
                 expenseCount > 0 -> "Tout est payé"
-                else -> "Rien à payer"
+                else -> "Aucune facture ce mois"
             }
             return CarnetWidgetText(
                 title = "Reste",

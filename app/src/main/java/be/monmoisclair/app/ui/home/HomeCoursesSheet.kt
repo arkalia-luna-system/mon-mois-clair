@@ -53,7 +53,7 @@ fun coursesSheetStatusLine(
     diversSpentCents > 0L ->
         "Not\u00e9 ${formatCents(diversSpentCents)} \u00b7 il reste " +
             formatCents(afterDiversCents)
-    else -> "Hors du reste du mois"
+    else -> "Aucune course not\u00e9e pour l\u2019instant"
 }
 
 /**

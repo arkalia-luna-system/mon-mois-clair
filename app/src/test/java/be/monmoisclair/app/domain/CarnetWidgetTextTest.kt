@@ -112,7 +112,7 @@ class CarnetWidgetTextTest {
             next = null,
             expenseCount = 0
         )
-        assertThat(empty.line).isEqualTo("Rien à payer")
+        assertThat(empty.line).isEqualTo("Aucune facture ce mois")
     }
 
     @Test

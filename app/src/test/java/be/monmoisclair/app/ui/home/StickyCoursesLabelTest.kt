@@ -36,8 +36,9 @@ class StickyCoursesLabelTest {
     // --- Sheet status line (7.38) ---
 
     @Test
-    fun sheet_zero_shows_hors_reste() {
-        assertThat(coursesSheetStatusLine(0L, 50_000L)).isEqualTo("Hors du reste du mois")
+    fun sheet_zero_shows_noCoursesYet() {
+        assertThat(coursesSheetStatusLine(0L, 50_000L))
+            .isEqualTo("Aucune course notée pour l’instant")
     }
 
     @Test
