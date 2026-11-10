@@ -429,6 +429,45 @@ class UpdateDeleteEntryUseCaseTest {
         assertThat(java.io.File(receiptsDir, "oneoff.webp").exists()).isFalse()
     }
 
+    @Test
+    fun update_demoteToOnce_deletesFutureLocalReceiptFiles() = runBlocking {
+        db.templateDao().insertExpense(
+            ExpenseTemplateEntity(
+                id = "tpl-demote-photo",
+                label = "Gaz",
+                amountCents = 8_000L,
+                dayOfMonth = 2,
+                active = true,
+                intervalMonths = 1,
+                createdAtEpochMs = 1L,
+                archivedAtEpochMs = null
+            )
+        )
+        seedLinkedExpense("2026-10", "exp:2026-10:tpl-demote-photo", "tpl-demote-photo", 8_000L)
+        seedLinkedExpense("2026-11", "exp:2026-11:tpl-demote-photo", "tpl-demote-photo", 8_000L)
+        db.instanceDao().updateExpense(
+            db.instanceDao().getExpenseById("exp:2026-11:tpl-demote-photo")!!.copy(
+                receiptRelativePath = "receipts/future-demote.webp"
+            )
+        )
+        val receiptsDir = java.io.File(appContext.filesDir, "receipts").apply { mkdirs() }
+        java.io.File(receiptsDir, "future-demote.webp").writeText("future")
+
+        val result = update(
+            id = "exp:2026-10:tpl-demote-photo",
+            isExpense = true,
+            label = "Gaz",
+            amountCents = 8_000L,
+            dayOfMonth = 2,
+            applyToFollowingMonths = false,
+            intervalMonths = -1
+        )
+
+        assertThat(result).isEqualTo(UpdateInstanceResult.Success)
+        assertThat(db.instanceDao().getExpenseById("exp:2026-11:tpl-demote-photo")).isNull()
+        assertThat(java.io.File(receiptsDir, "future-demote.webp").exists()).isFalse()
+    }
+
     /** Lot C : remplacer / ajouter des courriers en plus sur le modèle. */
     @Test
     fun update_extraReceiptPaths_replaceThenAppend() = runBlocking {

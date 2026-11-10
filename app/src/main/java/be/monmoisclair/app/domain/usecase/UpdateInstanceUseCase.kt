@@ -140,6 +140,7 @@ class UpdateInstanceUseCase @Inject constructor(
                         ).filter { it.id != current.id && it.status == ExpenseStatus.TODO }
                         for (item in futureTodos) {
                             instanceDao.deleteExpense(item)
+                            localReceiptPathsToDelete += item.receiptRelativePath
                         }
                         current = current.copy(templateId = null)
                     }
