@@ -1,6 +1,6 @@
 # Docs — Mon Mois Clair
 
-Index **actif** (~7.56). Historique : [`archive/`](archive/README.md) · audits figés : [`audits/archive/`](audits/archive/).
+Index **actif** (~7.61). Les vieux audits/captures restent archivés localement si besoin, mais ne font plus partie du socle vivant.
 
 ## Vivant (à jour)
 
@@ -27,11 +27,9 @@ Index **actif** (~7.56). Historique : [`archive/`](archive/README.md) · audits 
 
 | Fichier | Rôle |
 |---------|------|
-| [`PLAN_PRODUIT_FINI.md`](PLAN_PRODUIT_FINI.md) | État + prochain geste (lots A→F = archive) |
 | [`DISTRIBUTION_FAMILLE.md`](DISTRIBUTION_FAMILLE.md) | Play Internal + sideload secours |
 | [`AUDIT_STATUS.md`](AUDIT_STATUS.md) | Smoke Galaxy (checklist) |
 | [`BENCHMARK_QUALITE_2026.md`](BENCHMARK_QUALITE_2026.md) | Barème apps 2026 (suivre journal) |
-| [`testeurs/`](testeurs/README_TESTEURS.md) | Campagne device + prompts |
 | [`licenses/FONTS.md`](licenses/FONTS.md) | Licences polices |
 | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) | Contrib courte |
 
@@ -45,7 +43,7 @@ Index **actif** (~7.56). Historique : [`archive/`](archive/README.md) · audits 
 | Craft brand / kit 7.15 | **visual-expert-10** |
 | Smoke téléphone | **AUDIT_STATUS** + **smoke-checklist** (NOTICE) |
 | Brief famille / Play / APK | **NOTICE** + **PLAY_INTERNAL** + **DISTRIBUTION** + **IN_APP_UPDATES** |
-| Audits thématiques / expert / premium | **audits/archive/** + **archive/** |
+| Audits thématiques / expert / premium | archives locales historiques (hors socle vivant) |
 
 ## Local (hors git utile)
 
@@ -55,14 +53,8 @@ Index **actif** (~7.56). Historique : [`archive/`](archive/README.md) · audits 
 | `dist/MonMoisClair-release.apk` | APK sideload secours (gitignoré) |
 | `dist/verify/` | RESET + README tracked ; captures **locales** gitignorées |
 | `docs/audits/smoke/` | PNG/XML device **gitignorés** (PII) |
-| `docs/audits/screenshots/` | Captures adb versionnées (sans PII foyer) |
+| `docs/audits/assets/brand-7.15/` | Kit PNG/JPG versionné (vitrine README) |
 
 ## Archive
 
-| Dossier | Contenu |
-|---------|---------|
-| [`audits/archive/`](audits/archive/) | expert-00…06 · passage-final · fin-journee-qa · brand-logo · thématiques · premium · assets/screenshots 7.14 |
-| [`archive/audits-2026-10-23/`](archive/audits-2026-10-23/) | Nuit-00…08 |
-| [`archive/audits-2026-10-26/`](archive/audits-2026-10-26/) | final-00…11 + crash-open |
-| [`archive/audits-2026-11-01/`](archive/audits-2026-11-01/) | premium-01…06 + fix-progress + samsung |
-| [`archive/campagnes-2026-10-20/`](archive/campagnes-2026-10-20/) | Rapports testeurs |
+Les anciens audits détaillés, captures de passage et campagnes ponctuelles peuvent être rangés ou supprimés quand ils ne servent plus au ship courant. Le socle vivant ci-dessus fait foi.

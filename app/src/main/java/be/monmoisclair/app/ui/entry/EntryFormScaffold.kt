@@ -213,6 +213,7 @@ internal fun EntryFormScaffold(
     val clearSelectionFocus = {
         focusManager.clearFocus(force = true)
         keyboardController?.hide()
+        Unit
     }
     val footerSafety = A11yTokens.minTouchHeight * (if (onDelete != null) 3 else 2) +
         A11yTokens.bottomSystemClearance +

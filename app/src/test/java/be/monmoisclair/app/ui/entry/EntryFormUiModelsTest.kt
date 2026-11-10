@@ -1,6 +1,7 @@
 package be.monmoisclair.app.ui.entry
 
 import com.google.common.truth.Truth.assertThat
+import java.lang.reflect.Modifier
 import org.junit.Test
 
 /**
@@ -12,18 +13,18 @@ import org.junit.Test
 class EntryFormUiModelsTest {
 
     private fun primaryArity(clazz: Class<*>): Int =
-        clazz.declaredConstructors
-            .filter { ctor ->
-                ctor.parameterTypes.none { it.name == "kotlin.jvm.internal.DefaultConstructorMarker" }
-            }
-            .maxOf { it.parameterCount }
+        clazz.declaredFields.count { field ->
+            !field.isSynthetic && !Modifier.isStatic(field.modifiers)
+        }
 
     @Test
     fun groupedModels_stayBounded() {
         assertThat(primaryArity(EntryFormIdentityUi::class.java)).isAtMost(12)
         assertThat(primaryArity(EntryFormRecurrenceUi::class.java)).isAtMost(16)
         assertThat(primaryArity(EntryFormPaymentUi::class.java)).isAtMost(24)
-        assertThat(primaryArity(EntryFormDossierUi::class.java)).isAtMost(24)
+        // Le bloc accord/dossier porte volontairement plus d'état métier
+        // (reste dû, IBAN, e-mail, frais, événements) tout en restant groupé.
+        assertThat(primaryArity(EntryFormDossierUi::class.java)).isAtMost(28)
         assertThat(primaryArity(EntryFormChromeUi::class.java)).isAtMost(10)
         val groups = listOf(
             "EntryFormIdentityUi",

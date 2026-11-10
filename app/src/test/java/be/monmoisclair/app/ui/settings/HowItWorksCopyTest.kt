@@ -35,7 +35,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Depuis l’accueil, touchez +")
         assertThat(all).contains("Touchez Enregistrer")
         assertThat(all).contains("Appliquer aussi aux mois suivants")
-        assertThat(all).contains("attendez de voir le débit")
+        assertThat(all).contains("attendez le débit")
         assertThat(all).contains("Annuler ou Remettre")
         assertThat(all).contains("Réglages → Code et copie")
         assertThat(all).contains("Restaurer une sauvegarde")

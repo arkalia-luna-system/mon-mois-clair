@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.60** nouveautés fermées par « J’ai compris » — **562** pass, **1** skipped, versionCode **166** |
+| Dernière étape terminée | **7.61** post-smoke UX clarifié — **563** pass, **1** skipped, versionCode **167** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.61 post-smoke UX clarifié
+
+**Contexte :** intégrer le lot UX après smoke téléphone, corriger les derniers garde-fous de tests, puis ranger le backlog de constats devenu inutile.
+
+**Corrigé :**
+- saisie fiche : clavier / focus / sélecteur de jour mieux contenus pour éviter les taps parasites
+- accueil et menu : `Epargne`, `Dossiers`, `Aide`, badges et états vides rendus plus explicites
+- mois futur / aide `FAIT` / copies seniors : textes simplifiés pour réduire la charge cognitive
+- backlog `post-smoke` clos puis archivé comme trace unique ; vieux docs non vivants laissés supprimés
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **563** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** `0.1.0-7.61` · `versionCode` **167**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.60 nouveautés fermées par « J’ai compris »
 

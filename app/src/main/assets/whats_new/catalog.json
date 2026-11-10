@@ -165,6 +165,14 @@
         "L’écran « Nouveautés » se ferme maintenant avec un seul bouton : « J’ai compris ».",
         "Les explications associées ont été relues pour rester simples et directes."
       ]
+    },
+    {
+      "versionCode": 167,
+      "bullets": [
+        "La saisie se dérègle moins quand le clavier est ouvert.",
+        "Le menu, l’aide et le mode mois à venir sont plus faciles à comprendre.",
+        "Quelques textes d’accueil et d’écran vide ont aussi été simplifiés."
+      ]
     }
   ]
 }

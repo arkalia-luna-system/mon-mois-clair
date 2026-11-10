@@ -11,16 +11,14 @@ Carnet familial belge (papier, QR EPC, communication structurée) — distributi
 [![Android](https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![CI](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/arkalia-luna-system/mon-mois-clair/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/unit%20tests-562%20pass%20·%201%20skipped-success)](#statut)
-[![Version](https://img.shields.io/badge/version-0.1.0--7.60-informational)](#statut)
+[![Tests](https://img.shields.io/badge/unit%20tests-563%20pass%20·%201%20skipped-success)](#statut)
+[![Version](https://img.shields.io/badge/version-0.1.0--7.61-informational)](#statut)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 <p align="center">
-  <img src="docs/audits/screenshots/2026-11-02-accueil-7.15.png" alt="Accueil — Reste du mois" width="220" />
+  <img src="docs/audits/assets/brand-7.15/kit-full-ref.jpg" alt="Kit visuel — reste du mois, teal et or" width="280" />
   &nbsp;
-  <img src="docs/audits/screenshots/2026-11-02-menu-7.15.png" alt="Menu — Réglages, dossiers, mois" width="220" />
-  &nbsp;
-  <img src="docs/audits/screenshots/2026-11-02-reglages-7.15.png" alt="Réglages — code, données, confort" width="220" />
+  <img src="docs/audits/assets/brand-7.15/ic_brand_mark_256.png" alt="Marque Mon Mois Clair" width="128" />
 </p>
 
 Un bloc-notes ne suffit pas pour voir **ce qu’il reste à vivre** et **ce qui reste à payer**.  
@@ -59,12 +57,12 @@ Play = **piste Internal familiale** seulement — pas une publication Store gran
 
 | Élément | État |
 |---------|------|
-| Version | `0.1.0-7.60` (`versionCode` 166) |
-| Dernière étape | **7.60** — nouveautes a fermer avec J’ai compris |
+| Version | `0.1.0-7.61` (`versionCode` 167) |
+| Dernière étape | **7.61** — saisie plus stable, aide et mode futur clarifies |
 | Device | Baseline Galaxy S25 Ultra (SM-S938B), install release **7.16** sans wipe |
 | Distribution | **Play Internal** + IAU Immediate — [`docs/PLAY_INTERNAL_TESTING.md`](docs/PLAY_INTERNAL_TESTING.md) · [`docs/IN_APP_UPDATES.md`](docs/IN_APP_UPDATES.md) · sideload [`docs/DISTRIBUTION_FAMILLE.md`](docs/DISTRIBUTION_FAMILLE.md) |
 | AAB | `dist/MonMoisClair-release.aab` (gitignoré ; `./gradlew :app:bundleRelease`) |
-| Tests unitaires | **562** passent, **1** skipped, 0 failure (**137** XML) — journal local `--rerun-tasks` 2026-11-10 |
+| Tests unitaires | **563** passent, **1** skipped, 0 failure (**137** XML) — journal local `--rerun-tasks` 2026-11-10 |
 | Schéma Room | **8** |
 
 Non claimé ici (volontaire) : smoke doigt « cadeau », restore famille en conditions réelles, compte Play Console déjà provisionné.
