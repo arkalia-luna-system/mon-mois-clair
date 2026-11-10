@@ -38,7 +38,7 @@ class HowItWorksCopyTest {
         assertThat(all).contains("Réglages → Confort → Alertes")
         assertThat(all).contains("Accueil, à côté du Reste : icône chariot Courses")
         assertThat(all).contains("quand un accord ou un courrier existe")
-        assertThat(all).contains("pastille « Accord »")
+        assertThat(all).contains("Pastille « Accord »")
         assertThat(all).contains("Menu → Dossiers")
         assertThat(all).contains("Mettre de côté")
         assertThat(all).contains("à côté du Reste (sous Courses)")

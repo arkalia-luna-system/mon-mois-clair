@@ -27,7 +27,7 @@ object HowItWorksCopy {
                 "Puis dossier, puis « Envoyer une copie » — la date s’affiche ici. " +
                 "N’envoyez jamais le code avec la copie. " +
                 "Nouveau téléphone : Restaurer, puis ce code. " +
-                "Mauvais fichier ou code : le carnet actuel ne change pas. " +
+                "Mauvais fichier ou code : le carnet ne change pas. " +
                 "Les vieilles copies non protégées ne s’ouvrent plus — à jeter."
         ),
         Section(

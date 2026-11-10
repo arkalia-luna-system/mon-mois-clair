@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.42** catalogue Nouveautés (ship git) — lot **7.43→7.48** angles morts **en attente** Gradle / push |
-| Étape en cours | Validation build unique (tests + push `develop` + ff `main`) |
-| Prochaine sous-étape | Smoke : Sauvegarde date · Restaurer · Copier IBAN ~30 s · bandeau Aujourd’hui |
+| Dernière étape terminée | **7.48** angles morts seniors (7.43→7.48) — **495** pass, **1** skipped, versionCode **154** |
+| Étape en cours | — |
+| Prochaine sous-étape | Smoke doigt : Sauvegarde date · Restaurer · Copier IBAN ~30 s · bandeau Aujourd’hui |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -33,8 +33,9 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 **Hors scope volontaire (reste) :** Direct Boot · perf listes massives · i18n hors FR · deep links Store · audit recomposition Compose.
 
-**Tests :** à confirmer — `./gradlew :app:testDebugUnitTest --rerun-tasks` (agent build unique).  
-**Ship :** après verts → `develop` + ff `main`. **Pas** Production.
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **495** pass, **1** skipped, **0** failure (**110** XML).  
+**Version :** `0.1.0-7.48` · `versionCode` **154**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.43 parcours sauvegarde / restore / alertes (hors Nouveautés auto)
 
