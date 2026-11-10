@@ -29,6 +29,7 @@ import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
 import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
 import be.monmoisclair.app.ui.AsyncLoadCoordinator
+import be.monmoisclair.app.ui.ExternalIntentMessages
 import be.monmoisclair.app.ui.SingleFlightGate
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -386,7 +387,7 @@ class SettingsViewModel @Inject constructor(
             } catch (_: Exception) {
                 _uiState.update {
                     it.copy(
-                        flashMessage = "Le résumé n’a pas pu être préparé. Réessayez.",
+                        flashMessage = ExternalIntentMessages.SUMMARY_TEXT_PREPARE_FAILED,
                         flashMessageError = true
                     )
                 }
@@ -429,7 +430,7 @@ class SettingsViewModel @Inject constructor(
             } catch (_: Exception) {
                 _uiState.update {
                     it.copy(
-                        flashMessage = "Le PDF n’a pas pu être préparé. Réessayez.",
+                        flashMessage = ExternalIntentMessages.SUMMARY_PDF_PREPARE_FAILED,
                         flashMessageError = true
                     )
                 }

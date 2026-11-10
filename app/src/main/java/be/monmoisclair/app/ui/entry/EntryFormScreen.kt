@@ -516,7 +516,7 @@ fun EditEntryScreen(
     suspend fun openExternalReceipt(path: String) {
         val intent = viewModel.viewReceiptIntent(path)
         if (intent == null) {
-            viewModel.setPdfReadError("Impossible d’ouvrir ce courrier.")
+            viewModel.setPdfReadError(be.monmoisclair.app.ui.ExternalIntentMessages.RECEIPT_UNAVAILABLE)
             return
         }
         val ok = runCatching {

@@ -107,7 +107,7 @@ class DossiersViewModel @Inject constructor(
             } catch (_: Exception) {
                 _state.update {
                     it.copy(
-                        summaryMessage = "Le résumé n’a pas pu être préparé. Réessayez.",
+                        summaryMessage = ExternalIntentMessages.SUMMARY_TEXT_PREPARE_FAILED,
                         summaryMessageError = true
                     )
                 }
@@ -147,7 +147,7 @@ class DossiersViewModel @Inject constructor(
             } catch (_: Exception) {
                 _state.update {
                     it.copy(
-                        summaryMessage = "Le PDF n’a pas pu être préparé. Réessayez.",
+                        summaryMessage = ExternalIntentMessages.SUMMARY_PDF_PREPARE_FAILED,
                         summaryMessageError = true
                     )
                 }

@@ -707,7 +707,7 @@ fun HomeScreen(
                                                 val intent = viewModel.viewReceiptIntent(path)
                                                 if (intent == null) {
                                                     snackbarHostState.showSnackbar(
-                                                        "Impossible d’ouvrir ce courrier."
+                                                        be.monmoisclair.app.ui.ExternalIntentMessages.RECEIPT_UNAVAILABLE
                                                     )
                                                 } else {
                                                     val ok = runCatching {
