@@ -53,8 +53,8 @@ class WhatsNewCopyTest {
     @Test
     fun payload_genericFallbackWhenNoReleaseEntry() {
         val p = WhatsNewCopy.payloadForReleases(
-            155,
-            157,
+            156,
+            158,
             releases,
             catalog.genericFallbackBullet,
         )
@@ -70,7 +70,7 @@ class WhatsNewCopyTest {
 
     @Test
     fun catalog_hasEntryForShippedVersionCode() {
-        assertThat(releases.map { it.versionCode }).contains(155)
+        assertThat(releases.map { it.versionCode }).contains(156)
     }
 
     @Test

@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.49** Direct Boot UI · listes · i18n · Play VIEW — **500** pass, **1** skipped, versionCode **155** |
+| Dernière étape terminée | **7.50** garde CE crypto/widget — **504** pass, **1** skipped, versionCode **156** |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt : CE verrouillé · longues listes · lien Play |
+| Prochaine sous-étape | Smoke : reboot CE · widget avant PIN · rotation |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,19 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.50 chasse bugs CE / SQLCipher (filets 7.49)
+
+**Contexte :** après 7.49 Direct Boot — éviter écritures crypto et lectures Room/widget avant déverrouillage.
+
+**Corrigé :**
+- `CredentialStorageGate` sur `ShareSecretVault` + écritures `DbPassphraseVault`
+- Widget + `MonMoisClairApp` `CONFIGURATION_CHANGED` : pas de Room avant CE
+- Lecture marqueurs SQLCipher sans `mkdir` (`ensureCryptoDir`) avant déverrouillage
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **504** pass, **1** skipped, **0** failure (**112** XML).  
+**Version :** `0.1.0-7.50` · `versionCode` **156**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.49 oubliés volontaires (Direct Boot · perf listes · i18n · Play · recomposition légère)
 

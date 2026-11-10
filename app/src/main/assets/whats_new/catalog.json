@@ -83,6 +83,14 @@
         "Listes très longues : plafond d’affichage sur l’accueil et les dossiers soldés — les totaux en haut restent justes.",
         "Liens Play vers l’app : ouverture sûre depuis la fiche tests internes."
       ]
+    },
+    {
+      "versionCode": 156,
+      "bullets": [
+        "Téléphone verrouillé au démarrage : plus d’écriture crypto ni d’accès base avant déverrouillage.",
+        "Widget et rotation d’écran : plus de lecture base tant que l’appareil n’est pas déverrouillé.",
+        "Lecture des marqueurs SQLCipher : ne crée plus de dossier à la volée avant l’heure."
+      ]
     }
   ]
 }
