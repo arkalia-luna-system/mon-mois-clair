@@ -28,7 +28,8 @@ class DbPassphraseVault @Inject constructor(
     private val markerFile: File
         get() = File(ensureCryptoDir(), MARKER_NAME)
 
-    fun isDbEncryptedMarkerPresent(): Boolean = markerFile.isFile
+    /** Lecture seule — ne crée pas le dossier `crypto/` (Direct Boot / CE). */
+    fun isDbEncryptedMarkerPresent(): Boolean = File(dir, MARKER_NAME).isFile
 
     fun markDbEncrypted() {
         requireCredentialStorage()
@@ -37,7 +38,7 @@ class DbPassphraseVault @Inject constructor(
     }
 
     /** Migration SQLCipher Failed → Room claire temporaire (P1 confiance). */
-    fun isMigrationFailedPresent(): Boolean = migrationFailedFile.isFile
+    fun isMigrationFailedPresent(): Boolean = File(dir, MIGRATION_FAILED_NAME).isFile
 
     fun markMigrationFailed() {
         requireCredentialStorage()

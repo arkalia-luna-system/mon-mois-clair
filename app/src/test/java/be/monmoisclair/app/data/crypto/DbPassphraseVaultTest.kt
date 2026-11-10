@@ -48,6 +48,16 @@ class DbPassphraseVaultTest {
     }
 
     @Test
+    fun markerPresent_doesNotCreateCryptoDir() {
+        val crypto = File(context.filesDir, DbPassphraseVault.DIR)
+        assertThat(crypto.exists()).isFalse()
+        assertThat(vault.isDbEncryptedMarkerPresent()).isFalse()
+        assertThat(crypto.exists()).isFalse()
+        assertThat(vault.isMigrationFailedPresent()).isFalse()
+        assertThat(crypto.exists()).isFalse()
+    }
+
+    @Test
     fun ensureProvisioned_refusesWhenUserLocked() {
         val um = context.getSystemService(UserManager::class.java)!!
         shadowOf(um).setUserUnlocked(false)
