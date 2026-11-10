@@ -29,6 +29,52 @@ on:
 # Pas de concurrency cancel : dépôt familial, runs rares.
 
 jobs:
+  release-diff:
+    name: Changements release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      needed: ${{ steps.check.outputs.needed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - id: check
+        name: Détecter fichiers release (évite versionCode dupliqué)
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+            echo "workflow_dispatch — publication autorisée."
+            exit 0
+          fi
+          before="${{ github.event.before }}"
+          after="${{ github.sha }}"
+          mapfile -t files < <(git diff --name-only "$before" "$after" 2>/dev/null || true)
+          if [ "${#files[@]}" -eq 0 ]; then
+            mapfile -t files < <(git diff --name-only HEAD^ HEAD)
+          fi
+          needed=false
+          for f in "${files[@]}"; do
+            case "$f" in
+              app/*|gradle/*|build.gradle.kts|settings.gradle.kts|gradle.properties|gradlew|gradlew.bat)
+                needed=true
+                break
+                ;;
+            esac
+          done
+          if [ "$needed" = true ]; then
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+            echo "Changements release détectés — build + upload Internal."
+          else
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Push sans changement release (ex. docs seules) — upload Play ignoré pour éviter « Version code already used »."
+          fi
+
   gate:
     name: Prérequis secrets
     runs-on: ubuntu-24.04
@@ -80,8 +126,8 @@ jobs:
 
   publish:
     name: Bundle AAB + upload Internal
-    needs: gate
-    if: needs.gate.outputs.ready == 'true'
+    needs: [gate, release-diff]
+    if: needs.gate.outputs.ready == 'true' && needs.release-diff.outputs.needed == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:

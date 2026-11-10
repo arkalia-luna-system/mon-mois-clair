@@ -98,6 +98,7 @@ Workflow : [`.github/workflows/publish-play-internal.yml`](../.github/workflows/
 - Déclenché sur **push `main`** (+ `workflow_dispatch` avec `confirm=PUBLISH`).
 - Build `bundleRelease` signé → upload piste **`internal` uniquement** (`r0adkll/upload-google-play`, `status: completed`).
 - **Jamais** Production.
+- Push **sans** fichier release (`app/`, Gradle, wrapper) → job upload **skippé** (run vert) : évite un second upload du même `versionCode` après un ff `main` docs-only.
 - Sans les 5 secrets → skip propre (pas de rouge). Guide + noms exacts : [`PLAY_INTERNAL_TESTING.md`](PLAY_INTERNAL_TESTING.md) § CI auto-deploy.
 - Bump `versionCode` **sur `develop` avant** merge `main` (pas d’auto-bump CI).
 
