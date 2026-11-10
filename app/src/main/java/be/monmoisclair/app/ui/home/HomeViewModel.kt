@@ -17,7 +17,9 @@ import be.monmoisclair.app.domain.AppClock
 import be.monmoisclair.app.domain.BelgianStructuredCommunication
 import be.monmoisclair.app.domain.DossierRemaining
 import be.monmoisclair.app.domain.ExpenseOverdue
+import be.monmoisclair.app.domain.LastSeenVersionCache
 import be.monmoisclair.app.domain.MonthCycleEngine
+import be.monmoisclair.app.domain.StartupNudgeCache
 import be.monmoisclair.app.domain.MonthNavigation
 import be.monmoisclair.app.domain.MonthSummary
 import be.monmoisclair.app.domain.MonthSummaryCalculator
@@ -130,6 +132,10 @@ class HomeViewModel @Inject constructor(
     val userMessages: SharedFlow<String> = _userMessages.asSharedFlow()
     private val _shareIntents = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
     val shareIntents: SharedFlow<Intent> = _shareIntents.asSharedFlow()
+    private val _whatsNewBullets = MutableStateFlow<List<String>?>(null)
+    val whatsNewBullets: StateFlow<List<String>?> = _whatsNewBullets.asStateFlow()
+    private val _backupNudgeVisible = MutableStateFlow(false)
+    val backupNudgeVisible: StateFlow<Boolean> = _backupNudgeVisible.asStateFlow()
 
     val uiState: StateFlow<HomeUiState> = combine(
         selectedMonth.flatMapLatest { ym ->
@@ -277,6 +283,73 @@ class HomeViewModel @Inject constructor(
             selectedMonth.collect { refreshNextMonthWarning(it) }
         }
         refreshReminderGate()
+        evaluateStartupPrompts()
+    }
+
+    private fun installedVersionCode(): Int {
+        val pm = appContext.packageManager
+        val pkg = appContext.packageName
+        val info = runCatching {
+            if (Build.VERSION.SDK_INT >= 33) {
+                pm.getPackageInfo(pkg, android.content.pm.PackageManager.PackageInfoFlags.of(0))
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getPackageInfo(pkg, 0)
+            }
+        }.getOrNull() ?: return 0
+        return if (Build.VERSION.SDK_INT >= 28) {
+            info.longVersionCode.toInt()
+        } else {
+            @Suppress("DEPRECATION")
+            info.versionCode
+        }
+    }
+
+    private fun evaluateStartupPrompts() {
+        viewModelScope.launch {
+            val current = installedVersionCode()
+            if (current <= 0) return@launch
+            val lastSeen = runCatching { LastSeenVersionCache.peek(appContext) }.getOrElse { 0 }
+            val payload = WhatsNewCopy.payload(lastSeen, current)
+            if (payload != null) {
+                _whatsNewBullets.value = payload.bullets
+            } else {
+                maybeOfferBackupNudge()
+            }
+        }
+    }
+
+    private suspend fun maybeOfferBackupNudge() {
+        if (StartupNudgeCache.backupNudgeDismissed(appContext)) return
+        if (_backupNudgeVisible.value) return
+        val raw = appMetaDao.get(AppMetaKeys.LAST_BACKUP_AT_EPOCH_MS)?.value?.trim().orEmpty()
+        val hadBackup = raw.isNotEmpty() && raw != "0"
+        if (hadBackup) return
+        _backupNudgeVisible.value = true
+    }
+
+    fun dismissWhatsNew() {
+        _whatsNewBullets.value = null
+        val current = installedVersionCode()
+        if (current > 0) {
+            runCatching { LastSeenVersionCache.write(appContext, current) }
+        }
+        if (!StartupNudgeCache.postWhatsNewHelpTipShown(appContext)) {
+            StartupNudgeCache.markPostWhatsNewHelpTipShown(appContext)
+            _userMessages.tryEmit(WhatsNewCopy.POST_WHATS_NEW_HELP_TIP)
+        }
+        viewModelScope.launch { maybeOfferBackupNudge() }
+    }
+
+    fun dismissBackupNudge() {
+        _backupNudgeVisible.value = false
+        StartupNudgeCache.dismissBackupNudge(appContext)
+    }
+
+    fun consumeBackupNudgeOpenSettings(): Boolean {
+        if (!_backupNudgeVisible.value) return false
+        dismissBackupNudge()
+        return true
     }
 
     /** Pastille Menu : notifications ou alarmes exactes refusées. */

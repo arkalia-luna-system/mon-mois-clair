@@ -13,6 +13,7 @@ class HowItWorksCopyTest {
         assertThat(titles).contains("Alertes")
         assertThat(titles).contains("Courses")
         assertThat(titles).contains("En retard")
+        assertThat(titles).contains("Pour aujourd’hui")
         assertThat(titles).contains("Facture papier")
         assertThat(titles).contains("Sur une année")
         assertThat(titles).contains("Plan de remboursement")
@@ -24,6 +25,9 @@ class HowItWorksCopyTest {
         val all = HowItWorksCopy.sections.joinToString("\n") { "${it.title}\n${it.body}" }
         assertThat(all).contains("Reste du mois passé")
         assertThat(all).contains("Appliquer aussi aux mois suivants")
+        assertThat(all).contains("Doublon")
+        assertThat(all).contains("Pour aujourd’hui")
+        assertThat(all).contains("À traiter")
         assertThat(all).contains("il reste")
         assertThat(all).contains("Après les FAIT")
         assertThat(all).contains("Lire la communication sur la photo")

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +47,97 @@ import be.monmoisclair.app.ui.theme.DisplayFit
 import be.monmoisclair.app.ui.theme.HomeTokens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+/** Nouveautés après mise à jour (une fois par versionCode). */
+@Composable
+internal fun HomeWhatsNewDialog(
+    bullets: List<String>,
+    fit: DisplayFit,
+    onDismiss: () -> Unit
+) {
+    if (bullets.isEmpty()) return
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            color = HomeTokens.Card,
+            shape = MaterialTheme.shapes.extraLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(A11yTokens.screenPadding)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(if (fit.compactHomeChrome) 12.dp else 16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(
+                    if (fit.compactHomeChrome) 8.dp else 12.dp
+                )
+            ) {
+                Text(
+                    text = WhatsNewCopy.TITLE,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = A11yTokens.Ink
+                )
+                bullets.forEach { line ->
+                    Text(
+                        text = "• $line",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = A11yTokens.InkMuted
+                    )
+                }
+                PrimaryA11yButton(
+                    text = WhatsNewCopy.DISMISS,
+                    onClick = onDismiss
+                )
+            }
+        }
+    }
+}
+
+/** Rappel sauvegarde — une fois si aucune copie n’a encore été faite. */
+@Composable
+internal fun HomeBackupNudgeDialog(
+    onLater: () -> Unit,
+    onOpenBackup: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onLater,
+        shape = MaterialTheme.shapes.extraLarge,
+        containerColor = A11yTokens.PaperCard,
+        title = {
+            Text(
+                text = WhatsNewCopy.BACKUP_NUDGE_TITLE,
+                style = MaterialTheme.typography.titleLarge,
+                color = A11yTokens.Ink
+            )
+        },
+        text = {
+            Text(
+                text = WhatsNewCopy.BACKUP_NUDGE_BODY,
+                style = MaterialTheme.typography.bodyLarge,
+                color = A11yTokens.Ink
+            )
+        },
+        confirmButton = {
+            PrimaryA11yButton(
+                text = WhatsNewCopy.BACKUP_NUDGE_OPEN,
+                onClick = onOpenBackup,
+                fillMaxWidth = false,
+                modifier = Modifier.padding(end = 8.dp, bottom = 8.dp)
+            )
+        },
+        dismissButton = {
+            SecondaryA11yButton(
+                text = WhatsNewCopy.BACKUP_NUDGE_LATER,
+                onClick = onLater,
+                fillMaxWidth = false,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+    )
+}
 
 /** Dialogue photo de facture (Home). */
 @Composable
@@ -214,7 +307,7 @@ internal fun HomePastToggleDialog(
                                     .any { it.id == id && it.isAgreement }
                             val result = snackbarHostState.showSnackbar(
                                 message = when {
-                                    pastMarkingDone -> "Noté FAIT"
+                                    pastMarkingDone -> "Noté FAIT — touchez Annuler si erreur"
                                     agreementRemettre ->
                                         "Dossier rouvert — les mois suivants peuvent revenir"
                                     else -> "Remis à payer"

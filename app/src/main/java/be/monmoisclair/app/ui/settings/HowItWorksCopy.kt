@@ -13,11 +13,11 @@ object HowItWorksCopy {
     val sections: List<Section> = listOf(
         Section(
             title = "Marquer FAIT",
-            body = "Payé : « FAIT ✓ », puis « FAIT le … ». « Remettre » si erreur. " +
+            body = "Payé : « FAIT ✓ », « FAIT le … ». « Remettre » si erreur. " +
                 "Prélèvement : cochez quand vous voyez le débit, pas le jour prévu. " +
-                "Autre montant ce mois : ouvrez la ligne — seul ce mois change, " +
-                "sauf si vous cochez « Appliquer aussi aux mois suivants » à l’enregistrement " +
-                "(la case repart décochée à chaque ouverture)."
+                "Autre montant ce mois : la ligne — ce mois seul, " +
+                "sauf « Appliquer aussi aux mois suivants » (repart décochée). " +
+                "Doublon : alerte si ligne ressemblante dans le mois."
         ),
         Section(
             title = "Sauvegarde",
@@ -50,12 +50,17 @@ object HowItWorksCopy {
                 "« Mettre de côté » n’est jamais en retard — c’est un geste volontaire."
         ),
         Section(
+            title = "Pour aujourd’hui",
+            body = "Sur le mois en cours : bandeau « Pour aujourd’hui » — retards et échéance du jour. " +
+                "« Voir » fait défiler jusqu’à la ligne. Le résumé texte ou PDF peut lister la même chose."
+        ),
+        Section(
             title = "Plan de remboursement",
             body = "Ce n’est pas la pastille « En retard ». C’est un accord de paiement " +
                 "(à qui, pour quoi, reste dû) : pastille « Accord » à l’accueil, " +
                 "sans le total de la dette. Détails → Voir le rythme. " +
                 "Menu → Dossiers (quand un accord ou un courrier existe). " +
-                "Résumé texte/PDF pour créancier."
+                "Filtres Tous / À traiter / Ce mois. Résumé texte/PDF pour créancier."
         ),
         Section(
             title = "Facture papier",

@@ -88,6 +88,8 @@ fun HomeScreen(
     val savingsError by viewModel.savingsError.collectAsStateWithLifecycle()
     val savingsBusy by viewModel.savingsBusy.collectAsStateWithLifecycle()
     val remindersBlocked by viewModel.remindersBlocked.collectAsStateWithLifecycle()
+    val whatsNewBullets by viewModel.whatsNewBullets.collectAsStateWithLifecycle()
+    val backupNudgeVisible by viewModel.backupNudgeVisible.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     val listAlpha = remember { Animatable(1f) }
     var skipMonthFade by remember { mutableStateOf(true) }
@@ -304,6 +306,23 @@ fun HomeScreen(
         }
     }
 
+
+    whatsNewBullets?.let { bullets ->
+        HomeWhatsNewDialog(
+            bullets = bullets,
+            fit = fit,
+            onDismiss = viewModel::dismissWhatsNew
+        )
+    }
+    if (backupNudgeVisible) {
+        HomeBackupNudgeDialog(
+            onLater = viewModel::dismissBackupNudge,
+            onOpenBackup = {
+                viewModel.consumeBackupNudgeOpenSettings()
+                onOpenSettings()
+            }
+        )
+    }
 
     HomeReceiptDialog(
         title = receiptTitle,

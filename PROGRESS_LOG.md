@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.40** praticité focus jour / Dossiers / résumé — **471** pass, **1** skipped, versionCode **146** |
+| Dernière étape terminée | **7.41** nouveautés à l’ouverture / Aide 7.40 / rappel sauvegarde — **477** pass, **1** skipped, versionCode **147** |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke doigt Athalia (focus jour + filtre Dossiers) |
+| Prochaine sous-étape | Smoke doigt Athalia (Nouveautés + Aide + sauvegarde douce) |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.41 nouveautés utilisateur + Aide + garde-fous doux
+
+**Contexte :** après 7.39–7.40 — expliquer les changements aux utilisateurs, aligner Aide, anticiper seniors (sans cloud).
+
+**Ajouts :**
+- **Nouveautés** : dialogue une fois si `versionCode` monte (prefs) ; puces 7.40 + 7.41 ; « J’ai compris » ; échec prefs = pas bloquant
+- **Tip** post-Nouveautés → chemin Aide (une fois)
+- **Rappel sauvegarde** : si jamais de copie (`lastBackupAt`) — dialogue doux une fois
+- **Aide** : section « Pour aujourd’hui », doublon, filtres Dossiers ; snackbar FAIT mois passé alignée 7.40
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **477** pass, **1** skipped, **0** failure (**106** XML).  
+**Version :** `0.1.0-7.41` · `versionCode` **147**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.40 praticité focus jour + Dossiers + résumé famille
 
