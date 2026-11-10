@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.53** copies clarifiées / réglages externes / purge T7 — **539** pass, **1** skipped, versionCode **159** |
+| Dernière étape terminée | **7.54** copies biométrie / restauration / pending letter — **547** pass, **1** skipped, versionCode **160** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.54 copies biométrie / restauration / pending letter
+
+**Contexte :** après 7.53 poussé — intégrer la nouvelle chaîne locale au-dessus de `b2eed48` et revalider le build unique.
+
+**Corrigé :**
+- biométrie / `ConfigureSavings` : messages d’échec et de retour relus pour rester actionnables
+- restauration : rappel plus clair que le dossier choisi reste sur cet appareil ; constante rendue accessible aux tests JVM
+- pending letter : messages d’échec photo / sauvegarde alignés et moins bloquants
+- build T7 : sidecars `._pack-*` nettoyés dans `.git` avant audit ; rerun Gradle relancé sur chaîne complète
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **547** pass, **1** skipped, **0** failure (**132** XML).  
+**Version :** `0.1.0-7.54` · `versionCode` **160**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.53 copies clarifiées / réglages externes / purge T7
 

@@ -53,7 +53,7 @@ import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.carnetOutlinedTextFieldColors
 import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
-internal const val RESTORE_SELECTED_FOLDER_KEPT =
+const val RESTORE_SELECTED_FOLDER_KEPT =
     "Le dossier de sauvegarde déjà choisi sur cet appareil est conservé."
 
 private enum class PendingRestore {

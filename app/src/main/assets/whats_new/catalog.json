@@ -118,6 +118,15 @@
         "Réglages de l’app : ouverture et textes associés mieux verrouillés côté tests.",
         "Sur certains volumes externes, le nettoyage des fichiers parasites démarre plus tôt avant le build."
       ]
+    },
+    {
+      "versionCode": 160,
+      "bullets": [
+        "Biométrie et épargne : messages d’échec relus pour dire quoi faire, sans jargon.",
+        "Restauration : rappel plus clair — le dossier déjà choisi reste sur cet appareil.",
+        "Courrier en attente : photo et enregistrement signalent mieux ce qui a bloqué.",
+        "Le lot inclut aussi des filets de build pour éviter les faux fichiers parasites sur volume externe."
+      ]
     }
   ]
 }
