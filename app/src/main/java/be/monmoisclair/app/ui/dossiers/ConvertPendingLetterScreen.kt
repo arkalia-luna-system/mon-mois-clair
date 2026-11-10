@@ -14,9 +14,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import be.monmoisclair.app.ui.components.CarnetBannerKind
+import be.monmoisclair.app.ui.components.DiscardChangesDialog
 import be.monmoisclair.app.ui.components.CarnetPageTitle
 import be.monmoisclair.app.ui.components.CarnetStateBanner
 import be.monmoisclair.app.ui.components.CarnetTipCard
@@ -49,6 +54,26 @@ fun ConvertPendingLetterScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val fit = rememberDisplayFit()
     val tipPad = fit.tipPadLg
+    var confirmLeave by remember { mutableStateOf(false) }
+    val dirty = !state.loading &&
+        (state.openingRemainingText.isNotBlank() ||
+            state.monthlyAmountText.isNotBlank())
+
+    fun requestLeave() {
+        if (dirty && !state.done) confirmLeave = true else onBack()
+    }
+
+    BackHandler(enabled = !state.loading && !state.done) { requestLeave() }
+    if (confirmLeave) {
+        DiscardChangesDialog(
+            onStay = { confirmLeave = false },
+            onLeave = {
+                confirmLeave = false
+                onBack()
+            }
+        )
+    }
+
     LaunchedEffect(state.done) {
         if (state.done) onConverted(state.createdInstanceId)
     }
@@ -113,7 +138,7 @@ fun ConvertPendingLetterScreen(
         onPrimary = viewModel::convert,
         primaryEnabled = !state.saving && !state.loading,
         secondaryLabel = "Annuler",
-        onSecondary = onBack,
+        onSecondary = { requestLeave() },
         secondaryEnabled = !state.saving
     ) {
         CarnetPageTitle("Fixer un versement", withTopSpacer = false)

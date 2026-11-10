@@ -94,6 +94,7 @@ class AddEntryViewModel @Inject constructor(
     @Volatile private var createdInstanceId: String? = null
     /** Anti-course : double Enregistrer / confirm doublon en parallèle. */
     private val saveGate = SingleFlightGate()
+    private val ocrGate = SingleFlightGate()
 
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
@@ -197,14 +198,17 @@ class AddEntryViewModel @Inject constructor(
     /** OCR +++ sur la photo en attente — jamais le montant. */
     fun readCommunicationFromPhoto() {
         if (_state.value.ocrBusy || !_state.value.isExpense) return
+        if (!ocrGate.tryEnter()) return
         val bmp = receiptDraft.peekBitmap()
         if (bmp == null) {
+            ocrGate.exit()
             _state.update {
                 it.copy(error = BelgianStructuredCommunication.OCR_NO_PHOTO, copyMessage = null)
             }
             return
         }
         viewModelScope.launch {
+            try {
             _state.update {
                 it.copy(
                     ocrBusy = true,
@@ -235,6 +239,9 @@ class AddEntryViewModel @Inject constructor(
                             error = null
                         )
                     }
+            }
+            } finally {
+                ocrGate.exit()
             }
         }
     }

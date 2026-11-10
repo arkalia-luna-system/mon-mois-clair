@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.50** garde CE crypto/widget — **504** pass, **1** skipped, versionCode **156** |
+| Dernière étape terminée | **7.51** courses UI (dossiers, save, récurrence, SingleFlight) — **507** pass, **1** skipped, versionCode **157** |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke : reboot CE · widget avant PIN · rotation |
+| Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · smoke-checklist |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-10 — 7.51 chasse bugs courses UI
+
+**Contexte :** après 7.50 — fiabiliser Dossiers, création facture, case mois suivants, courses parallèles.
+
+**Corrigé :**
+- `AsyncLoadCoordinator` : refresh Dossiers ignore chargements obsolètes (ON_RESUME rapide)
+- `AddEntry` : garde atomique anti-double insert sur Enregistrer
+- `Edit` : `applyToFollowing` repasse à false si récurrence « une fois »
+- `SingleFlightGate` : save/delete, restore, courrier, template, pending letter ; refresh CE + À venir
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **507** pass, **1** skipped, **0** failure (**114** XML).  
+**Version :** `0.1.0-7.51` · `versionCode` **157**.  
+**Ship :** `develop` + ff `main` (Play auto). **Pas** Production.
 
 ### 2026-11-10 — 7.50 chasse bugs CE / SQLCipher (filets 7.49)
 

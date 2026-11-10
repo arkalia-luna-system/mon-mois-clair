@@ -133,6 +133,7 @@ class EditEntryViewModel @Inject constructor(
     val state: StateFlow<EditEntryState> = _state.asStateFlow()
     private val receiptDraft = EntryFormReceiptDraft()
     private val saveGate = SingleFlightGate()
+    private val ocrGate = SingleFlightGate()
 
     init { viewModelScope.launch { load() } }
 
@@ -517,7 +518,9 @@ class EditEntryViewModel @Inject constructor(
     fun readCommunicationFromPhoto() {
         if (_state.value.ocrBusy || _state.value.futurePreviewReadOnly) return
         if (!_state.value.isExpense || _state.value.isSavingsLine) return
+        if (!ocrGate.tryEnter()) return
         viewModelScope.launch {
+            try {
             _state.update {
                 it.copy(
                     ocrBusy = true,
@@ -566,6 +569,9 @@ class EditEntryViewModel @Inject constructor(
                             error = null
                         )
                     }
+            }
+            } finally {
+                ocrGate.exit()
             }
         }
     }
