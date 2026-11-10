@@ -16,7 +16,7 @@ object HomeEmptyMonthCopy {
         isPastMonth ->
             "Rien n’a été noté sur ce mois. Revenez au mois en cours pour ajouter."
         else ->
-            "Ajoutez le salaire et les factures avec « + Ajouter » en bas."
+            "Ajoutez un revenu ou une dépense avec « + Ajouter » en bas."
     }
 
     /** CTA barre = « Mois en cours » (pas + Ajouter) sur passé / futur. */
