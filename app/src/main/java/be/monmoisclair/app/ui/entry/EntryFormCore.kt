@@ -55,6 +55,9 @@ object EntryFormCore {
         if (!wantOpening) return Opening.None
         val raw = openingRaw.trim()
         if (raw.isEmpty()) return Opening.None
+        if (MoneyFormat.tooManyFractionDigits(raw)) {
+            return Opening.Err(MoneyFormat.FRACTION_HINT)
+        }
         val cents = MoneyFormat.parseToCents(raw)
             ?: return Opening.Err(OPENING_HINT)
         if (MoneyFormat.isOverOpeningMax(cents)) {
@@ -103,6 +106,9 @@ object EntryFormCore {
                 return FeeAdd.Err(FEE_NOTE_WITHOUT_AMOUNT_HINT)
             }
             return FeeAdd.Ok(0L)
+        }
+        if (MoneyFormat.tooManyFractionDigits(raw)) {
+            return FeeAdd.Err(MoneyFormat.FRACTION_HINT)
         }
         val cents = MoneyFormat.parseToCents(raw)
         if (cents == null || cents <= 0L) {

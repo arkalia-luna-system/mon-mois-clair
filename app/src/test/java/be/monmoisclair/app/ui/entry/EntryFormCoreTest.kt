@@ -56,6 +56,8 @@ class EntryFormCoreTest {
     fun parseOpening_okAndErrors() {
         assertThat(EntryFormCore.parseOpeningRemaining(true, "200,00"))
             .isEqualTo(EntryFormCore.Opening.Ok(20_000L))
+        assertThat(EntryFormCore.parseOpeningRemaining(true, "12,345"))
+            .isEqualTo(EntryFormCore.Opening.Err(MoneyFormat.FRACTION_HINT))
         assertThat(EntryFormCore.parseOpeningRemaining(true, "xx"))
             .isEqualTo(EntryFormCore.Opening.Err(EntryFormCore.OPENING_HINT))
         val huge = (MoneyFormat.MAX_OPENING_EUROS + 1).toString()
@@ -105,6 +107,8 @@ class EntryFormCoreTest {
             .isEqualTo(EntryFormCore.FeeAdd.Err(EntryFormCore.FEE_NOTE_WITHOUT_AMOUNT_HINT))
         assertThat(EntryFormCore.parseFeeAdd(true, "0", ""))
             .isEqualTo(EntryFormCore.FeeAdd.Err(EntryFormCore.FEE_AMOUNT_HINT))
+        assertThat(EntryFormCore.parseFeeAdd(true, "5,999", "huissier"))
+            .isEqualTo(EntryFormCore.FeeAdd.Err(MoneyFormat.FRACTION_HINT))
         assertThat(EntryFormCore.parseFeeAdd(true, "5,00", "huissier"))
             .isEqualTo(EntryFormCore.FeeAdd.Ok(500L))
     }
