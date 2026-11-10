@@ -234,6 +234,11 @@ class UpdateInstanceUseCase @Inject constructor(
                         } else {
                             baseExtras
                         }
+                        if (extraReceiptPathsReplace != null) {
+                            val removedExtras = ReceiptPathList.parse(tpl.extraReceiptPaths)
+                                .filter { it !in ReceiptPathList.parse(extras) }
+                            localReceiptPathsToDelete += removedExtras
+                        }
                         val lotC = tpl.copy(
                             iban = if (syncCreditorDetails) iban.trim() else {
                                 iban.trim().ifBlank { tpl.iban }
