@@ -106,6 +106,31 @@ class EntryFormCoreTest {
     }
 
     @Test
+    fun applyToFollowingOnRecurrenceChange_onceResets() {
+        assertThat(
+            EntryFormCore.applyToFollowingOnRecurrenceChange(
+                RecurrenceChoice.Once,
+                hasTemplate = true,
+                currentApplyToFollowing = true
+            )
+        ).isFalse()
+        assertThat(
+            EntryFormCore.applyToFollowingOnRecurrenceChange(
+                RecurrenceChoice.Monthly,
+                hasTemplate = true,
+                currentApplyToFollowing = false
+            )
+        ).isTrue()
+        assertThat(
+            EntryFormCore.applyToFollowingOnRecurrenceChange(
+                RecurrenceChoice.Monthly,
+                hasTemplate = false,
+                currentApplyToFollowing = false
+            )
+        ).isFalse()
+    }
+
+    @Test
     fun intervalHelpers() {
         assertThat(EntryFormCore.intervalMonths(RecurrenceChoice.Every3Months)).isEqualTo(3)
         assertThat(

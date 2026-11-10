@@ -15,6 +15,7 @@ import be.monmoisclair.app.domain.usecase.DossiersSnapshot
 import be.monmoisclair.app.domain.usecase.ListDossiersUseCase
 import be.monmoisclair.app.domain.usecase.ListPendingLettersUseCase
 import be.monmoisclair.app.domain.usecase.PrepareMonthSummaryUseCase
+import be.monmoisclair.app.ui.AsyncLoadCoordinator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -53,12 +54,14 @@ class DossiersViewModel @Inject constructor(
 
     private val _shareIntents = MutableSharedFlow<Intent>(extraBufferCapacity = 1)
     val shareIntents: SharedFlow<Intent> = _shareIntents.asSharedFlow()
+    private val refreshCoordinator = AsyncLoadCoordinator()
 
     init {
         refresh()
     }
 
     fun refresh() {
+        val loadId = refreshCoordinator.startLoad()
         viewModelScope.launch {
             val previous = _state.value
             val firstPaint =
@@ -70,6 +73,7 @@ class DossiersViewModel @Inject constructor(
             }
             val snap = listDossiers()
             val pending = listPendingLetters()
+            if (refreshCoordinator.isStale(loadId)) return@launch
             _state.update {
                 it.copy(
                     loading = false,

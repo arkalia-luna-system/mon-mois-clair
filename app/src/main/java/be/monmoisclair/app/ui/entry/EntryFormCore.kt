@@ -120,6 +120,20 @@ object EntryFormCore {
         RecurrenceChoice.Yearly -> 12
     }
 
+    /**
+     * Edit : « Appliquer aux mois suivants » n’a pas de sens sur « une seule fois » ;
+     * repasse à false pour éviter delete / état dirty trompeurs avant enregistrement.
+     */
+    fun applyToFollowingOnRecurrenceChange(
+        newRecurrence: RecurrenceChoice,
+        hasTemplate: Boolean,
+        currentApplyToFollowing: Boolean
+    ): Boolean = when {
+        newRecurrence == RecurrenceChoice.Once -> false
+        hasTemplate -> true
+        else -> currentApplyToFollowing
+    }
+
     /** Edit load : intervalle template → choix UI (null = une fois). */
     fun recurrenceChoiceFromInterval(intervalMonths: Int?): RecurrenceChoice = when (intervalMonths) {
         null -> RecurrenceChoice.Once

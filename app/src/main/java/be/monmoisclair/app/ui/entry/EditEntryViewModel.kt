@@ -276,7 +276,11 @@ class EditEntryViewModel @Inject constructor(
                 RecurrenceChoice.Every3Months -> RecurrenceLabel.forIntervalMonths(3)
                 RecurrenceChoice.Yearly -> RecurrenceLabel.forIntervalMonths(12)
             },
-            applyToFollowing = if (v != RecurrenceChoice.Once && it.hasTemplate) true else it.applyToFollowing,
+            applyToFollowing = EntryFormCore.applyToFollowingOnRecurrenceChange(
+                newRecurrence = v,
+                hasTemplate = it.hasTemplate,
+                currentApplyToFollowing = it.applyToFollowing
+            ),
             error = null
         )
     }

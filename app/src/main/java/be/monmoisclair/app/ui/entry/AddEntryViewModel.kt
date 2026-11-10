@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.YearMonth
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 data class EntryFormState(
@@ -91,6 +92,8 @@ class AddEntryViewModel @Inject constructor(
     private val receiptDraft = EntryFormReceiptDraft()
     /** Évite un 2ᵉ insert si la photo a échoué après un 1ᵉr enregistrement OK. */
     @Volatile private var createdInstanceId: String? = null
+    /** Anti-course : double Enregistrer / confirm doublon en parallèle. */
+    private val saveGate = AtomicBoolean(false)
 
     fun setLabel(v: String) = _state.update { it.copy(label = v, error = null) }
     fun setAmount(v: String) = _state.update { it.copy(amountText = v, error = null) }
@@ -304,70 +307,77 @@ class AddEntryViewModel @Inject constructor(
      */
     fun saveAsPendingLetter() {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.saved)) return
+        if (!saveGate.compareAndSet(false, true)) return
         _state.update { it.copy(saving = true, error = null) }
         viewModelScope.launch {
-            val s = _state.value
-            when (
-                val gate = EntryFormCore.pendingLetterCheck(
-                    isExpense = s.isExpense,
-                    dossierExpanded = s.dossierExpanded,
-                    openingRemainingText = s.openingRemainingText,
-                    whoLabel = s.label
-                )
-            ) {
-                EntryFormCore.PendingLetterCheck.AbortSilent -> {
-                    _state.update { it.copy(saving = false) }
-                    return@launch
-                }
-                is EntryFormCore.PendingLetterCheck.Abort -> {
-                    _state.update { it.copy(saving = false, error = gate.message) }
-                    return@launch
-                }
-                EntryFormCore.PendingLetterCheck.Proceed -> Unit
-            }
-            val who = s.label.trim()
-            when (
-                val result = createPendingLetter(
-                    who = who,
-                    what = s.causeLabel,
-                    paymentNote = s.paymentNote,
-                    iban = s.iban,
-                    creditorEmail = s.creditorEmail
-                )
-            ) {
-                is CreatePendingLetterResult.InvalidInput -> {
-                    _state.update { it.copy(saving = false, error = result.message) }
-                }
-                is CreatePendingLetterResult.Success -> {
-                    val bmp = receiptDraft.peekBitmap()
-                    if (bmp != null) {
-                        runCatching {
-                            val saved = receiptPhotos.saveBitmap(result.id, bmp)
-                            mutatingRepository.mutate(rescheduleReminders = false) {
-                                val letter = pendingLetterDao.getById(result.id) ?: return@mutate
-                                pendingLetterDao.upsert(
-                                    letter.copy(receiptRelativePath = saved.relativePath)
-                                )
-                            }
-                        }
-                        receiptDraft.clearBitmap()
+            try {
+                val s = _state.value
+                when (
+                    val gate = EntryFormCore.pendingLetterCheck(
+                        isExpense = s.isExpense,
+                        dossierExpanded = s.dossierExpanded,
+                        openingRemainingText = s.openingRemainingText,
+                        whoLabel = s.label
+                    )
+                ) {
+                    EntryFormCore.PendingLetterCheck.AbortSilent -> {
+                        _state.update { it.copy(saving = false) }
+                        return@launch
                     }
-                    _state.update { it.copy(saving = false, saved = true, error = null) }
+                    is EntryFormCore.PendingLetterCheck.Abort -> {
+                        _state.update { it.copy(saving = false, error = gate.message) }
+                        return@launch
+                    }
+                    EntryFormCore.PendingLetterCheck.Proceed -> Unit
                 }
+                val who = s.label.trim()
+                when (
+                    val result = createPendingLetter(
+                        who = who,
+                        what = s.causeLabel,
+                        paymentNote = s.paymentNote,
+                        iban = s.iban,
+                        creditorEmail = s.creditorEmail
+                    )
+                ) {
+                    is CreatePendingLetterResult.InvalidInput -> {
+                        _state.update { it.copy(saving = false, error = result.message) }
+                    }
+                    is CreatePendingLetterResult.Success -> {
+                        val bmp = receiptDraft.peekBitmap()
+                        if (bmp != null) {
+                            runCatching {
+                                val saved = receiptPhotos.saveBitmap(result.id, bmp)
+                                mutatingRepository.mutate(rescheduleReminders = false) {
+                                    val letter = pendingLetterDao.getById(result.id) ?: return@mutate
+                                    pendingLetterDao.upsert(
+                                        letter.copy(receiptRelativePath = saved.relativePath)
+                                    )
+                                }
+                            }
+                            receiptDraft.clearBitmap()
+                        }
+                        _state.update { it.copy(saving = false, saved = true, error = null) }
+                    }
+                }
+            } finally {
+                saveGate.set(false)
             }
         }
     }
 
     fun save(skipDuplicateCheck: Boolean = false) {
         if (!EntryFormCore.canStartSave(_state.value.saving, _state.value.saved)) return
+        if (!saveGate.compareAndSet(false, true)) return
         _state.update { it.copy(saving = true, error = null, duplicateConfirm = null) }
         viewModelScope.launch {
-            val existingId = createdInstanceId
-            if (existingId != null) {
-                retryAttachments(existingId)
-                return@launch
-            }
-            val s = _state.value
+            try {
+                val existingId = createdInstanceId
+                if (existingId != null) {
+                    retryAttachments(existingId)
+                    return@launch
+                }
+                val s = _state.value
             val wantOpening = s.isExpense && s.dossierExpanded
             val prep = EntryFormCore.prepareSharedSave(
                 amountText = s.amountText,
@@ -470,6 +480,9 @@ class AddEntryViewModel @Inject constructor(
                 }
                 is AddEntryResult.InvalidInput ->
                     _state.update { it.copy(saving = false, error = result.message) }
+            }
+            } finally {
+                saveGate.set(false)
             }
         }
     }
