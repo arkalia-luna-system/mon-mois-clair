@@ -29,6 +29,7 @@ import be.monmoisclair.app.domain.usecase.ShareBackupResult
 import be.monmoisclair.app.domain.usecase.ShareBackupUseCase
 import be.monmoisclair.app.domain.usecase.ThemePreferenceUseCase
 import be.monmoisclair.app.ui.AsyncLoadCoordinator
+import be.monmoisclair.app.ui.SingleFlightGate
 import be.monmoisclair.app.ui.format.MoneyFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -117,6 +118,7 @@ class SettingsViewModel @Inject constructor(
 
     private enum class PendingShareKind { None, Backup, Other }
     private val refreshCoordinator = AsyncLoadCoordinator()
+    private val shareGate = SingleFlightGate()
 
     init {
         refresh()
@@ -365,6 +367,7 @@ class SettingsViewModel @Inject constructor(
     /** Lot F — même texte que Mes dossiers (WhatsApp / Mail). */
     fun shareMonthSummary() {
         if (_uiState.value.busy || _uiState.value.summaryBusy) return
+        if (!shareGate.tryEnter()) return
         pendingShareKind = PendingShareKind.Other
         _uiState.update {
             it.copy(summaryBusy = true, flashMessage = null, flashMessageError = false)
@@ -389,6 +392,7 @@ class SettingsViewModel @Inject constructor(
                 }
             } finally {
                 _uiState.update { it.copy(summaryBusy = false) }
+                shareGate.exit()
             }
         }
     }
@@ -396,6 +400,7 @@ class SettingsViewModel @Inject constructor(
     /** Même texte en PDF (imprimer / joindre). */
     fun shareMonthSummaryPdf() {
         if (_uiState.value.busy || _uiState.value.summaryBusy) return
+        if (!shareGate.tryEnter()) return
         pendingShareKind = PendingShareKind.Other
         _uiState.update {
             it.copy(summaryBusy = true, flashMessage = null, flashMessageError = false)
@@ -430,17 +435,20 @@ class SettingsViewModel @Inject constructor(
                 }
             } finally {
                 _uiState.update { it.copy(summaryBusy = false) }
+                shareGate.exit()
             }
         }
     }
 
     fun shareSecurityCopy() {
         if (_uiState.value.busy || _uiState.value.savingsBusy) return
+        if (!shareGate.tryEnter()) return
         pendingShareKind = PendingShareKind.Backup
         _uiState.update {
             it.copy(busy = true, backupMessage = null, backupMessageError = false)
         }
         viewModelScope.launch {
+            try {
             when (val result = shareBackup()) {
                 is ShareBackupResult.Ready -> {
                     val backupAt = healthStore.readLastBackupAtEpochMs()
@@ -467,6 +475,9 @@ class SettingsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+            } finally {
+                shareGate.exit()
             }
         }
     }

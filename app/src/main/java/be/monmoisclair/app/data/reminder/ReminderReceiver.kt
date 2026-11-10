@@ -8,6 +8,7 @@ import androidx.core.app.NotificationManagerCompat
 import be.monmoisclair.app.data.db.dao.InstanceDao
 import be.monmoisclair.app.domain.model.ExpenseStatus
 import be.monmoisclair.app.domain.model.ReminderKind
+import be.monmoisclair.app.domain.reminder.ReminderMarkUndoPolicy
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneResult
 import be.monmoisclair.app.domain.usecase.ToggleExpenseDoneUseCase
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import java.util.Collections
 import javax.inject.Inject
 
 /**
@@ -81,6 +83,7 @@ class ReminderReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             try {
                 val expenseId = intent.getStringExtra(EXTRA_EXPENSE_ID) ?: return@launch
+                if (!beginExpenseToggle(expenseId)) return@launch
                 val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
                 val label = intent.getStringExtra(EXTRA_LABEL)?.ifBlank { null } ?: "Facture"
                 val result = toggleDone.markDoneIfTodo(expenseId)
@@ -98,6 +101,7 @@ class ReminderReceiver : BroadcastReceiver() {
             } catch (e: Exception) {
                 Log.e(TAG, "ReminderReceiver MARK_DONE échec", e)
             } finally {
+                intent.getStringExtra(EXTRA_EXPENSE_ID)?.let { endExpenseToggle(it) }
                 pendingResult.finish()
             }
         }
@@ -108,15 +112,13 @@ class ReminderReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             try {
                 val expenseId = intent.getStringExtra(EXTRA_EXPENSE_ID) ?: return@launch
+                if (!beginExpenseToggle(expenseId)) return@launch
                 val notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
                 val result = toggleDone(expenseId)
                 if (result is ToggleExpenseDoneResult.Toggled &&
-                    result.previousStatus != ExpenseStatus.DONE
+                    ReminderMarkUndoPolicy.needsCompensatingToggle(result)
                 ) {
-                    // Déjà à payer : ne pas rebasculer vers FAIT.
-                    if (result.newStatus == ExpenseStatus.DONE) {
-                        toggleDone(expenseId)
-                    }
+                    toggleDone(expenseId)
                 }
                 if (notificationId >= 0) {
                     NotificationManagerCompat.from(context).cancel(notificationId)
@@ -125,6 +127,7 @@ class ReminderReceiver : BroadcastReceiver() {
             } catch (e: Exception) {
                 Log.e(TAG, "ReminderReceiver UNDO échec", e)
             } finally {
+                intent.getStringExtra(EXTRA_EXPENSE_ID)?.let { endExpenseToggle(it) }
                 pendingResult.finish()
             }
         }
@@ -132,6 +135,15 @@ class ReminderReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "ReminderReceiver"
+        private val expenseToggleInFlight =
+            Collections.synchronizedSet(mutableSetOf<String>())
+
+        private fun beginExpenseToggle(expenseId: String): Boolean =
+            expenseToggleInFlight.add(expenseId)
+
+        private fun endExpenseToggle(expenseId: String) {
+            expenseToggleInFlight.remove(expenseId)
+        }
         const val ACTION_FIRE = "be.monmoisclair.app.action.REMINDER_FIRE"
         const val ACTION_MARK_DONE = "be.monmoisclair.app.action.REMINDER_MARK_DONE"
         const val ACTION_UNDO_DONE = "be.monmoisclair.app.action.REMINDER_UNDO_DONE"
