@@ -28,7 +28,7 @@ import be.monmoisclair.app.ui.theme.rememberSheetBottomClearance
 
 /**
  * Hub hors ledger — outils + lien calendrier (pas de mur de mois ici).
- * Aide / restore : dans Réglages. Contact = QuietLink bas (≠ Restore).
+ * Aide = accès direct ici + depuis Réglages. Contact = QuietLink bas.
  * Titre « Menu » = PageTitle (InkMuted), distinct des [CarnetHubRow] cliquables.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +49,7 @@ fun HomeMenuSheet(
     onOpenUpcoming: () -> Unit = {},
     remindersBlocked: Boolean = false,
     onOpenHealth: () -> Unit = {},
+    onOpenHelp: () -> Unit = {},
     onOpenSupport: () -> Unit = {}
 ) {
     val showDossiers = hasDossiers || dossierCount > 0 || pendingLetterCount > 0
@@ -84,7 +85,7 @@ fun HomeMenuSheet(
                 .padding(horizontal = A11yTokens.screenPadding)
                 .padding(bottom = 8.dp)
         ) {
-            CarnetPageTitle("Menu", withTopSpacer = false)
+            CarnetPageTitle(HomeMenuCopy.TITLE, withTopSpacer = false)
             Spacer(modifier = Modifier.height(menuGap))
 
             // 7.12 : leading icons + sections densifiées (top-app rows).
@@ -104,7 +105,7 @@ fun HomeMenuSheet(
             }
 
             CarnetHubRow(
-                label = "Réglages",
+                label = HomeMenuCopy.SETTINGS,
                 onClick = {
                     onDismiss()
                     onOpenSettings()
@@ -125,7 +126,7 @@ fun HomeMenuSheet(
                 )
             }
             CarnetHubRow(
-                label = "À venir",
+                label = HomeMenuCopy.UPCOMING,
                 onClick = {
                     onDismiss()
                     onOpenUpcoming()
@@ -134,12 +135,21 @@ fun HomeMenuSheet(
                 leadingColoredIcon = true
             )
             CarnetHubRow(
-                label = "Choisir un mois",
+                label = HomeMenuCopy.PICK_MONTH,
                 onClick = {
                     onDismiss()
                     onOpenMonthPicker()
                 },
                 leadingIconRes = R.drawable.ic_kit_calendar,
+                leadingColoredIcon = true
+            )
+            CarnetHubRow(
+                label = HomeMenuCopy.HELP,
+                onClick = {
+                    onDismiss()
+                    onOpenHelp()
+                },
+                leadingIconRes = R.drawable.ic_help,
                 leadingColoredIcon = true
             )
 
@@ -157,12 +167,12 @@ fun HomeMenuSheet(
 
             Spacer(modifier = Modifier.height(if (fit.compactHomeChrome) 14.dp else 18.dp))
             QuietLinkA11y(
-                text = "Un souci ? Écrire à Arkalia Système",
+                text = HomeMenuCopy.SUPPORT,
                 onClick = {
                     onDismiss()
                     onOpenSupport()
                 },
-                onClickLabel = "Écrire à Arkalia Système — bug, idée ou question"
+                onClickLabel = HomeMenuCopy.SUPPORT_A11Y
             )
         }
     }

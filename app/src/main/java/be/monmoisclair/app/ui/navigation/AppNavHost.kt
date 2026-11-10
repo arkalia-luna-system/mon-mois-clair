@@ -35,7 +35,6 @@ import be.monmoisclair.app.ui.settings.SettingsAppearanceScreen
 import be.monmoisclair.app.ui.settings.SettingsBackupScreen
 import be.monmoisclair.app.ui.settings.SettingsComfortGroupScreen
 import be.monmoisclair.app.ui.settings.SettingsDeadlinesScreen
-import be.monmoisclair.app.ui.settings.SettingsHelpScreen
 import be.monmoisclair.app.ui.settings.SettingsPrivacyScreen
 import be.monmoisclair.app.ui.settings.SettingsSavingsScreen
 import be.monmoisclair.app.ui.settings.SettingsScreen
@@ -87,6 +86,7 @@ fun AppNavHost(
                     navController.navigateSingleTop(AppRoute.editEntry(id, isExpense))
                 },
                 onOpenSettings = { navController.navigateSingleTop(AppRoute.Settings) },
+                onOpenHelp = { navController.navigateSingleTop(AppRoute.HowItWorks) },
                 onOpenHealth = { navController.navigateSingleTop(AppRoute.ReminderHealth) },
                 onOpenDossiers = { navController.navigateSingleTop(AppRoute.Dossiers) },
                 onOpenUpcoming = { navController.navigateSingleTop(AppRoute.Upcoming) },
@@ -144,8 +144,7 @@ fun AppNavHost(
                 onBack = { navController.popBackStack() },
                 onOpenAccountGroup = { navController.navigateSingleTop(AppRoute.SettingsAccountGroup) },
                 onOpenComfortGroup = { navController.navigateSingleTop(AppRoute.SettingsComfortGroup) },
-                // Aide ouvre d'abord la page dédiée, puis « Comment ça marche ».
-                onOpenHelp = { navController.navigateSingleTop(AppRoute.SettingsHelp) },
+                onOpenHelp = { navController.navigateSingleTop(AppRoute.HowItWorks) },
                 onOpenBackup = { navController.navigateSingleTop(AppRoute.SettingsBackup) }
             )
         }
@@ -223,13 +222,8 @@ fun AppNavHost(
                 viewModel = hiltViewModel(parent)
             )
         }
-        composable(AppRoute.SettingsHelp) { entry ->
-            val parent = remember(entry) { navController.getBackStackEntry(AppRoute.Settings) }
-            SettingsHelpScreen(
-                onBack = { navController.popBackStack() },
-                onOpenHowItWorks = { navController.navigateSingleTop(AppRoute.HowItWorks) },
-                viewModel = hiltViewModel(parent)
-            )
+        composable(AppRoute.SettingsHelp) {
+            HowItWorksScreen(onBack = { navController.popBackStack() })
         }
         composable(AppRoute.HowItWorks) {
             HowItWorksScreen(

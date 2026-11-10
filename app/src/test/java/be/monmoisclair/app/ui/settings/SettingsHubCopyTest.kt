@@ -38,7 +38,8 @@ class SettingsHubCopyTest {
             ).inOrder()
         assertThat(SettingsHubCopy.BACKUP_SHORTCUT).contains("Code")
         assertThat(SettingsHubCopy.HELP).isEqualTo("Comment ça marche")
-        assertThat(SettingsHubCopy.GROUP_HELP).isEqualTo(SettingsHubCopy.HELP)
+        assertThat(SettingsHubCopy.GROUP_HELP).contains(SettingsHubCopy.HELP)
+        assertThat(SettingsHubCopy.GROUP_HELP).contains("Aide")
         // Hub ≠ Accueil sticky : précise jour / retrait.
         assertThat(SettingsHubCopy.SAVINGS_ROW).contains("Jour")
         assertThat(SettingsHubCopy.SAVINGS_ROW).isNotEqualTo(SettingsHubCopy.SAVINGS)
@@ -70,8 +71,7 @@ class SettingsHubCopyTest {
     }
 
     @Test
-    fun alertsAndHelp_stayInHubNotHomeMenu() {
-        // Charte §7 : Alertes / Aide / restore vivent dans Réglages.
+    fun alertsAndHelp_stayAvailableInSettings() {
         assertThat(SettingsHubCopy.alwaysVisibleRows).contains(SettingsHubCopy.ALERTS)
         assertThat(SettingsHubCopy.alwaysVisibleRows).contains(SettingsHubCopy.HELP)
         assertThat(SettingsHubCopy.alwaysVisibleRows).contains(SettingsHubCopy.BACKUP)

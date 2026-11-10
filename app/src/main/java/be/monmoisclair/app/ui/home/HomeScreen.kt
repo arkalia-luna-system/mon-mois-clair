@@ -77,6 +77,7 @@ fun HomeScreen(
     onAdd: (YearMonth) -> Unit,
     onEdit: (id: String, isExpense: Boolean) -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenHelp: () -> Unit,
     onOpenHealth: () -> Unit = {},
     onOpenDossiers: () -> Unit = {},
     onOpenUpcoming: () -> Unit = {},
@@ -374,6 +375,7 @@ fun HomeScreen(
             onOpenUpcoming = onOpenUpcoming,
             remindersBlocked = remindersBlocked,
             onOpenHealth = onOpenHealth,
+            onOpenHelp = onOpenHelp,
             onOpenSupport = viewModel::writeSupportMail
         )
     }

@@ -32,8 +32,8 @@ internal const val SETTINGS_LOCAL_ONLY_BODY =
     "Données locales — pas de compte, pas de cloud."
 
 /**
- * Hub Réglages : 3 groupes → sous-écrans sujet.
- * Alertes / Aide / Restaurer restent ici (pas dans le Menu Accueil).
+ * Hub Réglages : accès directs + groupes courts.
+ * Aide s'ouvre aussi depuis le Menu Accueil, mais reste disponible ici.
  * Échéances = Données (métier) ; Confort = Apparence + Alertes seulement.
  */
 @Composable

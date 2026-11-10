@@ -9,7 +9,9 @@ object ClipboardSecurityCopy {
     const val CLEAR_SECONDS = 30
 
     const val HOW_IT_WORKS_BODY =
-        "« Copier l’IBAN » ou « Copier la communication » : le texte va dans le presse-papiers " +
-            "pour coller dans votre banque. Il disparaît tout seul après environ $CLEAR_SECONDS secondes, " +
-            "ou dès que vous quittez l’app. Android peut aussi masquer ce contenu aux autres apps."
+        "Touchez « Copier l’IBAN » ou « Copier la communication ». " +
+            "Ouvrez votre banque. " +
+            "Collez aussitôt. " +
+            "Le presse-papiers s’efface seul après environ $CLEAR_SECONDS secondes. " +
+            "Il s’efface aussi quand vous quittez l’app."
 }
