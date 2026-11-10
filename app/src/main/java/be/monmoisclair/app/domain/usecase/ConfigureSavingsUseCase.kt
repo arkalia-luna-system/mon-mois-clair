@@ -168,7 +168,7 @@ class ConfigureSavingsUseCase @Inject constructor(
             val rows = instanceDao.expensesFromTemplateFromLedger(existing.id, ledgerId)
             for (item in rows) {
                 if (item.status != ExpenseStatus.TODO) continue
-                val ym = YearMonth.parse(item.ledgerId)
+                val ym = runCatching { YearMonth.parse(item.ledgerId) }.getOrNull() ?: continue
                 instanceDao.updateExpense(
                     item.copy(
                         amountCents = amountCents,

@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import be.monmoisclair.app.data.backup.BackupScheduler
 import be.monmoisclair.app.data.db.AppDatabase
+import be.monmoisclair.app.data.db.entity.ExpenseInstanceEntity
 import be.monmoisclair.app.data.db.entity.IncomeInstanceEntity
 import be.monmoisclair.app.data.db.entity.MonthLedgerEntity
 import be.monmoisclair.app.data.reminder.ReminderScheduler
@@ -146,6 +147,41 @@ class ConfigureSavingsUseCaseTest {
     fun save_rejectsNonPositive() = runBlocking {
         val r = configure.save(0L, 1)
         assertThat(r).isInstanceOf(ConfigureSavingsResult.InvalidInput::class.java)
+    }
+
+    @Test
+    fun save_ignoresBrokenFutureLedgerIds() = runBlocking {
+        seedMonthWithIncomeAndRent()
+        assertThat(configure.save(5_000L, 10)).isEqualTo(ConfigureSavingsResult.Saved)
+        val templateId = db.appMetaDao().get(AppMetaKeys.SAVINGS_TEMPLATE_ID)?.value.orEmpty()
+        db.instanceDao().insertExpense(
+            ExpenseInstanceEntity(
+                id = "exp-bad-ledger",
+                ledgerId = "bad-ledger",
+                templateId = templateId,
+                label = ConfigureSavingsUseCase.LABEL,
+                amountCents = 5_000L,
+                dayOfMonth = 10,
+                status = ExpenseStatus.TODO,
+                doneAtEpochMs = null,
+                remindJ3 = true,
+                remindJd = true,
+                isAutoDebit = false,
+                paymentNote = "",
+                receiptRelativePath = "",
+                alarmJ3RequestCode = null,
+                alarmJdRequestCode = null,
+                createdAtEpochMs = 1L
+            )
+        )
+
+        val result = configure.save(6_000L, 12)
+
+        assertThat(result).isEqualTo(ConfigureSavingsResult.Saved)
+        val current = db.instanceDao().getAllExpenses()
+            .single { it.templateId == templateId && it.ledgerId == "2026-10" }
+        assertThat(current.amountCents).isEqualTo(6_000L)
+        assertThat(current.dayOfMonth).isEqualTo(12)
     }
 
     @Test
