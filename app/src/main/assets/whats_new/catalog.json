@@ -2,13 +2,6 @@
   "genericFallbackBullet": "Améliorations et corrections — l’app reste simple et entièrement hors ligne.",
   "releases": [
     {
-      "versionCode": 163,
-      "bullets": [
-        "Réglages : le rafraîchissement se remet mieux après un petit raté.",
-        "L’écran « Nouveautés » va plus vite à l’essentiel."
-      ]
-    },
-    {
       "versionCode": 164,
       "bullets": [
         "L’écran « Nouveautés » ne rejoue plus les anciennes mises à jour.",
