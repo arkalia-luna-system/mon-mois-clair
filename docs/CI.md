@@ -82,6 +82,13 @@ runtime ; CVSS local + privilèges élevés).
 PR bot Kotlin **2.4.21** / Gradle wrapper **9.8.2** **closes** (AGP 8).
 Revisite uniquement avec migration AGP 9.
 
+**2026-11-16 (post-7.63) :** PR Dependabot **Hilt 2.60.1** (#32) → CI rouge
+**légitime** sur la branche bot (plugin Hilt exige **AGP ≥9**, projet en **8.7.3**),
+alors que **`develop` reste vert** — écart trompeur sur l’onglet Actions /
+checks PR. `dependabot.yml` ignore désormais **Hilt ≥2.59**, **AGP ≥9**,
+**gradle-wrapper ≥9** (même politique que Kotlin). La garde produit reste
+`ci.yml` sur `develop` / merge manuel.
+
 **Alerte #61 `com.google.guava:guava` (CVE-2026-102554 / GHSA-xxph-c9ww-hj94) :**
 HIGH — CompactHashMap/CompactHashSet/MapMakerInternalMap deserialization OOM.
 Vulnérable `≥4.0` / `≤33.7.1` ; premier patch **`33.7.2`** (`33.7.2-jre` /

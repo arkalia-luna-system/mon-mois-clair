@@ -39,6 +39,20 @@ updates:
         versions: [">=1.10.0"]
       - dependency-name: "org.jetbrains.kotlinx:kotlinx-coroutines-test"
         versions: [">=1.10.0"]
+      # Hilt ≥2.59 (ex. 2.60.1) exige AGP 9 — stack pin AGP 8.7.3 / Hilt 2.52.
+      - dependency-name: "com.google.dagger.hilt.android"
+        versions: [">=2.59.0"]
+      - dependency-name: "com.google.dagger:hilt-android"
+        versions: [">=2.59.0"]
+      - dependency-name: "com.google.dagger:hilt-compiler"
+        versions: [">=2.59.0"]
+      - dependency-name: "com.android.application"
+        versions: [">=9.0.0"]
+      - dependency-name: "com.android.library"
+        versions: [">=9.0.0"]
+      # Wrapper 9.x = chantier AGP 9 ; PR #36 a pu passer les tests mais merge non safe.
+      - dependency-name: "gradle-wrapper"
+        versions: [">=9.0.0"]
     labels:
       - dependencies
       - gradle
