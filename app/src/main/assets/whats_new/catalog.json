@@ -2,14 +2,6 @@
   "genericFallbackBullet": "Améliorations et corrections — l’app reste simple et entièrement hors ligne.",
   "releases": [
     {
-      "versionCode": 162,
-      "bullets": [
-        "Suppression, archivage et épargne : les anciens reçus inutiles sont mieux nettoyés.",
-        "Si une facture mensuelle devient ponctuelle, ses anciennes photos ou PDF inutiles partent aussi.",
-        "Le ménage des fichiers liés a été renforcé pour éviter les restes cachés."
-      ]
-    },
-    {
       "versionCode": 163,
       "bullets": [
         "Réglages : le rafraîchissement se remet mieux après un petit raté.",
@@ -61,6 +53,13 @@
         "L’accueil laisse plus de place à la liste : le bandeau du haut est plus compact.",
         "Courses et « Mettre de côté » restent à côté du montant, en un seul toucher.",
         "Le menu et « Ajouter » en bas prennent un peu moins de place, sans rien retirer."
+      ]
+    },
+    {
+      "versionCode": 170,
+      "bullets": [
+        "Les mises à jour Play Internal se revérifieront mieux à l’ouverture si le Store n’était pas encore prêt.",
+        "La CI ne répète plus trois fois les échecs de build sur les branches Dependabot hors périmètre."
       ]
     }
   ]

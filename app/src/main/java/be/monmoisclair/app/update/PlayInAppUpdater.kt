@@ -35,21 +35,48 @@ class PlayInAppUpdater @Inject constructor(
 ) {
     private val manager by lazy { AppUpdateManagerFactory.create(context.applicationContext) }
 
+    /** Flux Immediate lancé (ou terminé sans nouvel essai utile) pour ce process. */
     @Volatile
-    private var coldStartChecked = false
+    private var updateFlowEngagedThisProcess = false
 
-    /** Une fois par process, après déverrouillage / Accueil prêt. */
+    @Volatile
+    private var playCheckInFlight = false
+
+    /**
+     * Après déverrouillage / Accueil prêt (et à chaque reprise si la piste Play n’était pas prête).
+     *
+     * Ne pas marquer « checké » avant la réponse Play : sinon une ouverture trop tôt après
+     * publish Internal (propagation) bloque tout réessai jusqu’au kill du process.
+     */
     fun maybeCheckImmediateOnColdStart(activity: Activity) {
-        if (coldStartChecked) return
-        coldStartChecked = true
+        if (updateFlowEngagedThisProcess) return
+        if (playCheckInFlight) return
+        playCheckInFlight = true
         runCatching {
             manager.appUpdateInfo
                 .addOnSuccessListener { info ->
-                    startImmediateIfAllowed(activity, info)
+                    playCheckInFlight = false
+                    val available =
+                        info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    val immediateOk = info.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+                    when {
+                        available && immediateOk -> {
+                            updateFlowEngagedThisProcess = true
+                            startImmediateFlow(activity, info)
+                        }
+                        available && !immediateOk ->
+                            // Immediate refusé par Play → inutile de boucler à chaque resume.
+                            updateFlowEngagedThisProcess = true
+                        // UPDATE_NOT_AVAILABLE : ne pas engager → prochain resume réessaie.
+                        else -> Unit
+                    }
                 }
                 .addOnFailureListener {
-                    // Pas de Play / sideload / API indisponible.
+                    playCheckInFlight = false
+                    // Pas de Play / sideload / API indisponible — réessai possible au resume.
                 }
+        }.onFailure {
+            playCheckInFlight = false
         }
     }
 
@@ -67,13 +94,6 @@ class PlayInAppUpdater @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun startImmediateIfAllowed(activity: Activity, info: AppUpdateInfo) {
-        val available = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-        val immediateOk = info.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-        if (!available || !immediateOk) return
-        startImmediateFlow(activity, info)
     }
 
     private fun startImmediateFlow(activity: Activity, info: AppUpdateInfo) {

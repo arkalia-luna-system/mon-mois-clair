@@ -179,6 +179,12 @@ class MainActivity : AppCompatActivity() {
                         when (event) {
                             Lifecycle.Event.ON_RESUME -> {
                                 mainViewModel.reloadBiometricPreference()
+                                val st = mainViewModel.uiState.value
+                                if (!st.loading && (!st.needsUnlock || st.unlocked)) {
+                                    playInAppUpdater.maybeCheckImmediateOnColdStart(
+                                        this@MainActivity
+                                    )
+                                }
                                 playInAppUpdater.onResumeContinueIfNeeded(this@MainActivity)
                             }
                             Lifecycle.Event.ON_STOP -> {

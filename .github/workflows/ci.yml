@@ -71,11 +71,17 @@ jobs:
       - name: Unit tests
         run: |
           set +e
+          log=gradle-ci-unit-tests.log
           for attempt in 1 2 3; do
-            ./gradlew :app:testDebugUnitTest --stacktrace --no-daemon
-            code=$?
+            ./gradlew :app:testDebugUnitTest --stacktrace --no-daemon 2>&1 | tee "$log"
+            code=${PIPESTATUS[0]}
             if [ "$code" -eq 0 ]; then
               exit 0
+            fi
+            # Retry seulement flake Robolectric / tests — pas deps Hilt/Kotlin/sqlcipher (PR bot).
+            if ! grep -qE '> Task :app:testDebugUnitTest|tests completed' "$log"; then
+              echo "::error::Build a échoué avant l'exécution des tests unitaires (pas de retry)."
+              exit 1
             fi
             echo "::warning::Unit tests attempt ${attempt}/3 failed (exit ${code})"
             if [ "$attempt" -lt 3 ]; then

@@ -89,6 +89,12 @@ checks PR. `dependabot.yml` ignore désormais **Hilt ≥2.59**, **AGP ≥9**,
 **gradle-wrapper ≥9** (même politique que Kotlin). La garde produit reste
 `ci.yml` sur `develop` / merge manuel.
 
+**2026-11-16 (suite) :** PR **sqlcipher-android 4.20** (#38) → `kspDebugKotlin` rouge
+(incompatible **kotlin-stdlib 2.2.10** vs pin **2.0.21**). Ignore
+**`net.zetetic:sqlcipher-android` ≥4.7** tant que stack AGP 8 / Kotlin 2.0.
+`ci.yml` : retry ×3 **uniquement** si la tâche `testDebugUnitTest` a tourné
+(évite 3× le même exit 1 sur PR bot compile).
+
 **Alerte #61 `com.google.guava:guava` (CVE-2026-102554 / GHSA-xxph-c9ww-hj94) :**
 HIGH — CompactHashMap/CompactHashSet/MapMakerInternalMap deserialization OOM.
 Vulnérable `≥4.0` / `≤33.7.1` ; premier patch **`33.7.2`** (`33.7.2-jre` /

@@ -14,7 +14,7 @@
 |-------|----------------|
 | 1 | CI / Console publie un AAB Internal avec `versionCode` **plus grand** |
 | 2 | Le téléphone a l’app **installée via Play** (testeur opt-in) |
-| 3 | Ouverture de Mon Mois Clair → après unlock, **une fois par process** |
+| 3 | Ouverture de Mon Mois Clair → après unlock ; **réessaie au resume** si Play n’avait pas encore la build Internal |
 | 4 | Play Core détecte la MAJ → **écran Immediate** (téléchargement + install) |
 | 5 | Play **relance** l’app sur la nouvelle version |
 

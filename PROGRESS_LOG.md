@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.63** Accueil compact liste d’abord — **563** pass, **1** skipped, versionCode **169** |
+| Dernière étape terminée | **7.64** IAU resume + CI Dependabot — **563** pass, **1** skipped, versionCode **170** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke device : Accueil compact · double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · [`smoke-checklist`](docs/audits/2026-11-05-smoke-checklist-7.24.md) |
@@ -20,6 +20,21 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-16 — 7.64 IAU resume + CI Dependabot
+
+**Contexte :** CI rouge trompeuse (PR Dependabot sqlcipher/Hilt, `develop` déjà vert) ; téléphone Play Internal en **168** sans écran MAJ alors que **169** était publié.
+
+**Corrigé :**
+- `PlayInAppUpdater` : ne plus verrouiller le check avant la réponse Play ; réessai au **resume** si `UPDATE_NOT_AVAILABLE` (propagation Internal)
+- `MainActivity` : check IAU sur `ON_RESUME` après unlock (en plus du cold start Compose)
+- `dependabot.yml` : ignore `sqlcipher-android` ≥4.7 (stdlib Kotlin 2.2 vs pin 2.0.21)
+- `ci.yml` : retry ×3 seulement si `testDebugUnitTest` a tourné (fail-fast compile deps bot)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **563** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** `0.1.0-7.64` · `versionCode` **170**.  
+**Device (ADB) :** install **Play** (`com.android.vending`) · **168** / `0.1.0-7.62` · lastUpdate 2026-11-10 — pas sideload.  
+**Ship :** merge `main` pour Publish Internal **170**.
 
 ### 2026-11-16 — 7.63 Accueil compact liste d’abord
 

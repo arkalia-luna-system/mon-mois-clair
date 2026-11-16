@@ -53,6 +53,9 @@ updates:
       # Wrapper 9.x = chantier AGP 9 ; PR #36 a pu passer les tests mais merge non safe.
       - dependency-name: "gradle-wrapper"
         versions: [">=9.0.0"]
+      # sqlcipher 4.20+ tire kotlin-stdlib ≥2.2 (KSP pin 2.0.21) — PR #38 CI rouge légitime.
+      - dependency-name: "net.zetetic:sqlcipher-android"
+        versions: [">=4.7.0"]
     labels:
       - dependencies
       - gradle
