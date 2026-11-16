@@ -175,7 +175,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // SQLCipher (Room SupportOpenHelperFactory) — chiffrement au repos du carnet.
-    implementation("net.zetetic:sqlcipher-android:4.6.1")
+    implementation("net.zetetic:sqlcipher-android:4.20.0")
     implementation("androidx.sqlite:sqlite:2.4.0")
 
     implementation("com.google.dagger:hilt-android:$hiltVersion")
