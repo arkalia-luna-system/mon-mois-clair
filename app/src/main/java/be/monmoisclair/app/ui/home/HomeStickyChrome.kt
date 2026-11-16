@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,7 +58,7 @@ internal fun StickyIconTool(
             .clip(HomeTokens.wellRadius)
             .background(chipColor)
             .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 10.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
             .semantics { this.contentDescription = contentDescription },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -89,7 +90,93 @@ internal fun StickyIconTool(
 }
 
 /**
- * 7.13 : Courses | Mettre de côté en grille sous le montant (icon wells).
+ * Wells 48×48 dp à droite du montant (hero 2 rangées — liste d’abord).
+ */
+@Composable
+internal fun StickyHeroToolsInline(
+    coursesLabel: String?,
+    coursesDescription: String?,
+    onOpenCourses: () -> Unit,
+    savingsLabel: String?,
+    savingsDescription: String?,
+    onOpenSavings: () -> Unit
+) {
+    if (coursesLabel == null && savingsLabel == null) return
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (coursesLabel != null) {
+            StickyIconToolCompact(
+                iconRes = R.drawable.ic_cart,
+                label = coursesLabel,
+                chipColor = HomeTokens.CoursesChip,
+                onClickLabel = "Modifier les courses",
+                contentDescription = coursesDescription ?: coursesLabel,
+                onClick = onOpenCourses,
+                iconTint = HomeTokens.Link
+            )
+        }
+        if (savingsLabel != null) {
+            StickyIconToolCompact(
+                iconRes = R.drawable.ic_piggy,
+                label = savingsLabel,
+                chipColor = HomeTokens.SavingsChip,
+                onClickLabel = "Modifier Mettre de côté",
+                contentDescription = savingsDescription ?: savingsLabel,
+                onClick = onOpenSavings,
+                iconTint = HomeTokens.Ok
+            )
+        }
+    }
+}
+
+/**
+ * Well compact : icône + libellé court, zone cliquable 48×48 dp (charte seniors).
+ */
+@Composable
+internal fun StickyIconToolCompact(
+    iconRes: Int,
+    label: String,
+    chipColor: Color,
+    onClickLabel: String,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    brandColoredIcon: Boolean = true,
+    iconTint: Color = HomeTokens.Link
+) {
+    Column(
+        modifier = modifier
+            .defaultMinSize(minWidth = HomeTokens.minTouch, minHeight = HomeTokens.minTouch)
+            .widthIn(max = 56.dp)
+            .clip(HomeTokens.wellRadius)
+            .background(chipColor)
+            .clickable(role = Role.Button, onClickLabel = onClickLabel, onClick = onClick)
+            .padding(horizontal = 4.dp, vertical = 5.dp)
+            .semantics { this.contentDescription = contentDescription },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(iconRes),
+            contentDescription = null,
+            tint = if (brandColoredIcon) Color.Unspecified else iconTint,
+            modifier = Modifier.size(22.dp)
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
+            color = HomeTokens.Ink,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+/**
+ * Variante pleine largeur (legacy grille) — conservée si réutilisation hors hero inline.
  */
 @Composable
 internal fun StickyHeroTools(

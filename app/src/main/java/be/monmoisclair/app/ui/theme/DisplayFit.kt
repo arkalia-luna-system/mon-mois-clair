@@ -31,7 +31,7 @@ data class DisplayFit(
     val bannerPadding: Dp,
     val sectionGap: Dp,
     /**
-     * Un seul chiffre. 7.13 : emphase display 36 compact / 40 confort (wow Accueil).
+     * Un seul chiffre. Liste d’abord : 34 compact / 40 confort.
      */
     val remainingAmountSp: Float
 ) {
@@ -56,11 +56,11 @@ data class DisplayFit(
                 screenWidthDp = screenWidthDp,
                 compactHomeChrome = compact,
                 screenPadding = A11yTokens.screenPadding,
-                stickyPaddingVertical = if (compact) 8.dp else 12.dp,
+                stickyPaddingVertical = if (compact) 6.dp else 10.dp,
                 stickyPaddingHorizontal = A11yTokens.screenPadding,
                 bannerPadding = if (compact) 8.dp else 12.dp,
-                sectionGap = if (compact) 6.dp else 10.dp,
-                remainingAmountSp = if (compact) 36f else 40f
+                sectionGap = if (compact) 4.dp else 8.dp,
+                remainingAmountSp = if (compact) 34f else 40f
             )
         }
     }

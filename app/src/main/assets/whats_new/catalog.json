@@ -2,14 +2,6 @@
   "genericFallbackBullet": "Améliorations et corrections — l’app reste simple et entièrement hors ligne.",
   "releases": [
     {
-      "versionCode": 161,
-      "bullets": [
-        "Actions sensibles : les boutons destructifs sont mieux annoncés pour TalkBack.",
-        "Accueil / widget : certains rafraîchissements se rattrapent mieux après une erreur annexe.",
-        "Épargne et restauration : plusieurs textes ont été clarifiés."
-      ]
-    },
-    {
       "versionCode": 162,
       "bullets": [
         "Suppression, archivage et épargne : les anciens reçus inutiles sont mieux nettoyés.",
@@ -61,6 +53,14 @@
         "L’écran « Nouveautés » embarque moins de texte : il va droit au but.",
         "L’app ne garde que les dernières mises à jour — l’ancien historique a été allégé.",
         "Rien ne change pour vous : une seule fois « J’ai compris » par version installée."
+      ]
+    },
+    {
+      "versionCode": 169,
+      "bullets": [
+        "L’accueil laisse plus de place à la liste : le bandeau du haut est plus compact.",
+        "Courses et « Mettre de côté » restent à côté du montant, en un seul toucher.",
+        "Le menu et « Ajouter » en bas prennent un peu moins de place, sans rien retirer."
       ]
     }
   ]

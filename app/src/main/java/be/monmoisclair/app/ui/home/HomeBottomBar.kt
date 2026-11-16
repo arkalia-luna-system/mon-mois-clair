@@ -59,7 +59,7 @@ internal fun HomeBottomBar(
                 .padding(
                     // Aligné liste / sticky (24 dp) — pas HomeTokens.screenPad 20.
                     horizontal = A11yTokens.screenPadding,
-                    vertical = 12.dp
+                    vertical = 8.dp
                 ),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -138,7 +138,7 @@ private fun BottomBarFilled(
         // Même rayon que Menu (buttonRadius 16) — barre homogène.
         shape = HomeTokens.buttonRadius,
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 0.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = A11yTokens.ButtonFill,
             contentColor = A11yTokens.ButtonText
@@ -179,7 +179,7 @@ private fun BottomBarOutlined(
         modifier = modifier.heightIn(min = HomeTokens.minTouch),
         shape = HomeTokens.buttonRadius,
         border = androidx.compose.foundation.BorderStroke(1.dp, HomeTokens.CardBorder),
-        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = HomeTokens.Card,
             contentColor = HomeTokens.Ink

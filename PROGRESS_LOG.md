@@ -9,9 +9,9 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.62** catalogue Nouveautés allégé — **563** pass, **1** skipped, versionCode **168** |
+| Dernière étape terminée | **7.63** Accueil compact liste d’abord — **563** pass, **1** skipped, versionCode **169** |
 | Étape en cours | — |
-| Prochaine sous-étape | Smoke : double Enregistrer · retour Dossiers · facture 1× |
+| Prochaine sous-étape | Smoke device : Accueil compact · double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · [`smoke-checklist`](docs/audits/2026-11-05-smoke-checklist-7.24.md) |
 | Règle agents | **Un seul agent** · **un seul Gradle** à la fois. Prefer `./scripts/git-safe.sh` pour push T7 |
 
@@ -20,6 +20,20 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-16 — 7.63 Accueil compact liste d’abord
+
+**Contexte :** libérer de la hauteur pour la liste des factures sans retirer de bouton ni casser la lecture seniors du reste du mois.
+
+**Corrigé :**
+- hero sticky : libellé « Reste » puis montant + wells Courses / épargne sur **une** rangée (48×48 dp)
+- `DisplayFit` : paddings / gaps resserrés en mode compact · typo montant 34 sp (40 confort)
+- bandeau bas : `Menu` + `Ajouter` densifiés (paddings verticaux)
+- liens accords / « Voir le détail » : `padding` vertical 4 dp **sans** `heightIn(minTouch)` — compromis densité vs cible 48 dp (évite une bannière trop haute sur 2 lignes)
+
+**Tests :** `COPYFILE_DISABLE=1 ./gradlew --no-daemon --max-workers=1 :app:testDebugUnitTest --rerun-tasks` → **563** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** `0.1.0-7.63` · `versionCode` **169**.  
+**Ship :** `develop` (Play auto). **Pas** Production · smoke device **NON VÉRIFIÉ** (ADB unauthorized).
 
 ### 2026-11-10 — 7.62 catalogue Nouveautés allégé
 

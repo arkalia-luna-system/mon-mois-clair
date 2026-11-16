@@ -95,7 +95,7 @@ internal fun HomeStickyHeader(
                             role = Role.Button,
                             onClickLabel = "Choisir un mois"
                         ) { onOpenMonthPicker() }
-                        .padding(horizontal = 10.dp, vertical = 8.dp),
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -138,7 +138,7 @@ internal fun HomeStickyHeader(
             }
             val remainingAmount = MoneyFormat.formatCents(state.summary.remainingCents)
             val hasHeroTools = coursesLabel != null || savingsLabel != null
-            // Hero 7.13 : surface mid tonal · montant plein largeur · wells sous le chiffre.
+            // Hero : surface mid tonal · libellé · montant + wells 48 dp sur une rangée.
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,33 +146,35 @@ internal fun HomeStickyHeader(
                     .clip(HomeTokens.heroRadius)
                     .background(HomeTokens.HeroSurface)
                     .padding(
-                        horizontal = 18.dp,
-                        vertical = if (fit.compactHomeChrome) 14.dp else 18.dp
+                        horizontal = if (fit.compactHomeChrome) 14.dp else 18.dp,
+                        vertical = if (fit.compactHomeChrome) 10.dp else 14.dp
                     ),
                 verticalArrangement = Arrangement.spacedBy(
-                    if (fit.compactHomeChrome) 10.dp else 14.dp
+                    if (fit.compactHomeChrome) 6.dp else 10.dp
                 )
             ) {
-                Column(
+                Text(
+                    text = remainingShort,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = HomeTokens.InkMuted,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .semantics(mergeDescendants = true) {
                             contentDescription = "$remainingTitle : $remainingAmount"
                         },
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = remainingShort,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = HomeTokens.InkMuted,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
                     Text(
                         text = remainingAmount,
                         style = MaterialTheme.typography.displayLarge.copy(
                             fontSize = fit.remainingAmountSp.sp,
-                            lineHeight = (fit.remainingAmountSp + 6f).sp,
+                            lineHeight = (fit.remainingAmountSp + 4f).sp,
                             letterSpacing = (-0.03).em
                         ),
                         color = when {
@@ -180,18 +182,19 @@ internal fun HomeStickyHeader(
                             else -> HomeTokens.Ink
                         },
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
                     )
-                }
-                if (hasHeroTools) {
-                    StickyHeroTools(
-                        coursesLabel = coursesLabel,
-                        coursesDescription = coursesDescription,
-                        onOpenCourses = onOpenCourses,
-                        savingsLabel = savingsLabel,
-                        savingsDescription = savingsDescription,
-                        onOpenSavings = onOpenSavings
-                    )
+                    if (hasHeroTools) {
+                        StickyHeroToolsInline(
+                            coursesLabel = coursesLabel,
+                            coursesDescription = coursesDescription,
+                            onOpenCourses = onOpenCourses,
+                            savingsLabel = savingsLabel,
+                            savingsDescription = savingsDescription,
+                            onOpenSavings = onOpenSavings
+                        )
+                    }
                 }
             }
             if (state.isFuturePreview) {
@@ -244,11 +247,11 @@ internal fun HomeStickyHeader(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = HomeTokens.minTouch)
                         .clickable(
                             role = Role.Button,
                             onClickLabel = "Ouvrir Dossiers"
                         ) { onOpenDossiers() }
+                        .padding(vertical = 4.dp)
                         .semantics {
                             liveRegion = LiveRegionMode.Polite
                             contentDescription = accordLabel
@@ -270,7 +273,6 @@ internal fun HomeStickyHeader(
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = HomeTokens.minTouch)
                         .clickable(
                             role = Role.Button,
                             onClickLabel = if (stickyDetailsOpen) {
@@ -279,7 +281,7 @@ internal fun HomeStickyHeader(
                                 "Voir les détails"
                             }
                         ) { onStickyDetailsOpenChange(!stickyDetailsOpen) }
-                        .padding(vertical = 2.dp)
+                        .padding(vertical = 4.dp)
                         .semantics { contentDescription = detailsLabel }
                 )
             }
