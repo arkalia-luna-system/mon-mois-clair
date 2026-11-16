@@ -29,7 +29,7 @@ gradle.beforeProject {
     val patched = listOf(
         "com.google.protobuf:protobuf-java:3.25.9",
         "commons-io:commons-io:2.22.0",
-        "org.apache.commons:commons-compress:1.26.0",
+        "org.apache.commons:commons-compress:1.28.0",
         "org.apache.commons:commons-lang3:3.22.0",
         "org.bouncycastle:bcprov-jdk18on:1.87",
         "org.bouncycastle:bcpkix-jdk18on:1.87",

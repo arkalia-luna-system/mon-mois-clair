@@ -21,6 +21,18 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 
 ## Journal
 
+### 2026-11-16 — CI Dependabot (fin de journée)
+
+**Contexte :** PRs bot (#45–#49) — rouge « symbole introuvable » sur Hilt 2.56.x (`*_HiltModules_*_LazyMapKey` dans `DaggerMonMoisClairApp_*`). `develop` / `main` déjà verts au pin **2.52**.
+
+**Corrigé :**
+- `dependabot.yml` : ignore Hilt **≥2.56** · `androidx.hilt` **≥1.3** · Netty module **>4.1.139.Final**
+- Merge contenu sûr #49 : `commons-compress` **1.28.0** (forces `build.gradle.kts` + `settings.gradle.kts`)
+- Fermeture PR #45–#48 (Hilt / androidx.hilt / Netty module isolé)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **564** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** inchangée **7.65** (micro-fix CI / deps classpath build).
+
 ### 2026-11-16 — 7.65 socle Accueil / barre navigation
 
 **Contexte :** bandeau bas Accueil (blanc / sombre) semblait dépasser sous la zone geste / 3 boutons — ressenti aggravé par le compact **7.63** sans insets dédiés au footer.

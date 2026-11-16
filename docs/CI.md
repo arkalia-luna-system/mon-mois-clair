@@ -61,7 +61,7 @@ Un `ignore:` dans `.github/dependabot.yml` **n’éteint pas** ces jobs Security
 
 **Mitigation repo (6.80+) :** `build.gradle.kts` + `settings.gradle.kts` forcent via
 `resolutionStrategy` (transitifs UTP/AGP — **pas** dans l’APK runtime) :
-`protobuf-java:3.25.9`, `commons-io:2.22.0`, `commons-compress:1.26.0`,
+`protobuf-java:3.25.9`, `commons-io:2.22.0`, `commons-compress:1.28.0`,
 `commons-lang3:3.18.0` (**#60**), `guava:33.7.2-jre` (**#61** CVE-2026-102554),
 `io.netty:*:4.1.139.Final`, `bcprov-jdk18on:1.86`, `bcpkix-jdk18on:1.86`,
 `jdom2:2.0.6.1`, `jose4j:0.9.7`.
