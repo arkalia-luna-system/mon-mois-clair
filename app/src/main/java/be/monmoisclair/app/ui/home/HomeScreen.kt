@@ -2,10 +2,8 @@ package be.monmoisclair.app.ui.home
 
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -493,7 +491,7 @@ fun HomeScreen(
             ) {
                 when {
                     state.loading -> {
-                        item {
+                        item(key = "loading", contentType = "loading") {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -518,60 +516,57 @@ fun HomeScreen(
                         }
                     }
                     state.timeline.isEmpty() -> {
-                        item {
-                            // 7.13 : empty premium — carte soft + fade calme.
+                        item(key = "empty-month", contentType = "empty") {
+                            // 7.13 : empty premium — carte soft.
                             val emptyShape = HomeTokens.heroRadius
-                            AnimatedVisibility(visible = true, enter = fadeIn(tween(280))) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            vertical = if (fit.compactHomeChrome) {
-                                                16.dp
-                                            } else {
-                                                HomeTokens.emptyPadVertical
-                                            }
-                                        )
-                                        .shadow(HomeTokens.cardElevation, emptyShape, clip = false)
-                                        .clip(emptyShape)
-                                        .background(HomeTokens.HeroSurface)
-                                        .padding(
-                                            horizontal = 20.dp,
-                                            vertical = if (fit.compactHomeChrome) 20.dp else 28.dp
-                                        ),
-                                    verticalArrangement = Arrangement.spacedBy(
-                                        if (fit.compactHomeChrome) 10.dp else 12.dp
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        vertical = if (fit.compactHomeChrome) {
+                                            16.dp
+                                        } else {
+                                            HomeTokens.emptyPadVertical
+                                        }
                                     )
-                                ) {
-                                    Text(
-                                        text = HomeEmptyMonthCopy.title(
-                                            isPastMonth = state.isPastMonth,
-                                            isFuturePreview = state.isFuturePreview
-                                        ),
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        color = HomeTokens.Ink
-                                    )
-                                    Text(
-                                        text = HomeEmptyMonthCopy.body(
-                                            isPastMonth = state.isPastMonth,
-                                            isFuturePreview = state.isFuturePreview
-                                        ),
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = HomeTokens.InkMuted
-                                    )
-                                }
+                                    .shadow(HomeTokens.cardElevation, emptyShape, clip = false)
+                                    .clip(emptyShape)
+                                    .background(HomeTokens.HeroSurface)
+                                    .padding(
+                                        horizontal = 20.dp,
+                                        vertical = if (fit.compactHomeChrome) 20.dp else 28.dp
+                                    ),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    if (fit.compactHomeChrome) 10.dp else 12.dp
+                                )
+                            ) {
+                                Text(
+                                    text = HomeEmptyMonthCopy.title(
+                                        isPastMonth = state.isPastMonth,
+                                        isFuturePreview = state.isFuturePreview
+                                    ),
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    color = HomeTokens.Ink
+                                )
+                                Text(
+                                    text = HomeEmptyMonthCopy.body(
+                                        isPastMonth = state.isPastMonth,
+                                        isFuturePreview = state.isFuturePreview
+                                    ),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = HomeTokens.InkMuted
+                                )
                             }
                         }
                     }
                     else -> {
                         if (todayFocus.hasAction) {
-                            item(key = "today-focus") {
+                            item(key = "today-focus", contentType = "today-focus") {
                                 HomeTodayFocusCard(
                                     focus = todayFocus,
                                     onShowFirst = {
                                         todayFocus.firstExpenseId?.let(viewModel::setHighlightExpenseId)
-                                    },
-                                    modifier = Modifier.padding(bottom = 10.dp)
+                                    }
                                 )
                             }
                         }
@@ -581,7 +576,7 @@ fun HomeScreen(
                             hasExpenses = state.timeline.any { it is TimelineItem.Expense },
                             futurePreview = state.isFuturePreview
                         )?.let { label ->
-                            item(key = "still-to-pay") {
+                            item(key = "still-to-pay", contentType = "still-to-pay") {
                                 // 7.11 : bandeau statut mist (micro-rythme sous hero).
                                 val paidOk = state.summary.stillToPayCents == 0L
                                 Text(
@@ -602,12 +597,12 @@ fun HomeScreen(
                             }
                         }
                         CarnetListLimits.hiddenListHint(listTimeline.hiddenCount)?.let { hint ->
-                            item(key = "timeline-truncate") {
+                            item(key = "timeline-truncate", contentType = "tip") {
                                 CarnetTipCard(text = hint)
                             }
                         }
                         if (searchFieldVisible) {
-                            item(key = "search") {
+                            item(key = "search", contentType = "search") {
                                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                     OutlinedTextField(
                                         value = searchQuery,
@@ -669,21 +664,32 @@ fun HomeScreen(
                                 }
                             }
                         }
-                        items(listTimeline.visible, key = { item ->
-                            when (item) {
-                                is TimelineItem.Income -> "i-${item.id}"
-                                is TimelineItem.Expense -> "e-${item.id}"
+                        items(
+                            items = listTimeline.visible,
+                            key = { item ->
+                                when (item) {
+                                    is TimelineItem.Income -> "i-${item.id}"
+                                    is TimelineItem.Expense -> "e-${item.id}"
+                                }
+                            },
+                            contentType = { item ->
+                                when (item) {
+                                    is TimelineItem.Income -> "income"
+                                    is TimelineItem.Expense -> "expense"
+                                }
                             }
-                        }) { item ->
+                        ) { item ->
                             when (item) {
                                 is TimelineItem.Income -> IncomeRow(
                                     item = item,
+                                    compact = fit.compactHomeChrome,
                                     // readOnlyPreview n’affecte que le libellé a11y ici.
                                     readOnlyPreview = false,
                                     onClick = { onEdit(item.id, false) }
                                 )
                                 is TimelineItem.Expense -> ExpenseRow(
                                     item = item,
+                                    compact = fit.compactHomeChrome,
                                     highlighted = item.id == state.highlightExpenseId,
                                     // Cache FAIT sur mois futur ; édition ligne = OK.
                                     readOnlyPreview = state.isFuturePreview,

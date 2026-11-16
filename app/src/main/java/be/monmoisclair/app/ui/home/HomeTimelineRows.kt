@@ -38,7 +38,6 @@ import be.monmoisclair.app.ui.components.SecondaryA11yButton
 import be.monmoisclair.app.ui.theme.A11yTokens
 import be.monmoisclair.app.ui.theme.HomeTokens
 import be.monmoisclair.app.ui.theme.StampShape
-import be.monmoisclair.app.ui.theme.rememberDisplayFit
 
 @Composable
 internal fun DayBadge(label: String, compact: Boolean = false) {
@@ -96,11 +95,10 @@ internal fun StatusChip(
 @Composable
 internal fun IncomeRow(
     item: TimelineItem.Income,
+    compact: Boolean,
     readOnlyPreview: Boolean = false,
     onClick: () -> Unit
 ) {
-    val fit = rememberDisplayFit()
-    val compact = fit.compactHomeChrome
     val rowPad = if (compact) 12.dp else 16.dp
     val shape = HomeTokens.cardRadius
     // 7.10 : carte Accueil (ombre soft + filet léger).
@@ -159,6 +157,7 @@ internal fun IncomeRow(
 @Composable
 internal fun ExpenseRow(
     item: TimelineItem.Expense,
+    compact: Boolean,
     highlighted: Boolean,
     readOnlyPreview: Boolean = false,
     onToggle: () -> Unit,
@@ -166,8 +165,6 @@ internal fun ExpenseRow(
     onCopyNote: () -> Unit,
     onOpenReceipt: () -> Unit
 ) {
-    val fit = rememberDisplayFit()
-    val compact = fit.compactHomeChrome
     val rowPad = if (compact) 12.dp else 16.dp
     val shape = HomeTokens.cardRadius
     val targetBg = when {
@@ -312,6 +309,7 @@ internal fun ExpenseRow(
             }
             ExpenseStatusLine(
                 item = item,
+                compact = compact,
                 hideAgreementChip = compact && item.isAgreement
             )
             // H05 : Copier / Photo en 2ᵉ rangée légère — compact = liens seuls (carte allégée).
@@ -365,10 +363,9 @@ internal fun ExpenseRow(
 @Composable
 internal fun ExpenseStatusLine(
     item: TimelineItem.Expense,
+    compact: Boolean,
     hideAgreementChip: Boolean = false
 ) {
-    val fit = rememberDisplayFit()
-    val compact = fit.compactHomeChrome
     // H06 / P0-C1 : max 2 pastilles. Compact = critique seulement (retard / FAIT).
     data class Chip(val text: String, val bg: Color, val fg: Color, val outlined: Boolean = false)
     val dangerFill = HomeTokens.DangerFill
