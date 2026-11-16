@@ -39,13 +39,20 @@ updates:
         versions: [">=1.10.0"]
       - dependency-name: "org.jetbrains.kotlinx:kotlinx-coroutines-test"
         versions: [">=1.10.0"]
-      # Hilt ≥2.59 (ex. 2.60.1) exige AGP 9 — stack pin AGP 8.7.3 / Hilt 2.52.
+      # Hilt ≥2.58 (PR #39) casse KSP sur pin Kotlin 2.0.21 ; ≥2.59 exige AGP 9 — rester 2.52.
+      - dependency-name: "hiltVersion"
+        versions: [">=2.58.0"]
       - dependency-name: "com.google.dagger.hilt.android"
-        versions: [">=2.59.0"]
+        versions: [">=2.58.0"]
       - dependency-name: "com.google.dagger:hilt-android"
-        versions: [">=2.59.0"]
+        versions: [">=2.58.0"]
       - dependency-name: "com.google.dagger:hilt-compiler"
-        versions: [">=2.59.0"]
+        versions: [">=2.58.0"]
+      # Netty 4.2.x : bumps Dependabot module par module ≠ forceNetty 4.1.x (PR #33/#34 fermées).
+      - dependency-name: "io.netty:netty-handler-proxy"
+        versions: [">=4.2.0"]
+      - dependency-name: "io.netty:netty-codec-socks"
+        versions: [">=4.2.0"]
       - dependency-name: "com.android.application"
         versions: [">=9.0.0"]
       - dependency-name: "com.android.library"

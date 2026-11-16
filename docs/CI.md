@@ -95,6 +95,14 @@ checks PR. `dependabot.yml` ignore désormais **Hilt ≥2.59**, **AGP ≥9**,
 `ci.yml` : retry ×3 **uniquement** si la tâche `testDebugUnitTest` a tourné
 (évite 3× le même exit 1 sur PR bot compile).
 
+**Annotation « Build a échoué avant l'exécution des tests unitaires (pas de retry) »**
+→ **pas** un faux rouge sur `develop` / `main` : c’est le **fail-fast voulu** quand
+la PR Dependabot ne compile pas (Hilt 2.58, sqlcipher, etc.). La garde produit reste
+verte sur **`develop`** ; le rouge = **branche bot** à fermer ou corriger, pas un flaky test.
+
+**Hilt 2.58 (#39) :** `kspDebugKotlin` — PR fermée, ignore **`≥2.58`**. **Netty 4.2** (#33/#34) :
+bumps partiels vs `forceNetty` 4.1.x — fermées. **Guava 33.8** (#35) + **bcpkix 1.87** (#37) : mergées.
+
 **Alerte #61 `com.google.guava:guava` (CVE-2026-102554 / GHSA-xxph-c9ww-hj94) :**
 HIGH — CompactHashMap/CompactHashSet/MapMakerInternalMap deserialization OOM.
 Vulnérable `≥4.0` / `≤33.7.1` ; premier patch **`33.7.2`** (`33.7.2-jre` /

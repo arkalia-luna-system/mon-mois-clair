@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.64** IAU resume + CI Dependabot — **563** pass, **1** skipped, versionCode **170** |
+| Dernière étape terminée | **7.64** + triage Dependabot fin de journée — **563** pass, **1** skipped, versionCode **170** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke device : Accueil compact · double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · [`smoke-checklist`](docs/audits/2026-11-05-smoke-checklist-7.24.md) |
@@ -20,6 +20,12 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-16 — fin de journée : Dependabot + clarif CI fail-fast
+
+**Triage PR :** #35 guava **33.8.0-jre** + #37 **bcpkix 1.87** mergées ; #39 Hilt **2.58**, #33/#34 Netty **4.2** fermées (KSP / famille `forceNetty` 4.1.x). Ignore Dependabot : Hilt **≥2.58**, Netty proxy/socks **≥4.2**, sqlcipher **≥4.7**. **bcprov 1.87** aligné avec bcpkix (classpath AGP).  
+**CI :** `develop` / `main` **verts** (`b6c53e7` → merges deps) ; annotation « build avant tests » = fail-fast PR bot, pas flaky.  
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` post-merge → **563** pass, **1** skipped.
 
 ### 2026-11-16 — 7.64 IAU resume + CI Dependabot
 
