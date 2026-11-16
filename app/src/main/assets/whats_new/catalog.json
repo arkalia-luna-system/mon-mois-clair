@@ -61,6 +61,13 @@
         "Les mises à jour Play Internal se revérifieront mieux à l’ouverture si le Store n’était pas encore prêt.",
         "La CI ne répète plus trois fois les échecs de build sur les branches Dependabot hors périmètre."
       ]
+    },
+    {
+      "versionCode": 171,
+      "bullets": [
+        "Le bandeau Menu / Ajouter en bas de l’accueil ne déborde plus sous les boutons du téléphone.",
+        "Les boutons restent bien au-dessus de la barre de navigation ou du geste — plus d’écran écrasé en bas."
+      ]
     }
   ]
 }

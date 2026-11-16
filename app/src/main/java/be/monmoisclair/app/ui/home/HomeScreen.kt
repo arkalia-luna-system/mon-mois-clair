@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -416,65 +418,87 @@ fun HomeScreen(
         )
     }
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+        Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .background(HomeTokens.Canvas)
-                .imePadding()
-        ) {
-            HomeStickyHeader(
-                state = state,
-                fit = fit,
-                stickyDetailsOpen = stickyDetailsOpen,
-                onStickyDetailsOpenChange = { stickyDetailsOpen = it },
-                onOpenMonthPicker = { monthPickerOpen = true },
-                onPrevMonth = viewModel::prevMonth,
-                onNextMonth = viewModel::nextMonth,
-                onOpenDeadlines = onOpenDeadlines,
-                onOpenDossiers = onOpenDossiers,
-                onGoToCurrentMonth = viewModel::goToCurrentMonth,
-                // 7.09 : chips chariot | tirelire à côté du Reste (1 tap, pas Menu).
-                coursesLabel = stickyCoursesChipLabel(
-                    diversSpentCents = state.diversSpentCents,
-                    futurePreview = state.isFuturePreview
-                ),
-                coursesDescription = stickyCoursesLabel(
-                    diversSpentCents = state.diversSpentCents,
-                    afterDiversCents = state.afterDiversCents,
-                    futurePreview = state.isFuturePreview
-                ),
-                onOpenCourses = { coursesSheetOpen = true },
-                savingsLabel = stickySavingsChipLabel(
-                    savingsMonthlyCents = state.savingsMonthlyCents,
-                    futurePreview = state.isFuturePreview
-                ),
-                savingsDescription = stickySavingsLabel(
-                    savingsMonthlyCents = state.savingsMonthlyCents,
-                    futurePreview = state.isFuturePreview
-                ),
-                onOpenSavings = { savingsSheetOpen = true }
-            )
-            // FAIT : bandeau papier compact sous le sticky (pas barre pleine largeur).
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = fit.screenPadding)
-                    .padding(top = 4.dp, bottom = 2.dp)
-            ) { data ->
-                Snackbar(
-                    snackbarData = data,
-                    shape = HomeTokens.cardRadius,
-                    containerColor = HomeTokens.Card,
-                    contentColor = HomeTokens.Ink,
-                    actionColor = HomeTokens.Link,
+                .imePadding(),
+            containerColor = HomeTokens.Canvas,
+            // Clearance système : MainActivity (safeDrawing + tappable + 28 dp) — pas de doublon ici.
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState,
                     modifier = Modifier
-                        .wrapContentWidth()
-                        .border(1.dp, HomeTokens.CardBorder, HomeTokens.cardRadius)
-                )
+                        .fillMaxWidth()
+                        .padding(horizontal = fit.screenPadding)
+                        .padding(top = 4.dp, bottom = 2.dp)
+                ) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        shape = HomeTokens.cardRadius,
+                        containerColor = HomeTokens.Card,
+                        contentColor = HomeTokens.Ink,
+                        actionColor = HomeTokens.Link,
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .border(1.dp, HomeTokens.CardBorder, HomeTokens.cardRadius)
+                    )
+                }
+            },
+            bottomBar = {
+                if (!keyboardOpen) {
+                    HomeBottomBar(
+                        showGoCurrentCta = HomeEmptyMonthCopy.showGoCurrentCta(
+                            isPastMonth = state.isPastMonth,
+                            isFuturePreview = state.isFuturePreview
+                        ),
+                        remindersBlocked = remindersBlocked,
+                        onMenu = { menuOpen = true },
+                        onAdd = { onAdd(state.selectedYearMonth) },
+                        onGoCurrentMonth = viewModel::goToCurrentMonth
+                    )
+                }
             }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                HomeStickyHeader(
+                    state = state,
+                    fit = fit,
+                    stickyDetailsOpen = stickyDetailsOpen,
+                    onStickyDetailsOpenChange = { stickyDetailsOpen = it },
+                    onOpenMonthPicker = { monthPickerOpen = true },
+                    onPrevMonth = viewModel::prevMonth,
+                    onNextMonth = viewModel::nextMonth,
+                    onOpenDeadlines = onOpenDeadlines,
+                    onOpenDossiers = onOpenDossiers,
+                    onGoToCurrentMonth = viewModel::goToCurrentMonth,
+                    // 7.09 : chips chariot | tirelire à côté du Reste (1 tap, pas Menu).
+                    coursesLabel = stickyCoursesChipLabel(
+                        diversSpentCents = state.diversSpentCents,
+                        futurePreview = state.isFuturePreview
+                    ),
+                    coursesDescription = stickyCoursesLabel(
+                        diversSpentCents = state.diversSpentCents,
+                        afterDiversCents = state.afterDiversCents,
+                        futurePreview = state.isFuturePreview
+                    ),
+                    onOpenCourses = { coursesSheetOpen = true },
+                    savingsLabel = stickySavingsChipLabel(
+                        savingsMonthlyCents = state.savingsMonthlyCents,
+                        futurePreview = state.isFuturePreview
+                    ),
+                    savingsDescription = stickySavingsLabel(
+                        savingsMonthlyCents = state.savingsMonthlyCents,
+                        futurePreview = state.isFuturePreview
+                    ),
+                    onOpenSavings = { savingsSheetOpen = true }
+                )
 
-            LazyColumn(
+                LazyColumn(
                 state = listState,
                 modifier = Modifier
                     .weight(1f)
@@ -744,18 +768,6 @@ fun HomeScreen(
                     }
                 }
             }
-
-            if (!keyboardOpen) {
-                HomeBottomBar(
-                    showGoCurrentCta = HomeEmptyMonthCopy.showGoCurrentCta(
-                        isPastMonth = state.isPastMonth,
-                        isFuturePreview = state.isFuturePreview
-                    ),
-                    remindersBlocked = remindersBlocked,
-                    onMenu = { menuOpen = true },
-                    onAdd = { onAdd(state.selectedYearMonth) },
-                    onGoCurrentMonth = viewModel::goToCurrentMonth
-                )
             }
         }
     }

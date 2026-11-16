@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -56,6 +57,8 @@ internal fun HomeBottomBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                // Edge-to-edge : boutons au-dessus de la barre navigation / geste (MainActivity = clearance).
+                .navigationBarsPadding()
                 .padding(
                     // Aligné liste / sticky (24 dp) — pas HomeTokens.screenPad 20.
                     horizontal = A11yTokens.screenPadding,

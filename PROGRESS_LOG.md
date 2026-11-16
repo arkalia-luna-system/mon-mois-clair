@@ -9,7 +9,7 @@ Règle push : README / `versionName` / badges = journal + tests Gradle `--rerun-
 
 | Champ | Valeur |
 |-------|--------|
-| Dernière étape terminée | **7.64** + triage Dependabot fin de journée — **563** pass, **1** skipped, versionCode **170** |
+| Dernière étape terminée | **7.65** — socle Accueil + WindowInsets — **564** pass, **1** skipped, versionCode **171** |
 | Étape en cours | — |
 | Prochaine sous-étape | Smoke device : Accueil compact · double Enregistrer · retour Dossiers · facture 1× |
 | Audit | [`matrice-audits-7.35.md`](docs/audits/2026-11-09-matrice-audits-7.35.md) · [`plan-dettes-clarte-photo-mail.md`](docs/audits/2026-11-09-plan-dettes-clarte-photo-mail.md) · [`smoke-checklist`](docs/audits/2026-11-05-smoke-checklist-7.24.md) |
@@ -20,6 +20,18 @@ Journal détaillé pré-**6.68** : historique git / entrées ci-dessous (ne pas 
 ---
 
 ## Journal
+
+### 2026-11-16 — 7.65 socle Accueil / barre navigation
+
+**Contexte :** bandeau bas Accueil (blanc / sombre) semblait dépasser sous la zone geste / 3 boutons — ressenti aggravé par le compact **7.63** sans insets dédiés au footer.
+
+**Corrigé :**
+- `HomeScreen` : `Scaffold` + `contentWindowInsets = 0` (clearance unique `MainActivity`) · `bottomBar` = `HomeBottomBar`
+- `HomeBottomBar` : `navigationBarsPadding()` sur la rangée Menu / Ajouter (contenu au-dessus des barres système)
+
+**Tests :** `./gradlew :app:testDebugUnitTest --rerun-tasks` → **564** pass, **1** skipped, **0** failure (**137** XML).  
+**Version :** `0.1.0-7.65` · `versionCode` **171**.  
+**Ship :** push `develop` + ff `main` → Publish Play Internal.
 
 ### 2026-11-16 — fin de journée : Dependabot + clarif CI fail-fast
 
