@@ -198,7 +198,7 @@ dependencies {
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
     // OCR latin emballé (hors Play Services) — lecture +++ sur photo, pas le montant.
     implementation("com.google.mlkit:text-recognition:16.0.1")
-    val cameraVersion = "1.4.1"
+    val cameraVersion = "1.7.0"
     implementation("androidx.camera:camera-camera2:$cameraVersion")
     implementation("androidx.camera:camera-lifecycle:$cameraVersion")
     implementation("androidx.camera:camera-view:$cameraVersion")
