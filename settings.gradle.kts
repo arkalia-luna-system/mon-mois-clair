@@ -24,7 +24,7 @@ gradle.beforeProject {
     val localRoot = file("${System.getProperty("user.home")}/.cache/mon-mois-clair/gradle-build")
     project.layout.buildDirectory.set(File(localRoot, project.name))
 
-    val forceNetty = "4.1.139.Final"
+    val forceNetty = "4.2.21.Final"
     val forceGuava = "33.8.0-jre"
     val patched = listOf(
         "com.google.protobuf:protobuf-java:3.25.9",
